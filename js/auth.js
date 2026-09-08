@@ -3,28 +3,28 @@
 // ============================================================
 
 async function registrarUsuario(email, clave) {
-  const { data, error } = await supabase.auth.signUp({ email, password: clave });
+  const { data, error } = await sbClient.auth.signUp({ email, password: clave });
   if (error) throw error;
   return data;
 }
 
 async function iniciarSesion(email, clave) {
-  const { data, error } = await supabase.auth.signInWithPassword({ email, password: clave });
+  const { data, error } = await sbClient.auth.signInWithPassword({ email, password: clave });
   if (error) throw error;
   return data;
 }
 
 async function cerrarSesion() {
-  await supabase.auth.signOut();
+  await sbClient.auth.signOut();
 }
 
 async function usuarioActual() {
-  const { data } = await supabase.auth.getUser();
+  const { data } = await sbClient.auth.getUser();
   return data?.user || null;
 }
 
 async function enviarRecuperacionClave(email) {
-  const { error } = await supabase.auth.resetPasswordForEmail(email);
+  const { error } = await sbClient.auth.resetPasswordForEmail(email);
   if (error) throw error;
 }
 
