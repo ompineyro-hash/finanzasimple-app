@@ -149,6 +149,14 @@ $("btnMesSiguiente").addEventListener("click", () => {
   cargarMesActual();
 });
 
+$("textoBusqueda").addEventListener("input", renderMovimientos);
+$("filtroColumna").addEventListener("change", renderMovimientos);
+$("btnLimpiarBusqueda").addEventListener("click", () => {
+  $("textoBusqueda").value = "";
+  $("filtroColumna").value = "todo";
+  renderMovimientos();
+});
+
 // ============================================================
 // NAVEGACIÓN ENTRE VISTAS
 // ============================================================
@@ -182,16 +190,45 @@ function renderResumen() {
   $("valorGastos").textContent = formatoMonto(gas);
 }
 
+function normalizarTexto(v) {
+  return String(v ?? "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+
+function pasaBusqueda(m) {
+  const input = $("textoBusqueda");
+  const selector = $("filtroColumna");
+  if (!input || !selector) return true;
+  const buscado = normalizarTexto(input.value).trim();
+  if (!buscado) return true;
+  const columna = selector.value;
+  const campos = {
+    fecha: formatoFecha(m.fecha),
+    tipo: m.tipo,
+    cuenta: m.cuenta,
+    categoria: m.categoria,
+    detalle: m.detalle || "",
+    monto: String(m.monto),
+  };
+  if (columna === "todo") return Object.values(campos).some((v) => normalizarTexto(v).includes(buscado));
+  return normalizarTexto(campos[columna] || "").includes(buscado);
+}
+
 // ============================================================
 // RENDER: Lista de movimientos
 // ============================================================
 function renderMovimientos() {
   const cont = $("listaMovimientos");
+  const visibles = movimientos.filter(pasaBusqueda);
+
   if (!movimientos.length) {
     cont.innerHTML = `<div class="vacio">Todavía no cargaste movimientos este mes.<br>Tocá el botón <b>+</b> para agregar el primero.</div>`;
     return;
   }
-  cont.innerHTML = movimientos.map((m) => {
+  if (!visibles.length) {
+    cont.innerHTML = `<div class="vacio">No hay resultados para esa búsqueda.<br>Probá limpiarla o cambiar el filtro.</div>`;
+    return;
+  }
+  cont.innerHTML = visibles.map((m) => {
     const esGasto = m.tipo === "Gasto";
     return `
       <div class="mov-item" data-id="${m.id}">
@@ -425,6 +462,95 @@ $("formMovimiento").addEventListener("submit", async (e) => {
     mostrarToast(id ? "Movimiento actualizado." : "Movimiento guardado.");
   } catch (err) {
     mostrarAviso($("movError"), traducirErrorDatos(err));
+  }
+});
+
+// ============================================================
+// EXPORTAR (Excel / CSV)
+// ============================================================
+function descargarArchivo(nombre, contenido, tipo) {
+  const blob = new Blob([contenido], { type: tipo });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = nombre;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+
+function fechaParaNombreArchivo() {
+  const d = new Date();
+  return d.toISOString().slice(0, 10) + "_" + String(d.getHours()).padStart(2, "0") + "-" + String(d.getMinutes()).padStart(2, "0");
+}
+
+function valorEscapadoExcel(v) {
+  return String(v ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+$("btnExportarExcel").addEventListener("click", async () => {
+  try {
+    mostrarToast("Preparando archivo...");
+    const todos = await listarTodosLosMovimientos(usuario.id);
+    if (!todos.length) return mostrarToast("Todavía no tenés movimientos para exportar.");
+    const filas = todos.map((m) => {
+      const montoConSigno = m.tipo === "Gasto" ? -Math.abs(m.monto) : Math.abs(m.monto);
+      return `<tr>
+        <td>${valorEscapadoExcel(formatoFecha(m.fecha))}</td>
+        <td>${valorEscapadoExcel(m.tipo)}</td>
+        <td>${valorEscapadoExcel(m.cuenta)}</td>
+        <td>${valorEscapadoExcel(m.categoria)}</td>
+        <td>${valorEscapadoExcel(m.detalle || "")}</td>
+        <td style="mso-number-format:'0.00';">${montoConSigno}</td>
+      </tr>`;
+    }).join("");
+    const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body>
+      <table border="1"><thead><tr><th>Fecha</th><th>Tipo</th><th>Cuenta</th><th>Categoría</th><th>Detalle</th><th>Monto</th></tr></thead>
+      <tbody>${filas}</tbody></table></body></html>`;
+    descargarArchivo(`FinanzaSimple_${fechaParaNombreArchivo()}.xls`, html, "application/vnd.ms-excel;charset=utf-8");
+    mostrarToast("Archivo descargado.");
+  } catch (err) {
+    mostrarToast(traducirErrorDatos(err));
+  }
+});
+
+function valorCSV(v) {
+  return '"' + String(v ?? "").replace(/"/g, '""') + '"';
+}
+
+$("btnExportarCSV").addEventListener("click", async () => {
+  try {
+    mostrarToast("Preparando archivo...");
+    const todos = await listarTodosLosMovimientos(usuario.id);
+    if (!todos.length) return mostrarToast("Todavía no tenés movimientos para exportar.");
+    const encabezado = ["Fecha", "Tipo", "Cuenta", "Categoría", "Detalle", "Monto"].map(valorCSV).join(",");
+    const filas = todos.map((m) => {
+      const montoConSigno = m.tipo === "Gasto" ? -Math.abs(m.monto) : Math.abs(m.monto);
+      return [formatoFecha(m.fecha), m.tipo, m.cuenta, m.categoria, m.detalle || "", montoConSigno].map(valorCSV).join(",");
+    }).join("\n");
+    descargarArchivo(`FinanzaSimple_${fechaParaNombreArchivo()}.csv`, "\ufeff" + encabezado + "\n" + filas, "text/csv;charset=utf-8");
+    mostrarToast("Archivo descargado.");
+  } catch (err) {
+    mostrarToast(traducirErrorDatos(err));
+  }
+});
+
+// ============================================================
+// REINICIAR DATOS
+// ============================================================
+$("btnReiniciarDatos").addEventListener("click", async () => {
+  const paso1 = confirm("Vas a borrar TODOS tus movimientos, cuentas y categorías.\n\nTu usuario y tu clave no se ven afectados.\n\nEsta acción no se puede deshacer. ¿Continuar?");
+  if (!paso1) return;
+  const paso2 = confirm("Confirmación final: se van a borrar todos tus datos de trabajo ahora mismo.\n\n¿Reiniciar todo?");
+  if (!paso2) return;
+
+  try {
+    await reiniciarDatosUsuario(usuario.id);
+    await cargarCuentasYCategorias();
+    await cargarMesActual();
+    mostrarToast("Tus datos fueron reiniciados.");
+  } catch (err) {
+    mostrarToast(traducirErrorDatos(err));
   }
 });
 
