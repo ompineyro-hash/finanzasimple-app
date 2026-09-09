@@ -88,6 +88,25 @@ async function borrarMovimiento(id) {
   if (error) throw error;
 }
 
+async function listarTodosLosMovimientos(userId) {
+  const { data, error } = await sbClient
+    .from("movimientos")
+    .select("*")
+    .eq("user_id", userId)
+    .order("fecha", { ascending: true });
+  if (error) throw error;
+  return data;
+}
+
+async function reiniciarDatosUsuario(userId) {
+  const { error: e1 } = await sbClient.from("movimientos").delete().eq("user_id", userId);
+  if (e1) throw e1;
+  const { error: e2 } = await sbClient.from("cuentas").delete().eq("user_id", userId);
+  if (e2) throw e2;
+  const { error: e3 } = await sbClient.from("categorias").delete().eq("user_id", userId);
+  if (e3) throw e3;
+}
+
 function traducirErrorDatos(error) {
   const msg = String(error?.message || "").toLowerCase();
   if (msg.includes("duplicate") || msg.includes("unique")) return "Ya existe algo con ese nombre.";
