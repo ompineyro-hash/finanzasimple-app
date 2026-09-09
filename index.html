@@ -75,6 +75,19 @@
 
     <!-- Vista: Movimientos -->
     <section id="vistaMovimientos" class="vista">
+      <div class="searchBox">
+        <select id="filtroColumna">
+          <option value="todo">Todo</option>
+          <option value="fecha">Fecha</option>
+          <option value="tipo">Tipo</option>
+          <option value="cuenta">Cuenta</option>
+          <option value="categoria">Categoría</option>
+          <option value="detalle">Detalle</option>
+          <option value="monto">Monto</option>
+        </select>
+        <input type="text" id="textoBusqueda" placeholder="Buscar en este mes...">
+        <button type="button" id="btnLimpiarBusqueda" class="boton boton-texto">Limpiar</button>
+      </div>
       <div id="listaMovimientos" class="lista-movimientos"></div>
     </section>
 
@@ -104,6 +117,21 @@
       <div class="fila-config">
         <input type="text" id="inputNuevaCategoria" placeholder="Nueva categoría (ej: Alimentos)">
         <button class="boton boton-secundario" id="btnAgregarCategoria">Agregar</button>
+      </div>
+
+      <h2 class="titulo-seccion">Exportar mis datos</h2>
+      <p class="texto-ayuda">Descarga todos tus movimientos, de todos los meses, en un archivo para abrir en Excel o Google Sheets.</p>
+      <div class="fila-config">
+        <button class="boton boton-secundario boton-ancho" id="btnExportarExcel">📊 Exportar a Excel</button>
+      </div>
+      <div class="fila-config">
+        <button class="boton boton-secundario boton-ancho" id="btnExportarCSV">📄 Exportar a CSV</button>
+      </div>
+
+      <h2 class="titulo-seccion">Zona de riesgo</h2>
+      <p class="texto-ayuda">Esto borra tus movimientos, cuentas y categorías para empezar de cero. Tu usuario y tu clave no se ven afectados.</p>
+      <div class="fila-config">
+        <button class="boton boton-peligro boton-ancho" id="btnReiniciarDatos">🧹 Reiniciar todos mis datos</button>
       </div>
     </section>
 
