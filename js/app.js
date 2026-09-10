@@ -169,12 +169,6 @@ document.querySelectorAll(".navbar-item").forEach((btn) => {
     $(vistaActiva).hidden = false;
   });
 });
-$("btnMenu").addEventListener("click", () => {
-  document.querySelectorAll(".navbar-item").forEach((b) => b.classList.remove("activo"));
-  document.querySelector('[data-vista="vistaConfig"]').classList.add("activo");
-  document.querySelectorAll(".vista").forEach((v) => (v.hidden = true));
-  $("vistaConfig").hidden = false;
-});
 
 // ============================================================
 // RENDER: Resumen del mes
