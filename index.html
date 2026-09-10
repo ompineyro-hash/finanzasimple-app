@@ -14,183 +14,166 @@
 <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-
 <!-- ===================== PANTALLA DE INGRESO ===================== -->
 <div id="pantallaLogin" class="pantalla-login">
-  <div class="tarjeta-login">
-    <div class="logo-login">💰</div>
-    <h1>FinanzaSimple</h1>
-    <p class="subtitulo-login">Tu plata, clara y simple.</p>
-
-    <div id="loginError" class="aviso aviso-error" hidden></div>
-    <div id="loginOk" class="aviso aviso-ok" hidden></div>
-
-    <form id="formLogin" class="form-login">
-      <label>Email
-        <input type="email" id="inputEmail" required autocomplete="username" placeholder="tu@email.com">
-      </label>
-      <label>Clave
-        <input type="password" id="inputClave" required autocomplete="current-password" placeholder="Mínimo 6 caracteres">
-      </label>
-      <button type="submit" class="boton boton-primario boton-ancho" id="btnIngresar">Entrar</button>
-    </form>
-
-    <div class="separador-login"><span>o</span></div>
-
-    <button class="boton boton-secundario boton-ancho" id="btnMostrarRegistro">Crear una cuenta nueva</button>
-    <button class="boton boton-texto boton-ancho" id="btnOlvideClave">Olvidé mi clave</button>
-  </div>
+<div class="tarjeta-login">
+<div class="logo-login">💰</div>
+<h1>FinanzaSimple</h1>
+<p class="subtitulo-login">Tu plata, clara y simple.</p>
+<div id="loginError" class="aviso aviso-error" hidden></div>
+<div id="loginOk" class="aviso aviso-ok" hidden></div>
+<form id="formLogin" class="form-login">
+<label>Email
+<input type="email" id="inputEmail" required autocomplete="username" placeholder="tu@email.com">
+</label>
+<label>Clave
+<input type="password" id="inputClave" required autocomplete="current-password" placeholder="Mínimo 6 caracteres">
+</label>
+<button type="submit" class="boton boton-primario boton-ancho" id="btnIngresar">Entrar</button>
+</form>
+<div class="separador-login"><span>o</span></div>
+<button class="boton boton-secundario boton-ancho" id="btnMostrarRegistro">Crear una cuenta nueva</button>
+<button class="boton boton-texto boton-ancho" id="btnOlvideClave">Olvidé mi clave</button>
+</div>
 </div>
 
 <!-- ===================== APP PRINCIPAL ===================== -->
 <div id="app" class="app" hidden>
+<header class="topbar">
+<div class="topbar-fila">
+<div class="mes-selector">
+<button id="btnMesAnterior" class="icono-btn" aria-label="Mes anterior">◀</button>
+<span id="etiquetaMes">—</span>
+<button id="btnMesSiguiente" class="icono-btn" aria-label="Mes siguiente">▶</button>
+</div>
+<button id="btnSalir" class="icono-btn" aria-label="Salir">↪</button>
+</div>
+<div class="resumen-tarjetas">
+<div class="tarjeta-resumen">
+<span class="tarjeta-resumen-label">Balance</span>
+<span id="valorBalance" class="tarjeta-resumen-valor">—</span>
+</div>
+<div class="tarjeta-resumen">
+<span class="tarjeta-resumen-label">Ingresos</span>
+<span id="valorIngresos" class="tarjeta-resumen-valor color-ingreso">—</span>
+</div>
+<div class="tarjeta-resumen">
+<span class="tarjeta-resumen-label">Gastos</span>
+<span id="valorGastos" class="tarjeta-resumen-valor color-gasto">—</span>
+</div>
+</div>
+</header>
 
-  <header class="topbar">
-    <div class="topbar-fila">
-      <button id="btnMenu" class="icono-btn" aria-label="Configuración">⚙️</button>
-      <div class="mes-selector">
-        <button id="btnMesAnterior" class="icono-btn" aria-label="Mes anterior">◀</button>
-        <span id="etiquetaMes">—</span>
-        <button id="btnMesSiguiente" class="icono-btn" aria-label="Mes siguiente">▶</button>
-      </div>
-      <button id="btnSalir" class="icono-btn" aria-label="Salir">↪</button>
-    </div>
-    <div class="resumen-tarjetas">
-      <div class="tarjeta-resumen">
-        <span class="tarjeta-resumen-label">Balance</span>
-        <span id="valorBalance" class="tarjeta-resumen-valor">—</span>
-      </div>
-      <div class="tarjeta-resumen">
-        <span class="tarjeta-resumen-label">Ingresos</span>
-        <span id="valorIngresos" class="tarjeta-resumen-valor color-ingreso">—</span>
-      </div>
-      <div class="tarjeta-resumen">
-        <span class="tarjeta-resumen-label">Gastos</span>
-        <span id="valorGastos" class="tarjeta-resumen-valor color-gasto">—</span>
-      </div>
-    </div>
-  </header>
+<main class="contenido">
+<!-- Vista: Movimientos -->
+<section id="vistaMovimientos" class="vista">
+<div class="searchBox">
+<select id="filtroColumna">
+<option value="todo">Todo</option>
+<option value="fecha">Fecha</option>
+<option value="tipo">Tipo</option>
+<option value="cuenta">Cuenta</option>
+<option value="categoria">Categoría</option>
+<option value="detalle">Detalle</option>
+<option value="monto">Monto</option>
+</select>
+<input type="text" id="textoBusqueda" placeholder="Buscar en este mes...">
+<button type="button" id="btnLimpiarBusqueda" class="boton boton-texto">Limpiar</button>
+</div>
+<div id="listaMovimientos" class="lista-movimientos"></div>
+</section>
 
-  <main class="contenido">
+<!-- Vista: Análisis -->
+<section id="vistaAnalisis" class="vista" hidden>
+<h2 class="titulo-seccion">Gastos por categoría</h2>
+<div id="listaAnalisis" class="lista-analisis"></div>
+</section>
 
-    <!-- Vista: Movimientos -->
-    <section id="vistaMovimientos" class="vista">
-      <div class="searchBox">
-        <select id="filtroColumna">
-          <option value="todo">Todo</option>
-          <option value="fecha">Fecha</option>
-          <option value="tipo">Tipo</option>
-          <option value="cuenta">Cuenta</option>
-          <option value="categoria">Categoría</option>
-          <option value="detalle">Detalle</option>
-          <option value="monto">Monto</option>
-        </select>
-        <input type="text" id="textoBusqueda" placeholder="Buscar en este mes...">
-        <button type="button" id="btnLimpiarBusqueda" class="boton boton-texto">Limpiar</button>
-      </div>
-      <div id="listaMovimientos" class="lista-movimientos"></div>
-    </section>
+<!-- Vista: Configuración -->
+<section id="vistaConfig" class="vista" hidden>
+<h2 class="titulo-seccion">Moneda</h2>
+<div class="fila-config">
+<input type="text" id="inputMoneda" maxlength="4" placeholder="$">
+<button class="boton boton-secundario" id="btnGuardarMoneda">Guardar</button>
+</div>
+<h2 class="titulo-seccion">Cuentas</h2>
+<div id="listaCuentas" class="lista-editable"></div>
+<div class="fila-config">
+<input type="text" id="inputNuevaCuenta" placeholder="Nueva cuenta (ej: Banco)">
+<button class="boton boton-secundario" id="btnAgregarCuenta">Agregar</button>
+</div>
+<h2 class="titulo-seccion">Categorías</h2>
+<div id="listaCategorias" class="lista-editable"></div>
+<div class="fila-config">
+<input type="text" id="inputNuevaCategoria" placeholder="Nueva categoría (ej: Alimentos)">
+<button class="boton boton-secundario" id="btnAgregarCategoria">Agregar</button>
+</div>
+<h2 class="titulo-seccion">Exportar mis datos</h2>
+<p class="texto-ayuda">Descarga todos tus movimientos, de todos los meses, en un archivo para abrir en Excel o Google Sheets.</p>
+<div class="fila-config">
+<button class="boton boton-secundario boton-ancho" id="btnExportarExcel">📊 Exportar a Excel</button>
+</div>
+<div class="fila-config">
+<button class="boton boton-secundario boton-ancho" id="btnExportarCSV">📄 Exportar a CSV</button>
+</div>
+<h2 class="titulo-seccion">Zona de riesgo</h2>
+<p class="texto-ayuda">Esto borra tus movimientos, cuentas y categorías para empezar de cero. Tu usuario y tu clave no se ven afectados.</p>
+<div class="fila-config">
+<button class="boton boton-peligro boton-ancho" id="btnReiniciarDatos">🧹 Reiniciar todos mis datos</button>
+</div>
+</section>
+</main>
 
-    <!-- Vista: Análisis -->
-    <section id="vistaAnalisis" class="vista" hidden>
-      <h2 class="titulo-seccion">Gastos por categoría</h2>
-      <div id="listaAnalisis" class="lista-analisis"></div>
-    </section>
+<button id="btnNuevo" class="boton-flotante" aria-label="Nuevo movimiento">+</button>
 
-    <!-- Vista: Configuración -->
-    <section id="vistaConfig" class="vista" hidden>
-      <h2 class="titulo-seccion">Moneda</h2>
-      <div class="fila-config">
-        <input type="text" id="inputMoneda" maxlength="4" placeholder="$">
-        <button class="boton boton-secundario" id="btnGuardarMoneda">Guardar</button>
-      </div>
-
-      <h2 class="titulo-seccion">Cuentas</h2>
-      <div id="listaCuentas" class="lista-editable"></div>
-      <div class="fila-config">
-        <input type="text" id="inputNuevaCuenta" placeholder="Nueva cuenta (ej: Banco)">
-        <button class="boton boton-secundario" id="btnAgregarCuenta">Agregar</button>
-      </div>
-
-      <h2 class="titulo-seccion">Categorías</h2>
-      <div id="listaCategorias" class="lista-editable"></div>
-      <div class="fila-config">
-        <input type="text" id="inputNuevaCategoria" placeholder="Nueva categoría (ej: Alimentos)">
-        <button class="boton boton-secundario" id="btnAgregarCategoria">Agregar</button>
-      </div>
-
-      <h2 class="titulo-seccion">Exportar mis datos</h2>
-      <p class="texto-ayuda">Descarga todos tus movimientos, de todos los meses, en un archivo para abrir en Excel o Google Sheets.</p>
-      <div class="fila-config">
-        <button class="boton boton-secundario boton-ancho" id="btnExportarExcel">📊 Exportar a Excel</button>
-      </div>
-      <div class="fila-config">
-        <button class="boton boton-secundario boton-ancho" id="btnExportarCSV">📄 Exportar a CSV</button>
-      </div>
-
-      <h2 class="titulo-seccion">Zona de riesgo</h2>
-      <p class="texto-ayuda">Esto borra tus movimientos, cuentas y categorías para empezar de cero. Tu usuario y tu clave no se ven afectados.</p>
-      <div class="fila-config">
-        <button class="boton boton-peligro boton-ancho" id="btnReiniciarDatos">🧹 Reiniciar todos mis datos</button>
-      </div>
-    </section>
-
-  </main>
-
-  <button id="btnNuevo" class="boton-flotante" aria-label="Nuevo movimiento">+</button>
-
-  <nav class="navbar">
-    <button class="navbar-item activo" data-vista="vistaMovimientos">
-      <span class="navbar-icono">📋</span><span>Movimientos</span>
-    </button>
-    <button class="navbar-item" data-vista="vistaAnalisis">
-      <span class="navbar-icono">📊</span><span>Análisis</span>
-    </button>
-    <button class="navbar-item" data-vista="vistaConfig">
-      <span class="navbar-icono">⚙️</span><span>Config</span>
-    </button>
-  </nav>
+<nav class="navbar">
+<button class="navbar-item activo" data-vista="vistaMovimientos">
+<span class="navbar-icono">📋</span><span>Movimientos</span>
+</button>
+<button class="navbar-item" data-vista="vistaAnalisis">
+<span class="navbar-icono">📊</span><span>Análisis</span>
+</button>
+<button class="navbar-item" data-vista="vistaConfig">
+<span class="navbar-icono">⚙️</span><span>Config</span>
+</button>
+</nav>
 </div>
 
 <!-- ===================== MODAL: NUEVO / EDITAR MOVIMIENTO ===================== -->
 <div id="modalFondo" class="modal-fondo" hidden>
-  <div class="modal">
-    <div class="modal-cabecera">
-      <h3 id="modalTitulo">Nuevo movimiento</h3>
-      <button id="btnCerrarModal" class="icono-btn" aria-label="Cerrar">✖</button>
-    </div>
-    <form id="formMovimiento" class="modal-cuerpo">
-      <input type="hidden" id="movId">
-
-      <div class="segmentado" id="segmentadoTipo">
-        <button type="button" class="segmentado-item activo" data-tipo="Gasto">Gasto</button>
-        <button type="button" class="segmentado-item" data-tipo="Ingreso">Ingreso</button>
-      </div>
-
-      <label>Fecha
-        <input type="date" id="movFecha" required>
-      </label>
-      <label>Cuenta
-        <select id="movCuenta" required></select>
-      </label>
-      <label>Categoría
-        <select id="movCategoria" required></select>
-      </label>
-      <label>Monto
-        <input type="text" inputmode="decimal" id="movMonto" placeholder="0,00" required>
-      </label>
-      <label>Detalle (opcional)
-        <input type="text" id="movDetalle" placeholder="Ej: Supermercado del sábado">
-      </label>
-
-      <div id="movError" class="aviso aviso-error" hidden></div>
-
-      <div class="modal-acciones">
-        <button type="button" id="btnBorrarMov" class="boton boton-peligro" hidden>Borrar</button>
-        <button type="submit" class="boton boton-primario boton-ancho">Guardar</button>
-      </div>
-    </form>
-  </div>
+<div class="modal">
+<div class="modal-cabecera">
+<h3 id="modalTitulo">Nuevo movimiento</h3>
+<button id="btnCerrarModal" class="icono-btn" aria-label="Cerrar">✖</button>
+</div>
+<form id="formMovimiento" class="modal-cuerpo">
+<input type="hidden" id="movId">
+<div class="segmentado" id="segmentadoTipo">
+<button type="button" class="segmentado-item activo" data-tipo="Gasto">Gasto</button>
+<button type="button" class="segmentado-item" data-tipo="Ingreso">Ingreso</button>
+</div>
+<label>Fecha
+<input type="date" id="movFecha" required>
+</label>
+<label>Cuenta
+<select id="movCuenta" required></select>
+</label>
+<label>Categoría
+<select id="movCategoria" required></select>
+</label>
+<label>Monto
+<input type="text" inputmode="decimal" id="movMonto" placeholder="0,00" required>
+</label>
+<label>Detalle (opcional)
+<input type="text" id="movDetalle" placeholder="Ej: Supermercado del sábado">
+</label>
+<div id="movError" class="aviso aviso-error" hidden></div>
+<div class="modal-acciones">
+<button type="button" id="btnBorrarMov" class="boton boton-peligro" hidden>Borrar</button>
+<button type="submit" class="boton boton-primario boton-ancho">Guardar</button>
+</div>
+</form>
+</div>
 </div>
 
 <div id="toast" class="toast" hidden></div>
