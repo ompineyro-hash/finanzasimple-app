@@ -9,6 +9,7 @@ let categorias = [];
 let movimientos = [];
 let fechaVista = new Date();
 let vistaActiva = "vistaMovimientos";
+let periodoAnalisis = "mes";
 
 const $ = (id) => document.getElementById(id);
 
@@ -137,7 +138,7 @@ async function cargarMesActual() {
   movimientos = await listarMovimientosDelMes(usuario.id, fechaVista.getFullYear(), fechaVista.getMonth());
   renderResumen();
   renderMovimientos();
-  renderAnalisis();
+  await renderVistaAnalisis();
 }
 
 $("btnMesAnterior").addEventListener("click", () => {
@@ -242,30 +243,92 @@ function renderMovimientos() {
 }
 
 // ============================================================
-// RENDER: Análisis por categoría
+// RENDER: Análisis (Mes actual / Resumen anual / Acumulado)
 // ============================================================
-function renderAnalisis() {
+function calcularResumenLista(lista) {
+  let ing = 0, gas = 0;
+  lista.forEach((m) => {
+    if (m.tipo === "Ingreso") ing += Number(m.monto);
+    else gas += Number(m.monto);
+  });
+  return { ing, gas, balance: ing - gas };
+}
+
+function renderResumenAnalisis(lista) {
+  const { ing, gas, balance } = calcularResumenLista(lista);
+  $("analisisBalance").textContent = formatoMonto(balance);
+  $("analisisIngresos").textContent = formatoMonto(ing);
+  $("analisisGastos").textContent = formatoMonto(gas);
+}
+
+function renderCategoriasAnalisis(lista) {
   const cont = $("listaAnalisis");
   const porCategoria = {};
   let totalGastos = 0;
-  movimientos.filter((m) => m.tipo === "Gasto").forEach((m) => {
+  lista.filter((m) => m.tipo === "Gasto").forEach((m) => {
     porCategoria[m.categoria] = (porCategoria[m.categoria] || 0) + Number(m.monto);
     totalGastos += Number(m.monto);
   });
   const entradas = Object.entries(porCategoria).sort((a, b) => b[1] - a[1]);
   if (!entradas.length) {
-    cont.innerHTML = `<div class="vacio">No hay gastos cargados este mes todavía.</div>`;
+    cont.innerHTML = `
+      <div class="grafico-dona grafico-dona-vacio"></div>
+      <div class="vacio">No hay gastos cargados en este período.</div>`;
     return;
   }
-  cont.innerHTML = entradas.map(([cat, monto]) => {
+  const colores = ["#C4562E", "#2F6F5E", "#D9A441", "#5B7FBF", "#8B5FBF", "#4FA3A0", "#C2707C", "#7A8B4F"];
+  let acumulado = 0;
+  const segmentos = entradas.map(([, monto], i) => {
+    const pct = (monto / totalGastos) * 100;
+    const desde = acumulado;
+    acumulado += pct;
+    return `${colores[i % colores.length]} ${desde}% ${acumulado}%`;
+  }).join(", ");
+
+  const leyenda = entradas.map(([cat, monto], i) => {
     const pct = totalGastos > 0 ? (monto / totalGastos) * 100 : 0;
+    const color = colores[i % colores.length];
     return `
       <div class="analisis-item">
-        <div class="analisis-fila"><span>${escapeHTML(cat)}</span><span>${formatoMonto(monto)} (${pct.toFixed(0)}%)</span></div>
-        <div class="analisis-barra-fondo"><div class="analisis-barra" style="width:${pct}%"></div></div>
+        <div class="analisis-fila">
+          <span><span class="analisis-swatch" style="background:${color}"></span>${escapeHTML(cat)}</span>
+          <span>${formatoMonto(monto)} (${pct.toFixed(0)}%)</span>
+        </div>
+        <div class="analisis-barra-fondo"><div class="analisis-barra" style="width:${pct}%;background:${color}"></div></div>
       </div>`;
   }).join("");
+
+  cont.innerHTML = `
+    <div class="grafico-dona" style="background:conic-gradient(${segmentos})">
+      <div class="grafico-dona-centro">
+        <span class="grafico-dona-total">${formatoMonto(totalGastos)}</span>
+        <span class="grafico-dona-label">Total gastos</span>
+      </div>
+    </div>
+    ${leyenda}`;
 }
+
+async function renderVistaAnalisis() {
+  let lista;
+  if (periodoAnalisis === "anio") {
+    lista = await listarMovimientosDelAnio(usuario.id, fechaVista.getFullYear());
+  } else if (periodoAnalisis === "todo") {
+    lista = await listarTodosLosMovimientos(usuario.id);
+  } else {
+    lista = movimientos;
+  }
+  renderResumenAnalisis(lista);
+  renderCategoriasAnalisis(lista);
+}
+
+document.querySelectorAll("#segmentadoAnalisis .segmentado-item").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll("#segmentadoAnalisis .segmentado-item").forEach((b) => b.classList.remove("activo"));
+    btn.classList.add("activo");
+    periodoAnalisis = btn.dataset.periodo;
+    renderVistaAnalisis();
+  });
+});
 
 // ============================================================
 // RENDER: Configuración (cuentas / categorías)
