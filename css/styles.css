@@ -133,6 +133,33 @@ input,select{font-family:inherit;font-size:16px;}
 }
 
 /* ---------- Análisis ---------- */
+#segmentadoAnalisis{margin-bottom:14px;}
+.grafico-dona{
+  width:170px;height:170px;border-radius:50%;position:relative;
+  margin:4px auto 22px;
+}
+.grafico-dona::after{
+  content:"";position:absolute;inset:26px;
+  background:var(--papel);border-radius:50%;
+}
+.grafico-dona-vacio{background:var(--borde);}
+.grafico-dona-centro{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;z-index:1;text-align:center;
+}
+.grafico-dona-total{font-size:17px;font-weight:800;color:var(--texto);}
+.grafico-dona-label{font-size:11px;color:var(--texto-suave);margin-top:2px;}
+.analisis-swatch{
+  display:inline-block;width:10px;height:10px;border-radius:3px;
+  margin-right:6px;vertical-align:middle;
+}
+.resumen-tarjetas-analisis{margin-bottom:18px;}
+.tarjeta-resumen-clara{background:var(--papel-alto);box-shadow:var(--sombra);}
+.tarjeta-resumen-clara .tarjeta-resumen-label{color:var(--texto-suave);opacity:1;}
+.tarjeta-resumen-clara .tarjeta-resumen-valor{color:var(--texto);}
+.tarjeta-resumen-clara .color-ingreso{color:var(--ingreso);}
+.tarjeta-resumen-clara .color-gasto{color:var(--gasto);}
+
 .lista-analisis{display:flex;flex-direction:column;gap:10px;}
 .analisis-item{background:var(--papel-alto);border-radius:12px;padding:12px 14px;box-shadow:var(--sombra);}
 .analisis-fila{display:flex;justify-content:space-between;font-weight:700;font-size:14px;margin-bottom:6px;}
