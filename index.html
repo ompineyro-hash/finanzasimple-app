@@ -85,6 +85,25 @@
 
 <!-- Vista: Análisis -->
 <section id="vistaAnalisis" class="vista" hidden>
+<div class="segmentado" id="segmentadoAnalisis">
+<button type="button" class="segmentado-item activo" data-periodo="mes">Mes actual</button>
+<button type="button" class="segmentado-item" data-periodo="anio">Resumen anual</button>
+<button type="button" class="segmentado-item" data-periodo="todo">Acumulado</button>
+</div>
+<div class="resumen-tarjetas resumen-tarjetas-analisis">
+<div class="tarjeta-resumen tarjeta-resumen-clara">
+<span class="tarjeta-resumen-label">Balance</span>
+<span id="analisisBalance" class="tarjeta-resumen-valor">—</span>
+</div>
+<div class="tarjeta-resumen tarjeta-resumen-clara">
+<span class="tarjeta-resumen-label">Ingresos</span>
+<span id="analisisIngresos" class="tarjeta-resumen-valor color-ingreso">—</span>
+</div>
+<div class="tarjeta-resumen tarjeta-resumen-clara">
+<span class="tarjeta-resumen-label">Gastos</span>
+<span id="analisisGastos" class="tarjeta-resumen-valor color-gasto">—</span>
+</div>
+</div>
 <h2 class="titulo-seccion">Gastos por categoría</h2>
 <div id="listaAnalisis" class="lista-analisis"></div>
 </section>
