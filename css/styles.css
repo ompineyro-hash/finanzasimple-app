@@ -44,6 +44,7 @@ input,select{font-family:inherit;font-size:16px;}
 .boton-secundario{background:var(--papel-alto);color:var(--primario);border:1.5px solid var(--primario);}
 .boton-texto{background:none;color:var(--texto-suave);font-weight:600;}
 .boton-peligro{background:var(--gasto-fondo);color:var(--peligro);}
+.boton-voz{background:#F1ECFA;color:#6B46C1;}
 .boton-ancho{width:100%;}
 .icono-btn{
   background:none;border:none;font-size:20px;padding:8px;
