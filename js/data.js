@@ -88,6 +88,20 @@ async function borrarMovimiento(id) {
   if (error) throw error;
 }
 
+async function listarMovimientosDelAnio(userId, anio) {
+  const desde = `${anio}-01-01`;
+  const hasta = `${anio}-12-31`;
+  const { data, error } = await sbClient
+    .from("movimientos")
+    .select("*")
+    .eq("user_id", userId)
+    .gte("fecha", desde)
+    .lte("fecha", hasta)
+    .order("fecha", { ascending: false });
+  if (error) throw error;
+  return data;
+}
+
 async function listarTodosLosMovimientos(userId) {
   const { data, error } = await sbClient
     .from("movimientos")
