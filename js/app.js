@@ -450,6 +450,7 @@ function abrirModalNuevo() {
   renderSelects();
   ocultarAviso($("movError"));
   $("modalFondo").hidden = false;
+  fsVozPrepararNuevo();
 }
 
 function abrirModalEditar(id) {
@@ -467,6 +468,7 @@ function abrirModalEditar(id) {
   $("movDetalle").value = m.detalle || "";
   ocultarAviso($("movError"));
   $("modalFondo").hidden = false;
+  fsVoiceOcultar();
 }
 
 function cerrarModal() { $("modalFondo").hidden = true; }
@@ -479,6 +481,205 @@ function seleccionarTipo(tipo) {
 document.querySelectorAll("#segmentadoTipo .segmentado-item").forEach((b) => {
   b.addEventListener("click", () => seleccionarTipo(b.dataset.tipo));
 });
+
+// ============================================================
+// Carga de movimiento por voz (opcional) - paso a paso
+// Pregunta un dato a la vez (tipo, cuenta, categoría, detalle, monto).
+// Cada "Responder" arranca un reconocimiento nuevo con un toque del
+// usuario, que es lo que hace que el celular pida permiso de forma
+// confiable (en vez de un solo reconocimiento largo al abrir el modal).
+// ============================================================
+let fsVoiceStep = 0;
+let fsVoiceRec = null;
+let fsVoicePending = "";
+const fsVoiceSteps = [
+  { id: "tipo", q: "¿Es un gasto o un ingreso?" },
+  { id: "movCuenta", q: "¿Con qué cuenta?" },
+  { id: "movCategoria", q: "¿Qué categoría?" },
+  { id: "movDetalle", q: "¿Cuál es el detalle?" },
+  { id: "movMonto", q: "¿Cuál es el monto? Podés decir pesos y centavos." },
+];
+
+function fsVoiceNorm(t) {
+  return String(t || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+}
+
+function fsVoiceSetSel(id, val) {
+  const el = $(id);
+  if (!el) return false;
+  const v = fsVoiceNorm(val);
+  for (const o of el.options) {
+    if (fsVoiceNorm(o.value) === v || fsVoiceNorm(o.textContent) === v) { el.value = o.value; return true; }
+  }
+  return false;
+}
+
+function fsVoiceTipo(t) {
+  t = fsVoiceNorm(t);
+  if (/\b(gasto|gaste|pague|compre)\b/.test(t)) return "Gasto";
+  if (/\b(ingreso|cobre|recibi|entro)\b/.test(t)) return "Ingreso";
+  return "";
+}
+
+function fsVoiceOpcion(id, t) {
+  const el = $(id);
+  if (!el) return "";
+  t = fsVoiceNorm(t);
+  for (const o of [...el.options].filter((x) => x.value)) {
+    if (t.includes(fsVoiceNorm(o.textContent))) return o.value;
+  }
+  return "";
+}
+
+function fsVoiceNumeroPalabras(txt) {
+  txt = fsVoiceNorm(txt).replace(/\by\b/g, " ").replace(/\s+/g, " ").trim();
+  const u = { cero:0,un:1,uno:1,una:1,dos:2,tres:3,cuatro:4,cinco:5,seis:6,siete:7,ocho:8,nueve:9,
+    diez:10,once:11,doce:12,trece:13,catorce:14,quince:15,dieciseis:16,diecisiete:17,dieciocho:18,diecinueve:19,
+    veinte:20,veintiuno:21,veintidos:22,veintitres:23,veinticuatro:24,veinticinco:25,veintiseis:26,veintisiete:27,veintiocho:28,veintinueve:29,
+    treinta:30,cuarenta:40,cincuenta:50,sesenta:60,setenta:70,ochenta:80,noventa:90,
+    cien:100,ciento:100,doscientos:200,trescientos:300,cuatrocientos:400,quinientos:500,seiscientos:600,setecientos:700,ochocientos:800,novecientos:900 };
+  let total = 0, actual = 0, vio = false;
+  for (const w of txt.split(" ")) {
+    if (w in u) { actual += u[w]; vio = true; continue; }
+    if (w === "mil") { total += (actual || 1) * 1000; actual = 0; vio = true; continue; }
+    if (w === "millon" || w === "millones") { total += (actual || 1) * 1000000; actual = 0; vio = true; continue; }
+  }
+  return vio ? total + actual : null;
+}
+
+function fsVoiceMonto(t) {
+  let q = fsVoiceNorm(t).replace(/\$/g, " ").replace(/\s+/g, " ").trim();
+  function vp(txt) { txt = (txt || "").trim(); if (!txt) return null; if (/^\d+$/.test(txt)) return parseInt(txt, 10); return fsVoiceNumeroPalabras(txt); }
+  function cents(txt) { txt = (txt || "").replace(/\bcentavos?\b/g, " ").trim(); let m = txt.match(/\b(\d{1,2})\b/); if (m) return Math.min(99, parseInt(m[1], 10)); let n = vp(txt); return n === null ? null : Math.min(99, n); }
+  if (/\bmillon(?:es)?\b/.test(q)) {
+    let mm = q.match(/^(.*?)\bmillon(?:es)?\b\s*(.*)$/), pref = mm ? mm[1].trim() : "", resto = mm ? mm[2].trim() : "";
+    let mult = vp(pref); if (mult === null || mult === 0) mult = 1; let total = mult * 1000000;
+    let p = resto.split(/\bcon\b/), pesos = (p[0] || "").replace(/\bde\b/g, " ").replace(/\bpesos?\b/g, " ").trim(), cent = p.length > 1 ? p.slice(1).join(" ").trim() : "";
+    if (pesos) { let nr = pesos.match(/\b(\d{1,3}(?:[.,]\d{3})+|\d{1,6})\b/); if (nr) total += parseInt(nr[1].replace(/[.,]/g, ""), 10); else { let n = vp(pesos); if (n !== null) total += n; } }
+    let c = cents(cent); return c !== null ? (total + c / 100).toFixed(2) : String(total);
+  }
+  let m = q.match(/\b(\d{1,3}(?:,\d{3})+)\.(\d{1,2})\b/); if (m) return (parseInt(m[1].replace(/,/g, ""), 10) + parseInt((m[2] + "0").slice(0, 2), 10) / 100).toFixed(2);
+  m = q.match(/\b(\d{1,3}(?:\.\d{3})+),(\d{1,2})\b/); if (m) return (parseInt(m[1].replace(/\./g, ""), 10) + parseInt((m[2] + "0").slice(0, 2), 10) / 100).toFixed(2);
+  m = q.match(/\b(\d{4,})[.,](\d{1,2})\b/); if (m) return (parseInt(m[1], 10) + parseInt((m[2] + "0").slice(0, 2), 10) / 100).toFixed(2);
+  let p = q.split(/\bcon\b/), principal = p[0].replace(/\bpesos?\b/g, " ").trim(), resto = p.length > 1 ? p.slice(1).join(" ").trim() : "", base = null;
+  m = principal.match(/\b(\d{1,3}(?:[.,]\d{3})+|\d{4,})\b/); if (m) base = parseInt(m[1].replace(/[.,]/g, ""), 10);
+  if (base === null) { let n = vp(principal); if (n !== null) base = n; }
+  let c = cents(resto); if (base !== null) return c !== null ? (base + c / 100).toFixed(2) : String(base);
+  return "";
+}
+
+function fsVoiceInterpretar(id, t) {
+  if (id === "tipo") return fsVoiceTipo(t);
+  if (id === "movMonto") return fsVoiceMonto(t);
+  if (id === "movCuenta" || id === "movCategoria") return fsVoiceOpcion(id, t);
+  if (id === "movDetalle") { let x = String(t || "").trim().replace(/[.,;:]+$/, ""); return x ? x[0].toUpperCase() + x.slice(1) : ""; }
+  return "";
+}
+
+function fsVoicePregunta() {
+  const q = $("voiceQuestion"), st = $("voiceStatus");
+  if (!q) return;
+  if (fsVoiceStep >= fsVoiceSteps.length) {
+    q.textContent = "✅ Datos completos. Revisalos y tocá Guardar.";
+    st.textContent = "Podés corregir cualquier campo manualmente antes de guardar.";
+    return;
+  }
+  q.textContent = "Paso " + (fsVoiceStep + 1) + " de " + fsVoiceSteps.length + " — " + fsVoiceSteps[fsVoiceStep].q;
+  st.textContent = "Tocá Responder. También podés completar el campo a mano.";
+  $("voiceHeard").textContent = "La respuesta escuchada aparecerá acá.";
+}
+
+function fsVozPrepararNuevo() {
+  const b = $("btnCargarVoz"), panel = $("voicePanel");
+  if (!b || !panel) return;
+  b.hidden = false;
+  panel.hidden = true;
+  b.onclick = () => {
+    panel.hidden = !panel.hidden;
+    if (!panel.hidden) { fsVoiceStep = 0; fsVoicePregunta(); }
+  };
+  const li = $("voiceListen"), rp = $("voiceRepeat"), nx = $("voiceNext");
+  if (li) li.onclick = fsVoiceEscuchar;
+  if (rp) rp.onclick = () => {
+    fsVoicePending = "";
+    $("voiceHeard").textContent = "Dato borrado. Tocá Responder otra vez.";
+  };
+  if (nx) nx.onclick = () => { fsVoiceStep++; fsVoicePregunta(); };
+}
+
+function fsVoiceOcultar() {
+  const b = $("btnCargarVoz"), panel = $("voicePanel");
+  if (b) b.hidden = true;
+  if (panel) panel.hidden = true;
+}
+
+function fsVoiceEscuchar() {
+  const Reconocimiento = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const st = $("voiceStatus"), heard = $("voiceHeard");
+  if (!Reconocimiento) {
+    st.textContent = "Este navegador no ofrece reconocimiento de voz. Probá desde Chrome, o cargá el dato a mano.";
+    return;
+  }
+
+  fsVoicePending = "";
+  fsVoiceRec = new Reconocimiento();
+  fsVoiceRec.lang = "es-AR";
+  fsVoiceRec.continuous = false;
+  fsVoiceRec.interimResults = false;
+  fsVoiceRec.maxAlternatives = 5;
+
+  fsVoiceRec.onstart = () => { st.textContent = "🔴 Escuchando este dato…"; };
+
+  fsVoiceRec.onresult = (e) => {
+    let candidatos = [];
+    for (let i = 0; i < e.results.length; i++) for (let j = 0; j < e.results[i].length; j++) candidatos.push(e.results[i][j].transcript.trim());
+    const pasoActual = fsVoiceSteps[fsVoiceStep];
+    let elegido = candidatos[0] || "";
+    if (pasoActual) {
+      const interpretable = candidatos.find((x) => !!fsVoiceInterpretar(pasoActual.id, x));
+      if (interpretable) elegido = interpretable;
+    }
+    if (pasoActual && pasoActual.id === "movMonto") {
+      const esc = candidatos.find((x) => /\bmil\b|\bmill[oó]n(?:es)?\b/i.test(x) && !!fsVoiceMonto(x));
+      if (esc) elegido = esc;
+    }
+    fsVoicePending = elegido;
+    heard.textContent = elegido || "Escuchando…";
+  };
+
+  fsVoiceRec.onerror = (e) => {
+    if (e.error === "not-allowed" || e.error === "permission-denied") {
+      st.textContent = "El micrófono está bloqueado para esta página. Revisá los permisos de Chrome (candado junto a la dirección) y volvé a intentar.";
+    } else if (e.error === "no-speech") {
+      st.textContent = "No escuché nada. Tocá Responder y hablá apenas empiece a escuchar.";
+    } else {
+      st.textContent = "No pude escuchar (" + e.error + "). Podés repetir o escribir manualmente.";
+    }
+  };
+
+  fsVoiceRec.onend = () => {
+    if (!fsVoicePending) { if (st.textContent.indexOf("bloqueado") === -1) st.textContent = "No escuché nada. Intentá otra vez."; return; }
+    const paso = fsVoiceSteps[fsVoiceStep];
+    const val = fsVoiceInterpretar(paso.id, fsVoicePending);
+    if (!val) { st.textContent = "No pude interpretar este dato. Repetilo o escribilo manualmente."; return; }
+
+    let mostrado = val;
+    if (paso.id === "tipo") {
+      seleccionarTipo(val);
+    } else if (paso.id === "movCuenta" || paso.id === "movCategoria") {
+      fsVoiceSetSel(paso.id, val);
+      mostrado = $(paso.id).selectedOptions[0] ? $(paso.id).selectedOptions[0].textContent : val;
+    } else if (paso.id === "movMonto") {
+      $("movMonto").value = String(val).replace(".", ",");
+      mostrado = "$ " + Number(val).toLocaleString("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    } else {
+      $(paso.id).value = val;
+    }
+    st.textContent = "✓ " + mostrado + " cargado. Tocá Seguir para continuar.";
+  };
+
+  try { fsVoiceRec.start(); } catch (err) { st.textContent = "No pude iniciar el micrófono. Podés continuar manualmente."; }
+}
 
 $("btnBorrarMov").addEventListener("click", async () => {
   const id = $("movId").value;
