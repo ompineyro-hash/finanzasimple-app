@@ -578,15 +578,33 @@ function fsVoiceInterpretar(id, t) {
 
 function fsVoicePregunta() {
   const q = $("voiceQuestion"), st = $("voiceStatus");
+  fsVoiceResaltarCampoActual();
   if (!q) return;
   if (fsVoiceStep >= fsVoiceSteps.length) {
     q.textContent = "✅ Datos completos. Revisalos y tocá Guardar.";
     st.textContent = "Podés corregir cualquier campo manualmente antes de guardar.";
+    $("voiceHeard").textContent = "La respuesta escuchada aparecerá acá.";
     return;
   }
   q.textContent = "Paso " + (fsVoiceStep + 1) + " de " + fsVoiceSteps.length + " — " + fsVoiceSteps[fsVoiceStep].q;
   st.textContent = "Tocá Responder. También podés completar el campo a mano.";
   $("voiceHeard").textContent = "La respuesta escuchada aparecerá acá.";
+}
+
+function fsVoiceCampoDeStep(id) {
+  if (id === "tipo") return $("segmentadoTipo");
+  return $(id);
+}
+
+function fsVoiceResaltarCampoActual() {
+  fsVoiceSteps.forEach((s) => {
+    const el = fsVoiceCampoDeStep(s.id);
+    if (el) el.classList.remove("voz-campo-actual");
+  });
+  const paso = fsVoiceSteps[fsVoiceStep];
+  if (!paso) return;
+  const el = fsVoiceCampoDeStep(paso.id);
+  if (el) el.classList.add("voz-campo-actual");
 }
 
 function fsVozPrepararNuevo() {
@@ -597,6 +615,7 @@ function fsVozPrepararNuevo() {
   b.onclick = () => {
     panel.hidden = !panel.hidden;
     if (!panel.hidden) { fsVoiceStep = 0; fsVoicePregunta(); }
+    else fsVoiceLimpiarResaltado();
   };
   const li = $("voiceListen"), rp = $("voiceRepeat"), nx = $("voiceNext");
   if (li) li.onclick = fsVoiceEscuchar;
@@ -607,10 +626,18 @@ function fsVozPrepararNuevo() {
   if (nx) nx.onclick = () => { fsVoiceStep++; fsVoicePregunta(); };
 }
 
+function fsVoiceLimpiarResaltado() {
+  fsVoiceSteps.forEach((s) => {
+    const el = fsVoiceCampoDeStep(s.id);
+    if (el) el.classList.remove("voz-campo-actual");
+  });
+}
+
 function fsVoiceOcultar() {
   const b = $("btnCargarVoz"), panel = $("voicePanel");
   if (b) b.hidden = true;
   if (panel) panel.hidden = true;
+  fsVoiceLimpiarResaltado();
 }
 
 function fsVoiceEscuchar() {
