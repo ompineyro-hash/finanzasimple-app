@@ -187,6 +187,16 @@
 <input type="text" id="movDetalle" placeholder="Ej: Supermercado del sábado">
 </label>
 <button type="button" id="btnCargarVoz" class="boton boton-voz boton-ancho">🎙️ Cargar por voz (opcional)</button>
+<div id="voicePanel" class="voice-panel" hidden>
+<div id="voiceQuestion" class="voice-pregunta">Preparado para comenzar.</div>
+<div id="voiceHeard" class="voice-escuchado">La respuesta escuchada aparecerá acá.</div>
+<div id="voiceStatus" class="voice-estado">Tocá Responder para hablar. También podés completar el campo a mano.</div>
+<div class="voice-acciones">
+<button type="button" id="voiceListen" class="boton boton-secundario">🎤 Responder</button>
+<button type="button" id="voiceRepeat" class="boton boton-texto">↻ Repetir</button>
+<button type="button" id="voiceNext" class="boton boton-primario">✓ Seguir</button>
+</div>
+</div>
 <div id="movError" class="aviso aviso-error" hidden></div>
 <div class="modal-acciones">
 <button type="button" id="btnBorrarMov" class="boton boton-peligro" hidden>Borrar</button>
