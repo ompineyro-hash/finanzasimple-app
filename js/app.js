@@ -155,8 +155,51 @@ $("filtroColumna").addEventListener("change", renderMovimientos);
 $("btnLimpiarBusqueda").addEventListener("click", () => {
   $("textoBusqueda").value = "";
   $("filtroColumna").value = "todo";
+  $("selectOrden").value = "fecha_desc";
+  ordenActual = "fecha_desc";
   renderMovimientos();
 });
+
+// ---------- Selector de orden (se agrega por código, junto a la búsqueda) ----------
+let ordenActual = "fecha_desc";
+(function agregarSelectorOrden() {
+  const filtro = $("filtroColumna");
+  if (!filtro || $("selectOrden")) return;
+  const sel = document.createElement("select");
+  sel.id = "selectOrden";
+  sel.innerHTML = `
+    <option value="fecha_desc">Fecha (más reciente)</option>
+    <option value="fecha_asc">Fecha (más antigua)</option>
+    <option value="monto_desc">Monto (mayor a menor)</option>
+    <option value="monto_asc">Monto (menor a mayor)</option>
+    <option value="categoria_asc">Categoría (A-Z)</option>
+    <option value="cuenta_asc">Cuenta (A-Z)</option>
+  `;
+  filtro.insertAdjacentElement("afterend", sel);
+  sel.addEventListener("change", () => {
+    ordenActual = sel.value;
+    renderMovimientos();
+  });
+})();
+
+function ordenarMovimientos(lista) {
+  const copia = [...lista];
+  switch (ordenActual) {
+    case "fecha_asc":
+      return copia.sort((a, b) => a.fecha.localeCompare(b.fecha));
+    case "monto_desc":
+      return copia.sort((a, b) => Number(b.monto) - Number(a.monto));
+    case "monto_asc":
+      return copia.sort((a, b) => Number(a.monto) - Number(b.monto));
+    case "categoria_asc":
+      return copia.sort((a, b) => a.categoria.localeCompare(b.categoria, "es"));
+    case "cuenta_asc":
+      return copia.sort((a, b) => a.cuenta.localeCompare(b.cuenta, "es"));
+    case "fecha_desc":
+    default:
+      return copia.sort((a, b) => b.fecha.localeCompare(a.fecha));
+  }
+}
 
 // ============================================================
 // NAVEGACIÓN ENTRE VISTAS
@@ -213,7 +256,7 @@ function pasaBusqueda(m) {
 // ============================================================
 function renderMovimientos() {
   const cont = $("listaMovimientos");
-  const visibles = movimientos.filter(pasaBusqueda);
+  const visibles = ordenarMovimientos(movimientos.filter(pasaBusqueda));
 
   if (!movimientos.length) {
     cont.innerHTML = `<div class="vacio">Todavía no cargaste movimientos este mes.<br>Tocá el botón <b>+</b> para agregar el primero.</div>`;
