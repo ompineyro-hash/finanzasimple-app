@@ -189,7 +189,15 @@ function normalizarTexto(v) {
   return String(v ?? "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 }
 
+let tipoFiltroActivo = "todo";
+
+function pasaFiltroTipo(m) {
+  if (tipoFiltroActivo === "todo") return true;
+  return m.tipo === tipoFiltroActivo;
+}
+
 function pasaBusqueda(m) {
+  if (!pasaFiltroTipo(m)) return false;
   const input = $("textoBusqueda");
   const selector = $("filtroColumna");
   if (!input || !selector) return true;
@@ -207,6 +215,49 @@ function pasaBusqueda(m) {
   if (columna === "todo") return Object.values(campos).some((v) => normalizarTexto(v).includes(buscado));
   return normalizarTexto(campos[columna] || "").includes(buscado);
 }
+
+// ---------- Accesos simples: Todo / Ingresos / Gastos, y búsqueda escondida ----------
+(function agregarAccesosSimples() {
+  const input = $("textoBusqueda");
+  if (!input || $("segmentadoTipoLista")) return;
+  const filaBusqueda = input.closest("div") || input.parentElement;
+
+  const segmentado = document.createElement("div");
+  segmentado.className = "segmentado";
+  segmentado.id = "segmentadoTipoLista";
+  segmentado.style.marginBottom = "10px";
+  segmentado.innerHTML = `
+    <button type="button" class="segmentado-item activo" data-tipolista="todo">Todo</button>
+    <button type="button" class="segmentado-item" data-tipolista="Ingreso">Ingresos</button>
+    <button type="button" class="segmentado-item" data-tipolista="Gasto">Gastos</button>
+  `;
+
+  const btnBuscar = document.createElement("button");
+  btnBuscar.type = "button";
+  btnBuscar.className = "boton boton-secundario";
+  btnBuscar.style.marginBottom = "10px";
+  btnBuscar.textContent = "🔍 Buscar";
+
+  if (filaBusqueda && filaBusqueda.parentElement) {
+    filaBusqueda.parentElement.insertBefore(segmentado, filaBusqueda);
+    filaBusqueda.parentElement.insertBefore(btnBuscar, filaBusqueda);
+  }
+  filaBusqueda.hidden = true;
+
+  btnBuscar.addEventListener("click", () => {
+    filaBusqueda.hidden = !filaBusqueda.hidden;
+    btnBuscar.textContent = filaBusqueda.hidden ? "🔍 Buscar" : "🔍 Ocultar búsqueda";
+  });
+
+  segmentado.querySelectorAll(".segmentado-item").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      segmentado.querySelectorAll(".segmentado-item").forEach((b) => b.classList.remove("activo"));
+      btn.classList.add("activo");
+      tipoFiltroActivo = btn.dataset.tipolista;
+      renderMovimientos();
+    });
+  });
+})();
 
 // ============================================================
 // RENDER: Lista de movimientos
