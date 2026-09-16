@@ -15,20 +15,12 @@
 </head>
 <body>
 <!-- ===================== PANTALLA DE INGRESO ===================== -->
-<div id="pantallaLogin" class="pantalla-login" style="flex-direction:column;">
-<div style="width:100%;max-width:380px;background:#2F6F5E;border-radius:14px 14px 0 0;padding:10px 16px;display:flex;justify-content:flex-end;box-sizing:border-box;">
-<select id="selectIdiomaLogin" class="selector-idioma" style="border:none;background:white;border-radius:8px;padding:4px 8px;">
-<option value="es">🇪🇸 Español</option>
-<option value="pt">🇧🇷 Português</option>
-<option value="en">🇺🇸 English</option>
-</select>
-</div>
-<div class="tarjeta-login" style="border-radius:0 0 20px 20px;">
+<div id="pantallaLogin" class="pantalla-login">
+<div class="tarjeta-login">
 <div class="logo-login">💰</div>
 <h1>FinanzaSimple</h1>
 <p class="subtitulo-login" data-i18n="subtitulo">Tu plata, clara y simple.</p>
 <div id="loginError" class="aviso aviso-error" hidden></div>
-
 <div id="loginOk" class="aviso aviso-ok" hidden></div>
 <form id="formLogin" class="form-login">
 <label><span data-i18n="labelEmail">Email</span>
@@ -49,6 +41,11 @@
 <div id="app" class="app" hidden>
 <header class="topbar">
 <div class="topbar-fila">
+<select id="selectIdiomaTopbar" class="selector-idioma" style="border:none;border-radius:8px;padding:4px 6px;font-size:13px;">
+<option value="es">🇪🇸 ES</option>
+<option value="pt">🇧🇷 PT</option>
+<option value="en">🇺🇸 EN</option>
+</select>
 <div class="mes-selector">
 <button id="btnMesAnterior" class="icono-btn" data-i18n-aria="ariaMesAnterior" aria-label="Mes anterior">◀</button>
 <span id="etiquetaMes">—</span>
