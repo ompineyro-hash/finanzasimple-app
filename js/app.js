@@ -57,6 +57,8 @@ const TRADUCCIONES = {
     analisisResumenAnual: "Resumen anual",
     analisisAcumulado: "Acumulado",
     tituloGastosPorCategoria: "Gastos por categoría",
+    totalGastos: "Total gastos",
+    sinGastosPeriodo: "No hay gastos cargados en este período.",
     tituloIdioma: "Idioma",
     tituloMoneda: "Moneda",
     btnGuardar: "Guardar",
@@ -129,6 +131,8 @@ const TRADUCCIONES = {
     analisisResumenAnual: "Resumo anual",
     analisisAcumulado: "Acumulado",
     tituloGastosPorCategoria: "Despesas por categoria",
+    totalGastos: "Total de despesas",
+    sinGastosPeriodo: "Não há despesas registradas neste período.",
     tituloIdioma: "Idioma",
     tituloMoneda: "Moeda",
     btnGuardar: "Salvar",
@@ -201,6 +205,8 @@ const TRADUCCIONES = {
     analisisResumenAnual: "Yearly summary",
     analisisAcumulado: "All time",
     tituloGastosPorCategoria: "Expenses by category",
+    totalGastos: "Total expenses",
+    sinGastosPeriodo: "No expenses recorded for this period.",
     tituloIdioma: "Language",
     tituloMoneda: "Currency",
     btnGuardar: "Save",
@@ -626,7 +632,7 @@ function renderCategoriasAnalisis(lista) {
   if (!entradas.length) {
     cont.innerHTML = `
       <div class="grafico-dona grafico-dona-vacio"></div>
-      <div class="vacio">No hay gastos cargados en este período.</div>`;
+      <div class="vacio">${t("sinGastosPeriodo")}</div>`;
     return;
   }
   const colores = ["#C4562E", "#2F6F5E", "#D9A441", "#5B7FBF", "#8B5FBF", "#4FA3A0", "#C2707C", "#7A8B4F"];
@@ -655,7 +661,7 @@ function renderCategoriasAnalisis(lista) {
     <div class="grafico-dona" style="background:conic-gradient(${segmentos})">
       <div class="grafico-dona-centro">
         <span class="grafico-dona-total">${formatoMonto(totalGastos)}</span>
-        <span class="grafico-dona-label">Total gastos</span>
+        <span class="grafico-dona-label">${t("totalGastos")}</span>
       </div>
     </div>
     ${leyenda}`;
