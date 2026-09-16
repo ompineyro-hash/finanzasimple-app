@@ -344,12 +344,6 @@ try {
   aplicarIdioma("es");
 }
 
-if ($("selectIdiomaLogin")) {
-  $("selectIdiomaLogin").addEventListener("change", (e) => {
-    aplicarIdioma(e.target.value);
-  });
-}
-
 $("formLogin").addEventListener("submit", async (e) => {
   e.preventDefault();
   ocultarAviso($("loginError"));
@@ -415,8 +409,18 @@ async function arrancarApp() {
     perfil = { moneda: "$" };
   }
   $("inputMoneda").value = moneda();
-  aplicarIdioma(perfil?.idioma || localStorage.getItem("fs_idioma") || "es");
-  if ($("selectIdioma")) $("selectIdioma").value = idiomaActual;
+
+  // El idioma que ya está elegido en pantalla (por ejemplo, el que tocaste
+  // en el login) tiene prioridad. Si la cuenta tenía guardado otro distinto,
+  // actualizamos la cuenta para que coincida, en vez de pisar tu elección.
+  const idiomaElegido = localStorage.getItem("fs_idioma") || perfil?.idioma || "es";
+  aplicarIdioma(idiomaElegido);
+  if (perfil && perfil.idioma !== idiomaElegido) {
+    try {
+      await actualizarIdioma(usuario.id, idiomaElegido);
+      perfil.idioma = idiomaElegido;
+    } catch {}
+  }
 
   await cargarCuentasYCategorias();
   await cargarMesActual();
@@ -752,22 +756,26 @@ $("btnGuardarMoneda").addEventListener("click", async () => {
   renderMovimientos();
 });
 
+async function cambiarIdiomaDesdeSelector(nuevoIdioma) {
+  aplicarIdioma(nuevoIdioma);
+  try {
+    await actualizarIdioma(usuario.id, nuevoIdioma);
+    if (perfil) perfil.idioma = nuevoIdioma;
+  } catch (err) {
+    mostrarToast(traducirErrorDatos(err));
+  }
+  renderResumen();
+  renderMovimientos();
+  renderCuentasConfig();
+  renderCategoriasConfig();
+  await renderVistaAnalisis();
+}
+
 if ($("selectIdioma")) {
-  $("selectIdioma").addEventListener("change", async (e) => {
-    const nuevoIdioma = e.target.value;
-    aplicarIdioma(nuevoIdioma);
-    try {
-      await actualizarIdioma(usuario.id, nuevoIdioma);
-      if (perfil) perfil.idioma = nuevoIdioma;
-    } catch (err) {
-      mostrarToast(traducirErrorDatos(err));
-    }
-    renderResumen();
-    renderMovimientos();
-    renderCuentasConfig();
-    renderCategoriasConfig();
-    await renderVistaAnalisis();
-  });
+  $("selectIdioma").addEventListener("change", (e) => cambiarIdiomaDesdeSelector(e.target.value));
+}
+if ($("selectIdiomaTopbar")) {
+  $("selectIdiomaTopbar").addEventListener("change", (e) => cambiarIdiomaDesdeSelector(e.target.value));
 }
 
 $("btnAgregarCuenta").addEventListener("click", async () => {
