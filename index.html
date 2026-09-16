@@ -19,21 +19,21 @@
 <div class="tarjeta-login">
 <div class="logo-login">💰</div>
 <h1>FinanzaSimple</h1>
-<p class="subtitulo-login">Tu plata, clara y simple.</p>
+<p class="subtitulo-login" data-i18n="subtitulo">Tu plata, clara y simple.</p>
 <div id="loginError" class="aviso aviso-error" hidden></div>
 <div id="loginOk" class="aviso aviso-ok" hidden></div>
 <form id="formLogin" class="form-login">
-<label>Email
+<label><span data-i18n="labelEmail">Email</span>
 <input type="email" id="inputEmail" required autocomplete="username" placeholder="tu@email.com">
 </label>
-<label>Clave
-<input type="password" id="inputClave" required autocomplete="current-password" placeholder="Mínimo 6 caracteres">
+<label><span data-i18n="labelClave">Clave</span>
+<input type="password" id="inputClave" required autocomplete="current-password" data-i18n-placeholder="placeholderClave" placeholder="Mínimo 6 caracteres">
 </label>
-<button type="submit" class="boton boton-primario boton-ancho" id="btnIngresar">Entrar</button>
+<button type="submit" class="boton boton-primario boton-ancho" id="btnIngresar" data-i18n="btnEntrar">Entrar</button>
 </form>
-<div class="separador-login"><span>o</span></div>
-<button class="boton boton-secundario boton-ancho" id="btnMostrarRegistro">Crear una cuenta nueva</button>
-<button class="boton boton-texto boton-ancho" id="btnOlvideClave">Olvidé mi clave</button>
+<div class="separador-login"><span data-i18n="separadorO">o</span></div>
+<button class="boton boton-secundario boton-ancho" id="btnMostrarRegistro" data-i18n="btnCrearCuenta">Crear una cuenta nueva</button>
+<button class="boton boton-texto boton-ancho" id="btnOlvideClave" data-i18n="btnOlvideClave">Olvidé mi clave</button>
 </div>
 </div>
 
@@ -42,23 +42,23 @@
 <header class="topbar">
 <div class="topbar-fila">
 <div class="mes-selector">
-<button id="btnMesAnterior" class="icono-btn" aria-label="Mes anterior">◀</button>
+<button id="btnMesAnterior" class="icono-btn" data-i18n-aria="ariaMesAnterior" aria-label="Mes anterior">◀</button>
 <span id="etiquetaMes">—</span>
-<button id="btnMesSiguiente" class="icono-btn" aria-label="Mes siguiente">▶</button>
+<button id="btnMesSiguiente" class="icono-btn" data-i18n-aria="ariaMesSiguiente" aria-label="Mes siguiente">▶</button>
 </div>
-<button id="btnSalir" class="icono-btn" aria-label="Salir">↪</button>
+<button id="btnSalir" class="icono-btn" data-i18n-aria="ariaSalir" aria-label="Salir">↪</button>
 </div>
 <div class="resumen-tarjetas">
 <div class="tarjeta-resumen">
-<span class="tarjeta-resumen-label">Balance</span>
+<span class="tarjeta-resumen-label" data-i18n="lblBalance">Balance</span>
 <span id="valorBalance" class="tarjeta-resumen-valor">—</span>
 </div>
 <div class="tarjeta-resumen">
-<span class="tarjeta-resumen-label">Ingresos</span>
+<span class="tarjeta-resumen-label" data-i18n="lblIngresos">Ingresos</span>
 <span id="valorIngresos" class="tarjeta-resumen-valor color-ingreso">—</span>
 </div>
 <div class="tarjeta-resumen">
-<span class="tarjeta-resumen-label">Gastos</span>
+<span class="tarjeta-resumen-label" data-i18n="lblGastos">Gastos</span>
 <span id="valorGastos" class="tarjeta-resumen-valor color-gasto">—</span>
 </div>
 </div>
@@ -69,16 +69,16 @@
 <section id="vistaMovimientos" class="vista">
 <div class="searchBox">
 <select id="filtroColumna">
-<option value="todo">Todo</option>
-<option value="fecha">Fecha</option>
-<option value="tipo">Tipo</option>
-<option value="cuenta">Cuenta</option>
-<option value="categoria">Categoría</option>
-<option value="detalle">Detalle</option>
-<option value="monto">Monto</option>
+<option value="todo" data-i18n="searchTodo">Todo</option>
+<option value="fecha" data-i18n="searchFecha">Fecha</option>
+<option value="tipo" data-i18n="searchTipo">Tipo</option>
+<option value="cuenta" data-i18n="searchCuenta">Cuenta</option>
+<option value="categoria" data-i18n="searchCategoria">Categoría</option>
+<option value="detalle" data-i18n="searchDetalle">Detalle</option>
+<option value="monto" data-i18n="searchMonto">Monto</option>
 </select>
-<input type="text" id="textoBusqueda" placeholder="Buscar en este mes...">
-<button type="button" id="btnLimpiarBusqueda" class="boton boton-texto">Limpiar</button>
+<input type="text" id="textoBusqueda" data-i18n-placeholder="placeholderBuscar" placeholder="Buscar en este mes...">
+<button type="button" id="btnLimpiarBusqueda" class="boton boton-texto" data-i18n="btnLimpiar">Limpiar</button>
 </div>
 <div id="listaMovimientos" class="lista-movimientos"></div>
 </section>
@@ -86,74 +86,82 @@
 <!-- Vista: Análisis -->
 <section id="vistaAnalisis" class="vista" hidden>
 <div class="segmentado" id="segmentadoAnalisis">
-<button type="button" class="segmentado-item activo" data-periodo="mes">Mes actual</button>
-<button type="button" class="segmentado-item" data-periodo="anio">Resumen anual</button>
-<button type="button" class="segmentado-item" data-periodo="todo">Acumulado</button>
+<button type="button" class="segmentado-item activo" data-periodo="mes" data-i18n="analisisMesActual">Mes actual</button>
+<button type="button" class="segmentado-item" data-periodo="anio" data-i18n="analisisResumenAnual">Resumen anual</button>
+<button type="button" class="segmentado-item" data-periodo="todo" data-i18n="analisisAcumulado">Acumulado</button>
 </div>
 <div class="resumen-tarjetas resumen-tarjetas-analisis">
 <div class="tarjeta-resumen tarjeta-resumen-clara">
-<span class="tarjeta-resumen-label">Balance</span>
+<span class="tarjeta-resumen-label" data-i18n="lblBalance">Balance</span>
 <span id="analisisBalance" class="tarjeta-resumen-valor">—</span>
 </div>
 <div class="tarjeta-resumen tarjeta-resumen-clara">
-<span class="tarjeta-resumen-label">Ingresos</span>
+<span class="tarjeta-resumen-label" data-i18n="lblIngresos">Ingresos</span>
 <span id="analisisIngresos" class="tarjeta-resumen-valor color-ingreso">—</span>
 </div>
 <div class="tarjeta-resumen tarjeta-resumen-clara">
-<span class="tarjeta-resumen-label">Gastos</span>
+<span class="tarjeta-resumen-label" data-i18n="lblGastos">Gastos</span>
 <span id="analisisGastos" class="tarjeta-resumen-valor color-gasto">—</span>
 </div>
 </div>
-<h2 class="titulo-seccion">Gastos por categoría</h2>
+<h2 class="titulo-seccion" data-i18n="tituloGastosPorCategoria">Gastos por categoría</h2>
 <div id="listaAnalisis" class="lista-analisis"></div>
 </section>
 
 <!-- Vista: Configuración -->
 <section id="vistaConfig" class="vista" hidden>
-<h2 class="titulo-seccion">Moneda</h2>
+<h2 class="titulo-seccion" data-i18n="tituloIdioma">Idioma</h2>
+<div class="fila-config">
+<select id="selectIdioma">
+<option value="es">Español</option>
+<option value="pt">Português</option>
+<option value="en">English</option>
+</select>
+</div>
+<h2 class="titulo-seccion" data-i18n="tituloMoneda">Moneda</h2>
 <div class="fila-config">
 <input type="text" id="inputMoneda" maxlength="4" placeholder="$">
-<button class="boton boton-secundario" id="btnGuardarMoneda">Guardar</button>
+<button class="boton boton-secundario" id="btnGuardarMoneda" data-i18n="btnGuardar">Guardar</button>
 </div>
-<h2 class="titulo-seccion">Cuentas</h2>
+<h2 class="titulo-seccion" data-i18n="tituloCuentas">Cuentas</h2>
 <div id="listaCuentas" class="lista-editable"></div>
 <div class="fila-config">
-<input type="text" id="inputNuevaCuenta" placeholder="Nueva cuenta (ej: Banco)">
-<button class="boton boton-secundario" id="btnAgregarCuenta">Agregar</button>
+<input type="text" id="inputNuevaCuenta" data-i18n-placeholder="placeholderNuevaCuenta" placeholder="Nueva cuenta (ej: Banco)">
+<button class="boton boton-secundario" id="btnAgregarCuenta" data-i18n="btnAgregar">Agregar</button>
 </div>
-<h2 class="titulo-seccion">Categorías</h2>
+<h2 class="titulo-seccion" data-i18n="tituloCategorias">Categorías</h2>
 <div id="listaCategorias" class="lista-editable"></div>
 <div class="fila-config">
-<input type="text" id="inputNuevaCategoria" placeholder="Nueva categoría (ej: Alimentos)">
-<button class="boton boton-secundario" id="btnAgregarCategoria">Agregar</button>
+<input type="text" id="inputNuevaCategoria" data-i18n-placeholder="placeholderNuevaCategoria" placeholder="Nueva categoría (ej: Alimentos)">
+<button class="boton boton-secundario" id="btnAgregarCategoria" data-i18n="btnAgregar">Agregar</button>
 </div>
-<h2 class="titulo-seccion">Exportar mis datos</h2>
-<p class="texto-ayuda">Descarga todos tus movimientos, de todos los meses, en un archivo para abrir en Excel o Google Sheets.</p>
+<h2 class="titulo-seccion" data-i18n="tituloExportar">Exportar mis datos</h2>
+<p class="texto-ayuda" data-i18n="textoExportar">Descarga todos tus movimientos, de todos los meses, en un archivo para abrir en Excel o Google Sheets.</p>
 <div class="fila-config">
-<button class="boton boton-secundario boton-ancho" id="btnExportarExcel">📊 Exportar a Excel</button>
+<button class="boton boton-secundario boton-ancho" id="btnExportarExcel" data-i18n="btnExcel">📊 Exportar a Excel</button>
 </div>
 <div class="fila-config">
-<button class="boton boton-secundario boton-ancho" id="btnExportarCSV">📄 Exportar a CSV</button>
+<button class="boton boton-secundario boton-ancho" id="btnExportarCSV" data-i18n="btnCSV">📄 Exportar a CSV</button>
 </div>
-<h2 class="titulo-seccion">Zona de riesgo</h2>
-<p class="texto-ayuda">Esto borra tus movimientos, cuentas y categorías para empezar de cero. Tu usuario y tu clave no se ven afectados.</p>
+<h2 class="titulo-seccion" data-i18n="tituloZonaRiesgo">Zona de riesgo</h2>
+<p class="texto-ayuda" data-i18n="textoZonaRiesgo">Esto borra tus movimientos, cuentas y categorías para empezar de cero. Tu usuario y tu clave no se ven afectados.</p>
 <div class="fila-config">
-<button class="boton boton-peligro boton-ancho" id="btnReiniciarDatos">🧹 Reiniciar todos mis datos</button>
+<button class="boton boton-peligro boton-ancho" id="btnReiniciarDatos" data-i18n="btnReiniciar">🧹 Reiniciar todos mis datos</button>
 </div>
 </section>
 </main>
 
-<button id="btnNuevo" class="boton-flotante" aria-label="Nuevo movimiento">+</button>
+<button id="btnNuevo" class="boton-flotante" data-i18n-aria="ariaNuevoMov" aria-label="Nuevo movimiento">+</button>
 
 <nav class="navbar">
 <button class="navbar-item activo" data-vista="vistaMovimientos">
-<span class="navbar-icono">📋</span><span>Movimientos</span>
+<span class="navbar-icono">📋</span><span data-i18n="navMovimientos">Movimientos</span>
 </button>
 <button class="navbar-item" data-vista="vistaAnalisis">
-<span class="navbar-icono">📊</span><span>Análisis</span>
+<span class="navbar-icono">📊</span><span data-i18n="navAnalisis">Análisis</span>
 </button>
 <button class="navbar-item" data-vista="vistaConfig">
-<span class="navbar-icono">⚙️</span><span>Config</span>
+<span class="navbar-icono">⚙️</span><span data-i18n="navConfig">Config</span>
 </button>
 </nav>
 </div>
@@ -162,45 +170,45 @@
 <div id="modalFondo" class="modal-fondo" hidden>
 <div class="modal">
 <div class="modal-cabecera">
-<h3 id="modalTitulo">Nuevo movimiento</h3>
-<button id="btnCerrarModal" class="icono-btn" aria-label="Cerrar">✖</button>
+<h3 id="modalTitulo" data-i18n="modalNuevoTitulo">Nuevo movimiento</h3>
+<button id="btnCerrarModal" class="icono-btn" data-i18n-aria="ariaCerrarModal" aria-label="Cerrar">✖</button>
 </div>
 <form id="formMovimiento" class="modal-cuerpo">
 <input type="hidden" id="movId">
 <div class="segmentado" id="segmentadoTipo">
-<button type="button" class="segmentado-item activo" data-tipo="Gasto">Gasto</button>
-<button type="button" class="segmentado-item" data-tipo="Ingreso">Ingreso</button>
+<button type="button" class="segmentado-item activo" data-tipo="Gasto" data-i18n="segGasto">Gasto</button>
+<button type="button" class="segmentado-item" data-tipo="Ingreso" data-i18n="segIngreso">Ingreso</button>
 </div>
-<label>Fecha
+<label><span data-i18n="labelFecha">Fecha</span>
 <input type="date" id="movFecha" required>
 </label>
-<label>Cuenta
+<label><span data-i18n="labelCuenta">Cuenta</span>
 <select id="movCuenta" required></select>
 </label>
-<label>Categoría
+<label><span data-i18n="labelCategoria">Categoría</span>
 <select id="movCategoria" required></select>
 </label>
-<label>Monto
+<label><span data-i18n="labelMonto">Monto</span>
 <input type="text" inputmode="decimal" id="movMonto" placeholder="0,00" required>
 </label>
-<label>Detalle (opcional)
-<input type="text" id="movDetalle" placeholder="Ej: Supermercado del sábado">
+<label><span data-i18n="labelDetalle">Detalle (opcional)</span>
+<input type="text" id="movDetalle" data-i18n-placeholder="placeholderDetalle" placeholder="Ej: Supermercado del sábado">
 </label>
-<button type="button" id="btnCargarVoz" class="boton boton-voz boton-ancho">🎙️ Cargar por voz (opcional)</button>
+<button type="button" id="btnCargarVoz" class="boton boton-voz boton-ancho" data-i18n="btnCargarVoz">🎙️ Cargar por voz (opcional)</button>
 <div id="voicePanel" class="voice-panel" hidden>
 <div id="voiceQuestion" class="voice-pregunta">Preparado para comenzar.</div>
 <div id="voiceHeard" class="voice-escuchado">La respuesta escuchada aparecerá acá.</div>
 <div id="voiceStatus" class="voice-estado">Tocá Responder para hablar. También podés completar el campo a mano.</div>
 <div class="voice-acciones">
-<button type="button" id="voiceListen" class="boton boton-secundario">🎤 Responder</button>
-<button type="button" id="voiceRepeat" class="boton boton-texto">↻ Repetir</button>
-<button type="button" id="voiceNext" class="boton boton-primario">✓ Seguir</button>
+<button type="button" id="voiceListen" class="boton boton-secundario" data-i18n="btnResponder">🎤 Responder</button>
+<button type="button" id="voiceRepeat" class="boton boton-texto" data-i18n="btnRepetir">↻ Repetir</button>
+<button type="button" id="voiceNext" class="boton boton-primario" data-i18n="btnSeguir">✓ Seguir</button>
 </div>
 </div>
 <div id="movError" class="aviso aviso-error" hidden></div>
 <div class="modal-acciones">
-<button type="button" id="btnBorrarMov" class="boton boton-peligro" hidden>Borrar</button>
-<button type="submit" class="boton boton-primario boton-ancho">Guardar</button>
+<button type="button" id="btnBorrarMov" class="boton boton-peligro" hidden data-i18n="btnBorrar">Borrar</button>
+<button type="submit" class="boton boton-primario boton-ancho" data-i18n="btnGuardarMov">Guardar</button>
 </div>
 </form>
 </div>
