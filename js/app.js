@@ -13,6 +13,286 @@ let periodoAnalisis = "mes";
 
 const $ = (id) => document.getElementById(id);
 
+// ============================================================
+// IDIOMAS (Español / Português / English)
+// Traduce todo el texto fijo de la interfaz. Los mensajes que
+// aparecen dinámicamente (avisos, confirmaciones, carga por voz)
+// quedan en español por ahora.
+// ============================================================
+let idiomaActual = "es";
+
+const TRADUCCIONES = {
+  es: {
+    subtitulo: "Tu plata, clara y simple.",
+    labelEmail: "Email",
+    labelClave: "Clave",
+    placeholderClave: "Mínimo 6 caracteres",
+    btnEntrar: "Entrar",
+    separadorO: "o",
+    btnCrearCuenta: "Crear una cuenta nueva",
+    btnOlvideClave: "Olvidé mi clave",
+    btnCrearCuentaSubmit: "Crear cuenta",
+    btnYaTengoCuenta: "Ya tengo cuenta",
+    ariaMesAnterior: "Mes anterior",
+    ariaMesSiguiente: "Mes siguiente",
+    ariaSalir: "Salir",
+    lblBalance: "Balance",
+    lblIngresos: "Ingresos",
+    lblGastos: "Gastos",
+    searchTodo: "Todo",
+    searchFecha: "Fecha",
+    searchTipo: "Tipo",
+    searchCuenta: "Cuenta",
+    searchCategoria: "Categoría",
+    searchDetalle: "Detalle",
+    searchMonto: "Monto",
+    placeholderBuscar: "Buscar en este mes...",
+    btnLimpiar: "Limpiar",
+    accesoTodo: "Todo",
+    accesoIngresos: "Ingresos",
+    accesoGastos: "Gastos",
+    btnBuscarSimple: "🔍 Buscar",
+    btnOcultarBusqueda: "🔍 Ocultar búsqueda",
+    analisisMesActual: "Mes actual",
+    analisisResumenAnual: "Resumen anual",
+    analisisAcumulado: "Acumulado",
+    tituloGastosPorCategoria: "Gastos por categoría",
+    tituloIdioma: "Idioma",
+    tituloMoneda: "Moneda",
+    btnGuardar: "Guardar",
+    tituloCuentas: "Cuentas",
+    placeholderNuevaCuenta: "Nueva cuenta (ej: Banco)",
+    btnAgregar: "Agregar",
+    tituloCategorias: "Categorías",
+    placeholderNuevaCategoria: "Nueva categoría (ej: Alimentos)",
+    tituloExportar: "Exportar mis datos",
+    textoExportar: "Descarga todos tus movimientos, de todos los meses, en un archivo para abrir en Excel o Google Sheets.",
+    btnExcel: "📊 Exportar a Excel",
+    btnCSV: "📄 Exportar a CSV",
+    tituloZonaRiesgo: "Zona de riesgo",
+    textoZonaRiesgo: "Esto borra tus movimientos, cuentas y categorías para empezar de cero. Tu usuario y tu clave no se ven afectados.",
+    btnReiniciar: "🧹 Reiniciar todos mis datos",
+    ariaNuevoMov: "Nuevo movimiento",
+    navMovimientos: "Movimientos",
+    navAnalisis: "Análisis",
+    navConfig: "Config",
+    modalNuevoTitulo: "Nuevo movimiento",
+    modalEditarTitulo: "Editar movimiento",
+    ariaCerrarModal: "Cerrar",
+    segGasto: "Gasto",
+    segIngreso: "Ingreso",
+    labelFecha: "Fecha",
+    labelCuenta: "Cuenta",
+    labelCategoria: "Categoría",
+    labelMonto: "Monto",
+    labelDetalle: "Detalle (opcional)",
+    placeholderDetalle: "Ej: Supermercado del sábado",
+    btnCargarVoz: "🎙️ Cargar por voz (opcional)",
+    btnResponder: "🎤 Responder",
+    btnRepetir: "↻ Repetir",
+    btnSeguir: "✓ Seguir",
+    btnBorrar: "Borrar",
+    btnGuardarMov: "Guardar",
+  },
+  pt: {
+    subtitulo: "Seu dinheiro, claro e simples.",
+    labelEmail: "Email",
+    labelClave: "Senha",
+    placeholderClave: "Mínimo 6 caracteres",
+    btnEntrar: "Entrar",
+    separadorO: "ou",
+    btnCrearCuenta: "Criar uma conta nova",
+    btnOlvideClave: "Esqueci minha senha",
+    btnCrearCuentaSubmit: "Criar conta",
+    btnYaTengoCuenta: "Já tenho conta",
+    ariaMesAnterior: "Mês anterior",
+    ariaMesSiguiente: "Próximo mês",
+    ariaSalir: "Sair",
+    lblBalance: "Saldo",
+    lblIngresos: "Receitas",
+    lblGastos: "Despesas",
+    searchTodo: "Tudo",
+    searchFecha: "Data",
+    searchTipo: "Tipo",
+    searchCuenta: "Conta",
+    searchCategoria: "Categoria",
+    searchDetalle: "Detalhe",
+    searchMonto: "Valor",
+    placeholderBuscar: "Buscar neste mês...",
+    btnLimpiar: "Limpar",
+    accesoTodo: "Tudo",
+    accesoIngresos: "Receitas",
+    accesoGastos: "Despesas",
+    btnBuscarSimple: "🔍 Buscar",
+    btnOcultarBusqueda: "🔍 Ocultar busca",
+    analisisMesActual: "Mês atual",
+    analisisResumenAnual: "Resumo anual",
+    analisisAcumulado: "Acumulado",
+    tituloGastosPorCategoria: "Despesas por categoria",
+    tituloIdioma: "Idioma",
+    tituloMoneda: "Moeda",
+    btnGuardar: "Salvar",
+    tituloCuentas: "Contas",
+    placeholderNuevaCuenta: "Nova conta (ex: Banco)",
+    btnAgregar: "Adicionar",
+    tituloCategorias: "Categorias",
+    placeholderNuevaCategoria: "Nova categoria (ex: Alimentação)",
+    tituloExportar: "Exportar meus dados",
+    textoExportar: "Baixe todos os seus lançamentos, de todos os meses, em um arquivo para abrir no Excel ou Google Sheets.",
+    btnExcel: "📊 Exportar para Excel",
+    btnCSV: "📄 Exportar para CSV",
+    tituloZonaRiesgo: "Zona de risco",
+    textoZonaRiesgo: "Isso apaga seus lançamentos, contas e categorias para começar do zero. Seu usuário e sua senha não são afetados.",
+    btnReiniciar: "🧹 Reiniciar todos os meus dados",
+    ariaNuevoMov: "Novo lançamento",
+    navMovimientos: "Lançamentos",
+    navAnalisis: "Análise",
+    navConfig: "Config",
+    modalNuevoTitulo: "Novo lançamento",
+    modalEditarTitulo: "Editar lançamento",
+    ariaCerrarModal: "Fechar",
+    segGasto: "Despesa",
+    segIngreso: "Receita",
+    labelFecha: "Data",
+    labelCuenta: "Conta",
+    labelCategoria: "Categoria",
+    labelMonto: "Valor",
+    labelDetalle: "Detalhe (opcional)",
+    placeholderDetalle: "Ex: Supermercado de sábado",
+    btnCargarVoz: "🎙️ Adicionar por voz (opcional)",
+    btnResponder: "🎤 Responder",
+    btnRepetir: "↻ Repetir",
+    btnSeguir: "✓ Continuar",
+    btnBorrar: "Excluir",
+    btnGuardarMov: "Salvar",
+  },
+  en: {
+    subtitulo: "Your money, clear and simple.",
+    labelEmail: "Email",
+    labelClave: "Password",
+    placeholderClave: "Minimum 6 characters",
+    btnEntrar: "Log in",
+    separadorO: "or",
+    btnCrearCuenta: "Create a new account",
+    btnOlvideClave: "Forgot my password",
+    btnCrearCuentaSubmit: "Create account",
+    btnYaTengoCuenta: "I already have an account",
+    ariaMesAnterior: "Previous month",
+    ariaMesSiguiente: "Next month",
+    ariaSalir: "Log out",
+    lblBalance: "Balance",
+    lblIngresos: "Income",
+    lblGastos: "Expenses",
+    searchTodo: "All",
+    searchFecha: "Date",
+    searchTipo: "Type",
+    searchCuenta: "Account",
+    searchCategoria: "Category",
+    searchDetalle: "Detail",
+    searchMonto: "Amount",
+    placeholderBuscar: "Search this month...",
+    btnLimpiar: "Clear",
+    accesoTodo: "All",
+    accesoIngresos: "Income",
+    accesoGastos: "Expenses",
+    btnBuscarSimple: "🔍 Search",
+    btnOcultarBusqueda: "🔍 Hide search",
+    analisisMesActual: "Current month",
+    analisisResumenAnual: "Yearly summary",
+    analisisAcumulado: "All time",
+    tituloGastosPorCategoria: "Expenses by category",
+    tituloIdioma: "Language",
+    tituloMoneda: "Currency",
+    btnGuardar: "Save",
+    tituloCuentas: "Accounts",
+    placeholderNuevaCuenta: "New account (e.g: Bank)",
+    btnAgregar: "Add",
+    tituloCategorias: "Categories",
+    placeholderNuevaCategoria: "New category (e.g: Groceries)",
+    tituloExportar: "Export my data",
+    textoExportar: "Download all your movements, from every month, in a file to open in Excel or Google Sheets.",
+    btnExcel: "📊 Export to Excel",
+    btnCSV: "📄 Export to CSV",
+    tituloZonaRiesgo: "Danger zone",
+    textoZonaRiesgo: "This deletes your movements, accounts and categories to start fresh. Your user and password are not affected.",
+    btnReiniciar: "🧹 Reset all my data",
+    ariaNuevoMov: "New movement",
+    navMovimientos: "Movements",
+    navAnalisis: "Analysis",
+    navConfig: "Settings",
+    modalNuevoTitulo: "New movement",
+    modalEditarTitulo: "Edit movement",
+    ariaCerrarModal: "Close",
+    segGasto: "Expense",
+    segIngreso: "Income",
+    labelFecha: "Date",
+    labelCuenta: "Account",
+    labelCategoria: "Category",
+    labelMonto: "Amount",
+    labelDetalle: "Detail (optional)",
+    placeholderDetalle: "E.g: Saturday groceries",
+    btnCargarVoz: "🎙️ Voice entry (optional)",
+    btnResponder: "🎤 Answer",
+    btnRepetir: "↻ Repeat",
+    btnSeguir: "✓ Next",
+    btnBorrar: "Delete",
+    btnGuardarMov: "Save",
+  },
+};
+
+function t(clave) {
+  return (TRADUCCIONES[idiomaActual] && TRADUCCIONES[idiomaActual][clave]) || TRADUCCIONES.es[clave] || clave;
+}
+
+function aplicarIdioma(idioma) {
+  if (!TRADUCCIONES[idioma]) idioma = "es";
+  idiomaActual = idioma;
+  document.documentElement.lang = idioma;
+  try { localStorage.setItem("fs_idioma", idioma); } catch {}
+
+  document.querySelectorAll("[data-i18n]").forEach((el) => {
+    el.textContent = t(el.dataset.i18n);
+  });
+  document.querySelectorAll("[data-i18n-placeholder]").forEach((el) => {
+    el.placeholder = t(el.dataset.i18nPlaceholder);
+  });
+  document.querySelectorAll("[data-i18n-aria]").forEach((el) => {
+    el.setAttribute("aria-label", t(el.dataset.i18nAria));
+  });
+
+  actualizarTextosDinamicosIdioma();
+}
+
+// Textos que se generan por código (no están fijos en el HTML) y hay
+// que actualizar a mano cada vez que cambia el idioma.
+function actualizarTextosDinamicosIdioma() {
+  // Botones de login, si está en modo registro
+  if ($("btnIngresar") && $("btnMostrarRegistro")) {
+    $("btnIngresar").textContent = modoRegistro ? t("btnCrearCuentaSubmit") : t("btnEntrar");
+    $("btnMostrarRegistro").textContent = modoRegistro ? t("btnYaTengoCuenta") : t("btnCrearCuenta");
+  }
+  // Título del modal de movimiento, según si se está editando o no
+  const modalTitulo = $("modalTitulo");
+  if (modalTitulo) {
+    const editando = !!$("movId")?.value;
+    modalTitulo.textContent = editando ? t("modalEditarTitulo") : t("modalNuevoTitulo");
+  }
+  // Accesos simples (Todo/Ingresos/Gastos) y botón de buscar, si ya existen
+  const segTipoLista = $("segmentadoTipoLista");
+  if (segTipoLista) {
+    const btns = segTipoLista.querySelectorAll(".segmentado-item");
+    if (btns[0]) btns[0].textContent = t("accesoTodo");
+    if (btns[1]) btns[1].textContent = t("accesoIngresos");
+    if (btns[2]) btns[2].textContent = t("accesoGastos");
+  }
+  const btnBuscarSimple = $("btnBuscarSimple");
+  if (btnBuscarSimple) {
+    const input = $("textoBusqueda");
+    const filaOculta = input ? (input.closest("div") || input.parentElement).hidden : true;
+    btnBuscarSimple.textContent = filaOculta ? t("btnBuscarSimple") : t("btnOcultarBusqueda");
+  }
+}
+
 // ---------- Utilidades ----------
 function moneda() { return perfil?.moneda || "$"; }
 
@@ -53,6 +333,14 @@ function ocultarAviso(el) { el.hidden = true; }
 // ============================================================
 let modoRegistro = false;
 
+// Antes de loguearse, aplicamos el último idioma usado en este dispositivo
+// (o español por defecto) para que la pantalla de login también se vea traducida.
+try {
+  aplicarIdioma(localStorage.getItem("fs_idioma") || "es");
+} catch {
+  aplicarIdioma("es");
+}
+
 $("formLogin").addEventListener("submit", async (e) => {
   e.preventDefault();
   ocultarAviso($("loginError"));
@@ -67,8 +355,7 @@ $("formLogin").addEventListener("submit", async (e) => {
       await registrarUsuario(email, clave);
       mostrarAviso($("loginOk"), "Cuenta creada. Ya podés entrar con tu email y clave.");
       modoRegistro = false;
-      btn.textContent = "Entrar";
-      $("btnMostrarRegistro").textContent = "Crear una cuenta nueva";
+      actualizarTextosDinamicosIdioma();
     } else {
       await iniciarSesion(email, clave);
       await arrancarApp();
@@ -84,8 +371,7 @@ $("btnMostrarRegistro").addEventListener("click", () => {
   modoRegistro = !modoRegistro;
   ocultarAviso($("loginError"));
   ocultarAviso($("loginOk"));
-  $("btnIngresar").textContent = modoRegistro ? "Crear cuenta" : "Entrar";
-  $("btnMostrarRegistro").textContent = modoRegistro ? "Ya tengo cuenta" : "Crear una cuenta nueva";
+  actualizarTextosDinamicosIdioma();
 });
 
 $("btnOlvideClave").addEventListener("click", async () => {
@@ -120,6 +406,8 @@ async function arrancarApp() {
     perfil = { moneda: "$" };
   }
   $("inputMoneda").value = moneda();
+  aplicarIdioma(perfil?.idioma || localStorage.getItem("fs_idioma") || "es");
+  if ($("selectIdioma")) $("selectIdioma").value = idiomaActual;
 
   await cargarCuentasYCategorias();
   await cargarMesActual();
@@ -227,16 +515,17 @@ function pasaBusqueda(m) {
   segmentado.id = "segmentadoTipoLista";
   segmentado.style.marginBottom = "10px";
   segmentado.innerHTML = `
-    <button type="button" class="segmentado-item activo" data-tipolista="todo">Todo</button>
-    <button type="button" class="segmentado-item" data-tipolista="Ingreso">Ingresos</button>
-    <button type="button" class="segmentado-item" data-tipolista="Gasto">Gastos</button>
+    <button type="button" class="segmentado-item activo" data-tipolista="todo">${t("accesoTodo")}</button>
+    <button type="button" class="segmentado-item" data-tipolista="Ingreso">${t("accesoIngresos")}</button>
+    <button type="button" class="segmentado-item" data-tipolista="Gasto">${t("accesoGastos")}</button>
   `;
 
   const btnBuscar = document.createElement("button");
   btnBuscar.type = "button";
+  btnBuscar.id = "btnBuscarSimple";
   btnBuscar.className = "boton boton-secundario";
   btnBuscar.style.marginBottom = "10px";
-  btnBuscar.textContent = "🔍 Buscar";
+  btnBuscar.textContent = t("btnBuscarSimple");
 
   if (filaBusqueda && filaBusqueda.parentElement) {
     filaBusqueda.parentElement.insertBefore(segmentado, filaBusqueda);
@@ -246,7 +535,7 @@ function pasaBusqueda(m) {
 
   btnBuscar.addEventListener("click", () => {
     filaBusqueda.hidden = !filaBusqueda.hidden;
-    btnBuscar.textContent = filaBusqueda.hidden ? "🔍 Buscar" : "🔍 Ocultar búsqueda";
+    btnBuscar.textContent = filaBusqueda.hidden ? t("btnBuscarSimple") : t("btnOcultarBusqueda");
   });
 
   segmentado.querySelectorAll(".segmentado-item").forEach((btn) => {
@@ -454,6 +743,24 @@ $("btnGuardarMoneda").addEventListener("click", async () => {
   renderMovimientos();
 });
 
+if ($("selectIdioma")) {
+  $("selectIdioma").addEventListener("change", async (e) => {
+    const nuevoIdioma = e.target.value;
+    aplicarIdioma(nuevoIdioma);
+    try {
+      await actualizarIdioma(usuario.id, nuevoIdioma);
+      if (perfil) perfil.idioma = nuevoIdioma;
+    } catch (err) {
+      mostrarToast(traducirErrorDatos(err));
+    }
+    renderResumen();
+    renderMovimientos();
+    renderCuentasConfig();
+    renderCategoriasConfig();
+    await renderVistaAnalisis();
+  });
+}
+
 $("btnAgregarCuenta").addEventListener("click", async () => {
   const input = $("inputNuevaCuenta");
   const v = input.value.trim();
@@ -509,7 +816,7 @@ function abrirModalNuevo() {
   }
   $("formMovimiento").reset();
   $("movId").value = "";
-  $("modalTitulo").textContent = "Nuevo movimiento";
+  $("modalTitulo").textContent = t("modalNuevoTitulo");
   $("btnBorrarMov").hidden = true;
   seleccionarTipo("Gasto");
   $("movFecha").value = new Date().toISOString().slice(0, 10);
@@ -526,7 +833,7 @@ function abrirModalEditar(id) {
   asegurarOpcionSelect("movCuenta", m.cuenta);
   asegurarOpcionSelect("movCategoria", m.categoria);
   $("movId").value = m.id;
-  $("modalTitulo").textContent = "Editar movimiento";
+  $("modalTitulo").textContent = t("modalEditarTitulo");
   $("btnBorrarMov").hidden = false;
   seleccionarTipo(m.tipo);
   $("movFecha").value = m.fecha;

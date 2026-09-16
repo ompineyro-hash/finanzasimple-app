@@ -13,6 +13,11 @@ async function actualizarMoneda(userId, moneda) {
   if (error) throw error;
 }
 
+async function actualizarIdioma(userId, idioma) {
+  const { error } = await sbClient.from("profiles").update({ idioma }).eq("id", userId);
+  if (error) throw error;
+}
+
 async function listarCuentas(userId) {
   const { data, error } = await sbClient.from("cuentas").select("*").eq("user_id", userId).order("nombre");
   if (error) throw error;
