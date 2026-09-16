@@ -17,6 +17,11 @@
 <!-- ===================== PANTALLA DE INGRESO ===================== -->
 <div id="pantallaLogin" class="pantalla-login">
 <div class="tarjeta-login">
+<select id="selectIdiomaLogin" class="selector-idioma" style="margin-bottom:12px;">
+<option value="es">🇪🇸 Español</option>
+<option value="pt">🇧🇷 Português</option>
+<option value="en">🇺🇸 English</option>
+</select>
 <div class="logo-login">💰</div>
 <h1>FinanzaSimple</h1>
 <p class="subtitulo-login" data-i18n="subtitulo">Tu plata, clara y simple.</p>
@@ -112,7 +117,7 @@
 <section id="vistaConfig" class="vista" hidden>
 <h2 class="titulo-seccion" data-i18n="tituloIdioma">Idioma</h2>
 <div class="fila-config">
-<select id="selectIdioma">
+<select id="selectIdioma" class="selector-idioma">
 <option value="es">Español</option>
 <option value="pt">Português</option>
 <option value="en">English</option>
