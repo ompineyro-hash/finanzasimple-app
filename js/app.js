@@ -259,6 +259,9 @@ function aplicarIdioma(idioma) {
   document.querySelectorAll("[data-i18n-aria]").forEach((el) => {
     el.setAttribute("aria-label", t(el.dataset.i18nAria));
   });
+  document.querySelectorAll(".selector-idioma").forEach((sel) => {
+    sel.value = idioma;
+  });
 
   actualizarTextosDinamicosIdioma();
 }
@@ -339,6 +342,12 @@ try {
   aplicarIdioma(localStorage.getItem("fs_idioma") || "es");
 } catch {
   aplicarIdioma("es");
+}
+
+if ($("selectIdiomaLogin")) {
+  $("selectIdiomaLogin").addEventListener("change", (e) => {
+    aplicarIdioma(e.target.value);
+  });
 }
 
 $("formLogin").addEventListener("submit", async (e) => {
