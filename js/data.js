@@ -161,4 +161,8 @@ async function reiniciarDatosUsuario(userId) {
 
 function traducirErrorDatos(error) {
   const msg = String(error?.message || "").toLowerCase();
-  if (msg.includes("duplicate") || msg.includes("unique")) return "Ya existe algo con ese
+  if (msg.includes("duplicate") || msg.includes("unique")) return "Ya existe algo con ese nombre.";
+  if (msg.includes("check constraint") && msg.includes("monto")) return "El monto tiene que ser mayor a cero.";
+  if (msg.includes("network")) return "Sin conexión a internet. Probá de nuevo en un momento.";
+  return "No se pudo guardar: " + (error?.message || "intentá de nuevo.");
+}
