@@ -1052,10 +1052,9 @@ document.querySelectorAll("#segmentadoTipo .segmentado-item").forEach((b) => {
 // usuario, que es lo que hace que el celular pida permiso de forma
 // confiable (en vez de un solo reconocimiento largo al abrir el modal).
 //
-// Nota: el reconocimiento de voz en sí (fsVoiceRec.lang) queda fijo en
-// es-AR, porque las funciones de interpretación (fsVoiceTipo,
-// fsVoiceNumeroPalabras, etc.) entienden números y palabras en español.
-// Los TEXTOS de la pantalla (preguntas, estados, errores) sí se traducen.
+// El reconocimiento de voz (fsVoiceRec.lang) y las funciones de
+// interpretación (fsVoiceTipo, fsVoiceNumeroPalabras, fsVoiceMonto)
+// se adaptan al idioma activo (idiomaActual): español, portugués e inglés.
 // ============================================================
 let fsVoiceStep = 0;
 let fsVoiceRec = null;
@@ -1067,6 +1066,50 @@ const fsVoiceSteps = [
   { id: "movMonto", qKey: "vozPreguntaMonto" },
   { id: "movDetalle", qKey: "vozPreguntaDetalle" },
 ];
+
+// Locale que se le pasa al reconocimiento de voz del navegador, según el idioma activo.
+const FS_VOZ_LOCALE = { es: "es-AR", pt: "pt-BR", en: "en-US" };
+
+// Palabras que indican "Gasto" o "Ingreso" al hablar, por idioma.
+const FS_VOZ_PALABRAS_GASTO = {
+  es: /\b(gasto|gastos|gaste|pague|pago|pagar|compre|compra|sali[oó]|salida|egreso|debito|d[eé]bito|debitaron)\b/,
+  pt: /\b(despesa|despesas|gastei|gasto|paguei|pago|pagar|comprei|compra|saida|saiu|debito|d[eé]bito|debitaram)\b/,
+  en: /\b(expense|expenses|spent|spend|paid|pay|bought|buy|purchase|purchased|withdrawal|debit|debited)\b/,
+};
+const FS_VOZ_PALABRAS_INGRESO = {
+  es: /\b(ingreso|ingresos|cobre|cobro|cobrar|recibi|recibo|entro|entrada|deposito|dep[oó]sito|acredito|acreditaron|sueldo|cobranza)\b/,
+  pt: /\b(receita|receitas|recebi|recebo|receber|entrada|entrou|deposito|dep[oó]sito|credito|cr[eé]dito|creditaram|salario|sal[aá]rio)\b/,
+  en: /\b(income|incomes|received|receive|earned|earn|deposit|deposited|credit|credited|salary|paycheck)\b/,
+};
+
+// Números en palabras, por idioma. En inglés "hundred" funciona como
+// multiplicador (five hundred = 5 x 100); en español/portugués las
+// centenas ya son palabras propias (quinientos / quinhentos), así que
+// no necesitan esa regla especial.
+const FS_VOZ_NUMEROS = {
+  es: { cero:0,un:1,uno:1,una:1,dos:2,tres:3,cuatro:4,cinco:5,seis:6,siete:7,ocho:8,nueve:9,
+    diez:10,once:11,doce:12,trece:13,catorce:14,quince:15,dieciseis:16,diecisiete:17,dieciocho:18,diecinueve:19,
+    veinte:20,veintiuno:21,veintidos:22,veintitres:23,veinticuatro:24,veinticinco:25,veintiseis:26,veintisiete:27,veintiocho:28,veintinueve:29,
+    treinta:30,cuarenta:40,cincuenta:50,sesenta:60,setenta:70,ochenta:80,noventa:90,
+    cien:100,ciento:100,doscientos:200,trescientos:300,cuatrocientos:400,quinientos:500,seiscientos:600,setecientos:700,ochocientos:800,novecientos:900 },
+  pt: { zero:0,um:1,uma:1,dois:2,duas:2,tres:3,quatro:4,cinco:5,seis:6,sete:7,oito:8,nove:9,
+    dez:10,onze:11,doze:12,treze:13,catorze:14,quatorze:14,quinze:15,dezesseis:16,dezessete:17,dezoito:18,dezenove:19,
+    vinte:20,trinta:30,quarenta:40,cinquenta:50,sessenta:60,setenta:70,oitenta:80,noventa:90,
+    cem:100,cento:100,duzentos:200,trezentos:300,quatrocentos:400,quinhentos:500,seiscentos:600,setecentos:700,oitocentos:800,novecentos:900 },
+  en: { zero:0,one:1,two:2,three:3,four:4,five:5,six:6,seven:7,eight:8,nine:9,
+    ten:10,eleven:11,twelve:12,thirteen:13,fourteen:14,fifteen:15,sixteen:16,seventeen:17,eighteen:18,nineteen:19,
+    twenty:20,thirty:30,forty:40,fifty:50,sixty:60,seventy:70,eighty:80,ninety:90 },
+};
+const FS_VOZ_CONECTOR_Y = { es: "y", pt: "e", en: "and" };
+const FS_VOZ_PALABRA_MIL = { es: ["mil"], pt: ["mil"], en: ["thousand"] };
+const FS_VOZ_PALABRA_MILLON = { es: ["millon", "millones"], pt: ["milhao", "milhoes"], en: ["million", "millions"] };
+const FS_VOZ_PALABRA_CIEN_MULT = { es: [], pt: [], en: ["hundred"] };
+const FS_VOZ_CONECTOR_CENTAVOS = { es: "con", pt: "com", en: "with" };
+const FS_VOZ_PALABRA_MONEDA = { es: /\bpesos?\b/g, pt: /\breais?\b/g, en: /\bdollars?\b/g };
+const FS_VOZ_PALABRA_CENTAVOS = { es: /\bcentavos?\b/g, pt: /\bcentavos?\b/g, en: /\bcents?\b/g };
+const FS_VOZ_PALABRA_DE = { es: /\bde\b/g, pt: /\bde\b/g, en: /\bof\b/g };
+const FS_VOZ_MILLON_RE = { es: /\bmillon(?:es)?\b/, pt: /\bmilhao(?:es)?\b/, en: /\bmillion(?:s)?\b/ };
+const FS_VOZ_MILLON_SPLIT = { es: /^(.*?)\bmillon(?:es)?\b\s*(.*)$/, pt: /^(.*?)\bmilhao(?:es)?\b\s*(.*)$/, en: /^(.*?)\bmillion(?:s)?\b\s*(.*)$/ };
 
 function fsVoiceNorm(t) {
   return String(t || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
@@ -1083,9 +1126,10 @@ function fsVoiceSetSel(id, val) {
 }
 
 function fsVoiceTipo(t) {
+  const idioma = FS_VOZ_PALABRAS_GASTO[idiomaActual] ? idiomaActual : "es";
   t = fsVoiceNorm(t);
-  if (/\b(gasto|gastos|gaste|gaste|pague|pago|pagar|compre|compra|compre|sali[oó]|salida|egreso|debito|d[eé]bito|debitaron)\b/.test(t)) return "Gasto";
-  if (/\b(ingreso|ingresos|cobre|cobro|cobrar|recibi|recibo|entro|entrada|deposito|dep[oó]sito|acredito|acreditaron|sueldo|cobranza)\b/.test(t)) return "Ingreso";
+  if (FS_VOZ_PALABRAS_GASTO[idioma].test(t)) return "Gasto";
+  if (FS_VOZ_PALABRAS_INGRESO[idioma].test(t)) return "Ingreso";
   return "";
 }
 
@@ -1100,36 +1144,46 @@ function fsVoiceOpcion(id, t) {
 }
 
 function fsVoiceNumeroPalabras(txt) {
-  txt = fsVoiceNorm(txt).replace(/\by\b/g, " ").replace(/\s+/g, " ").trim();
-  const u = { cero:0,un:1,uno:1,una:1,dos:2,tres:3,cuatro:4,cinco:5,seis:6,siete:7,ocho:8,nueve:9,
-    diez:10,once:11,doce:12,trece:13,catorce:14,quince:15,dieciseis:16,diecisiete:17,dieciocho:18,diecinueve:19,
-    veinte:20,veintiuno:21,veintidos:22,veintitres:23,veinticuatro:24,veinticinco:25,veintiseis:26,veintisiete:27,veintiocho:28,veintinueve:29,
-    treinta:30,cuarenta:40,cincuenta:50,sesenta:60,setenta:70,ochenta:80,noventa:90,
-    cien:100,ciento:100,doscientos:200,trescientos:300,cuatrocientos:400,quinientos:500,seiscientos:600,setecientos:700,ochocientos:800,novecientos:900 };
+  const idioma = FS_VOZ_NUMEROS[idiomaActual] ? idiomaActual : "es";
+  const u = FS_VOZ_NUMEROS[idioma];
+  const conector = FS_VOZ_CONECTOR_Y[idioma];
+  const milWords = FS_VOZ_PALABRA_MIL[idioma];
+  const millonWords = FS_VOZ_PALABRA_MILLON[idioma];
+  const cienMultWords = FS_VOZ_PALABRA_CIEN_MULT[idioma];
+  txt = fsVoiceNorm(txt).replace(new RegExp("\\b" + conector + "\\b", "g"), " ").replace(/\s+/g, " ").trim();
   let total = 0, actual = 0, vio = false;
   for (const w of txt.split(" ")) {
     if (w in u) { actual += u[w]; vio = true; continue; }
-    if (w === "mil") { total += (actual || 1) * 1000; actual = 0; vio = true; continue; }
-    if (w === "millon" || w === "millones") { total += (actual || 1) * 1000000; actual = 0; vio = true; continue; }
+    if (cienMultWords.includes(w)) { actual = (actual || 1) * 100; vio = true; continue; }
+    if (milWords.includes(w)) { total += (actual || 1) * 1000; actual = 0; vio = true; continue; }
+    if (millonWords.includes(w)) { total += (actual || 1) * 1000000; actual = 0; vio = true; continue; }
   }
   return vio ? total + actual : null;
 }
 
 function fsVoiceMonto(t) {
+  const idioma = FS_VOZ_MILLON_RE[idiomaActual] ? idiomaActual : "es";
+  const conector = FS_VOZ_CONECTOR_CENTAVOS[idioma];
+  const rePalabraMoneda = FS_VOZ_PALABRA_MONEDA[idioma];
+  const rePalabraCentavos = FS_VOZ_PALABRA_CENTAVOS[idioma];
+  const reDe = FS_VOZ_PALABRA_DE[idioma];
+  const reMillon = FS_VOZ_MILLON_RE[idioma];
+  const reMillonSplit = FS_VOZ_MILLON_SPLIT[idioma];
+
   let q = fsVoiceNorm(t).replace(/\$/g, " ").replace(/\s+/g, " ").trim();
   function vp(txt) { txt = (txt || "").trim(); if (!txt) return null; if (/^\d+$/.test(txt)) return parseInt(txt, 10); return fsVoiceNumeroPalabras(txt); }
-  function cents(txt) { txt = (txt || "").replace(/\bcentavos?\b/g, " ").trim(); let m = txt.match(/\b(\d{1,2})\b/); if (m) return Math.min(99, parseInt(m[1], 10)); let n = vp(txt); return n === null ? null : Math.min(99, n); }
-  if (/\bmillon(?:es)?\b/.test(q)) {
-    let mm = q.match(/^(.*?)\bmillon(?:es)?\b\s*(.*)$/), pref = mm ? mm[1].trim() : "", resto = mm ? mm[2].trim() : "";
+  function cents(txt) { txt = (txt || "").replace(rePalabraCentavos, " ").trim(); let m = txt.match(/\b(\d{1,2})\b/); if (m) return Math.min(99, parseInt(m[1], 10)); let n = vp(txt); return n === null ? null : Math.min(99, n); }
+  if (reMillon.test(q)) {
+    let mm = q.match(reMillonSplit), pref = mm ? mm[1].trim() : "", resto = mm ? mm[2].trim() : "";
     let mult = vp(pref); if (mult === null || mult === 0) mult = 1; let total = mult * 1000000;
-    let p = resto.split(/\bcon\b/), pesos = (p[0] || "").replace(/\bde\b/g, " ").replace(/\bpesos?\b/g, " ").trim(), cent = p.length > 1 ? p.slice(1).join(" ").trim() : "";
+    let p = resto.split(new RegExp("\\b" + conector + "\\b")), pesos = (p[0] || "").replace(reDe, " ").replace(rePalabraMoneda, " ").trim(), cent = p.length > 1 ? p.slice(1).join(" ").trim() : "";
     if (pesos) { let nr = pesos.match(/\b(\d{1,3}(?:[.,]\d{3})+|\d{1,6})\b/); if (nr) total += parseInt(nr[1].replace(/[.,]/g, ""), 10); else { let n = vp(pesos); if (n !== null) total += n; } }
     let c = cents(cent); return c !== null ? (total + c / 100).toFixed(2) : String(total);
   }
   let m = q.match(/\b(\d{1,3}(?:,\d{3})+)\.(\d{1,2})\b/); if (m) return (parseInt(m[1].replace(/,/g, ""), 10) + parseInt((m[2] + "0").slice(0, 2), 10) / 100).toFixed(2);
   m = q.match(/\b(\d{1,3}(?:\.\d{3})+),(\d{1,2})\b/); if (m) return (parseInt(m[1].replace(/\./g, ""), 10) + parseInt((m[2] + "0").slice(0, 2), 10) / 100).toFixed(2);
   m = q.match(/\b(\d{4,})[.,](\d{1,2})\b/); if (m) return (parseInt(m[1], 10) + parseInt((m[2] + "0").slice(0, 2), 10) / 100).toFixed(2);
-  let p = q.split(/\bcon\b/), principal = p[0].replace(/\bpesos?\b/g, " ").trim(), resto = p.length > 1 ? p.slice(1).join(" ").trim() : "", base = null;
+  let p = q.split(new RegExp("\\b" + conector + "\\b")), principal = p[0].replace(rePalabraMoneda, " ").trim(), resto = p.length > 1 ? p.slice(1).join(" ").trim() : "", base = null;
   m = principal.match(/\b(\d{1,3}(?:[.,]\d{3})+|\d{4,})\b/); if (m) base = parseInt(m[1].replace(/[.,]/g, ""), 10);
   if (base === null) { let n = vp(principal); if (n !== null) base = n; }
   let c = cents(resto); if (base !== null) return c !== null ? (base + c / 100).toFixed(2) : String(base);
@@ -1221,7 +1275,7 @@ function fsVoiceEscuchar() {
 
   fsVoicePending = "";
   fsVoiceRec = new Reconocimiento();
-  fsVoiceRec.lang = "es-AR";
+  fsVoiceRec.lang = FS_VOZ_LOCALE[idiomaActual] || "es-AR";
   fsVoiceRec.continuous = false;
   fsVoiceRec.interimResults = false;
   fsVoiceRec.maxAlternatives = 5;
@@ -1238,7 +1292,10 @@ function fsVoiceEscuchar() {
       if (interpretable) elegido = interpretable;
     }
     if (pasoActual && pasoActual.id === "movMonto") {
-      const esc = candidatos.find((x) => /\bmil\b|\bmill[oó]n(?:es)?\b/i.test(x) && !!fsVoiceMonto(x));
+      const idiomaVoz = FS_VOZ_PALABRA_MIL[idiomaActual] ? idiomaActual : "es";
+      const palabrasGrandes = [...FS_VOZ_PALABRA_MIL[idiomaVoz], ...FS_VOZ_PALABRA_MILLON[idiomaVoz], ...FS_VOZ_PALABRA_CIEN_MULT[idiomaVoz]];
+      const reGrande = new RegExp("\\b(" + palabrasGrandes.join("|") + ")\\b", "i");
+      const esc = candidatos.find((x) => reGrande.test(x) && !!fsVoiceMonto(x));
       if (esc) elegido = esc;
     }
     fsVoicePending = elegido;
