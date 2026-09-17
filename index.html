@@ -128,10 +128,30 @@
 <input type="text" id="inputMoneda" maxlength="4" placeholder="$">
 <button class="boton boton-secundario" id="btnGuardarMoneda" data-i18n="btnGuardar">Guardar</button>
 </div>
+
+<!-- ===== NUEVO: Mi moneda (moneda base) ===== -->
+<h2 class="titulo-seccion" data-i18n="tituloMonedaBase">Mi moneda</h2>
+<p class="texto-ayuda" data-i18n="textoMonedaBase">Es la moneda de tu país, contra la que se convierte todo lo demás cuando cargás un movimiento en otra moneda.</p>
+<div class="fila-config">
+<select id="selectMonedaBase"></select>
+</div>
+
+<!-- ===== NUEVO: Monedas adicionales ===== -->
+<h2 class="titulo-seccion" data-i18n="tituloMonedas">Monedas</h2>
+<p class="texto-ayuda" data-i18n="textoMonedas">Agregá acá las monedas que uses de vez en cuando (por ejemplo, cuando viajás), para poder asignárselas a una cuenta.</p>
+<div id="listaMonedas" class="lista-editable"></div>
+<div class="fila-config fila-config-moneda">
+<input type="text" id="inputNuevaMonedaNombre" data-i18n-placeholder="placeholderNombreMoneda" placeholder="Nombre (ej: Dólares)">
+<input type="text" id="inputNuevaMonedaCodigo" data-i18n-placeholder="placeholderCodigoMoneda" placeholder="Código (ej: USD)" maxlength="3">
+<input type="text" id="inputNuevaMonedaSimbolo" data-i18n-placeholder="placeholderSimboloMoneda" placeholder="Símbolo (ej: U$S)" maxlength="6">
+<button class="boton boton-secundario" id="btnAgregarMoneda" data-i18n="btnAgregar">Agregar</button>
+</div>
+
 <h2 class="titulo-seccion" data-i18n="tituloCuentas">Cuentas</h2>
 <div id="listaCuentas" class="lista-editable"></div>
-<div class="fila-config">
+<div class="fila-config fila-config-cuenta">
 <input type="text" id="inputNuevaCuenta" data-i18n-placeholder="placeholderNuevaCuenta" placeholder="Nueva cuenta (ej: Banco)">
+<select id="selectMonedaNuevaCuenta"></select>
 <button class="boton boton-secundario" id="btnAgregarCuenta" data-i18n="btnAgregar">Agregar</button>
 </div>
 <h2 class="titulo-seccion" data-i18n="tituloCategorias">Categorías</h2>
@@ -190,6 +210,15 @@
 <label><span data-i18n="labelCuenta">Cuenta</span>
 <select id="movCuenta" required></select>
 </label>
+
+<!-- ===== NUEVO: cotización, solo visible si la cuenta elegida usa otra moneda ===== -->
+<div id="filaCotizacion" class="fila-cotizacion" hidden>
+<span id="labelMonedaMov" class="texto-ayuda"></span>
+<label><span data-i18n="labelCotizacion">Cotización (en tu moneda)</span>
+<input type="text" inputmode="decimal" id="movCotizacion" placeholder="0,00">
+</label>
+</div>
+
 <label><span data-i18n="labelCategoria">Categoría</span>
 <select id="movCategoria" required></select>
 </label>
