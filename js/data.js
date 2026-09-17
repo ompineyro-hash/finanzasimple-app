@@ -18,6 +18,11 @@ async function actualizarIdioma(userId, idioma) {
   if (error) throw error;
 }
 
+async function actualizarMonedaBase(userId, monedaBase) {
+  const { error } = await sbClient.from("profiles").update({ moneda_base: monedaBase }).eq("id", userId);
+  if (error) throw error;
+}
+
 async function listarCuentas(userId) {
   const { data, error } = await sbClient.from("cuentas").select("*").eq("user_id", userId).order("nombre");
   if (error) throw error;
@@ -39,6 +44,11 @@ async function borrarCuenta(id) {
   if (error) throw error;
 }
 
+async function actualizarMonedaCuenta(id, moneda) {
+  const { error } = await sbClient.from("cuentas").update({ moneda }).eq("id", id);
+  if (error) throw error;
+}
+
 async function listarCategorias(userId) {
   const { data, error } = await sbClient.from("categorias").select("*").eq("user_id", userId).order("nombre");
   if (error) throw error;
@@ -57,6 +67,27 @@ async function renombrarCategoria(id, nombreNuevo) {
 
 async function borrarCategoria(id) {
   const { error } = await sbClient.from("categorias").delete().eq("id", id);
+  if (error) throw error;
+}
+
+async function listarMonedas(userId) {
+  const { data, error } = await sbClient.from("monedas").select("*").eq("user_id", userId).order("nombre");
+  if (error) throw error;
+  return data;
+}
+
+async function crearMoneda(userId, nombre, codigo, simbolo) {
+  const { error } = await sbClient.from("monedas").insert({ user_id: userId, nombre, codigo, simbolo });
+  if (error) throw error;
+}
+
+async function renombrarMoneda(id, nombreNuevo) {
+  const { error } = await sbClient.from("monedas").update({ nombre: nombreNuevo }).eq("id", id);
+  if (error) throw error;
+}
+
+async function borrarMoneda(id) {
+  const { error } = await sbClient.from("monedas").delete().eq("id", id);
   if (error) throw error;
 }
 
@@ -124,12 +155,10 @@ async function reiniciarDatosUsuario(userId) {
   if (e2) throw e2;
   const { error: e3 } = await sbClient.from("categorias").delete().eq("user_id", userId);
   if (e3) throw e3;
+  const { error: e4 } = await sbClient.from("monedas").delete().eq("user_id", userId);
+  if (e4) throw e4;
 }
 
 function traducirErrorDatos(error) {
   const msg = String(error?.message || "").toLowerCase();
-  if (msg.includes("duplicate") || msg.includes("unique")) return "Ya existe algo con ese nombre.";
-  if (msg.includes("check constraint") && msg.includes("monto")) return "El monto tiene que ser mayor a cero.";
-  if (msg.includes("network")) return "Sin conexión a internet. Probá de nuevo en un momento.";
-  return "No se pudo guardar: " + (error?.message || "intentá de nuevo.");
-}
+  if (msg.includes("duplicate") || msg.includes("unique")) return "Ya existe algo con ese
