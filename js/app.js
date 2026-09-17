@@ -6,6 +6,7 @@ let usuario = null;
 let perfil = null;
 let cuentas = [];
 let categorias = [];
+let monedasUsuario = [];
 let movimientos = [];
 let fechaVista = new Date();
 let vistaActiva = "vistaMovimientos";
@@ -624,9 +625,12 @@ async function arrancarApp() {
 async function cargarCuentasYCategorias() {
   cuentas = await listarCuentas(usuario.id);
   categorias = await listarCategorias(usuario.id);
+  monedasUsuario = await listarMonedas(usuario.id);
   renderCuentasConfig();
   renderCategoriasConfig();
   renderSelects();
+  renderSelectMonedaBase();
+  renderSelectMonedaNuevaCuenta();
 }
 
 async function cargarMesActual() {
@@ -895,6 +899,56 @@ function renderCategoriasConfig() {
     ? categorias.map((c) => filaEditable(c, "categoria")).join("")
     : `<div class="vacio">${t("vacioCategorias")}</div>`;
   enlazarAccionesEditables("categoria");
+}
+
+const MONEDAS_BASE = [
+  { codigo: "ARS", nombre: "Peso argentino" },
+  { codigo: "USD", nombre: "Dólar estadounidense" },
+  { codigo: "BRL", nombre: "Real brasileño" },
+  { codigo: "CLP", nombre: "Peso chileno" },
+  { codigo: "COP", nombre: "Peso colombiano" },
+  { codigo: "MXN", nombre: "Peso mexicano" },
+  { codigo: "PEN", nombre: "Sol peruano" },
+  { codigo: "UYU", nombre: "Peso uruguayo" },
+  { codigo: "BOB", nombre: "Boliviano" },
+  { codigo: "PYG", nombre: "Guaraní" },
+  { codigo: "VES", nombre: "Bolívar" },
+  { codigo: "GTQ", nombre: "Quetzal" },
+  { codigo: "DOP", nombre: "Peso dominicano" },
+  { codigo: "CRC", nombre: "Colón costarricense" },
+  { codigo: "EUR", nombre: "Euro" },
+];
+
+function renderSelectMonedaBase() {
+  const sel = $("selectMonedaBase");
+  if (!sel) return;
+  sel.innerHTML = MONEDAS_BASE.map((m) => `<option value="${m.codigo}">${m.codigo} - ${m.nombre}</option>`).join("");
+  sel.value = perfil?.moneda_base || "ARS";
+}
+
+function renderSelectMonedaNuevaCuenta() {
+  const sel = $("selectMonedaNuevaCuenta");
+  if (!sel) return;
+  const base = perfil?.moneda_base || "ARS";
+  const opciones = [`<option value="${base}">${base} (tu moneda)</option>`];
+  monedasUsuario.forEach((m) => {
+    opciones.push(`<option value="${m.codigo}">${m.codigo} - ${m.nombre}</option>`);
+  });
+  sel.innerHTML = opciones.join("");
+}
+
+if ($("selectMonedaBase")) {
+  $("selectMonedaBase").addEventListener("change", async (e) => {
+    const v = e.target.value;
+    try {
+      await actualizarMonedaBase(usuario.id, v);
+      perfil.moneda_base = v;
+      mostrarToast(t("msgGuardado"));
+      renderSelectMonedaNuevaCuenta();
+    } catch (err) {
+      mostrarToast(traducirErrorDatos(err));
+    }
+  });
 }
 
 function filaEditable(item, tipo) {
