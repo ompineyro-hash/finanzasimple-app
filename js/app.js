@@ -15,9 +15,8 @@ const $ = (id) => document.getElementById(id);
 
 // ============================================================
 // IDIOMAS (Español / Português / English)
-// Traduce todo el texto fijo de la interfaz. Los mensajes que
-// aparecen dinámicamente (avisos, confirmaciones, carga por voz)
-// quedan en español por ahora.
+// Traduce todo el texto fijo de la interfaz Y los mensajes
+// dinámicos (avisos, confirmaciones, carga por voz).
 // ============================================================
 let idiomaActual = "es";
 
@@ -95,6 +94,60 @@ const TRADUCCIONES = {
     btnSeguir: "✓ Seguir",
     btnBorrar: "Borrar",
     btnGuardarMov: "Guardar",
+
+    // ---- Mensajes dinámicos (antes fijos en español en el JS) ----
+    msgCuentaCreada: "Cuenta creada. Ya podés entrar con tu email y clave.",
+    msgEscribiEmail: "Escribí tu email arriba primero.",
+    msgEmailRecuperacion: "Te enviamos un email para restablecer tu clave.",
+    vacioMovimientos: "Todavía no cargaste movimientos este mes.<br>Tocá el botón <b>+</b> para agregar el primero.",
+    vacioBusqueda: "No hay resultados para esa búsqueda.<br>Probá limpiarla o cambiar el filtro.",
+    vacioCuentas: "Todavía no agregaste ninguna cuenta.",
+    vacioCategorias: "Todavía no agregaste ninguna categoría.",
+    promptNuevoNombre: "Nuevo nombre:",
+    msgGuardado: "Guardado.",
+    confirmBorrarItem: '¿Borrar "{nombre}"? Si tiene movimientos asociados, no se va a poder borrar.',
+    msgBorrado: "Borrado.",
+    msgNoPudoBorrar: "No se pudo borrar (¿tiene movimientos asociados?)",
+    msgMonedaActualizada: "Moneda actualizada.",
+    msgFaltaCuentaCategoria: "Primero agregá al menos una cuenta y una categoría en Config.",
+    optAgregarCuentaConfig: "-- Agregá una cuenta en Config --",
+    optAgregarCategoriaConfig: "-- Agregá una categoría en Config --",
+    sufijoNoEnConfig: " (no está en tu Config)",
+    vozPreguntaTipo: "¿Es un gasto o un ingreso?",
+    vozPreguntaCuenta: "¿Con qué cuenta?",
+    vozPreguntaCategoria: "¿Qué categoría?",
+    vozPreguntaMonto: "¿Cuál es el monto? Podés decir pesos y centavos.",
+    vozPreguntaDetalle: "¿Cuál es el detalle?",
+    vozCompleto: "✅ Datos completos. Revisalos y tocá Guardar.",
+    vozCorregirManual: "Podés corregir cualquier campo manualmente antes de guardar.",
+    vozRespuestaPlaceholder: "La respuesta escuchada aparecerá acá.",
+    vozPasoTemplate: "Paso {n} de {total} — {pregunta}",
+    vozTocaResponder: "Tocá Responder. También podés completar el campo a mano.",
+    vozDatoBorrado: "Dato borrado. Tocá Responder otra vez.",
+    vozSinReconocimiento: "Este navegador no ofrece reconocimiento de voz. Probá desde Chrome, o cargá el dato a mano.",
+    vozEscuchando: "🔴 Escuchando este dato…",
+    vozMicBloqueado: "El micrófono está bloqueado para esta página. Revisá los permisos de Chrome (candado junto a la dirección) y volvé a intentar.",
+    vozNoEscucheNada: "No escuché nada. Tocá Responder y hablá apenas empiece a escuchar.",
+    vozErrorGenerico: "No pude escuchar ({error}). Podés repetir o escribir manualmente.",
+    vozNoEscucheIntenta: "No escuché nada. Intentá otra vez.",
+    vozNoEntendiTipo: 'No entendí si es gasto o ingreso. Decí claramente "gasto" o "ingreso" (o elegilo con los botones de arriba) y tocá Responder de nuevo.',
+    vozNoPudeInterpretar: "No pude interpretar este dato. Repetilo o escribilo manualmente.",
+    vozCargadoTemplate: "✓ {valor} cargado. Tocá Seguir para continuar.",
+    vozNoPudeIniciarMic: "No pude iniciar el micrófono. Podés continuar manualmente.",
+    confirmBorrarMov: "¿Borrar este movimiento? No se puede deshacer.",
+    msgMovBorrado: "Movimiento borrado.",
+    errFaltaFecha: "Falta la fecha.",
+    errElegiCuenta: "Elegí una cuenta.",
+    errElegiCategoria: "Elegí una categoría.",
+    errMontoMayorCero: "El monto tiene que ser mayor a cero.",
+    msgMovActualizado: "Movimiento actualizado.",
+    msgMovGuardado: "Movimiento guardado.",
+    msgPreparandoArchivo: "Preparando archivo...",
+    msgSinMovExportar: "Todavía no tenés movimientos para exportar.",
+    msgArchivoDescargado: "Archivo descargado.",
+    confirmReiniciar1: "Vas a borrar TODOS tus movimientos, cuentas y categorías.\n\nTu usuario y tu clave no se ven afectados.\n\nEsta acción no se puede deshacer. ¿Continuar?",
+    confirmReiniciar2: "Confirmación final: se van a borrar todos tus datos de trabajo ahora mismo.\n\n¿Reiniciar todo?",
+    msgDatosReiniciados: "Tus datos fueron reiniciados.",
   },
   pt: {
     subtitulo: "Seu dinheiro, claro e simples.",
@@ -169,6 +222,60 @@ const TRADUCCIONES = {
     btnSeguir: "✓ Continuar",
     btnBorrar: "Excluir",
     btnGuardarMov: "Salvar",
+
+    // ---- Mensajes dinámicos ----
+    msgCuentaCreada: "Conta criada. Já pode entrar com seu email e senha.",
+    msgEscribiEmail: "Digite seu email acima primeiro.",
+    msgEmailRecuperacion: "Enviamos um email para redefinir sua senha.",
+    vacioMovimientos: "Você ainda não lançou nada este mês.<br>Toque no botão <b>+</b> para adicionar o primeiro.",
+    vacioBusqueda: "Nenhum resultado para essa busca.<br>Tente limpar ou mudar o filtro.",
+    vacioCuentas: "Você ainda não adicionou nenhuma conta.",
+    vacioCategorias: "Você ainda não adicionou nenhuma categoria.",
+    promptNuevoNombre: "Novo nome:",
+    msgGuardado: "Salvo.",
+    confirmBorrarItem: 'Excluir "{nombre}"? Se tiver lançamentos associados, não será possível excluir.',
+    msgBorrado: "Excluído.",
+    msgNoPudoBorrar: "Não foi possível excluir (tem lançamentos associados?)",
+    msgMonedaActualizada: "Moeda atualizada.",
+    msgFaltaCuentaCategoria: "Primeiro adicione pelo menos uma conta e uma categoria em Config.",
+    optAgregarCuentaConfig: "-- Adicione uma conta em Config --",
+    optAgregarCategoriaConfig: "-- Adicione uma categoria em Config --",
+    sufijoNoEnConfig: " (não está na sua Config)",
+    vozPreguntaTipo: "É uma despesa ou uma receita?",
+    vozPreguntaCuenta: "Com qual conta?",
+    vozPreguntaCategoria: "Qual categoria?",
+    vozPreguntaMonto: "Qual é o valor? Pode dizer reais e centavos.",
+    vozPreguntaDetalle: "Qual é o detalhe?",
+    vozCompleto: "✅ Dados completos. Revise e toque em Salvar.",
+    vozCorregirManual: "Você pode corrigir qualquer campo manualmente antes de salvar.",
+    vozRespuestaPlaceholder: "A resposta ouvida vai aparecer aqui.",
+    vozPasoTemplate: "Passo {n} de {total} — {pregunta}",
+    vozTocaResponder: "Toque em Responder. Também pode preencher o campo manualmente.",
+    vozDatoBorrado: "Dado apagado. Toque em Responder novamente.",
+    vozSinReconocimiento: "Este navegador não oferece reconhecimento de voz. Tente pelo Chrome, ou digite o dado manualmente.",
+    vozEscuchando: "🔴 Ouvindo este dado…",
+    vozMicBloqueado: "O microfone está bloqueado para esta página. Verifique as permissões do Chrome (cadeado ao lado do endereço) e tente novamente.",
+    vozNoEscucheNada: "Não ouvi nada. Toque em Responder e fale assim que começar a ouvir.",
+    vozErrorGenerico: "Não consegui ouvir ({error}). Pode repetir ou digitar manualmente.",
+    vozNoEscucheIntenta: "Não ouvi nada. Tente novamente.",
+    vozNoEntendiTipo: 'Não entendi se é despesa ou receita. Diga claramente "despesa" ou "receita" (ou escolha com os botões acima) e toque em Responder novamente.',
+    vozNoPudeInterpretar: "Não consegui interpretar este dado. Repita ou digite manualmente.",
+    vozCargadoTemplate: "✓ {valor} carregado. Toque em Continuar para seguir.",
+    vozNoPudeIniciarMic: "Não consegui iniciar o microfone. Você pode continuar manualmente.",
+    confirmBorrarMov: "Excluir este lançamento? Não pode ser desfeito.",
+    msgMovBorrado: "Lançamento excluído.",
+    errFaltaFecha: "Falta a data.",
+    errElegiCuenta: "Escolha uma conta.",
+    errElegiCategoria: "Escolha uma categoria.",
+    errMontoMayorCero: "O valor precisa ser maior que zero.",
+    msgMovActualizado: "Lançamento atualizado.",
+    msgMovGuardado: "Lançamento salvo.",
+    msgPreparandoArchivo: "Preparando arquivo...",
+    msgSinMovExportar: "Você ainda não tem lançamentos para exportar.",
+    msgArchivoDescargado: "Arquivo baixado.",
+    confirmReiniciar1: "Você vai apagar TODOS os seus lançamentos, contas e categorias.\n\nSeu usuário e sua senha não serão afetados.\n\nEsta ação não pode ser desfeita. Continuar?",
+    confirmReiniciar2: "Confirmação final: todos os seus dados de trabalho serão apagados agora.\n\nReiniciar tudo?",
+    msgDatosReiniciados: "Seus dados foram reiniciados.",
   },
   en: {
     subtitulo: "Your money, clear and simple.",
@@ -243,6 +350,60 @@ const TRADUCCIONES = {
     btnSeguir: "✓ Next",
     btnBorrar: "Delete",
     btnGuardarMov: "Save",
+
+    // ---- Dynamic messages ----
+    msgCuentaCreada: "Account created. You can now log in with your email and password.",
+    msgEscribiEmail: "Enter your email above first.",
+    msgEmailRecuperacion: "We sent you an email to reset your password.",
+    vacioMovimientos: "You haven't added any movements this month yet.<br>Tap the <b>+</b> button to add the first one.",
+    vacioBusqueda: "No results for that search.<br>Try clearing it or changing the filter.",
+    vacioCuentas: "You haven't added any accounts yet.",
+    vacioCategorias: "You haven't added any categories yet.",
+    promptNuevoNombre: "New name:",
+    msgGuardado: "Saved.",
+    confirmBorrarItem: 'Delete "{nombre}"? If it has linked movements, it won\'t be possible to delete it.',
+    msgBorrado: "Deleted.",
+    msgNoPudoBorrar: "Couldn't delete it (does it have linked movements?)",
+    msgMonedaActualizada: "Currency updated.",
+    msgFaltaCuentaCategoria: "First add at least one account and one category in Settings.",
+    optAgregarCuentaConfig: "-- Add an account in Settings --",
+    optAgregarCategoriaConfig: "-- Add a category in Settings --",
+    sufijoNoEnConfig: " (not in your Settings)",
+    vozPreguntaTipo: "Is it an expense or income?",
+    vozPreguntaCuenta: "Which account?",
+    vozPreguntaCategoria: "Which category?",
+    vozPreguntaMonto: "What's the amount? You can say it including the cents.",
+    vozPreguntaDetalle: "What's the detail?",
+    vozCompleto: "✅ All set. Review it and tap Save.",
+    vozCorregirManual: "You can correct any field manually before saving.",
+    vozRespuestaPlaceholder: "What you say will appear here.",
+    vozPasoTemplate: "Step {n} of {total} — {pregunta}",
+    vozTocaResponder: "Tap Answer. You can also fill in the field by hand.",
+    vozDatoBorrado: "Value cleared. Tap Answer again.",
+    vozSinReconocimiento: "This browser doesn't offer voice recognition. Try Chrome, or enter the value by hand.",
+    vozEscuchando: "🔴 Listening for this value…",
+    vozMicBloqueado: "The microphone is blocked for this page. Check Chrome's permissions (the lock icon next to the address) and try again.",
+    vozNoEscucheNada: "I didn't hear anything. Tap Answer and speak as soon as it starts listening.",
+    vozErrorGenerico: "I couldn't listen ({error}). You can repeat or type it manually.",
+    vozNoEscucheIntenta: "I didn't hear anything. Try again.",
+    vozNoEntendiTipo: 'I didn\'t understand if it\'s an expense or income. Say clearly "expense" or "income" (or pick it with the buttons above) and tap Answer again.',
+    vozNoPudeInterpretar: "I couldn't interpret this value. Repeat it or type it manually.",
+    vozCargadoTemplate: "✓ {valor} loaded. Tap Next to continue.",
+    vozNoPudeIniciarMic: "I couldn't start the microphone. You can continue manually.",
+    confirmBorrarMov: "Delete this movement? This can't be undone.",
+    msgMovBorrado: "Movement deleted.",
+    errFaltaFecha: "Date is missing.",
+    errElegiCuenta: "Choose an account.",
+    errElegiCategoria: "Choose a category.",
+    errMontoMayorCero: "The amount must be greater than zero.",
+    msgMovActualizado: "Movement updated.",
+    msgMovGuardado: "Movement saved.",
+    msgPreparandoArchivo: "Preparing file...",
+    msgSinMovExportar: "You don't have any movements to export yet.",
+    msgArchivoDescargado: "File downloaded.",
+    confirmReiniciar1: "You're about to delete ALL your movements, accounts and categories.\n\nYour user and password won't be affected.\n\nThis action can't be undone. Continue?",
+    confirmReiniciar2: "Final confirmation: all your working data will be deleted right now.\n\nReset everything?",
+    msgDatosReiniciados: "Your data has been reset.",
   },
 };
 
@@ -299,6 +460,10 @@ function actualizarTextosDinamicosIdioma() {
     const input = $("textoBusqueda");
     const filaOculta = input ? (input.closest("div") || input.parentElement).hidden : true;
     btnBuscarSimple.textContent = filaOculta ? t("btnBuscarSimple") : t("btnOcultarBusqueda");
+  }
+  // Estados vacíos, si están mostrándose ahora mismo
+  if (movimientos && !movimientos.length && $("listaMovimientos") && !$("listaMovimientos").querySelector(".mov-item")) {
+    renderMovimientos();
   }
 }
 
@@ -362,7 +527,7 @@ $("formLogin").addEventListener("submit", async (e) => {
   try {
     if (modoRegistro) {
       await registrarUsuario(email, clave);
-      mostrarAviso($("loginOk"), "Cuenta creada. Ya podés entrar con tu email y clave.");
+      mostrarAviso($("loginOk"), t("msgCuentaCreada"));
       modoRegistro = false;
       actualizarTextosDinamicosIdioma();
     } else {
@@ -385,10 +550,10 @@ $("btnMostrarRegistro").addEventListener("click", () => {
 
 $("btnOlvideClave").addEventListener("click", async () => {
   const email = $("inputEmail").value.trim();
-  if (!email) return mostrarAviso($("loginError"), "Escribí tu email arriba primero.");
+  if (!email) return mostrarAviso($("loginError"), t("msgEscribiEmail"));
   try {
     await enviarRecuperacionClave(email);
-    mostrarAviso($("loginOk"), "Te enviamos un email para restablecer tu clave.");
+    mostrarAviso($("loginOk"), t("msgEmailRecuperacion"));
   } catch (err) {
     mostrarAviso($("loginError"), traducirErrorAuth(err));
   }
@@ -575,11 +740,11 @@ function renderMovimientos() {
   const visibles = movimientos.filter(pasaBusqueda);
 
   if (!movimientos.length) {
-    cont.innerHTML = `<div class="vacio">Todavía no cargaste movimientos este mes.<br>Tocá el botón <b>+</b> para agregar el primero.</div>`;
+    cont.innerHTML = `<div class="vacio">${t("vacioMovimientos")}</div>`;
     return;
   }
   if (!visibles.length) {
-    cont.innerHTML = `<div class="vacio">No hay resultados para esa búsqueda.<br>Probá limpiarla o cambiar el filtro.</div>`;
+    cont.innerHTML = `<div class="vacio">${t("vacioBusqueda")}</div>`;
     return;
   }
   cont.innerHTML = visibles.map((m) => {
@@ -696,7 +861,7 @@ function renderCuentasConfig() {
   const cont = $("listaCuentas");
   cont.innerHTML = cuentas.length
     ? cuentas.map((c) => filaEditable(c, "cuenta")).join("")
-    : `<div class="vacio">Todavía no agregaste ninguna cuenta.</div>`;
+    : `<div class="vacio">${t("vacioCuentas")}</div>`;
   enlazarAccionesEditables("cuenta");
 }
 
@@ -704,7 +869,7 @@ function renderCategoriasConfig() {
   const cont = $("listaCategorias");
   cont.innerHTML = categorias.length
     ? categorias.map((c) => filaEditable(c, "categoria")).join("")
-    : `<div class="vacio">Todavía no agregaste ninguna categoría.</div>`;
+    : `<div class="vacio">${t("vacioCategorias")}</div>`;
   enlazarAccionesEditables("categoria");
 }
 
@@ -730,24 +895,24 @@ function enlazarAccionesEditables(tipo) {
       const actual = lista.find((x) => x.id === id);
 
       if (accion === "editar") {
-        const nuevo = prompt("Nuevo nombre:", actual.nombre);
+        const nuevo = prompt(t("promptNuevoNombre"), actual.nombre);
         if (nuevo === null || !nuevo.trim()) return;
         try {
           if (tipo === "cuenta") await renombrarCuenta(id, nuevo.trim());
           else await renombrarCategoria(id, nuevo.trim());
           await cargarCuentasYCategorias();
-          mostrarToast("Guardado.");
+          mostrarToast(t("msgGuardado"));
         } catch (err) { mostrarToast(traducirErrorDatos(err)); }
       }
 
       if (accion === "borrar") {
-        if (!confirm(`¿Borrar "${actual.nombre}"? Si tiene movimientos asociados, no se va a poder borrar.`)) return;
+        if (!confirm(t("confirmBorrarItem").replace("{nombre}", actual.nombre))) return;
         try {
           if (tipo === "cuenta") await borrarCuenta(id);
           else await borrarCategoria(id);
           await cargarCuentasYCategorias();
-          mostrarToast("Borrado.");
-        } catch (err) { mostrarToast("No se pudo borrar (¿tiene movimientos asociados?)"); }
+          mostrarToast(t("msgBorrado"));
+        } catch (err) { mostrarToast(t("msgNoPudoBorrar")); }
       }
     });
   });
@@ -757,7 +922,7 @@ $("btnGuardarMoneda").addEventListener("click", async () => {
   const v = $("inputMoneda").value.trim() || "$";
   await actualizarMoneda(usuario.id, v);
   perfil.moneda = v;
-  mostrarToast("Moneda actualizada.");
+  mostrarToast(t("msgMonedaActualizada"));
   renderResumen();
   renderMovimientos();
 });
@@ -807,8 +972,8 @@ $("btnAgregarCategoria").addEventListener("click", async () => {
 });
 
 function renderSelects() {
-  $("movCuenta").innerHTML = cuentas.map((c) => `<option value="${escapeHTML(c.nombre)}">${escapeHTML(c.nombre)}</option>`).join("") || `<option value="">-- Agregá una cuenta en Config --</option>`;
-  $("movCategoria").innerHTML = categorias.map((c) => `<option value="${escapeHTML(c.nombre)}">${escapeHTML(c.nombre)}</option>`).join("") || `<option value="">-- Agregá una categoría en Config --</option>`;
+  $("movCuenta").innerHTML = cuentas.map((c) => `<option value="${escapeHTML(c.nombre)}">${escapeHTML(c.nombre)}</option>`).join("") || `<option value="">${t("optAgregarCuentaConfig")}</option>`;
+  $("movCategoria").innerHTML = categorias.map((c) => `<option value="${escapeHTML(c.nombre)}">${escapeHTML(c.nombre)}</option>`).join("") || `<option value="">${t("optAgregarCategoriaConfig")}</option>`;
 }
 
 // Si el movimiento tiene una cuenta o categoría que ya no está en la lista
@@ -821,7 +986,7 @@ function asegurarOpcionSelect(id, valor) {
   if (!yaExiste) {
     const opt = document.createElement("option");
     opt.value = valor;
-    opt.textContent = valor + " (no está en tu Config)";
+    opt.textContent = valor + t("sufijoNoEnConfig");
     el.appendChild(opt);
   }
 }
@@ -835,7 +1000,7 @@ $("modalFondo").addEventListener("click", (e) => { if (e.target.id === "modalFon
 
 function abrirModalNuevo() {
   if (!cuentas.length || !categorias.length) {
-    return mostrarToast("Primero agregá al menos una cuenta y una categoría en Config.");
+    return mostrarToast(t("msgFaltaCuentaCategoria"));
   }
   $("formMovimiento").reset();
   $("movId").value = "";
@@ -886,16 +1051,21 @@ document.querySelectorAll("#segmentadoTipo .segmentado-item").forEach((b) => {
 // Cada "Responder" arranca un reconocimiento nuevo con un toque del
 // usuario, que es lo que hace que el celular pida permiso de forma
 // confiable (en vez de un solo reconocimiento largo al abrir el modal).
+//
+// Nota: el reconocimiento de voz en sí (fsVoiceRec.lang) queda fijo en
+// es-AR, porque las funciones de interpretación (fsVoiceTipo,
+// fsVoiceNumeroPalabras, etc.) entienden números y palabras en español.
+// Los TEXTOS de la pantalla (preguntas, estados, errores) sí se traducen.
 // ============================================================
 let fsVoiceStep = 0;
 let fsVoiceRec = null;
 let fsVoicePending = "";
 const fsVoiceSteps = [
-  { id: "tipo", q: "¿Es un gasto o un ingreso?" },
-  { id: "movCuenta", q: "¿Con qué cuenta?" },
-  { id: "movCategoria", q: "¿Qué categoría?" },
-  { id: "movMonto", q: "¿Cuál es el monto? Podés decir pesos y centavos." },
-  { id: "movDetalle", q: "¿Cuál es el detalle?" },
+  { id: "tipo", qKey: "vozPreguntaTipo" },
+  { id: "movCuenta", qKey: "vozPreguntaCuenta" },
+  { id: "movCategoria", qKey: "vozPreguntaCategoria" },
+  { id: "movMonto", qKey: "vozPreguntaMonto" },
+  { id: "movDetalle", qKey: "vozPreguntaDetalle" },
 ];
 
 function fsVoiceNorm(t) {
@@ -979,14 +1149,17 @@ function fsVoicePregunta() {
   fsVoiceResaltarCampoActual();
   if (!q) return;
   if (fsVoiceStep >= fsVoiceSteps.length) {
-    q.textContent = "✅ Datos completos. Revisalos y tocá Guardar.";
-    st.textContent = "Podés corregir cualquier campo manualmente antes de guardar.";
-    $("voiceHeard").textContent = "La respuesta escuchada aparecerá acá.";
+    q.textContent = t("vozCompleto");
+    st.textContent = t("vozCorregirManual");
+    $("voiceHeard").textContent = t("vozRespuestaPlaceholder");
     return;
   }
-  q.textContent = "Paso " + (fsVoiceStep + 1) + " de " + fsVoiceSteps.length + " — " + fsVoiceSteps[fsVoiceStep].q;
-  st.textContent = "Tocá Responder. También podés completar el campo a mano.";
-  $("voiceHeard").textContent = "La respuesta escuchada aparecerá acá.";
+  q.textContent = t("vozPasoTemplate")
+    .replace("{n}", fsVoiceStep + 1)
+    .replace("{total}", fsVoiceSteps.length)
+    .replace("{pregunta}", t(fsVoiceSteps[fsVoiceStep].qKey));
+  st.textContent = t("vozTocaResponder");
+  $("voiceHeard").textContent = t("vozRespuestaPlaceholder");
 }
 
 function fsVoiceCampoDeStep(id) {
@@ -1019,7 +1192,7 @@ function fsVozPrepararNuevo() {
   if (li) li.onclick = fsVoiceEscuchar;
   if (rp) rp.onclick = () => {
     fsVoicePending = "";
-    $("voiceHeard").textContent = "Dato borrado. Tocá Responder otra vez.";
+    $("voiceHeard").textContent = t("vozDatoBorrado");
   };
   if (nx) nx.onclick = () => { fsVoiceStep++; fsVoicePregunta(); };
 }
@@ -1042,7 +1215,7 @@ function fsVoiceEscuchar() {
   const Reconocimiento = window.SpeechRecognition || window.webkitSpeechRecognition;
   const st = $("voiceStatus"), heard = $("voiceHeard");
   if (!Reconocimiento) {
-    st.textContent = "Este navegador no ofrece reconocimiento de voz. Probá desde Chrome, o cargá el dato a mano.";
+    st.textContent = t("vozSinReconocimiento");
     return;
   }
 
@@ -1053,7 +1226,7 @@ function fsVoiceEscuchar() {
   fsVoiceRec.interimResults = false;
   fsVoiceRec.maxAlternatives = 5;
 
-  fsVoiceRec.onstart = () => { st.textContent = "🔴 Escuchando este dato…"; };
+  fsVoiceRec.onstart = () => { st.textContent = t("vozEscuchando"); };
 
   fsVoiceRec.onresult = (e) => {
     let candidatos = [];
@@ -1069,28 +1242,32 @@ function fsVoiceEscuchar() {
       if (esc) elegido = esc;
     }
     fsVoicePending = elegido;
-    heard.textContent = elegido || "Escuchando…";
+    heard.textContent = elegido || t("vozEscuchando");
   };
 
   fsVoiceRec.onerror = (e) => {
     if (e.error === "not-allowed" || e.error === "permission-denied") {
-      st.textContent = "El micrófono está bloqueado para esta página. Revisá los permisos de Chrome (candado junto a la dirección) y volvé a intentar.";
+      st.textContent = t("vozMicBloqueado");
     } else if (e.error === "no-speech") {
-      st.textContent = "No escuché nada. Tocá Responder y hablá apenas empiece a escuchar.";
+      st.textContent = t("vozNoEscucheNada");
     } else {
-      st.textContent = "No pude escuchar (" + e.error + "). Podés repetir o escribir manualmente.";
+      st.textContent = t("vozErrorGenerico").replace("{error}", e.error);
     }
   };
 
   fsVoiceRec.onend = () => {
-    if (!fsVoicePending) { if (st.textContent.indexOf("bloqueado") === -1) st.textContent = "No escuché nada. Intentá otra vez."; return; }
+    if (!fsVoicePending) {
+      const bloqueadoActual = t("vozMicBloqueado");
+      if (st.textContent !== bloqueadoActual) st.textContent = t("vozNoEscucheIntenta");
+      return;
+    }
     const paso = fsVoiceSteps[fsVoiceStep];
     const val = fsVoiceInterpretar(paso.id, fsVoicePending);
     if (!val) {
       if (paso.id === "tipo") {
-        st.textContent = "No entendí si es gasto o ingreso. Decí claramente \"gasto\" o \"ingreso\" (o elegilo con los botones de arriba) y tocá Responder de nuevo.";
+        st.textContent = t("vozNoEntendiTipo");
       } else {
-        st.textContent = "No pude interpretar este dato. Repetilo o escribilo manualmente.";
+        st.textContent = t("vozNoPudeInterpretar");
       }
       return;
     }
@@ -1107,21 +1284,21 @@ function fsVoiceEscuchar() {
     } else {
       $(paso.id).value = val;
     }
-    st.textContent = "✓ " + mostrado + " cargado. Tocá Seguir para continuar.";
+    st.textContent = t("vozCargadoTemplate").replace("{valor}", mostrado);
   };
 
-  try { fsVoiceRec.start(); } catch (err) { st.textContent = "No pude iniciar el micrófono. Podés continuar manualmente."; }
+  try { fsVoiceRec.start(); } catch (err) { st.textContent = t("vozNoPudeIniciarMic"); }
 }
 
 $("btnBorrarMov").addEventListener("click", async () => {
   const id = $("movId").value;
   if (!id) return;
-  if (!confirm("¿Borrar este movimiento? No se puede deshacer.")) return;
+  if (!confirm(t("confirmBorrarMov"))) return;
   try {
     await borrarMovimiento(id);
     cerrarModal();
     await cargarMesActual();
-    mostrarToast("Movimiento borrado.");
+    mostrarToast(t("msgMovBorrado"));
   } catch (err) { mostrarToast(traducirErrorDatos(err)); }
 });
 
@@ -1137,10 +1314,10 @@ $("formMovimiento").addEventListener("submit", async (e) => {
   const monto = numeroDesdeTexto($("movMonto").value);
   const detalle = $("movDetalle").value.trim();
 
-  if (!fecha) return mostrarAviso($("movError"), "Falta la fecha.");
-  if (!cuenta) return mostrarAviso($("movError"), "Elegí una cuenta.");
-  if (!categoria) return mostrarAviso($("movError"), "Elegí una categoría.");
-  if (!Number.isFinite(monto) || monto <= 0) return mostrarAviso($("movError"), "El monto tiene que ser mayor a cero.");
+  if (!fecha) return mostrarAviso($("movError"), t("errFaltaFecha"));
+  if (!cuenta) return mostrarAviso($("movError"), t("errElegiCuenta"));
+  if (!categoria) return mostrarAviso($("movError"), t("errElegiCategoria"));
+  if (!Number.isFinite(monto) || monto <= 0) return mostrarAviso($("movError"), t("errMontoMayorCero"));
 
   const datos = { tipo, fecha, cuenta, categoria, detalle, monto };
 
@@ -1149,7 +1326,7 @@ $("formMovimiento").addEventListener("submit", async (e) => {
     else await crearMovimiento(usuario.id, datos);
     cerrarModal();
     await cargarMesActual();
-    mostrarToast(id ? "Movimiento actualizado." : "Movimiento guardado.");
+    mostrarToast(id ? t("msgMovActualizado") : t("msgMovGuardado"));
   } catch (err) {
     mostrarAviso($("movError"), traducirErrorDatos(err));
   }
@@ -1180,9 +1357,9 @@ function valorEscapadoExcel(v) {
 
 $("btnExportarExcel").addEventListener("click", async () => {
   try {
-    mostrarToast("Preparando archivo...");
+    mostrarToast(t("msgPreparandoArchivo"));
     const todos = await listarTodosLosMovimientos(usuario.id);
-    if (!todos.length) return mostrarToast("Todavía no tenés movimientos para exportar.");
+    if (!todos.length) return mostrarToast(t("msgSinMovExportar"));
     const filas = todos.map((m) => {
       const montoConSigno = m.tipo === "Gasto" ? -Math.abs(m.monto) : Math.abs(m.monto);
       return `<tr>
@@ -1198,7 +1375,7 @@ $("btnExportarExcel").addEventListener("click", async () => {
       <table border="1"><thead><tr><th>Fecha</th><th>Tipo</th><th>Cuenta</th><th>Categoría</th><th>Detalle</th><th>Monto</th></tr></thead>
       <tbody>${filas}</tbody></table></body></html>`;
     descargarArchivo(`FinanzaSimple_${fechaParaNombreArchivo()}.xls`, html, "application/vnd.ms-excel;charset=utf-8");
-    mostrarToast("Archivo descargado.");
+    mostrarToast(t("msgArchivoDescargado"));
   } catch (err) {
     mostrarToast(traducirErrorDatos(err));
   }
@@ -1210,16 +1387,16 @@ function valorCSV(v) {
 
 $("btnExportarCSV").addEventListener("click", async () => {
   try {
-    mostrarToast("Preparando archivo...");
+    mostrarToast(t("msgPreparandoArchivo"));
     const todos = await listarTodosLosMovimientos(usuario.id);
-    if (!todos.length) return mostrarToast("Todavía no tenés movimientos para exportar.");
+    if (!todos.length) return mostrarToast(t("msgSinMovExportar"));
     const encabezado = ["Fecha", "Tipo", "Cuenta", "Categoría", "Detalle", "Monto"].map(valorCSV).join(",");
     const filas = todos.map((m) => {
       const montoConSigno = m.tipo === "Gasto" ? -Math.abs(m.monto) : Math.abs(m.monto);
       return [formatoFecha(m.fecha), m.tipo, m.cuenta, m.categoria, m.detalle || "", montoConSigno].map(valorCSV).join(",");
     }).join("\n");
     descargarArchivo(`FinanzaSimple_${fechaParaNombreArchivo()}.csv`, "\ufeff" + encabezado + "\n" + filas, "text/csv;charset=utf-8");
-    mostrarToast("Archivo descargado.");
+    mostrarToast(t("msgArchivoDescargado"));
   } catch (err) {
     mostrarToast(traducirErrorDatos(err));
   }
@@ -1229,16 +1406,16 @@ $("btnExportarCSV").addEventListener("click", async () => {
 // REINICIAR DATOS
 // ============================================================
 $("btnReiniciarDatos").addEventListener("click", async () => {
-  const paso1 = confirm("Vas a borrar TODOS tus movimientos, cuentas y categorías.\n\nTu usuario y tu clave no se ven afectados.\n\nEsta acción no se puede deshacer. ¿Continuar?");
+  const paso1 = confirm(t("confirmReiniciar1"));
   if (!paso1) return;
-  const paso2 = confirm("Confirmación final: se van a borrar todos tus datos de trabajo ahora mismo.\n\n¿Reiniciar todo?");
+  const paso2 = confirm(t("confirmReiniciar2"));
   if (!paso2) return;
 
   try {
     await reiniciarDatosUsuario(usuario.id);
     await cargarCuentasYCategorias();
     await cargarMesActual();
-    mostrarToast("Tus datos fueron reiniciados.");
+    mostrarToast(t("msgDatosReiniciados"));
   } catch (err) {
     mostrarToast(traducirErrorDatos(err));
   }
