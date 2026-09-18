@@ -1043,8 +1043,9 @@ $("btnAgregarCuenta").addEventListener("click", async () => {
   const input = $("inputNuevaCuenta");
   const v = input.value.trim();
   if (!v) return;
+  const moneda = $("selectMonedaNuevaCuenta").value || perfil?.moneda_base || "ARS";
   try {
-    await crearCuenta(usuario.id, v);
+    await crearCuenta(usuario.id, v, moneda);
     input.value = "";
     await cargarCuentasYCategorias();
   } catch (err) { mostrarToast(traducirErrorDatos(err)); }
@@ -1092,14 +1093,28 @@ function asegurarOpcionSelect(id, valor) {
     opt.value = valor;
     opt.textContent = valor + t("sufijoNoEnConfig");
     el.appendChild(opt);
+}
+function actualizarFilaCotizacion(valorPrellenado) {
+  const fila = $("filaCotizacion");
+  if (!fila) return;
+  const cuentaSeleccionada = cuentas.find((c) => c.nombre === $("movCuenta").value);
+  const monedaCuenta = cuentaSeleccionada?.moneda || perfil?.moneda_base || "ARS";
+  const monedaBase = perfil?.moneda_base || "ARS";
+  if (monedaCuenta !== monedaBase) {
+    fila.hidden = false;
+    $("labelMonedaMov").textContent = `1 ${monedaCuenta} = ? ${monedaBase}`;
+    if (valorPrellenado) $("movCotizacion").value = String(valorPrellenado).replace(".", ",");
+  } else {
+    fila.hidden = true;
+    $("movCotizacion").value = "";
   }
 }
-
 // ============================================================
 // MODAL: Nuevo / Editar movimiento
 // ============================================================
 $("btnNuevo").addEventListener("click", () => abrirModalNuevo());
 $("btnCerrarModal").addEventListener("click", cerrarModal);
+  $("movCuenta").addEventListener("change", () => actualizarFilaCotizacion());
 $("modalFondo").addEventListener("click", (e) => { if (e.target.id === "modalFondo") cerrarModal(); });
 
 function abrirModalNuevo() {
@@ -1113,6 +1128,7 @@ function abrirModalNuevo() {
   seleccionarTipo("Gasto");
   $("movFecha").value = new Date().toISOString().slice(0, 10);
   renderSelects();
+    actualizarFilaCotizacion();
   ocultarAviso($("movError"));
   $("modalFondo").hidden = false;
   fsVozPrepararNuevo();
@@ -1130,6 +1146,7 @@ function abrirModalEditar(id) {
   seleccionarTipo(m.tipo);
   $("movFecha").value = m.fecha;
   $("movCuenta").value = m.cuenta;
+    actualizarFilaCotizacion(m.cotizacion);
   $("movCategoria").value = m.categoria;
   $("movMonto").value = String(m.monto).replace(".", ",");
   $("movDetalle").value = m.detalle || "";
@@ -1480,7 +1497,11 @@ $("formMovimiento").addEventListener("submit", async (e) => {
   if (!categoria) return mostrarAviso($("movError"), t("errElegiCategoria"));
   if (!Number.isFinite(monto) || monto <= 0) return mostrarAviso($("movError"), t("errMontoMayorCero"));
 
-  const datos = { tipo, fecha, cuenta, categoria, detalle, monto };
+     const cuentaMov = cuentas.find((c) => c.nombre === cuenta);
+    const monedaMov = cuentaMov?.moneda || perfil?.moneda_base || "ARS";
+    const monedaBase = perfil?.moneda_base || "ARS";
+    const cotizacion = monedaMov !== monedaBase ? (numeroDesdeTexto($("movCotizacion").value) || 1) : 1;
+    const datos = { tipo, fecha, cuenta, categoria, detalle, monto, moneda: monedaMov, cotizacion };
 
   try {
     if (id) await actualizarMovimiento(id, datos);
