@@ -1094,6 +1094,7 @@ function asegurarOpcionSelect(id, valor) {
     opt.textContent = valor + t("sufijoNoEnConfig");
     el.appendChild(opt);
 }
+  }
 function actualizarFilaCotizacion(valorPrellenado) {
   const fila = $("filaCotizacion");
   if (!fila) return;
