@@ -29,11 +29,10 @@ async function listarCuentas(userId) {
   return data;
 }
 
-async function crearCuenta(userId, nombre) {
-  const { error } = await sbClient.from("cuentas").insert({ user_id: userId, nombre });
+async function crearCuenta(userId, nombre, moneda) {
+  const { error } = await sbClient.from("cuentas").insert({ user_id: userId, nombre, moneda });
   if (error) throw error;
 }
-
 async function renombrarCuenta(id, nombreNuevo) {
   const { error } = await sbClient.from("cuentas").update({ nombre: nombreNuevo }).eq("id", id);
   if (error) throw error;
