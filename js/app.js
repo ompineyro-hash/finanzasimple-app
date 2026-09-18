@@ -628,6 +628,7 @@ async function cargarCuentasYCategorias() {
   monedasUsuario = await listarMonedas(usuario.id);
   renderCuentasConfig();
   renderCategoriasConfig();
+  renderMonedasConfig();
   renderSelects();
   renderSelectMonedaBase();
   renderSelectMonedaNuevaCuenta();
@@ -951,6 +952,13 @@ if ($("selectMonedaBase")) {
   });
 }
 
+function renderMonedasConfig() {
+  const cont = $("listaMonedas");
+  if (!cont) return;
+  cont.innerHTML = monedasUsuario.map((m) => filaEditable(m, "moneda")).join("");
+  enlazarAccionesEditables("moneda");
+}
+
 function filaEditable(item, tipo) {
   return `
     <div class="editable-item" data-id="${item.id}">
@@ -963,13 +971,13 @@ function filaEditable(item, tipo) {
 }
 
 function enlazarAccionesEditables(tipo) {
-  const selector = tipo === "cuenta" ? "#listaCuentas" : "#listaCategorias";
+  const selector = tipo === "cuenta" ? "#listaCuentas" : tipo === "categoria" ? "#listaCategorias" : "#listaMonedas";
   document.querySelectorAll(`${selector} [data-accion]`).forEach((btn) => {
     btn.addEventListener("click", async (e) => {
       const item = e.target.closest(".editable-item");
       const id = item.dataset.id;
       const accion = btn.dataset.accion;
-      const lista = tipo === "cuenta" ? cuentas : categorias;
+      const lista = tipo === "cuenta" ? cuentas : tipo === "categoria" ? categorias : monedasUsuario;
       const actual = lista.find((x) => x.id === id);
 
       if (accion === "editar") {
@@ -977,7 +985,8 @@ function enlazarAccionesEditables(tipo) {
         if (nuevo === null || !nuevo.trim()) return;
         try {
           if (tipo === "cuenta") await renombrarCuenta(id, nuevo.trim());
-          else await renombrarCategoria(id, nuevo.trim());
+          else if (tipo === "categoria") await renombrarCategoria(id, nuevo.trim());
+          else await renombrarMoneda(id, nuevo.trim());
           await cargarCuentasYCategorias();
           mostrarToast(t("msgGuardado"));
         } catch (err) { mostrarToast(traducirErrorDatos(err)); }
@@ -987,7 +996,8 @@ function enlazarAccionesEditables(tipo) {
         if (!confirm(t("confirmBorrarItem").replace("{nombre}", actual.nombre))) return;
         try {
           if (tipo === "cuenta") await borrarCuenta(id);
-          else await borrarCategoria(id);
+          else if (tipo === "categoria") await borrarCategoria(id);
+          else await borrarMoneda(id);
           await cargarCuentasYCategorias();
           mostrarToast(t("msgBorrado"));
         } catch (err) { mostrarToast(t("msgNoPudoBorrar")); }
@@ -995,6 +1005,8 @@ function enlazarAccionesEditables(tipo) {
     });
   });
 }
+
+
 
 $("btnGuardarMoneda").addEventListener("click", async () => {
   const v = $("inputMoneda").value.trim() || "$";
@@ -1046,6 +1058,20 @@ $("btnAgregarCategoria").addEventListener("click", async () => {
     await crearCategoria(usuario.id, v);
     input.value = "";
     await cargarCuentasYCategorias();
+  } catch (err) { mostrarToast(traducirErrorDatos(err)); }
+});
+$("btnAgregarMoneda").addEventListener("click", async () => {
+  const nombre = $("inputNuevaMonedaNombre").value.trim();
+  const codigo = $("inputNuevaMonedaCodigo").value.trim().toUpperCase();
+  const simbolo = $("inputNuevaMonedaSimbolo").value.trim();
+  if (!nombre || !codigo) return;
+  try {
+    await crearMoneda(usuario.id, nombre, codigo, simbolo);
+    $("inputNuevaMonedaNombre").value = "";
+    $("inputNuevaMonedaCodigo").value = "";
+    $("inputNuevaMonedaSimbolo").value = "";
+    await cargarCuentasYCategorias();
+    mostrarToast(t("msgGuardado"));
   } catch (err) { mostrarToast(traducirErrorDatos(err)); }
 });
 
