@@ -1603,7 +1603,8 @@ $("btnExportarExcel").addEventListener("click", async () => {
     const todos = await listarTodosLosMovimientos(usuario.id);
     if (!todos.length) return mostrarToast(t("msgSinMovExportar"));
     const filas = todos.map((m) => {
-      const montoConSigno = m.tipo === "Gasto" ? -Math.abs(m.monto) : Math.abs(m.monto);
+      const montoBase = montoEnBase(m);
+      const montoConSigno = m.tipo === "Gasto" ? -Math.abs(montoBase) : Math.abs(montoBase);
       return `<tr>
         <td>${valorEscapadoExcel(formatoFecha(m.fecha))}</td>
         <td>${valorEscapadoExcel(m.tipo)}</td>
@@ -1634,7 +1635,8 @@ $("btnExportarCSV").addEventListener("click", async () => {
     if (!todos.length) return mostrarToast(t("msgSinMovExportar"));
     const encabezado = ["Fecha", "Tipo", "Cuenta", "Categoría", "Detalle", "Monto"].map(valorCSV).join(",");
     const filas = todos.map((m) => {
-      const montoConSigno = m.tipo === "Gasto" ? -Math.abs(m.monto) : Math.abs(m.monto);
+      const montoBase = montoEnBase(m);
+      const montoConSigno = m.tipo === "Gasto" ? -Math.abs(montoBase) : Math.abs(montoBase);
       return [formatoFecha(m.fecha), m.tipo, m.cuenta, m.categoria, m.detalle || "", montoConSigno].map(valorCSV).join(",");
     }).join("\n");
     descargarArchivo(`FinanzaSimple_${fechaParaNombreArchivo()}.csv`, "\ufeff" + encabezado + "\n" + filas, "text/csv;charset=utf-8");
