@@ -546,7 +546,7 @@ async function renderCotizacionesTopbar() {
   for (const m of monedasUsuario) {
     const valor = await obtenerCotizacionSugerida(m.codigo, monedaBase);
     if (valor) {
-      partes.push(`<span class="chip-cotizacion">${m.codigo} ${moneda()} ${valor.toLocaleString("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>`);
+      partes.push(`<span class="chip-cotizacion">${m.codigo} ref. ${moneda()} ${valor.toLocaleString("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>`);
     }
   }
   cont.innerHTML = partes.join("");
