@@ -1149,7 +1149,7 @@ function asegurarOpcionSelect(id, valor) {
     el.appendChild(opt);
 }
   }
-function actualizarFilaCotizacion(valorPrellenado) {
+async function actualizarFilaCotizacion(valorPrellenado) {
   const fila = $("filaCotizacion");
   if (!fila) return;
   const cuentaSeleccionada = cuentas.find((c) => c.nombre === $("movCuenta").value);
@@ -1158,7 +1158,12 @@ function actualizarFilaCotizacion(valorPrellenado) {
   if (monedaCuenta !== monedaBase) {
     fila.hidden = false;
     $("labelMonedaMov").textContent = `1 ${monedaCuenta} = ? ${monedaBase}`;
-    if (valorPrellenado) $("movCotizacion").value = String(valorPrellenado).replace(".", ",");
+      if (valorPrellenado) {
+        $("movCotizacion").value = String(valorPrellenado).replace(".", ",");
+      } else if (!$("movCotizacion").value) {
+        const sugerido = await obtenerCotizacionSugerida(monedaCuenta, monedaBase);
+        if (sugerido) $("movCotizacion").value = sugerido.toLocaleString("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      }
   } else {
     fila.hidden = true;
     $("movCotizacion").value = "";
