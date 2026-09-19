@@ -498,6 +498,9 @@ function moneda() { return perfil?.moneda || "$"; }
 function formatoMonto(n) {
   return moneda() + " " + Number(n).toLocaleString("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
+function montoEnBase(m) {
+  return Number(m.monto) * Number(m.cotizacion || 1);
+}
 
 function formatoFecha(str) {
   const [y, m, d] = str.split("-");
@@ -678,14 +681,13 @@ document.querySelectorAll(".navbar-item").forEach((btn) => {
 function renderResumen() {
   let ing = 0, gas = 0;
   movimientos.forEach((m) => {
-    if (m.tipo === "Ingreso") ing += Number(m.monto);
-    else gas += Number(m.monto);
+    if (m.tipo === "Ingreso") ing += montoEnBase(m);
+    else gas += montoEnBase(m);
   });
   $("valorBalance").textContent = formatoMonto(ing - gas);
   $("valorIngresos").textContent = formatoMonto(ing);
   $("valorGastos").textContent = formatoMonto(gas);
 }
-
 function normalizarTexto(v) {
   return String(v ?? "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 }
@@ -801,8 +803,8 @@ function renderMovimientos() {
 function calcularResumenLista(lista) {
   let ing = 0, gas = 0;
   lista.forEach((m) => {
-    if (m.tipo === "Ingreso") ing += Number(m.monto);
-    else gas += Number(m.monto);
+    if (m.tipo === "Ingreso") ing += montoEnBase(m);
+    else gas += montoEnBase(m);
   });
   return { ing, gas, balance: ing - gas };
 }
@@ -819,8 +821,9 @@ function renderCategoriasAnalisis(lista) {
   const porCategoria = {};
   let totalGastos = 0;
   lista.filter((m) => m.tipo === "Gasto").forEach((m) => {
-    porCategoria[m.categoria] = (porCategoria[m.categoria] || 0) + Number(m.monto);
-    totalGastos += Number(m.monto);
+    const monto = montoEnBase(m);
+    porCategoria[m.categoria] = (porCategoria[m.categoria] || 0) + monto;
+    totalGastos += monto;
   });
   const entradas = Object.entries(porCategoria).sort((a, b) => b[1] - a[1]);
   if (!entradas.length) {
