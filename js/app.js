@@ -685,6 +685,7 @@ async function cargarCuentasYCategorias() {
   renderSelects();
   renderSelectMonedaBase();
   renderSelectMonedaNuevaCuenta();
+  renderCotizacionesTopbar();
 }
 
 async function cargarMesActual() {
