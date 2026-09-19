@@ -502,6 +502,56 @@ function montoEnBase(m) {
   return Number(m.monto) * Number(m.cotizacion || 1);
 }
 
+// ============================================================
+// COTIZACIONES: consulta diaria a una API gratuita, sin necesidad
+// de clave, con el valor de más de 150 monedas. Se guarda en el
+// dispositivo por un día para no consultar de más.
+// ============================================================
+const FS_COTIZACIONES_CACHE = "fs_cotizaciones_cache";
+
+async function obtenerTasasBase(monedaBase) {
+  const clave = monedaBase.toLowerCase();
+  const hoy = new Date().toISOString().slice(0, 10);
+  try {
+    const cache = JSON.parse(localStorage.getItem(FS_COTIZACIONES_CACHE) || "null");
+    if (cache && cache.fecha === hoy && cache.base === clave) return cache.tasas;
+  } catch {}
+  try {
+    const resp = await fetch(`https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/${clave}.json`);
+    if (!resp.ok) throw new Error("no ok");
+    const datos = await resp.json();
+    const tasas = datos[clave] || {};
+    try { localStorage.setItem(FS_COTIZACIONES_CACHE, JSON.stringify({ fecha: hoy, base: clave, tasas })); } catch {}
+    return tasas;
+  } catch {
+    return null;
+  }
+}
+
+async function obtenerCotizacionSugerida(monedaExtranjera, monedaBase) {
+  if (!monedaExtranjera || !monedaBase || monedaExtranjera === monedaBase) return null;
+  const tasas = await obtenerTasasBase(monedaBase);
+  if (!tasas) return null;
+  const tasa = tasas[monedaExtranjera.toLowerCase()];
+  if (!tasa || tasa <= 0) return null;
+  return 1 / tasa;
+}
+
+async function renderCotizacionesTopbar() {
+  const cont = $("cotizacionesTopbar");
+  if (!cont) return;
+  if (!monedasUsuario.length) { cont.innerHTML = ""; return; }
+  const monedaBase = perfil?.moneda_base || "ARS";
+  const partes = [];
+  for (const m of monedasUsuario) {
+    const valor = await obtenerCotizacionSugerida(m.codigo, monedaBase);
+    if (valor) {
+      partes.push(`<span class="chip-cotizacion">${m.codigo} ${moneda()} ${valor.toLocaleString("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>`);
+    }
+  }
+  cont.innerHTML = partes.join("");
+}
+
 function formatoFecha(str) {
   const [y, m, d] = str.split("-");
   return `${d}/${m}/${y}`;
