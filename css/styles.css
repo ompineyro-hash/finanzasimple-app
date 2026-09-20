@@ -286,3 +286,50 @@ input,select{font-family:inherit;font-size:16px;}
   padding: 3px 8px;
   border-radius: 999px;
 }
+
+.config-menu {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-top: 4px;
+}
+.config-tarjeta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 22px 10px;
+  border: none;
+  border-radius: 14px;
+  background: #eef4f1;
+  cursor: pointer;
+  text-align: center;
+}
+.config-tarjeta-icono {
+  font-size: 28px;
+}
+.config-tarjeta-titulo {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1f6f5c;
+}
+.config-tarjeta-peligro {
+  background: #fbeceb;
+}
+.config-tarjeta-peligro .config-tarjeta-titulo {
+  color: #b3261e;
+}
+.config-panel {
+  margin-top: 4px;
+}
+.config-volver {
+  display: inline-block;
+  background: none;
+  border: none;
+  color: #1f6f5c;
+  font-size: 15px;
+  font-weight: 600;
+  padding: 8px 0 16px;
+  cursor: pointer;
+}
