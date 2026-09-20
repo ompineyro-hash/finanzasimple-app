@@ -116,6 +116,38 @@
 
 <!-- Vista: Configuración -->
 <section id="vistaConfig" class="vista" hidden>
+
+<!-- ===== NUEVO: menú de tarjetas de Config ===== -->
+<div id="configMenu" class="config-menu">
+<button type="button" class="config-tarjeta" data-config="configPanelIdioma">
+<span class="config-tarjeta-icono">🌐</span>
+<span class="config-tarjeta-titulo" data-i18n="tituloIdioma">Idioma</span>
+</button>
+<button type="button" class="config-tarjeta" data-config="configPanelMoneda">
+<span class="config-tarjeta-icono">💱</span>
+<span class="config-tarjeta-titulo" data-i18n="tituloMoneda">Moneda</span>
+</button>
+<button type="button" class="config-tarjeta" data-config="configPanelCuentas">
+<span class="config-tarjeta-icono">🏦</span>
+<span class="config-tarjeta-titulo" data-i18n="tituloCuentas">Cuentas</span>
+</button>
+<button type="button" class="config-tarjeta" data-config="configPanelCategorias">
+<span class="config-tarjeta-icono">🏷️</span>
+<span class="config-tarjeta-titulo" data-i18n="tituloCategorias">Categorías</span>
+</button>
+<button type="button" class="config-tarjeta" data-config="configPanelExportar">
+<span class="config-tarjeta-icono">📤</span>
+<span class="config-tarjeta-titulo" data-i18n="tituloExportar">Exportar mis datos</span>
+</button>
+<button type="button" class="config-tarjeta config-tarjeta-peligro" data-config="configPanelZonaRiesgo">
+<span class="config-tarjeta-icono">🧹</span>
+<span class="config-tarjeta-titulo" data-i18n="tituloZonaRiesgo">Zona de riesgo</span>
+</button>
+</div>
+
+<!-- Panel: Idioma -->
+<div id="configPanelIdioma" class="config-panel" hidden>
+<button type="button" class="config-volver">← Volver</button>
 <h2 class="titulo-seccion" data-i18n="tituloIdioma">Idioma</h2>
 <div class="fila-config">
 <select id="selectIdioma" class="selector-idioma">
@@ -124,20 +156,25 @@
 <option value="en">English</option>
 </select>
 </div>
+</div>
+
+<!-- Panel: Moneda -->
+<div id="configPanelMoneda" class="config-panel" hidden>
+<button type="button" class="config-volver">← Volver</button>
 <h2 class="titulo-seccion" data-i18n="tituloMoneda">Moneda</h2>
 <div class="fila-config">
 <input type="text" id="inputMoneda" maxlength="4" placeholder="$">
 <button class="boton boton-secundario" id="btnGuardarMoneda" data-i18n="btnGuardar">Guardar</button>
 </div>
 
-<!-- ===== NUEVO: Mi moneda (moneda base) ===== -->
+<!-- ===== Mi moneda (moneda base) ===== -->
 <h2 class="titulo-seccion" data-i18n="tituloMonedaBase">Mi moneda</h2>
 <p class="texto-ayuda" data-i18n="textoMonedaBase">Es la moneda de tu país, contra la que se convierte todo lo demás cuando cargás un movimiento en otra moneda.</p>
 <div class="fila-config">
 <select id="selectMonedaBase"></select>
 </div>
 
-<!-- ===== NUEVO: Monedas adicionales ===== -->
+<!-- ===== Monedas adicionales ===== -->
 <h2 class="titulo-seccion" data-i18n="tituloMonedas">Monedas</h2>
 <p class="texto-ayuda" data-i18n="textoMonedas">Agregá acá las monedas que uses de vez en cuando (por ejemplo, cuando viajás), para poder asignárselas a una cuenta.</p>
 <div id="listaMonedas" class="lista-editable"></div>
@@ -147,7 +184,11 @@
 <input type="text" id="inputNuevaMonedaSimbolo" data-i18n-placeholder="placeholderSimboloMoneda" placeholder="Símbolo (ej: U$S)" maxlength="6">
 <button class="boton boton-secundario" id="btnAgregarMoneda" data-i18n="btnAgregar">Agregar</button>
 </div>
+</div>
 
+<!-- Panel: Cuentas -->
+<div id="configPanelCuentas" class="config-panel" hidden>
+<button type="button" class="config-volver">← Volver</button>
 <h2 class="titulo-seccion" data-i18n="tituloCuentas">Cuentas</h2>
 <div id="listaCuentas" class="lista-editable"></div>
 <div class="fila-config fila-config-cuenta">
@@ -155,12 +196,22 @@
 <select id="selectMonedaNuevaCuenta"></select>
 <button class="boton boton-secundario" id="btnAgregarCuenta" data-i18n="btnAgregar">Agregar</button>
 </div>
+</div>
+
+<!-- Panel: Categorías -->
+<div id="configPanelCategorias" class="config-panel" hidden>
+<button type="button" class="config-volver">← Volver</button>
 <h2 class="titulo-seccion" data-i18n="tituloCategorias">Categorías</h2>
 <div id="listaCategorias" class="lista-editable"></div>
 <div class="fila-config">
 <input type="text" id="inputNuevaCategoria" data-i18n-placeholder="placeholderNuevaCategoria" placeholder="Nueva categoría (ej: Alimentos)">
 <button class="boton boton-secundario" id="btnAgregarCategoria" data-i18n="btnAgregar">Agregar</button>
 </div>
+</div>
+
+<!-- Panel: Exportar -->
+<div id="configPanelExportar" class="config-panel" hidden>
+<button type="button" class="config-volver">← Volver</button>
 <h2 class="titulo-seccion" data-i18n="tituloExportar">Exportar mis datos</h2>
 <p class="texto-ayuda" data-i18n="textoExportar">Descarga todos tus movimientos, de todos los meses, en un archivo para abrir en Excel o Google Sheets.</p>
 <div class="fila-config">
@@ -169,11 +220,18 @@
 <div class="fila-config">
 <button class="boton boton-secundario boton-ancho" id="btnExportarCSV" data-i18n="btnCSV">📄 Exportar a CSV</button>
 </div>
+</div>
+
+<!-- Panel: Zona de riesgo -->
+<div id="configPanelZonaRiesgo" class="config-panel" hidden>
+<button type="button" class="config-volver">← Volver</button>
 <h2 class="titulo-seccion" data-i18n="tituloZonaRiesgo">Zona de riesgo</h2>
 <p class="texto-ayuda" data-i18n="textoZonaRiesgo">Esto borra tus movimientos, cuentas y categorías para empezar de cero. Tu usuario y tu clave no se ven afectados.</p>
 <div class="fila-config">
 <button class="boton boton-peligro boton-ancho" id="btnReiniciarDatos" data-i18n="btnReiniciar">🧹 Reiniciar todos mis datos</button>
 </div>
+</div>
+
 </section>
 </main>
 
