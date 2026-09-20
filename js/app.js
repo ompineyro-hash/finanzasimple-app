@@ -1683,3 +1683,33 @@ function escapeHTML(txt) {
     navigator.serviceWorker.register("sw.js").catch(() => {});
   }
 })();
+// ================== CONFIG: menú de tarjetas ==================
+function mostrarConfigMenu() {
+  const menu = document.getElementById("configMenu");
+  if (menu) menu.hidden = false;
+  document.querySelectorAll(".config-panel").forEach((p) => { p.hidden = true; });
+}
+
+document.querySelectorAll(".config-tarjeta").forEach((tarjeta) => {
+  tarjeta.addEventListener("click", () => {
+    const destino = tarjeta.getAttribute("data-config");
+    const panel = document.getElementById(destino);
+    if (!panel) return;
+    document.getElementById("configMenu").hidden = true;
+    document.querySelectorAll(".config-panel").forEach((p) => { p.hidden = true; });
+    panel.hidden = false;
+  });
+});
+
+document.querySelectorAll(".config-volver").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    mostrarConfigMenu();
+  });
+});
+
+const botonNavConfig = document.querySelector('.navbar-item[data-vista="vistaConfig"]');
+if (botonNavConfig) {
+  botonNavConfig.addEventListener("click", () => {
+    mostrarConfigMenu();
+  });
+}
