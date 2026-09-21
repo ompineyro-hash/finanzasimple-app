@@ -99,6 +99,8 @@ input,select{font-family:inherit;font-size:16px;}
 .separador-login::before,.separador-login::after{content:"";flex:1;height:1px;background:var(--borde);}
 .tarjeta-login .boton{margin-bottom:8px;}
 
+.legal-login{font-size:12px;color:var(--texto-suave);text-align:center;margin-top:14px;line-height:1.5;}
+.legal-login a{color:var(--primario);}
 .aviso{border-radius:10px;padding:10px 12px;font-size:13.5px;margin-bottom:14px;text-align:left;}
 .aviso-error{background:var(--gasto-fondo);color:var(--peligro);}
 .aviso-ok{background:var(--ingreso-fondo);color:var(--primario-oscuro);}
