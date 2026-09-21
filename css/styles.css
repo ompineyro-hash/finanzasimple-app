@@ -191,8 +191,10 @@ input,select{font-family:inherit;font-size:16px;}
 .analisis-barra{background:var(--gasto);height:100%;border-radius:6px;}
 
 /* ---------- Config ---------- */
-.fila-config{display:flex;gap:8px;margin-bottom:14px;}
-.fila-config input{flex:1;padding:11px 12px;border-radius:10px;border:1.5px solid var(--borde);}
+.fila-config{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
+.fila-config input{flex:1;min-width:0;padding:11px 12px;border-radius:10px;border:1.5px solid var(--borde);}
+.fila-config-moneda input,.fila-config-cuenta input,.fila-config-cuenta select{flex:1 1 140px;}
+.fila-config-moneda button,.fila-config-cuenta button{flex:1 1 100%;}
 .lista-editable{display:flex;flex-direction:column;gap:8px;}
 .editable-item{
   display:flex;align-items:center;justify-content:space-between;
