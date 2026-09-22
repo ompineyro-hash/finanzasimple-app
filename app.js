@@ -1,5 +1,5 @@
 // ============================================================
-// FinanzaSimple - Lógica principal
+// Ingasto - Lógica principal
 // ============================================================
 
 let usuario = null;
@@ -23,7 +23,7 @@ let idiomaActual = "es";
 
 const TRADUCCIONES = {
   es: {
-    subtitulo: "Tu plata, clara y simple.",
+    subtitulo: "Tus gastos e ingresos, claros y simples.",
     labelEmail: "Email",
     labelClave: "Clave",
     placeholderClave: "Mínimo 6 caracteres",
@@ -95,7 +95,7 @@ const TRADUCCIONES = {
     btnGuardarMov: "Guardar",
   },
   pt: {
-    subtitulo: "Seu dinheiro, claro e simples.",
+    subtitulo: "Seus gastos e receitas, claros e simples.",
     labelEmail: "Email",
     labelClave: "Senha",
     placeholderClave: "Mínimo 6 caracteres",
@@ -167,7 +167,7 @@ const TRADUCCIONES = {
     btnGuardarMov: "Salvar",
   },
   en: {
-    subtitulo: "Your money, clear and simple.",
+    subtitulo: "Your expenses and income, clear and simple.",
     labelEmail: "Email",
     labelClave: "Password",
     placeholderClave: "Minimum 6 characters",
@@ -483,7 +483,7 @@ function renderResumen() {
 }
 
 function normalizarTexto(v) {
-  return String(v ?? "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  return String(v ?? "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
 }
 
 let tipoFiltroActivo = "todo";
@@ -885,7 +885,7 @@ const fsVoiceSteps = [
 ];
 
 function fsVoiceNorm(t) {
-  return String(t || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+  return String(t || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").trim();
 }
 
 function fsVoiceSetSel(id, val) {
@@ -1183,7 +1183,7 @@ $("btnExportarExcel").addEventListener("click", async () => {
     const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body>
       <table border="1"><thead><tr><th>Fecha</th><th>Tipo</th><th>Cuenta</th><th>Categoría</th><th>Detalle</th><th>Monto</th></tr></thead>
       <tbody>${filas}</tbody></table></body></html>`;
-    descargarArchivo(`FinanzaSimple_${fechaParaNombreArchivo()}.xls`, html, "application/vnd.ms-excel;charset=utf-8");
+    descargarArchivo(`Ingasto_${fechaParaNombreArchivo()}.xls`, html, "application/vnd.ms-excel;charset=utf-8");
     mostrarToast("Archivo descargado.");
   } catch (err) {
     mostrarToast(traducirErrorDatos(err));
@@ -1204,7 +1204,7 @@ $("btnExportarCSV").addEventListener("click", async () => {
       const montoConSigno = m.tipo === "Gasto" ? -Math.abs(m.monto) : Math.abs(m.monto);
       return [formatoFecha(m.fecha), m.tipo, m.cuenta, m.categoria, m.detalle || "", montoConSigno].map(valorCSV).join(",");
     }).join("\n");
-    descargarArchivo(`FinanzaSimple_${fechaParaNombreArchivo()}.csv`, "\ufeff" + encabezado + "\n" + filas, "text/csv;charset=utf-8");
+    descargarArchivo(`Ingasto_${fechaParaNombreArchivo()}.csv`, "﻿" + encabezado + "\n" + filas, "text/csv;charset=utf-8");
     mostrarToast("Archivo descargado.");
   } catch (err) {
     mostrarToast(traducirErrorDatos(err));
