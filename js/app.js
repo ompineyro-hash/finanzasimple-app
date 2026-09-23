@@ -469,6 +469,29 @@ document.querySelectorAll(".navbar-item").forEach((btn) => {
 });
 
 // ============================================================
+// NAVEGACIÓN ENTRE TARJETAS DE CONFIG (Idioma, Moneda, Cuentas, etc.)
+// ============================================================
+document.querySelectorAll(".config-tarjeta").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const panelId = btn.dataset.config;
+    if (!panelId) return;
+    const menu = $("configMenu");
+    if (menu) menu.hidden = true;
+    document.querySelectorAll(".config-panel").forEach((p) => (p.hidden = true));
+    const panel = $(panelId);
+    if (panel) panel.hidden = false;
+  });
+});
+
+document.querySelectorAll(".config-volver").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".config-panel").forEach((p) => (p.hidden = true));
+    const menu = $("configMenu");
+    if (menu) menu.hidden = false;
+  });
+});
+
+// ============================================================
 // RENDER: Resumen del mes
 // ============================================================
 function renderResumen() {
