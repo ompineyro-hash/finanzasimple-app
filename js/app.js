@@ -817,6 +817,24 @@ if ($("selectIdioma")) {
   });
 }
 
+if ($("selectIdiomaTopbar")) {
+  $("selectIdiomaTopbar").addEventListener("change", async (e) => {
+    const nuevoIdioma = e.target.value;
+    aplicarIdioma(nuevoIdioma);
+    try {
+      await actualizarIdioma(usuario.id, nuevoIdioma);
+      if (perfil) perfil.idioma = nuevoIdioma;
+    } catch (err) {
+      mostrarToast(traducirErrorDatos(err));
+    }
+    renderResumen();
+    renderMovimientos();
+    renderCuentasConfig();
+    renderCategoriasConfig();
+    await renderVistaAnalisis();
+  });
+}
+
 $("btnAgregarCuenta").addEventListener("click", async () => {
   const input = $("inputNuevaCuenta");
   const v = input.value.trim();
