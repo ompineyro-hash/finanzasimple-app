@@ -37,6 +37,9 @@ const TRADUCCIONES = {
     tituloCambiarClave: "Cambiar clave",
     textoCambiarClave: "Elegí una clave nueva para tu cuenta.",
     labelRepetirClave: "Repetir clave nueva",
+    tituloPruebaVencida: "Tu prueba gratuita terminó",
+    textoPruebaVencida: "Tus datos siguen guardados y a salvo. Para seguir usando Ingasto, escribinos y te ayudamos a activar tu cuenta.",
+    btnSalir2: "Salir",
     btnCrearCuentaSubmit: "Crear cuenta",
     btnYaTengoCuenta: "Ya tengo cuenta",
     ariaMesAnterior: "Mes anterior",
@@ -123,6 +126,9 @@ const TRADUCCIONES = {
     tituloCambiarClave: "Alterar senha",
     textoCambiarClave: "Escolha uma nova senha para sua conta.",
     labelRepetirClave: "Repetir nova senha",
+    tituloPruebaVencida: "Seu período de teste terminou",
+    textoPruebaVencida: "Seus dados continuam salvos e seguros. Para continuar usando o Ingasto, fale conosco e ajudamos a ativar sua conta.",
+    btnSalir2: "Sair",
     btnCrearCuentaSubmit: "Criar conta",
     btnYaTengoCuenta: "Já tenho conta",
     ariaMesAnterior: "Mês anterior",
@@ -209,6 +215,9 @@ const TRADUCCIONES = {
     tituloCambiarClave: "Change password",
     textoCambiarClave: "Choose a new password for your account.",
     labelRepetirClave: "Repeat new password",
+    tituloPruebaVencida: "Your free trial has ended",
+    textoPruebaVencida: "Your data is still saved and safe. To keep using Ingasto, message us and we'll help you activate your account.",
+    btnSalir2: "Log out",
     btnCrearCuentaSubmit: "Create account",
     btnYaTengoCuenta: "I already have an account",
     ariaMesAnterior: "Previous month",
@@ -505,21 +514,46 @@ $("btnSalir").addEventListener("click", async () => {
   location.reload();
 });
 
+if ($("btnSalirPruebaVencida")) {
+  $("btnSalirPruebaVencida").addEventListener("click", async () => {
+    await cerrarSesion();
+    location.reload();
+  });
+}
+
 // ============================================================
 // ARRANQUE DE LA APP (después de login)
 // ============================================================
+// Cuántos días de prueba gratis tiene cada usuario nuevo.
+const DIAS_DE_PRUEBA = 15;
+
+function pruebaVencida() {
+  if (perfil?.plan_activo) return false; // ya pagó, no hay bloqueo
+  if (!usuario?.created_at) return false; // por las dudas, no bloqueamos si no sabemos la fecha
+  const creado = new Date(usuario.created_at).getTime();
+  const dias = (Date.now() - creado) / (1000 * 60 * 60 * 24);
+  return dias > DIAS_DE_PRUEBA;
+}
+
 async function arrancarApp() {
   usuario = await usuarioActual();
   if (!usuario) return;
-
-  $("pantallaLogin").hidden = true;
-  $("app").hidden = false;
 
   try {
     perfil = await obtenerPerfil(usuario.id);
   } catch {
     perfil = { moneda: "$" };
   }
+
+  if (pruebaVencida()) {
+    $("pantallaLogin").hidden = true;
+    $("app").hidden = true;
+    $("pantallaPruebaVencida").hidden = false;
+    return;
+  }
+
+  $("pantallaLogin").hidden = true;
+  $("app").hidden = false;
   $("inputMoneda").value = moneda();
   aplicarIdioma(perfil?.idioma || localStorage.getItem("fs_idioma") || "es");
   if ($("selectIdioma")) $("selectIdioma").value = idiomaActual;
