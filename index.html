@@ -59,6 +59,17 @@ Al crear una cuenta aceptás nuestros
 </div>
 </div>
 
+<!-- ===================== PANTALLA PRUEBA VENCIDA ===================== -->
+<div id="pantallaPruebaVencida" class="pantalla-login" hidden>
+<div class="tarjeta-login">
+<div class="logo-login"><img src="icons/icon-192.png" alt="Ingasto" width="64" height="64" style="border-radius:16px;display:block;margin:0 auto;"></div>
+<h1>Ingasto</h1>
+<p class="subtitulo-login" data-i18n="tituloPruebaVencida">Tu prueba gratuita terminó</p>
+<p class="texto-ayuda" data-i18n="textoPruebaVencida">Tus datos siguen guardados y a salvo. Para seguir usando Ingasto, escribinos y te ayudamos a activar tu cuenta.</p>
+<button type="button" class="boton boton-primario boton-ancho" id="btnSalirPruebaVencida" data-i18n="btnSalir2">Salir</button>
+</div>
+</div>
+
 <!-- ===================== APP PRINCIPAL ===================== -->
 <div id="app" class="app" hidden>
 <header class="topbar">
@@ -161,6 +172,10 @@ Al crear una cuenta aceptás nuestros
 <span class="config-tarjeta-icono">📤</span>
 <span class="config-tarjeta-titulo" data-i18n="tituloExportar">Exportar mis datos</span>
 </button>
+<button type="button" class="config-tarjeta" data-config="configPanelCambiarClave">
+<span class="config-tarjeta-icono">🔒</span>
+<span class="config-tarjeta-titulo" data-i18n="tituloCambiarClave">Cambiar clave</span>
+</button>
 <button type="button" class="config-tarjeta config-tarjeta-peligro" data-config="configPanelZonaRiesgo">
 <span class="config-tarjeta-icono">🧹</span>
 <span class="config-tarjeta-titulo" data-i18n="tituloZonaRiesgo">Zona de riesgo</span>
@@ -242,6 +257,30 @@ Al crear una cuenta aceptás nuestros
 <div class="fila-config">
 <button class="boton boton-secundario boton-ancho" id="btnExportarCSV" data-i18n="btnCSV">📄 Exportar a CSV</button>
 </div>
+</div>
+
+<!-- Panel: Cambiar clave -->
+<div id="configPanelCambiarClave" class="config-panel" hidden>
+<button type="button" class="config-volver">← Volver</button>
+<h2 class="titulo-seccion" data-i18n="tituloCambiarClave">Cambiar clave</h2>
+<p class="texto-ayuda" data-i18n="textoCambiarClave">Elegí una clave nueva para tu cuenta.</p>
+<div id="cambiarClaveError" class="aviso aviso-error" hidden></div>
+<div id="cambiarClaveOk" class="aviso aviso-ok" hidden></div>
+<form id="formCambiarClave">
+<div class="fila-config">
+<label><span data-i18n="labelNuevaClave">Nueva clave</span>
+<input type="password" id="inputCambiarClaveNueva" required minlength="6" autocomplete="new-password" data-i18n-placeholder="placeholderClave" placeholder="Mínimo 6 caracteres">
+</label>
+</div>
+<div class="fila-config">
+<label><span data-i18n="labelRepetirClave">Repetir clave nueva</span>
+<input type="password" id="inputCambiarClaveRepetir" required minlength="6" autocomplete="new-password" data-i18n-placeholder="placeholderClave" placeholder="Mínimo 6 caracteres">
+</label>
+</div>
+<div class="fila-config">
+<button type="submit" class="boton boton-primario boton-ancho" data-i18n="btnGuardarNuevaClave">Guardar nueva clave</button>
+</div>
+</form>
 </div>
 
 <!-- Panel: Zona de riesgo -->
