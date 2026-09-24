@@ -42,6 +42,23 @@ Al crear una cuenta aceptás nuestros
 </div>
 </div>
 
+<!-- ===================== PANTALLA NUEVA CLAVE (link del mail) ===================== -->
+<div id="pantallaNuevaClave" class="pantalla-login" hidden>
+<div class="tarjeta-login">
+<div class="logo-login"><img src="icons/icon-192.png" alt="Ingasto" width="64" height="64" style="border-radius:16px;display:block;margin:0 auto;"></div>
+<h1>Ingasto</h1>
+<p class="subtitulo-login" data-i18n="textoElegirNuevaClave">Elegí tu nueva clave</p>
+<div id="nuevaClaveError" class="aviso aviso-error" hidden></div>
+<div id="nuevaClaveOk" class="aviso aviso-ok" hidden></div>
+<form id="formNuevaClave" class="form-login">
+<label><span data-i18n="labelNuevaClave">Nueva clave</span>
+<input type="password" id="inputNuevaClave" required minlength="6" autocomplete="new-password" data-i18n-placeholder="placeholderClave" placeholder="Mínimo 6 caracteres">
+</label>
+<button type="submit" class="boton boton-primario boton-ancho" id="btnGuardarNuevaClave" data-i18n="btnGuardarNuevaClave">Guardar nueva clave</button>
+</form>
+</div>
+</div>
+
 <!-- ===================== APP PRINCIPAL ===================== -->
 <div id="app" class="app" hidden>
 <header class="topbar">
