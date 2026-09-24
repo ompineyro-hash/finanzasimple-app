@@ -34,6 +34,9 @@ const TRADUCCIONES = {
     textoElegirNuevaClave: "Elegí tu nueva clave",
     labelNuevaClave: "Nueva clave",
     btnGuardarNuevaClave: "Guardar nueva clave",
+    tituloCambiarClave: "Cambiar clave",
+    textoCambiarClave: "Elegí una clave nueva para tu cuenta.",
+    labelRepetirClave: "Repetir clave nueva",
     btnCrearCuentaSubmit: "Crear cuenta",
     btnYaTengoCuenta: "Ya tengo cuenta",
     ariaMesAnterior: "Mes anterior",
@@ -117,6 +120,9 @@ const TRADUCCIONES = {
     textoElegirNuevaClave: "Escolha sua nova senha",
     labelNuevaClave: "Nova senha",
     btnGuardarNuevaClave: "Salvar nova senha",
+    tituloCambiarClave: "Alterar senha",
+    textoCambiarClave: "Escolha uma nova senha para sua conta.",
+    labelRepetirClave: "Repetir nova senha",
     btnCrearCuentaSubmit: "Criar conta",
     btnYaTengoCuenta: "Já tenho conta",
     ariaMesAnterior: "Mês anterior",
@@ -200,6 +206,9 @@ const TRADUCCIONES = {
     textoElegirNuevaClave: "Choose your new password",
     labelNuevaClave: "New password",
     btnGuardarNuevaClave: "Save new password",
+    tituloCambiarClave: "Change password",
+    textoCambiarClave: "Choose a new password for your account.",
+    labelRepetirClave: "Repeat new password",
     btnCrearCuentaSubmit: "Create account",
     btnYaTengoCuenta: "I already have an account",
     ariaMesAnterior: "Previous month",
@@ -467,6 +476,30 @@ if ($("formNuevaClave")) {
   });
 }
 
+// ============================================================
+// CAMBIAR CLAVE (desde adentro de Config, con sesión ya iniciada)
+// ============================================================
+if ($("formCambiarClave")) {
+  $("formCambiarClave").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    ocultarAviso($("cambiarClaveError"));
+    ocultarAviso($("cambiarClaveOk"));
+    const nueva = $("inputCambiarClaveNueva").value;
+    const repetir = $("inputCambiarClaveRepetir").value;
+    if (nueva !== repetir) {
+      return mostrarAviso($("cambiarClaveError"), "Las claves no coinciden.");
+    }
+    try {
+      const { error } = await sbClient.auth.updateUser({ password: nueva });
+      if (error) throw error;
+      mostrarAviso($("cambiarClaveOk"), "Tu clave se actualizó correctamente.");
+      $("formCambiarClave").reset();
+    } catch (err) {
+      mostrarAviso($("cambiarClaveError"), traducirErrorAuth(err));
+    }
+  });
+}
+
 $("btnSalir").addEventListener("click", async () => {
   await cerrarSesion();
   location.reload();
@@ -493,7 +526,52 @@ async function arrancarApp() {
 
   await cargarCuentasYCategorias();
   await cargarMesActual();
+  suscribirActualizacionEnVivo();
 }
+
+// ============================================================
+// ACTUALIZACIÓN EN VIVO: cuando se guarda un movimiento, cuenta o
+// categoría (desde este dispositivo o cualquier otro), Supabase
+// nos avisa al instante y refrescamos, sin tener que preguntar
+// "¿hay algo nuevo?" cada tanto.
+// ============================================================
+let canalActualizacionEnVivo = null;
+
+function suscribirActualizacionEnVivo() {
+  if (canalActualizacionEnVivo) return; // ya suscripto, no duplicar
+  canalActualizacionEnVivo = sbClient
+    .channel("cambios-" + usuario.id)
+    .on(
+      "postgres_changes",
+      { event: "*", schema: "public", table: "movimientos", filter: `user_id=eq.${usuario.id}` },
+      () => cargarMesActual()
+    )
+    .on(
+      "postgres_changes",
+      { event: "*", schema: "public", table: "cuentas", filter: `user_id=eq.${usuario.id}` },
+      () => cargarCuentasYCategorias()
+    )
+    .on(
+      "postgres_changes",
+      { event: "*", schema: "public", table: "categorias", filter: `user_id=eq.${usuario.id}` },
+      () => cargarCuentasYCategorias()
+    )
+    .subscribe();
+}
+
+// Red de seguridad: si por lo que sea el mensaje en vivo no llega
+// (por ejemplo, el celu estuvo sin señal y se reconectó), al volver
+// a la pestaña igual refrescamos una vez.
+async function actualizarDatosSiCorresponde() {
+  if (!usuario || !$("app") || $("app").hidden) return;
+  try {
+    await cargarMesActual();
+  } catch {}
+}
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible") actualizarDatosSiCorresponde();
+});
+window.addEventListener("focus", actualizarDatosSiCorresponde);
 
 async function cargarCuentasYCategorias() {
   cuentas = await listarCuentas(usuario.id);
