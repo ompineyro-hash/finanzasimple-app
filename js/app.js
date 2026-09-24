@@ -31,6 +31,9 @@ const TRADUCCIONES = {
     separadorO: "o",
     btnCrearCuenta: "Crear una cuenta nueva",
     btnOlvideClave: "Olvidé mi clave",
+    textoElegirNuevaClave: "Elegí tu nueva clave",
+    labelNuevaClave: "Nueva clave",
+    btnGuardarNuevaClave: "Guardar nueva clave",
     btnCrearCuentaSubmit: "Crear cuenta",
     btnYaTengoCuenta: "Ya tengo cuenta",
     ariaMesAnterior: "Mes anterior",
@@ -111,6 +114,9 @@ const TRADUCCIONES = {
     separadorO: "ou",
     btnCrearCuenta: "Criar uma conta nova",
     btnOlvideClave: "Esqueci minha senha",
+    textoElegirNuevaClave: "Escolha sua nova senha",
+    labelNuevaClave: "Nova senha",
+    btnGuardarNuevaClave: "Salvar nova senha",
     btnCrearCuentaSubmit: "Criar conta",
     btnYaTengoCuenta: "Já tenho conta",
     ariaMesAnterior: "Mês anterior",
@@ -191,6 +197,9 @@ const TRADUCCIONES = {
     separadorO: "or",
     btnCrearCuenta: "Create a new account",
     btnOlvideClave: "Forgot my password",
+    textoElegirNuevaClave: "Choose your new password",
+    labelNuevaClave: "New password",
+    btnGuardarNuevaClave: "Save new password",
     btnCrearCuentaSubmit: "Create account",
     btnYaTengoCuenta: "I already have an account",
     ariaMesAnterior: "Previous month",
@@ -417,6 +426,46 @@ $("btnOlvideClave").addEventListener("click", async () => {
     mostrarAviso($("loginError"), traducirErrorAuth(err));
   }
 });
+
+// ============================================================
+// RECUPERACIÓN DE CLAVE: cuando el usuario toca el link del mail,
+// Supabase dispara el evento PASSWORD_RECOVERY. Mostramos una
+// pantalla para que cargue su clave nueva.
+// ============================================================
+function mostrarPantallaNuevaClave() {
+  $("pantallaLogin").hidden = true;
+  $("app").hidden = true;
+  $("pantallaNuevaClave").hidden = false;
+}
+
+sbClient.auth.onAuthStateChange((event) => {
+  if (event === "PASSWORD_RECOVERY") {
+    mostrarPantallaNuevaClave();
+  }
+});
+
+// Por si el evento no llega a tiempo, también nos guiamos por la URL.
+if (/type=recovery/.test(location.hash)) {
+  mostrarPantallaNuevaClave();
+}
+
+if ($("formNuevaClave")) {
+  $("formNuevaClave").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    ocultarAviso($("nuevaClaveError"));
+    ocultarAviso($("nuevaClaveOk"));
+    const nueva = $("inputNuevaClave").value;
+    try {
+      const { error } = await sbClient.auth.updateUser({ password: nueva });
+      if (error) throw error;
+      mostrarAviso($("nuevaClaveOk"), "Tu clave se actualizó. Ya podés entrar con la nueva.");
+      $("formNuevaClave").reset();
+      setTimeout(() => { location.href = location.origin + location.pathname; }, 2500);
+    } catch (err) {
+      mostrarAviso($("nuevaClaveError"), traducirErrorAuth(err));
+    }
+  });
+}
 
 $("btnSalir").addEventListener("click", async () => {
   await cerrarSesion();
@@ -1305,9 +1354,15 @@ function escapeHTML(txt) {
 // ============================================================
 // INICIO
 // ============================================================
+// Si el link del mail de "olvidé mi clave" nos trae acá, no arrancamos
+// la app normal: dejamos que se muestre la pantalla de nueva clave.
+const esLinkDeRecuperacion = /type=recovery/.test(location.hash);
+
 (async function init() {
-  const u = await usuarioActual();
-  if (u) await arrancarApp();
+  if (!esLinkDeRecuperacion) {
+    const u = await usuarioActual();
+    if (u) await arrancarApp();
+  }
 
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("sw.js").catch(() => {});
