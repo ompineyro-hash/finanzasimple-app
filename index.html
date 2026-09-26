@@ -127,6 +127,14 @@ Al crear una cuenta aceptás nuestros
 
 <!-- Vista: Análisis -->
 <section id="vistaAnalisis" class="vista" hidden>
+
+<div class="segmentado" id="segmentadoVistaAnalisis">
+<button type="button" class="segmentado-item activo" data-vista-analisis="categorias" data-i18n="analisisPorCategoria">Por categoría</button>
+<button type="button" class="segmentado-item" data-vista-analisis="evolucion" data-i18n="analisisEvolucion">Evolución mensual</button>
+<button type="button" class="segmentado-item" data-vista-analisis="diaadia" data-i18n="analisisDiaADia">Día a día</button>
+</div>
+
+<div id="subVistaCategorias">
 <div class="segmentado" id="segmentadoAnalisis">
 <button type="button" class="segmentado-item activo" data-periodo="mes" data-i18n="analisisMesActual">Mes actual</button>
 <button type="button" class="segmentado-item" data-periodo="anio" data-i18n="analisisResumenAnual">Resumen anual</button>
@@ -148,6 +156,20 @@ Al crear una cuenta aceptás nuestros
 </div>
 <h2 class="titulo-seccion" data-i18n="tituloGastosPorCategoria">Gastos por categoría</h2>
 <div id="listaAnalisis" class="lista-analisis"></div>
+</div>
+
+<div id="subVistaEvolucion" hidden>
+<h2 class="titulo-seccion" data-i18n="tituloEvolucionMensual">Evolución mensual</h2>
+<p class="texto-ayuda" data-i18n="textoEvolucionMensual">Ingresos y egresos totales de los últimos meses.</p>
+<div id="graficoEvolucion" class="grafico-barras-cont"></div>
+</div>
+
+<div id="subVistaDiaADia" hidden>
+<h2 class="titulo-seccion" data-i18n="tituloDiaADia">Ingresos y egresos del mes</h2>
+<p class="texto-ayuda" data-i18n="textoDiaADia">Acumulado de ingresos y egresos, día a día, del mes que estás viendo.</p>
+<div id="graficoDiaADia" class="grafico-lineas"></div>
+</div>
+
 </section>
 
 <!-- Vista: Configuración -->
