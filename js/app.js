@@ -69,6 +69,14 @@ const TRADUCCIONES = {
     analisisResumenAnual: "Resumen anual",
     analisisAcumulado: "Acumulado",
     tituloGastosPorCategoria: "Gastos por categoría",
+    analisisPorCategoria: "Por categoría",
+    analisisEvolucion: "Evolución mensual",
+    analisisDiaADia: "Día a día",
+    tituloEvolucionMensual: "Evolución mensual",
+    textoEvolucionMensual: "Ingresos y egresos totales de los últimos meses.",
+    tituloDiaADia: "Ingresos y egresos del mes",
+    textoDiaADia: "Acumulado de ingresos y egresos, día a día, del mes que estás viendo.",
+    analisisSinDatos: "Todavía no hay movimientos cargados.",
     tituloIdioma: "Idioma",
     tituloMoneda: "Moneda",
     tituloMonedaBase: "Mi moneda",
@@ -161,6 +169,14 @@ const TRADUCCIONES = {
     analisisResumenAnual: "Resumo anual",
     analisisAcumulado: "Acumulado",
     tituloGastosPorCategoria: "Despesas por categoria",
+    analisisPorCategoria: "Por categoria",
+    analisisEvolucion: "Evolução mensal",
+    analisisDiaADia: "Dia a dia",
+    tituloEvolucionMensual: "Evolução mensal",
+    textoEvolucionMensual: "Receitas e despesas totais dos últimos meses.",
+    tituloDiaADia: "Receitas e despesas do mês",
+    textoDiaADia: "Acumulado de receitas e despesas, dia a dia, do mês que você está vendo.",
+    analisisSinDatos: "Ainda não há movimentos cadastrados.",
     tituloIdioma: "Idioma",
     tituloMoneda: "Moeda",
     tituloMonedaBase: "Minha moeda",
@@ -253,6 +269,14 @@ const TRADUCCIONES = {
     analisisResumenAnual: "Yearly summary",
     analisisAcumulado: "All time",
     tituloGastosPorCategoria: "Expenses by category",
+    analisisPorCategoria: "By category",
+    analisisEvolucion: "Monthly trend",
+    analisisDiaADia: "Day by day",
+    tituloEvolucionMensual: "Monthly trend",
+    textoEvolucionMensual: "Total income and expenses over the last few months.",
+    tituloDiaADia: "Income and expenses this month",
+    textoDiaADia: "Cumulative income and expenses, day by day, for the month you're viewing.",
+    analisisSinDatos: "No transactions logged yet.",
     tituloIdioma: "Language",
     tituloMoneda: "Currency",
     tituloMonedaBase: "My currency",
@@ -630,6 +654,7 @@ async function cargarMesActual() {
   renderResumen();
   renderMovimientos();
   await renderVistaAnalisis();
+  if (subVistaAnalisis === "diaadia") renderDiaADia();
 }
 
 $("btnMesAnterior").addEventListener("click", () => {
@@ -893,6 +918,119 @@ document.querySelectorAll("#segmentadoAnalisis .segmentado-item").forEach((btn) 
     btn.classList.add("activo");
     periodoAnalisis = btn.dataset.periodo;
     renderVistaAnalisis();
+  });
+});
+
+// ============================================================
+// RENDER: Análisis — Evolución mensual / Día a día
+// ============================================================
+let subVistaAnalisis = "categorias";
+const NOMBRES_MES_CORTO = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"];
+
+function agruparPorMes(lista) {
+  const porMes = {};
+  lista.forEach((m) => {
+    const clave = m.fecha.slice(0, 7);
+    if (!porMes[clave]) porMes[clave] = { ing: 0, gas: 0 };
+    if (m.tipo === "Ingreso") porMes[clave].ing += Number(m.monto);
+    else porMes[clave].gas += Number(m.monto);
+  });
+  return porMes;
+}
+
+async function renderEvolucionMensual() {
+  const cont = $("graficoEvolucion");
+  const todos = await listarTodosLosMovimientos(usuario.id);
+  if (!todos.length) {
+    cont.innerHTML = `<div class="vacio" data-i18n="analisisSinDatos">Todavía no hay movimientos cargados.</div>`;
+    return;
+  }
+  const porMes = agruparPorMes(todos);
+  const claves = Object.keys(porMes).sort().slice(-6);
+  const max = Math.max(1, ...claves.map((c) => Math.max(porMes[c].ing, porMes[c].gas)));
+
+  const barras = claves.map((clave) => {
+    const [anio, mes] = clave.split("-");
+    const { ing, gas } = porMes[clave];
+    const altoIng = Math.round((ing / max) * 100);
+    const altoGas = Math.round((gas / max) * 100);
+    const label = `${NOMBRES_MES_CORTO[Number(mes) - 1]} ${anio.slice(2)}`;
+    return `
+      <div class="barra-mes" title="${escapeHTML(label)}: ${t("lblIngresos")} ${formatoMonto(ing)} · ${t("lblGastos")} ${formatoMonto(gas)}">
+        <div class="barra-par">
+          <div class="barra barra-ingreso" style="height:${altoIng}%"></div>
+          <div class="barra barra-gasto" style="height:${altoGas}%"></div>
+        </div>
+        <span class="barra-mes-label">${escapeHTML(label)}</span>
+      </div>`;
+  }).join("");
+
+  cont.innerHTML = `
+    <div class="grafico-barras">${barras}</div>
+    <div class="grafico-leyenda">
+      <span class="grafico-leyenda-item"><span class="grafico-leyenda-swatch" style="background:#2F6F5E"></span>${t("lblIngresos")}</span>
+      <span class="grafico-leyenda-item"><span class="grafico-leyenda-swatch" style="background:#C4562E"></span>${t("lblGastos")}</span>
+    </div>`;
+}
+
+function renderDiaADia() {
+  const cont = $("graficoDiaADia");
+  if (!movimientos.length) {
+    cont.innerHTML = `<div class="vacio" data-i18n="analisisSinDatos">Todavía no hay movimientos cargados.</div>`;
+    return;
+  }
+  const anio = fechaVista.getFullYear();
+  const mes = fechaVista.getMonth();
+  const ultimoDia = new Date(anio, mes + 1, 0).getDate();
+
+  const porDia = {};
+  for (let d = 1; d <= ultimoDia; d++) porDia[d] = { ing: 0, gas: 0 };
+  movimientos.forEach((m) => {
+    const dia = Number(m.fecha.slice(8, 10));
+    if (!porDia[dia]) return;
+    if (m.tipo === "Ingreso") porDia[dia].ing += Number(m.monto);
+    else porDia[dia].gas += Number(m.monto);
+  });
+
+  let accIng = 0, accGas = 0;
+  const puntosIng = [], puntosGas = [];
+  for (let d = 1; d <= ultimoDia; d++) {
+    accIng += porDia[d].ing;
+    accGas += porDia[d].gas;
+    puntosIng.push(accIng);
+    puntosGas.push(accGas);
+  }
+  const max = Math.max(1, accIng, accGas);
+  const ancho = 300, alto = 140, pad = 6;
+  const pasoX = (ancho - pad * 2) / (ultimoDia - 1 || 1);
+  const aY = (v) => alto - pad - (v / max) * (alto - pad * 2);
+  const trazar = (arr) => arr.map((v, i) => `${(pad + i * pasoX).toFixed(1)},${aY(v).toFixed(1)}`).join(" ");
+
+  cont.innerHTML = `
+    <svg viewBox="0 0 ${ancho} ${alto}" preserveAspectRatio="none">
+      <polyline points="${trazar(puntosIng)}" fill="none" stroke="#2F6F5E" stroke-width="2.5" />
+      <polyline points="${trazar(puntosGas)}" fill="none" stroke="#C4562E" stroke-width="2.5" />
+    </svg>
+    <div class="grafico-leyenda">
+      <span class="grafico-leyenda-item"><span class="grafico-leyenda-swatch" style="background:#2F6F5E"></span>${t("lblIngresos")} ${formatoMonto(accIng)}</span>
+      <span class="grafico-leyenda-item"><span class="grafico-leyenda-swatch" style="background:#C4562E"></span>${t("lblGastos")} ${formatoMonto(accGas)}</span>
+    </div>`;
+}
+
+function actualizarSubVistaAnalisis() {
+  $("subVistaCategorias").hidden = subVistaAnalisis !== "categorias";
+  $("subVistaEvolucion").hidden = subVistaAnalisis !== "evolucion";
+  $("subVistaDiaADia").hidden = subVistaAnalisis !== "diaadia";
+  if (subVistaAnalisis === "evolucion") renderEvolucionMensual();
+  if (subVistaAnalisis === "diaadia") renderDiaADia();
+}
+
+document.querySelectorAll("#segmentadoVistaAnalisis .segmentado-item").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll("#segmentadoVistaAnalisis .segmentado-item").forEach((b) => b.classList.remove("activo"));
+    btn.classList.add("activo");
+    subVistaAnalisis = btn.dataset.vistaAnalisis;
+    actualizarSubVistaAnalisis();
   });
 });
 
