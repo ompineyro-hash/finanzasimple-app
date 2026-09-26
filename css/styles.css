@@ -192,6 +192,25 @@ input,select{font-family:inherit;font-size:16px;}
 .analisis-barra-fondo{background:var(--borde);border-radius:6px;height:8px;overflow:hidden;}
 .analisis-barra{background:var(--gasto);height:100%;border-radius:6px;}
 
+#segmentadoVistaAnalisis{margin-bottom:14px;}
+.grafico-barras-cont,.grafico-lineas{
+  background:var(--papel-alto);border-radius:12px;padding:14px 10px;box-shadow:var(--sombra);
+}
+.grafico-barras{
+  display:flex;align-items:flex-end;gap:12px;height:150px;
+  padding:10px 4px 0;overflow-x:auto;
+}
+.barra-mes{display:flex;flex-direction:column;align-items:center;min-width:40px;flex-shrink:0;}
+.barra-par{display:flex;align-items:flex-end;gap:3px;height:110px;}
+.barra{width:14px;border-radius:4px 4px 0 0;min-height:2px;}
+.barra-ingreso{background:var(--ingreso);}
+.barra-gasto{background:var(--gasto);}
+.barra-mes-label{font-size:11px;color:var(--texto-suave);margin-top:6px;text-transform:capitalize;}
+.grafico-leyenda{display:flex;gap:16px;justify-content:center;margin-top:12px;font-size:12px;color:var(--texto-suave);flex-wrap:wrap;}
+.grafico-leyenda-item{display:flex;align-items:center;gap:6px;}
+.grafico-leyenda-swatch{width:10px;height:10px;border-radius:3px;display:inline-block;}
+.grafico-lineas svg{width:100%;height:auto;display:block;}
+
 /* ---------- Config ---------- */
 .fila-config{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
 .fila-config input{flex:1;min-width:0;padding:11px 12px;border-radius:10px;border:1.5px solid var(--borde);}
