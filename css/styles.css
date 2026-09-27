@@ -180,21 +180,21 @@ input,select{font-family:inherit;font-size:16px;}
   margin-right:6px;vertical-align:middle;
 }
 .resumen-tarjetas-analisis{margin-bottom:18px;}
-.tarjeta-resumen-clara{background:var(--papel-alto);box-shadow:var(--sombra);}
+.tarjeta-resumen-clara{background:var(--papel-alto);border:1px solid var(--borde);box-shadow:var(--sombra);}
 .tarjeta-resumen-clara .tarjeta-resumen-label{color:var(--texto-suave);opacity:1;}
 .tarjeta-resumen-clara .tarjeta-resumen-valor{color:var(--texto);}
 .tarjeta-resumen-clara .color-ingreso{color:var(--ingreso);}
 .tarjeta-resumen-clara .color-gasto{color:var(--gasto);}
 
 .lista-analisis{display:flex;flex-direction:column;gap:10px;}
-.analisis-item{background:var(--papel-alto);border-radius:12px;padding:12px 14px;box-shadow:var(--sombra);}
+.analisis-item{background:var(--papel-alto);border:1px solid var(--borde);border-radius:12px;padding:12px 14px;box-shadow:var(--sombra);}
 .analisis-fila{display:flex;justify-content:space-between;font-weight:700;font-size:14px;margin-bottom:6px;}
 .analisis-barra-fondo{background:var(--borde);border-radius:6px;height:8px;overflow:hidden;}
 .analisis-barra{background:var(--gasto);height:100%;border-radius:6px;}
 
 #segmentadoVistaAnalisis{margin-bottom:14px;}
 .grafico-barras-cont,.grafico-lineas{
-  background:var(--papel-alto);border-radius:12px;padding:16px 12px 14px;box-shadow:var(--sombra);
+  background:var(--papel-alto);border:1px solid var(--borde);border-radius:12px;padding:16px 12px 14px;box-shadow:var(--sombra);
 }
 .grafico-barras-fila{display:flex;gap:8px;align-items:flex-start;}
 .grafico-eje-y{
