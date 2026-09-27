@@ -1206,8 +1206,10 @@ function filaEditable(item, tipo) {
 }
 
 function enlazarAccionesEditables(tipo) {
-  const selector = tipo === "cuenta" ? "#listaCuentas" : "#listaCategoriasGasto, #listaCategoriasIngreso";
-  document.querySelectorAll(`${selector} [data-accion]`).forEach((btn) => {
+  const selector = tipo === "cuenta"
+    ? "#listaCuentas [data-accion]"
+    : "#listaCategoriasGasto [data-accion], #listaCategoriasIngreso [data-accion]";
+  document.querySelectorAll(selector).forEach((btn) => {
     btn.addEventListener("click", async (e) => {
       const item = e.target.closest(".editable-item");
       const id = item.dataset.id;
