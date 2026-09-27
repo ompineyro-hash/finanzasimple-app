@@ -118,6 +118,8 @@ const TRADUCCIONES = {
     modalEditarTitulo: "Editar movimiento",
     ariaCerrarModal: "Cerrar",
     segGasto: "Gasto",
+    avisoVasACargarGasto: "📤 Vas a cargar un GASTO",
+    avisoVasACargarIngreso: "📥 Vas a cargar un INGRESO",
     segIngreso: "Ingreso",
     labelFecha: "Fecha",
     labelCuenta: "Cuenta",
@@ -228,6 +230,8 @@ const TRADUCCIONES = {
     modalEditarTitulo: "Editar lançamento",
     ariaCerrarModal: "Fechar",
     segGasto: "Despesa",
+    avisoVasACargarGasto: "📤 Você vai lançar uma DESPESA",
+    avisoVasACargarIngreso: "📥 Você vai lançar uma RECEITA",
     segIngreso: "Receita",
     labelFecha: "Data",
     labelCuenta: "Conta",
@@ -338,6 +342,8 @@ const TRADUCCIONES = {
     modalEditarTitulo: "Edit movement",
     ariaCerrarModal: "Close",
     segGasto: "Expense",
+    avisoVasACargarGasto: "📤 You're logging an EXPENSE",
+    avisoVasACargarIngreso: "📥 You're logging INCOME",
     segIngreso: "Income",
     labelFecha: "Date",
     labelCuenta: "Account",
@@ -1401,6 +1407,13 @@ function seleccionarTipo(tipo) {
   document.querySelectorAll("#segmentadoTipo .segmentado-item").forEach((b) => {
     b.classList.toggle("activo", b.dataset.tipo === tipo);
   });
+  const aviso = $("avisoTipoMovimiento");
+  if (aviso) {
+    const esGasto = tipo === "Gasto";
+    aviso.textContent = (esGasto ? t("avisoVasACargarGasto") : t("avisoVasACargarIngreso"));
+    aviso.classList.toggle("aviso-tipo-gasto", esGasto);
+    aviso.classList.toggle("aviso-tipo-ingreso", !esGasto);
+  }
 }
 document.querySelectorAll("#segmentadoTipo .segmentado-item").forEach((b) => {
   b.addEventListener("click", () => {
