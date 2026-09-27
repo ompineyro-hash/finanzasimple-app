@@ -54,13 +54,18 @@ async function listarCategorias(userId) {
   return data;
 }
 
-async function crearCategoria(userId, nombre) {
-  const { error } = await sbClient.from("categorias").insert({ user_id: userId, nombre });
+async function crearCategoria(userId, nombre, tipo) {
+  const { error } = await sbClient.from("categorias").insert({ user_id: userId, nombre, tipo: tipo || "Gasto" });
   if (error) throw error;
 }
 
 async function renombrarCategoria(id, nombreNuevo) {
   const { error } = await sbClient.from("categorias").update({ nombre: nombreNuevo }).eq("id", id);
+  if (error) throw error;
+}
+
+async function cambiarTipoCategoria(id, tipo) {
+  const { error } = await sbClient.from("categorias").update({ tipo }).eq("id", id);
   if (error) throw error;
 }
 
