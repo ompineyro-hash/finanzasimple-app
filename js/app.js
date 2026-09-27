@@ -69,6 +69,13 @@ const TRADUCCIONES = {
     analisisResumenAnual: "Resumen anual",
     analisisAcumulado: "Acumulado",
     tituloGastosPorCategoria: "Gastos por categoría",
+    tituloIngresosPorCategoria: "Ingresos por categoría",
+    analisisGastosTab: "Gastos",
+    analisisIngresosTab: "Ingresos",
+    analisisSinGastos: "No hay gastos cargados en este período.",
+    analisisSinIngresos: "No hay ingresos cargados en este período.",
+    lblTotalGastos: "Total gastos",
+    lblTotalIngresos: "Total ingresos",
     analisisPorCategoria: "Por categoría",
     analisisEvolucion: "Evolución mensual",
     analisisDiaADia: "Día a día",
@@ -169,6 +176,13 @@ const TRADUCCIONES = {
     analisisResumenAnual: "Resumo anual",
     analisisAcumulado: "Acumulado",
     tituloGastosPorCategoria: "Despesas por categoria",
+    tituloIngresosPorCategoria: "Receitas por categoria",
+    analisisGastosTab: "Despesas",
+    analisisIngresosTab: "Receitas",
+    analisisSinGastos: "Não há despesas registradas neste período.",
+    analisisSinIngresos: "Não há receitas registradas neste período.",
+    lblTotalGastos: "Total de despesas",
+    lblTotalIngresos: "Total de receitas",
     analisisPorCategoria: "Por categoria",
     analisisEvolucion: "Evolução mensal",
     analisisDiaADia: "Dia a dia",
@@ -269,6 +283,13 @@ const TRADUCCIONES = {
     analisisResumenAnual: "Yearly summary",
     analisisAcumulado: "All time",
     tituloGastosPorCategoria: "Expenses by category",
+    tituloIngresosPorCategoria: "Income by category",
+    analisisGastosTab: "Expenses",
+    analisisIngresosTab: "Income",
+    analisisSinGastos: "No expenses recorded for this period.",
+    analisisSinIngresos: "No income recorded for this period.",
+    lblTotalGastos: "Total expenses",
+    lblTotalIngresos: "Total income",
     analisisPorCategoria: "By category",
     analisisEvolucion: "Monthly trend",
     analisisDiaADia: "Day by day",
@@ -852,32 +873,39 @@ function renderResumenAnalisis(lista) {
   $("analisisGastos").textContent = formatoMonto(gas);
 }
 
-function renderCategoriasAnalisis(lista) {
+let tipoAnalisis = "Gasto";
+let ultimaListaAnalisis = [];
+
+function renderCategoriasAnalisis(lista, tipo) {
   const cont = $("listaAnalisis");
+  const esGasto = tipo === "Gasto";
+  $("tituloListaAnalisis").textContent = esGasto ? t("tituloGastosPorCategoria") : t("tituloIngresosPorCategoria");
   const porCategoria = {};
-  let totalGastos = 0;
-  lista.filter((m) => m.tipo === "Gasto").forEach((m) => {
+  let total = 0;
+  lista.filter((m) => m.tipo === tipo).forEach((m) => {
     porCategoria[m.categoria] = (porCategoria[m.categoria] || 0) + Number(m.monto);
-    totalGastos += Number(m.monto);
+    total += Number(m.monto);
   });
   const entradas = Object.entries(porCategoria).sort((a, b) => b[1] - a[1]);
   if (!entradas.length) {
     cont.innerHTML = `
       <div class="grafico-dona grafico-dona-vacio"></div>
-      <div class="vacio">No hay gastos cargados en este período.</div>`;
+      <div class="vacio">${esGasto ? t("analisisSinGastos") : t("analisisSinIngresos")}</div>`;
     return;
   }
-  const colores = ["#C4562E", "#2F6F5E", "#D9A441", "#5B7FBF", "#8B5FBF", "#4FA3A0", "#C2707C", "#7A8B4F"];
+  const colores = esGasto
+    ? ["#C4562E", "#2F6F5E", "#D9A441", "#5B7FBF", "#8B5FBF", "#4FA3A0", "#C2707C", "#7A8B4F"]
+    : ["#2F6F5E", "#4FA3A0", "#5B7FBF", "#D9A441", "#8B5FBF", "#C4562E", "#7A8B4F", "#C2707C"];
   let acumulado = 0;
   const segmentos = entradas.map(([, monto], i) => {
-    const pct = (monto / totalGastos) * 100;
+    const pct = (monto / total) * 100;
     const desde = acumulado;
     acumulado += pct;
     return `${colores[i % colores.length]} ${desde}% ${acumulado}%`;
   }).join(", ");
 
   const leyenda = entradas.map(([cat, monto], i) => {
-    const pct = totalGastos > 0 ? (monto / totalGastos) * 100 : 0;
+    const pct = total > 0 ? (monto / total) * 100 : 0;
     const color = colores[i % colores.length];
     return `
       <div class="analisis-item">
@@ -892,8 +920,8 @@ function renderCategoriasAnalisis(lista) {
   cont.innerHTML = `
     <div class="grafico-dona" style="background:conic-gradient(${segmentos})">
       <div class="grafico-dona-centro">
-        <span class="grafico-dona-total">${formatoMonto(totalGastos)}</span>
-        <span class="grafico-dona-label">Total gastos</span>
+        <span class="grafico-dona-total">${formatoMonto(total)}</span>
+        <span class="grafico-dona-label">${esGasto ? t("lblTotalGastos") : t("lblTotalIngresos")}</span>
       </div>
     </div>
     ${leyenda}`;
@@ -908,8 +936,9 @@ async function renderVistaAnalisis() {
   } else {
     lista = movimientos;
   }
+  ultimaListaAnalisis = lista;
   renderResumenAnalisis(lista);
-  renderCategoriasAnalisis(lista);
+  renderCategoriasAnalisis(lista, tipoAnalisis);
 }
 
 document.querySelectorAll("#segmentadoAnalisis .segmentado-item").forEach((btn) => {
@@ -918,6 +947,15 @@ document.querySelectorAll("#segmentadoAnalisis .segmentado-item").forEach((btn) 
     btn.classList.add("activo");
     periodoAnalisis = btn.dataset.periodo;
     renderVistaAnalisis();
+  });
+});
+
+document.querySelectorAll("#segmentadoTipoAnalisis .segmentado-item").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll("#segmentadoTipoAnalisis .segmentado-item").forEach((b) => b.classList.remove("activo"));
+    btn.classList.add("activo");
+    tipoAnalisis = btn.dataset.tipoAnalisis;
+    renderCategoriasAnalisis(ultimaListaAnalisis, tipoAnalisis);
   });
 });
 
