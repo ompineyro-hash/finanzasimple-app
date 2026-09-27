@@ -287,6 +287,9 @@ input,select{font-family:inherit;font-size:16px;}
 }
 .segmentado-item.activo{background:var(--papel-alto);color:var(--texto);box-shadow:var(--sombra);}
 
+.segmentado-chico{max-width:220px;margin-bottom:14px;}
+.segmentado-chico .segmentado-item{padding:7px;font-size:13px;}
+
 /* ---------- Toast ---------- */
 .toast{
   position:fixed;bottom:100px;left:50%;transform:translateX(-50%);
