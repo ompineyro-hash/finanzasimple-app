@@ -99,6 +99,9 @@ const TRADUCCIONES = {
     placeholderNuevaCuenta: "Nueva cuenta (ej: Banco)",
     btnAgregar: "Agregar",
     tituloCategorias: "Categorías",
+    tituloCategoriasGasto: "Categorías de gasto",
+    tituloCategoriasIngreso: "Categorías de ingreso",
+    textoNuevaCategoriaTipo: "Elegí si la nueva categoría es para gastos o para ingresos:",
     placeholderNuevaCategoria: "Nueva categoría (ej: Alimentos)",
     tituloExportar: "Exportar mis datos",
     textoExportar: "Descarga todos tus movimientos, de todos los meses, en un archivo para abrir en Excel o Google Sheets.",
@@ -206,6 +209,9 @@ const TRADUCCIONES = {
     placeholderNuevaCuenta: "Nova conta (ex: Banco)",
     btnAgregar: "Adicionar",
     tituloCategorias: "Categorias",
+    tituloCategoriasGasto: "Categorias de despesa",
+    tituloCategoriasIngreso: "Categorias de receita",
+    textoNuevaCategoriaTipo: "Escolha se a nova categoria é para despesas ou receitas:",
     placeholderNuevaCategoria: "Nova categoria (ex: Alimentação)",
     tituloExportar: "Exportar meus dados",
     textoExportar: "Baixe todos os seus lançamentos, de todos os meses, em um arquivo para abrir no Excel ou Google Sheets.",
@@ -313,6 +319,9 @@ const TRADUCCIONES = {
     placeholderNuevaCuenta: "New account (e.g: Bank)",
     btnAgregar: "Add",
     tituloCategorias: "Categories",
+    tituloCategoriasGasto: "Expense categories",
+    tituloCategoriasIngreso: "Income categories",
+    textoNuevaCategoriaTipo: "Choose whether the new category is for expenses or income:",
     placeholderNuevaCategoria: "New category (e.g: Groceries)",
     tituloExportar: "Export my data",
     textoExportar: "Download all your movements, from every month, in a file to open in Excel or Google Sheets.",
@@ -1168,18 +1177,28 @@ function renderCuentasConfig() {
 }
 
 function renderCategoriasConfig() {
-  const cont = $("listaCategorias");
-  cont.innerHTML = categorias.length
-    ? categorias.map((c) => filaEditable(c, "categoria")).join("")
-    : `<div class="vacio">Todavía no agregaste ninguna categoría.</div>`;
+  const gasto = categorias.filter((c) => (c.tipo || "Gasto") === "Gasto");
+  const ingreso = categorias.filter((c) => c.tipo === "Ingreso");
+  $("listaCategoriasGasto").innerHTML = gasto.length
+    ? gasto.map((c) => filaEditable(c, "categoria")).join("")
+    : `<div class="vacio">Todavía no agregaste ninguna categoría de gasto.</div>`;
+  $("listaCategoriasIngreso").innerHTML = ingreso.length
+    ? ingreso.map((c) => filaEditable(c, "categoria")).join("")
+    : `<div class="vacio">Todavía no agregaste ninguna categoría de ingreso.</div>`;
   enlazarAccionesEditables("categoria");
 }
 
 function filaEditable(item, tipo) {
+  const esCategoria = tipo === "categoria";
+  const tipoItem = item.tipo || "Gasto";
+  const botonTipo = esCategoria
+    ? `<button data-accion="cambiar-tipo" data-tipo="${tipo}" title="Cambiar a ${tipoItem === "Gasto" ? "Ingreso" : "Gasto"}">${tipoItem === "Gasto" ? "↔️ Pasar a Ingreso" : "↔️ Pasar a Gasto"}</button>`
+    : "";
   return `
     <div class="editable-item" data-id="${item.id}">
       <span>${escapeHTML(item.nombre)}</span>
       <div class="editable-acciones">
+        ${botonTipo}
         <button data-accion="editar" data-tipo="${tipo}" title="Editar">✏️</button>
         <button data-accion="borrar" data-tipo="${tipo}" title="Borrar">🗑️</button>
       </div>
@@ -1187,7 +1206,7 @@ function filaEditable(item, tipo) {
 }
 
 function enlazarAccionesEditables(tipo) {
-  const selector = tipo === "cuenta" ? "#listaCuentas" : "#listaCategorias";
+  const selector = tipo === "cuenta" ? "#listaCuentas" : "#listaCategoriasGasto, #listaCategoriasIngreso";
   document.querySelectorAll(`${selector} [data-accion]`).forEach((btn) => {
     btn.addEventListener("click", async (e) => {
       const item = e.target.closest(".editable-item");
@@ -1215,6 +1234,15 @@ function enlazarAccionesEditables(tipo) {
           await cargarCuentasYCategorias();
           mostrarToast("Borrado.");
         } catch (err) { mostrarToast("No se pudo borrar (¿tiene movimientos asociados?)"); }
+      }
+
+      if (accion === "cambiar-tipo") {
+        const nuevoTipo = (actual.tipo || "Gasto") === "Gasto" ? "Ingreso" : "Gasto";
+        try {
+          await cambiarTipoCategoria(id, nuevoTipo);
+          await cargarCuentasYCategorias();
+          mostrarToast(`"${actual.nombre}" ahora es una categoría de ${nuevoTipo === "Gasto" ? "gasto" : "ingreso"}.`);
+        } catch (err) { mostrarToast(traducirErrorDatos(err)); }
       }
     });
   });
@@ -1276,20 +1304,35 @@ $("btnAgregarCuenta").addEventListener("click", async () => {
   } catch (err) { mostrarToast(traducirErrorDatos(err)); }
 });
 
+let tipoNuevaCategoria = "Gasto";
+document.querySelectorAll("#segmentadoTipoNuevaCategoria .segmentado-item").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll("#segmentadoTipoNuevaCategoria .segmentado-item").forEach((b) => b.classList.remove("activo"));
+    btn.classList.add("activo");
+    tipoNuevaCategoria = btn.dataset.tipoNuevaCategoria;
+  });
+});
+
 $("btnAgregarCategoria").addEventListener("click", async () => {
   const input = $("inputNuevaCategoria");
   const v = input.value.trim();
   if (!v) return;
   try {
-    await crearCategoria(usuario.id, v);
+    await crearCategoria(usuario.id, v, tipoNuevaCategoria);
     input.value = "";
     await cargarCuentasYCategorias();
   } catch (err) { mostrarToast(traducirErrorDatos(err)); }
 });
 
+function renderSelectCategorias(tipo) {
+  const tipoActivo = tipo || document.querySelector("#segmentadoTipo .activo")?.dataset.tipo || "Gasto";
+  const filtradas = categorias.filter((c) => (c.tipo || "Gasto") === tipoActivo);
+  $("movCategoria").innerHTML = filtradas.map((c) => `<option value="${escapeHTML(c.nombre)}">${escapeHTML(c.nombre)}</option>`).join("") || `<option value="">-- Agregá una categoría en Config --</option>`;
+}
+
 function renderSelects() {
   $("movCuenta").innerHTML = cuentas.map((c) => `<option value="${escapeHTML(c.nombre)}">${escapeHTML(c.nombre)}</option>`).join("") || `<option value="">-- Agregá una cuenta en Config --</option>`;
-  $("movCategoria").innerHTML = categorias.map((c) => `<option value="${escapeHTML(c.nombre)}">${escapeHTML(c.nombre)}</option>`).join("") || `<option value="">-- Agregá una categoría en Config --</option>`;
+  renderSelectCategorias();
 }
 
 // Si el movimiento tiene una cuenta o categoría que ya no está en la lista
@@ -1333,13 +1376,13 @@ function abrirModalNuevo() {
 function abrirModalEditar(id) {
   const m = movimientos.find((x) => x.id === id);
   if (!m) return;
+  seleccionarTipo(m.tipo);
   renderSelects();
   asegurarOpcionSelect("movCuenta", m.cuenta);
   asegurarOpcionSelect("movCategoria", m.categoria);
   $("movId").value = m.id;
   $("modalTitulo").textContent = t("modalEditarTitulo");
   $("btnBorrarMov").hidden = false;
-  seleccionarTipo(m.tipo);
   $("movFecha").value = m.fecha;
   $("movCuenta").value = m.cuenta;
   $("movCategoria").value = m.categoria;
@@ -1358,7 +1401,10 @@ function seleccionarTipo(tipo) {
   });
 }
 document.querySelectorAll("#segmentadoTipo .segmentado-item").forEach((b) => {
-  b.addEventListener("click", () => seleccionarTipo(b.dataset.tipo));
+  b.addEventListener("click", () => {
+    seleccionarTipo(b.dataset.tipo);
+    renderSelectCategorias(b.dataset.tipo);
+  });
 });
 
 // ============================================================
