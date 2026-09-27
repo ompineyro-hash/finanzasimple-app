@@ -117,6 +117,7 @@ const TRADUCCIONES = {
     modalNuevoTitulo: "Nuevo movimiento",
     modalEditarTitulo: "Editar movimiento",
     ariaCerrarModal: "Cerrar",
+    ariaMostrarClave: "Mostrar clave",
     segGasto: "Gasto",
     avisoVasACargarGasto: "📤 Vas a cargar un GASTO",
     avisoVasACargarIngreso: "📥 Vas a cargar un INGRESO",
@@ -229,6 +230,7 @@ const TRADUCCIONES = {
     modalNuevoTitulo: "Novo lançamento",
     modalEditarTitulo: "Editar lançamento",
     ariaCerrarModal: "Fechar",
+    ariaMostrarClave: "Mostrar senha",
     segGasto: "Despesa",
     avisoVasACargarGasto: "📤 Você vai lançar uma DESPESA",
     avisoVasACargarIngreso: "📥 Você vai lançar uma RECEITA",
@@ -341,6 +343,7 @@ const TRADUCCIONES = {
     modalNuevoTitulo: "New movement",
     modalEditarTitulo: "Edit movement",
     ariaCerrarModal: "Close",
+    ariaMostrarClave: "Show password",
     segGasto: "Expense",
     avisoVasACargarGasto: "📤 You're logging an EXPENSE",
     avisoVasACargarIngreso: "📥 You're logging INCOME",
@@ -393,6 +396,11 @@ function actualizarTextosDinamicosIdioma() {
   if ($("btnIngresar") && $("btnMostrarRegistro")) {
     $("btnIngresar").textContent = modoRegistro ? t("btnCrearCuentaSubmit") : t("btnEntrar");
     $("btnMostrarRegistro").textContent = modoRegistro ? t("btnYaTengoCuenta") : t("btnCrearCuenta");
+  }
+  if ($("labelClaveConfirmar")) {
+    $("labelClaveConfirmar").hidden = !modoRegistro;
+    $("inputClaveConfirmar").required = modoRegistro;
+    if (!modoRegistro) $("inputClaveConfirmar").value = "";
   }
   // Título del modal de movimiento, según si se está editando o no
   const modalTitulo = $("modalTitulo");
@@ -464,6 +472,17 @@ try {
   aplicarIdioma("es");
 }
 
+// Botón "ojito" para mostrar/ocultar cualquier campo de clave
+document.querySelectorAll(".btn-ojito").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const input = $(btn.dataset.target);
+    if (!input) return;
+    const mostrando = input.type === "text";
+    input.type = mostrando ? "password" : "text";
+    btn.textContent = mostrando ? "👁️" : "🙈";
+  });
+});
+
 if ($("selectIdiomaLogin")) {
   $("selectIdiomaLogin").addEventListener("change", (e) => {
     aplicarIdioma(e.target.value);
@@ -481,16 +500,26 @@ $("formLogin").addEventListener("submit", async (e) => {
 
   try {
     if (modoRegistro) {
-      await registrarUsuario(email, clave);
-      mostrarAviso($("loginOk"), "Cuenta creada. Ya podés entrar con tu email y clave.");
+      const claveConfirmar = $("inputClaveConfirmar").value;
+      if (clave !== claveConfirmar) {
+        throw { message: "Las claves no coinciden." };
+      }
+      const resultado = await registrarUsuario(email, clave);
+      // Si Supabase pide confirmar el mail, no llega una sesión activa todavía.
+      if (resultado?.user && !resultado.session) {
+        mostrarAviso($("loginOk"), "¡Casi! Te enviamos un mail a " + email + " para confirmar tu cuenta. Abrilo y tocá el link antes de entrar.");
+      } else {
+        mostrarAviso($("loginOk"), "Cuenta creada. Ya podés entrar con tu email y clave.");
+      }
       modoRegistro = false;
+      $("formLogin").reset();
       actualizarTextosDinamicosIdioma();
     } else {
       await iniciarSesion(email, clave);
       await arrancarApp();
     }
   } catch (err) {
-    mostrarAviso($("loginError"), traducirErrorAuth(err));
+    mostrarAviso($("loginError"), err?.message === "Las claves no coinciden." ? err.message : traducirErrorAuth(err));
   } finally {
     btn.disabled = false;
   }
