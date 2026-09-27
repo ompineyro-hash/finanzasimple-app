@@ -95,6 +95,14 @@ input,select{font-family:inherit;font-size:16px;}
   color:var(--texto);
 }
 .form-login input:focus{outline:2px solid var(--primario);outline-offset:1px;}
+.campo-clave{position:relative;display:flex;}
+.campo-clave input{flex:1;padding-right:42px;}
+.btn-ojito{
+  position:absolute;right:4px;top:50%;transform:translateY(-50%);
+  background:none;border:none;font-size:17px;line-height:1;
+  padding:6px;cursor:pointer;opacity:0.65;
+}
+.btn-ojito:hover{opacity:1;}
 .separador-login{display:flex;align-items:center;gap:10px;margin:18px 0;color:var(--texto-suave);font-size:13px;}
 .separador-login::before,.separador-login::after{content:"";flex:1;height:1px;background:var(--borde);}
 .tarjeta-login .boton{margin-bottom:8px;}
