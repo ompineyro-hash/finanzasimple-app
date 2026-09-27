@@ -296,7 +296,15 @@ Al crear una cuenta aceptás nuestros
 <div id="configPanelCategorias" class="config-panel" hidden>
 <button type="button" class="config-volver">← Volver</button>
 <h2 class="titulo-seccion" data-i18n="tituloCategorias">Categorías</h2>
-<div id="listaCategorias" class="lista-editable"></div>
+<h3 class="titulo-subseccion" data-i18n="tituloCategoriasGasto">Categorías de gasto</h3>
+<div id="listaCategoriasGasto" class="lista-editable"></div>
+<h3 class="titulo-subseccion" data-i18n="tituloCategoriasIngreso">Categorías de ingreso</h3>
+<div id="listaCategoriasIngreso" class="lista-editable"></div>
+<p class="texto-ayuda" data-i18n="textoNuevaCategoriaTipo">Elegí si la nueva categoría es para gastos o para ingresos:</p>
+<div class="segmentado segmentado-chico" id="segmentadoTipoNuevaCategoria">
+<button type="button" class="segmentado-item activo" data-tipo-nueva-categoria="Gasto" data-i18n="segGasto">Gasto</button>
+<button type="button" class="segmentado-item" data-tipo-nueva-categoria="Ingreso" data-i18n="segIngreso">Ingreso</button>
+</div>
 <div class="fila-config">
 <input type="text" id="inputNuevaCategoria" data-i18n-placeholder="placeholderNuevaCategoria" placeholder="Nueva categoría (ej: Alimentos)">
 <button class="boton boton-secundario" id="btnAgregarCategoria" data-i18n="btnAgregar">Agregar</button>
