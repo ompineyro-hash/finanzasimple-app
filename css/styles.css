@@ -130,6 +130,8 @@ input,select{font-family:inherit;font-size:16px;}
 .contenido{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px;max-width:640px;margin:0 auto;width:100%;}
 .titulo-seccion{font-size:15px;margin:20px 0 10px;color:var(--texto-suave);text-transform:none;}
 .titulo-seccion:first-child{margin-top:4px;}
+.titulo-subseccion{font-size:13px;font-weight:700;margin:14px 0 6px;color:var(--texto-suave);}
+.titulo-subseccion:first-of-type{margin-top:4px;}
 
 /* ---------- Lista de movimientos ---------- */
 .lista-movimientos{display:flex;flex-direction:column;gap:10px;}
@@ -289,6 +291,13 @@ input,select{font-family:inherit;font-size:16px;}
 
 .segmentado-chico{max-width:220px;margin-bottom:14px;}
 .segmentado-chico .segmentado-item{padding:7px;font-size:13px;}
+
+.aviso-tipo-movimiento{
+  text-align:center;font-weight:800;font-size:13px;
+  padding:8px;border-radius:8px;margin:8px 0 16px;
+}
+.aviso-tipo-gasto{background:rgba(196,86,46,0.12);color:var(--gasto);}
+.aviso-tipo-ingreso{background:rgba(47,111,94,0.12);color:var(--ingreso);}
 
 /* ---------- Toast ---------- */
 .toast{
