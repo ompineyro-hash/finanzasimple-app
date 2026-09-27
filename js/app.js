@@ -938,22 +938,47 @@ function agruparPorMes(lista) {
   return porMes;
 }
 
+function abreviarNumero(n) {
+  const signo = n < 0 ? "-" : "";
+  const abs = Math.abs(n);
+  if (abs >= 1e6) return signo + (abs / 1e6).toFixed(1).replace(/\.0$/, "") + "M";
+  if (abs >= 1e3) return signo + (abs / 1e3).toFixed(1).replace(/\.0$/, "") + "k";
+  return signo + Math.round(abs);
+}
+
 async function renderEvolucionMensual() {
   const cont = $("graficoEvolucion");
   const todos = await listarTodosLosMovimientos(usuario.id);
   if (!todos.length) {
     cont.innerHTML = `<div class="vacio" data-i18n="analisisSinDatos">Todavía no hay movimientos cargados.</div>`;
+    $("evolBalance").textContent = "—";
+    $("evolIngresos").textContent = "—";
+    $("evolGastos").textContent = "—";
     return;
   }
   const porMes = agruparPorMes(todos);
   const claves = Object.keys(porMes).sort().slice(-6);
   const max = Math.max(1, ...claves.map((c) => Math.max(porMes[c].ing, porMes[c].gas)));
 
+  const totIng = claves.reduce((s, c) => s + porMes[c].ing, 0);
+  const totGas = claves.reduce((s, c) => s + porMes[c].gas, 0);
+  $("evolBalance").textContent = formatoMonto(totIng - totGas);
+  $("evolIngresos").textContent = formatoMonto(totIng);
+  $("evolGastos").textContent = formatoMonto(totGas);
+
+  const ejeY = `
+    <div class="grafico-eje-y">
+      <span>${abreviarNumero(max)}</span>
+      <span>${abreviarNumero(max / 2)}</span>
+      <span>0</span>
+    </div>`;
+
   const barras = claves.map((clave) => {
     const [anio, mes] = clave.split("-");
     const { ing, gas } = porMes[clave];
-    const altoIng = Math.round((ing / max) * 100);
-    const altoGas = Math.round((gas / max) * 100);
+    const altoIng = Math.max(2, Math.round((ing / max) * 100));
+    const altoGas = Math.max(2, Math.round((gas / max) * 100));
+    const neto = ing - gas;
     const label = `${NOMBRES_MES_CORTO[Number(mes) - 1]} ${anio.slice(2)}`;
     return `
       <div class="barra-mes" title="${escapeHTML(label)}: ${t("lblIngresos")} ${formatoMonto(ing)} · ${t("lblGastos")} ${formatoMonto(gas)}">
@@ -962,19 +987,43 @@ async function renderEvolucionMensual() {
           <div class="barra barra-gasto" style="height:${altoGas}%"></div>
         </div>
         <span class="barra-mes-label">${escapeHTML(label)}</span>
+        <span class="barra-mes-neto ${neto >= 0 ? "color-ingreso" : "color-gasto"}">${neto >= 0 ? "+" : ""}${abreviarNumero(neto)}</span>
       </div>`;
   }).join("");
 
   cont.innerHTML = `
-    <div class="grafico-barras">${barras}</div>
+    <div class="grafico-barras-fila">
+      ${ejeY}
+      <div class="grafico-barras">${barras}</div>
+    </div>
     <div class="grafico-leyenda">
       <span class="grafico-leyenda-item"><span class="grafico-leyenda-swatch" style="background:#2F6F5E"></span>${t("lblIngresos")}</span>
       <span class="grafico-leyenda-item"><span class="grafico-leyenda-swatch" style="background:#C4562E"></span>${t("lblGastos")}</span>
     </div>`;
 }
 
+function pathSuave(puntos) {
+  if (puntos.length < 2) return "";
+  let d = `M ${puntos[0][0]},${puntos[0][1]}`;
+  for (let i = 0; i < puntos.length - 1; i++) {
+    const [x0, y0] = puntos[i];
+    const [x1, y1] = puntos[i + 1];
+    const mx = (x0 + x1) / 2;
+    const my = (y0 + y1) / 2;
+    d += ` Q ${x0},${y0} ${mx},${my}`;
+  }
+  const [xu, yu] = puntos[puntos.length - 1];
+  d += ` L ${xu},${yu}`;
+  return d;
+}
+
 function renderDiaADia() {
   const cont = $("graficoDiaADia");
+  const { ing: totIng, gas: totGas, balance } = calcularResumenLista(movimientos);
+  $("diaBalance").textContent = formatoMonto(balance);
+  $("diaIngresos").textContent = formatoMonto(totIng);
+  $("diaGastos").textContent = formatoMonto(totGas);
+
   if (!movimientos.length) {
     cont.innerHTML = `<div class="vacio" data-i18n="analisisSinDatos">Todavía no hay movimientos cargados.</div>`;
     return;
@@ -993,23 +1042,58 @@ function renderDiaADia() {
   });
 
   let accIng = 0, accGas = 0;
-  const puntosIng = [], puntosGas = [];
+  const valoresIng = [], valoresGas = [];
   for (let d = 1; d <= ultimoDia; d++) {
     accIng += porDia[d].ing;
     accGas += porDia[d].gas;
-    puntosIng.push(accIng);
-    puntosGas.push(accGas);
+    valoresIng.push(accIng);
+    valoresGas.push(accGas);
   }
   const max = Math.max(1, accIng, accGas);
-  const ancho = 300, alto = 140, pad = 6;
-  const pasoX = (ancho - pad * 2) / (ultimoDia - 1 || 1);
-  const aY = (v) => alto - pad - (v / max) * (alto - pad * 2);
-  const trazar = (arr) => arr.map((v, i) => `${(pad + i * pasoX).toFixed(1)},${aY(v).toFixed(1)}`).join(" ");
+  const ancho = 320, alto = 190, padIzq = 8, padDer = 8, padArriba = 12, padAbajo = 26;
+  const baseY = alto - padAbajo;
+  const pasoX = (ancho - padIzq - padDer) / (ultimoDia - 1 || 1);
+  const x = (i) => padIzq + i * pasoX;
+  const y = (v) => baseY - (v / max) * (baseY - padArriba);
+
+  const puntosIng = valoresIng.map((v, i) => [x(i), y(v)]);
+  const puntosGas = valoresGas.map((v, i) => [x(i), y(v)]);
+  const lineaIng = pathSuave(puntosIng);
+  const lineaGas = pathSuave(puntosGas);
+  const areaIng = `${lineaIng} L ${x(ultimoDia - 1)},${baseY} L ${x(0)},${baseY} Z`;
+  const areaGas = `${lineaGas} L ${x(ultimoDia - 1)},${baseY} L ${x(0)},${baseY} Z`;
+
+  const gridY = [0, 0.5, 1].map((f) => {
+    const yy = baseY - f * (baseY - padArriba);
+    return `
+      <line x1="${padIzq}" y1="${yy}" x2="${ancho - padDer}" y2="${yy}" stroke="#E4DDD1" stroke-width="1" />
+      <text x="${padIzq}" y="${yy - 3}" font-size="9" fill="#6B7580">${abreviarNumero(max * f)}</text>`;
+  }).join("");
+
+  const diasEtiqueta = ultimoDia >= 20
+    ? [1, Math.round(ultimoDia * 0.5), ultimoDia]
+    : [1, ultimoDia];
+  const ejeX = diasEtiqueta.map((d) => `
+    <text x="${x(d - 1)}" y="${alto - 8}" font-size="9" fill="#6B7580" text-anchor="${d === 1 ? "start" : d === ultimoDia ? "end" : "middle"}">${d}</text>`).join("");
 
   cont.innerHTML = `
-    <svg viewBox="0 0 ${ancho} ${alto}" preserveAspectRatio="none">
-      <polyline points="${trazar(puntosIng)}" fill="none" stroke="#2F6F5E" stroke-width="2.5" />
-      <polyline points="${trazar(puntosGas)}" fill="none" stroke="#C4562E" stroke-width="2.5" />
+    <svg viewBox="0 0 ${ancho} ${alto}">
+      <defs>
+        <linearGradient id="gradIngreso" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#2F6F5E" stop-opacity="0.35" />
+          <stop offset="100%" stop-color="#2F6F5E" stop-opacity="0" />
+        </linearGradient>
+        <linearGradient id="gradGasto" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#C4562E" stop-opacity="0.30" />
+          <stop offset="100%" stop-color="#C4562E" stop-opacity="0" />
+        </linearGradient>
+      </defs>
+      ${gridY}
+      <path d="${areaGas}" fill="url(#gradGasto)" stroke="none" />
+      <path d="${areaIng}" fill="url(#gradIngreso)" stroke="none" />
+      <path d="${lineaGas}" fill="none" stroke="#C4562E" stroke-width="2.5" stroke-linecap="round" />
+      <path d="${lineaIng}" fill="none" stroke="#2F6F5E" stroke-width="2.5" stroke-linecap="round" />
+      ${ejeX}
     </svg>
     <div class="grafico-leyenda">
       <span class="grafico-leyenda-item"><span class="grafico-leyenda-swatch" style="background:#2F6F5E"></span>${t("lblIngresos")} ${formatoMonto(accIng)}</span>
