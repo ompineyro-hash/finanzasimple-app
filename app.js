@@ -31,6 +31,18 @@ const TRADUCCIONES = {
     separadorO: "o",
     btnCrearCuenta: "Crear una cuenta nueva",
     btnOlvideClave: "Olvidé mi clave",
+    textoElegirNuevaClave: "Elegí tu nueva clave",
+    labelNuevaClave: "Nueva clave",
+    btnGuardarNuevaClave: "Guardar nueva clave",
+    tituloCambiarClave: "Cambiar clave",
+    textoCambiarClave: "Elegí una clave nueva para tu cuenta.",
+    labelRepetirClave: "Repetir clave nueva",
+    tituloPruebaVencida: "Tu prueba gratuita terminó",
+    textoPruebaVencida: "Tus datos siguen guardados y a salvo. Activá tu cuenta para seguir usando Ingasto.",
+    btnPagarPrueba: "Pagar $4.000 y activar",
+    textoAvisoWhatsapp: "Después de pagar, avisanos por WhatsApp con el mail que usaste para registrarte, así te activamos la cuenta.",
+    btnAvisarWhatsapp: "Avisar por WhatsApp",
+    btnSalir2: "Salir",
     btnCrearCuentaSubmit: "Crear cuenta",
     btnYaTengoCuenta: "Ya tengo cuenta",
     ariaMesAnterior: "Mes anterior",
@@ -57,13 +69,39 @@ const TRADUCCIONES = {
     analisisResumenAnual: "Resumen anual",
     analisisAcumulado: "Acumulado",
     tituloGastosPorCategoria: "Gastos por categoría",
+    tituloIngresosPorCategoria: "Ingresos por categoría",
+    analisisGastosTab: "Gastos",
+    analisisIngresosTab: "Ingresos",
+    analisisSinGastos: "No hay gastos cargados en este período.",
+    analisisSinIngresos: "No hay ingresos cargados en este período.",
+    lblTotalGastos: "Total gastos",
+    lblTotalIngresos: "Total ingresos",
+    analisisPorCategoria: "Por categoría",
+    analisisEvolucion: "Evolución mensual",
+    analisisDiaADia: "Día a día",
+    tituloEvolucionMensual: "Evolución mensual",
+    textoEvolucionMensual: "Ingresos y egresos totales de los últimos meses.",
+    tituloDiaADia: "Ingresos y egresos del mes",
+    textoDiaADia: "Acumulado de ingresos y egresos, día a día, del mes que estás viendo.",
+    analisisSinDatos: "Todavía no hay movimientos cargados.",
     tituloIdioma: "Idioma",
     tituloMoneda: "Moneda",
+    tituloMonedaBase: "Mi moneda",
+    textoMonedaBase: "Es la moneda de tu país, contra la que se convierte todo lo demás cuando cargás un movimiento en otra moneda.",
+    tituloMonedas: "Monedas",
+    textoMonedas: "Agregá acá las monedas que uses de vez en cuando (por ejemplo, cuando viajás), para poder asignárselas a una cuenta.",
+    placeholderNombreMoneda: "Nombre (ej: Dólares)",
+    placeholderCodigoMoneda: "Código (ej: USD)",
+    placeholderSimboloMoneda: "Símbolo (ej: U$S)",
+    labelCotizacion: "Cotización (en tu moneda)",
     btnGuardar: "Guardar",
     tituloCuentas: "Cuentas",
     placeholderNuevaCuenta: "Nueva cuenta (ej: Banco)",
     btnAgregar: "Agregar",
     tituloCategorias: "Categorías",
+    tituloCategoriasGasto: "Categorías de gasto",
+    tituloCategoriasIngreso: "Categorías de ingreso",
+    textoNuevaCategoriaTipo: "Elegí si la nueva categoría es para gastos o para ingresos:",
     placeholderNuevaCategoria: "Nueva categoría (ej: Alimentos)",
     tituloExportar: "Exportar mis datos",
     textoExportar: "Descarga todos tus movimientos, de todos los meses, en un archivo para abrir en Excel o Google Sheets.",
@@ -103,6 +141,18 @@ const TRADUCCIONES = {
     separadorO: "ou",
     btnCrearCuenta: "Criar uma conta nova",
     btnOlvideClave: "Esqueci minha senha",
+    textoElegirNuevaClave: "Escolha sua nova senha",
+    labelNuevaClave: "Nova senha",
+    btnGuardarNuevaClave: "Salvar nova senha",
+    tituloCambiarClave: "Alterar senha",
+    textoCambiarClave: "Escolha uma nova senha para sua conta.",
+    labelRepetirClave: "Repetir nova senha",
+    tituloPruebaVencida: "Seu período de teste terminou",
+    textoPruebaVencida: "Seus dados continuam salvos e seguros. Ative sua conta para continuar usando o Ingasto.",
+    btnPagarPrueba: "Pagar $4.000 e ativar",
+    textoAvisoWhatsapp: "Depois de pagar, avise-nos pelo WhatsApp com o e-mail que você usou para se cadastrar, para ativarmos sua conta.",
+    btnAvisarWhatsapp: "Avisar pelo WhatsApp",
+    btnSalir2: "Sair",
     btnCrearCuentaSubmit: "Criar conta",
     btnYaTengoCuenta: "Já tenho conta",
     ariaMesAnterior: "Mês anterior",
@@ -129,13 +179,39 @@ const TRADUCCIONES = {
     analisisResumenAnual: "Resumo anual",
     analisisAcumulado: "Acumulado",
     tituloGastosPorCategoria: "Despesas por categoria",
+    tituloIngresosPorCategoria: "Receitas por categoria",
+    analisisGastosTab: "Despesas",
+    analisisIngresosTab: "Receitas",
+    analisisSinGastos: "Não há despesas registradas neste período.",
+    analisisSinIngresos: "Não há receitas registradas neste período.",
+    lblTotalGastos: "Total de despesas",
+    lblTotalIngresos: "Total de receitas",
+    analisisPorCategoria: "Por categoria",
+    analisisEvolucion: "Evolução mensal",
+    analisisDiaADia: "Dia a dia",
+    tituloEvolucionMensual: "Evolução mensal",
+    textoEvolucionMensual: "Receitas e despesas totais dos últimos meses.",
+    tituloDiaADia: "Receitas e despesas do mês",
+    textoDiaADia: "Acumulado de receitas e despesas, dia a dia, do mês que você está vendo.",
+    analisisSinDatos: "Ainda não há movimentos cadastrados.",
     tituloIdioma: "Idioma",
     tituloMoneda: "Moeda",
+    tituloMonedaBase: "Minha moeda",
+    textoMonedaBase: "É a moeda do seu país, para a qual tudo é convertido quando você lança um movimento em outra moeda.",
+    tituloMonedas: "Moedas",
+    textoMonedas: "Adicione aqui as moedas que usa de vez em quando (por exemplo, quando viaja), para poder atribuí-las a uma conta.",
+    placeholderNombreMoneda: "Nome (ex: Dólares)",
+    placeholderCodigoMoneda: "Código (ex: USD)",
+    placeholderSimboloMoneda: "Símbolo (ex: U$S)",
+    labelCotizacion: "Cotação (na sua moeda)",
     btnGuardar: "Salvar",
     tituloCuentas: "Contas",
     placeholderNuevaCuenta: "Nova conta (ex: Banco)",
     btnAgregar: "Adicionar",
     tituloCategorias: "Categorias",
+    tituloCategoriasGasto: "Categorias de despesa",
+    tituloCategoriasIngreso: "Categorias de receita",
+    textoNuevaCategoriaTipo: "Escolha se a nova categoria é para despesas ou receitas:",
     placeholderNuevaCategoria: "Nova categoria (ex: Alimentação)",
     tituloExportar: "Exportar meus dados",
     textoExportar: "Baixe todos os seus lançamentos, de todos os meses, em um arquivo para abrir no Excel ou Google Sheets.",
@@ -175,6 +251,18 @@ const TRADUCCIONES = {
     separadorO: "or",
     btnCrearCuenta: "Create a new account",
     btnOlvideClave: "Forgot my password",
+    textoElegirNuevaClave: "Choose your new password",
+    labelNuevaClave: "New password",
+    btnGuardarNuevaClave: "Save new password",
+    tituloCambiarClave: "Change password",
+    textoCambiarClave: "Choose a new password for your account.",
+    labelRepetirClave: "Repeat new password",
+    tituloPruebaVencida: "Your free trial has ended",
+    textoPruebaVencida: "Your data is still saved and safe. Activate your account to keep using Ingasto.",
+    btnPagarPrueba: "Pay $4,000 and activate",
+    textoAvisoWhatsapp: "After paying, message us on WhatsApp with the email you used to sign up, so we can activate your account.",
+    btnAvisarWhatsapp: "Message us on WhatsApp",
+    btnSalir2: "Log out",
     btnCrearCuentaSubmit: "Create account",
     btnYaTengoCuenta: "I already have an account",
     ariaMesAnterior: "Previous month",
@@ -201,13 +289,39 @@ const TRADUCCIONES = {
     analisisResumenAnual: "Yearly summary",
     analisisAcumulado: "All time",
     tituloGastosPorCategoria: "Expenses by category",
+    tituloIngresosPorCategoria: "Income by category",
+    analisisGastosTab: "Expenses",
+    analisisIngresosTab: "Income",
+    analisisSinGastos: "No expenses recorded for this period.",
+    analisisSinIngresos: "No income recorded for this period.",
+    lblTotalGastos: "Total expenses",
+    lblTotalIngresos: "Total income",
+    analisisPorCategoria: "By category",
+    analisisEvolucion: "Monthly trend",
+    analisisDiaADia: "Day by day",
+    tituloEvolucionMensual: "Monthly trend",
+    textoEvolucionMensual: "Total income and expenses over the last few months.",
+    tituloDiaADia: "Income and expenses this month",
+    textoDiaADia: "Cumulative income and expenses, day by day, for the month you're viewing.",
+    analisisSinDatos: "No transactions logged yet.",
     tituloIdioma: "Language",
     tituloMoneda: "Currency",
+    tituloMonedaBase: "My currency",
+    textoMonedaBase: "This is your home currency, which everything else is converted to when you log a movement in a different currency.",
+    tituloMonedas: "Currencies",
+    textoMonedas: "Add currencies here that you use from time to time (for example, when traveling), so you can assign them to an account.",
+    placeholderNombreMoneda: "Name (e.g: Dollars)",
+    placeholderCodigoMoneda: "Code (e.g: USD)",
+    placeholderSimboloMoneda: "Symbol (e.g: U$S)",
+    labelCotizacion: "Exchange rate (in your currency)",
     btnGuardar: "Save",
     tituloCuentas: "Accounts",
     placeholderNuevaCuenta: "New account (e.g: Bank)",
     btnAgregar: "Add",
     tituloCategorias: "Categories",
+    tituloCategoriasGasto: "Expense categories",
+    tituloCategoriasIngreso: "Income categories",
+    textoNuevaCategoriaTipo: "Choose whether the new category is for expenses or income:",
     placeholderNuevaCategoria: "New category (e.g: Groceries)",
     tituloExportar: "Export my data",
     textoExportar: "Download all your movements, from every month, in a file to open in Excel or Google Sheets.",
@@ -394,33 +508,167 @@ $("btnOlvideClave").addEventListener("click", async () => {
   }
 });
 
+// ============================================================
+// RECUPERACIÓN DE CLAVE: cuando el usuario toca el link del mail,
+// Supabase dispara el evento PASSWORD_RECOVERY. Mostramos una
+// pantalla para que cargue su clave nueva.
+// ============================================================
+function mostrarPantallaNuevaClave() {
+  $("pantallaLogin").hidden = true;
+  $("app").hidden = true;
+  $("pantallaNuevaClave").hidden = false;
+}
+
+sbClient.auth.onAuthStateChange((event) => {
+  if (event === "PASSWORD_RECOVERY") {
+    mostrarPantallaNuevaClave();
+  }
+});
+
+// Por si el evento no llega a tiempo, también nos guiamos por la URL.
+if (/type=recovery/.test(location.hash)) {
+  mostrarPantallaNuevaClave();
+}
+
+if ($("formNuevaClave")) {
+  $("formNuevaClave").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    ocultarAviso($("nuevaClaveError"));
+    ocultarAviso($("nuevaClaveOk"));
+    const nueva = $("inputNuevaClave").value;
+    try {
+      const { error } = await sbClient.auth.updateUser({ password: nueva });
+      if (error) throw error;
+      mostrarAviso($("nuevaClaveOk"), "Tu clave se actualizó. Ya podés entrar con la nueva.");
+      $("formNuevaClave").reset();
+      setTimeout(() => { location.href = location.origin + location.pathname; }, 2500);
+    } catch (err) {
+      mostrarAviso($("nuevaClaveError"), traducirErrorAuth(err));
+    }
+  });
+}
+
+// ============================================================
+// CAMBIAR CLAVE (desde adentro de Config, con sesión ya iniciada)
+// ============================================================
+if ($("formCambiarClave")) {
+  $("formCambiarClave").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    ocultarAviso($("cambiarClaveError"));
+    ocultarAviso($("cambiarClaveOk"));
+    const nueva = $("inputCambiarClaveNueva").value;
+    const repetir = $("inputCambiarClaveRepetir").value;
+    if (nueva !== repetir) {
+      return mostrarAviso($("cambiarClaveError"), "Las claves no coinciden.");
+    }
+    try {
+      const { error } = await sbClient.auth.updateUser({ password: nueva });
+      if (error) throw error;
+      mostrarAviso($("cambiarClaveOk"), "Tu clave se actualizó correctamente.");
+      $("formCambiarClave").reset();
+    } catch (err) {
+      mostrarAviso($("cambiarClaveError"), traducirErrorAuth(err));
+    }
+  });
+}
+
 $("btnSalir").addEventListener("click", async () => {
   await cerrarSesion();
   location.reload();
 });
 
+if ($("btnSalirPruebaVencida")) {
+  $("btnSalirPruebaVencida").addEventListener("click", async () => {
+    await cerrarSesion();
+    location.reload();
+  });
+}
+
 // ============================================================
 // ARRANQUE DE LA APP (después de login)
 // ============================================================
+// Cuántos días de prueba gratis tiene cada usuario nuevo.
+const DIAS_DE_PRUEBA = 15;
+
+function pruebaVencida() {
+  if (perfil?.plan_activo) return false; // ya pagó, no hay bloqueo
+  if (!usuario?.created_at) return false; // por las dudas, no bloqueamos si no sabemos la fecha
+  const creado = new Date(usuario.created_at).getTime();
+  const dias = (Date.now() - creado) / (1000 * 60 * 60 * 24);
+  return dias > DIAS_DE_PRUEBA;
+}
+
 async function arrancarApp() {
   usuario = await usuarioActual();
   if (!usuario) return;
-
-  $("pantallaLogin").hidden = true;
-  $("app").hidden = false;
 
   try {
     perfil = await obtenerPerfil(usuario.id);
   } catch {
     perfil = { moneda: "$" };
   }
+
+  if (pruebaVencida()) {
+    $("pantallaLogin").hidden = true;
+    $("app").hidden = true;
+    $("pantallaPruebaVencida").hidden = false;
+    return;
+  }
+
+  $("pantallaLogin").hidden = true;
+  $("app").hidden = false;
   $("inputMoneda").value = moneda();
   aplicarIdioma(perfil?.idioma || localStorage.getItem("fs_idioma") || "es");
   if ($("selectIdioma")) $("selectIdioma").value = idiomaActual;
 
   await cargarCuentasYCategorias();
   await cargarMesActual();
+  suscribirActualizacionEnVivo();
 }
+
+// ============================================================
+// ACTUALIZACIÓN EN VIVO: cuando se guarda un movimiento, cuenta o
+// categoría (desde este dispositivo o cualquier otro), Supabase
+// nos avisa al instante y refrescamos, sin tener que preguntar
+// "¿hay algo nuevo?" cada tanto.
+// ============================================================
+let canalActualizacionEnVivo = null;
+
+function suscribirActualizacionEnVivo() {
+  if (canalActualizacionEnVivo) return; // ya suscripto, no duplicar
+  canalActualizacionEnVivo = sbClient
+    .channel("cambios-" + usuario.id)
+    .on(
+      "postgres_changes",
+      { event: "*", schema: "public", table: "movimientos", filter: `user_id=eq.${usuario.id}` },
+      () => cargarMesActual()
+    )
+    .on(
+      "postgres_changes",
+      { event: "*", schema: "public", table: "cuentas", filter: `user_id=eq.${usuario.id}` },
+      () => cargarCuentasYCategorias()
+    )
+    .on(
+      "postgres_changes",
+      { event: "*", schema: "public", table: "categorias", filter: `user_id=eq.${usuario.id}` },
+      () => cargarCuentasYCategorias()
+    )
+    .subscribe();
+}
+
+// Red de seguridad: si por lo que sea el mensaje en vivo no llega
+// (por ejemplo, el celu estuvo sin señal y se reconectó), al volver
+// a la pestaña igual refrescamos una vez.
+async function actualizarDatosSiCorresponde() {
+  if (!usuario || !$("app") || $("app").hidden) return;
+  try {
+    await cargarMesActual();
+  } catch {}
+}
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible") actualizarDatosSiCorresponde();
+});
+window.addEventListener("focus", actualizarDatosSiCorresponde);
 
 async function cargarCuentasYCategorias() {
   cuentas = await listarCuentas(usuario.id);
@@ -436,6 +684,7 @@ async function cargarMesActual() {
   renderResumen();
   renderMovimientos();
   await renderVistaAnalisis();
+  if (subVistaAnalisis === "diaadia") renderDiaADia();
 }
 
 $("btnMesAnterior").addEventListener("click", () => {
@@ -465,6 +714,29 @@ document.querySelectorAll(".navbar-item").forEach((btn) => {
     document.querySelectorAll(".vista").forEach((v) => (v.hidden = true));
     vistaActiva = btn.dataset.vista;
     $(vistaActiva).hidden = false;
+  });
+});
+
+// ============================================================
+// NAVEGACIÓN ENTRE TARJETAS DE CONFIG (Idioma, Moneda, Cuentas, etc.)
+// ============================================================
+document.querySelectorAll(".config-tarjeta").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const panelId = btn.dataset.config;
+    if (!panelId) return;
+    const menu = $("configMenu");
+    if (menu) menu.hidden = true;
+    document.querySelectorAll(".config-panel").forEach((p) => (p.hidden = true));
+    const panel = $(panelId);
+    if (panel) panel.hidden = false;
+  });
+});
+
+document.querySelectorAll(".config-volver").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".config-panel").forEach((p) => (p.hidden = true));
+    const menu = $("configMenu");
+    if (menu) menu.hidden = false;
   });
 });
 
@@ -610,32 +882,39 @@ function renderResumenAnalisis(lista) {
   $("analisisGastos").textContent = formatoMonto(gas);
 }
 
-function renderCategoriasAnalisis(lista) {
+let tipoAnalisis = "Gasto";
+let ultimaListaAnalisis = [];
+
+function renderCategoriasAnalisis(lista, tipo) {
   const cont = $("listaAnalisis");
+  const esGasto = tipo === "Gasto";
+  $("tituloListaAnalisis").textContent = esGasto ? t("tituloGastosPorCategoria") : t("tituloIngresosPorCategoria");
   const porCategoria = {};
-  let totalGastos = 0;
-  lista.filter((m) => m.tipo === "Gasto").forEach((m) => {
+  let total = 0;
+  lista.filter((m) => m.tipo === tipo).forEach((m) => {
     porCategoria[m.categoria] = (porCategoria[m.categoria] || 0) + Number(m.monto);
-    totalGastos += Number(m.monto);
+    total += Number(m.monto);
   });
   const entradas = Object.entries(porCategoria).sort((a, b) => b[1] - a[1]);
   if (!entradas.length) {
     cont.innerHTML = `
       <div class="grafico-dona grafico-dona-vacio"></div>
-      <div class="vacio">No hay gastos cargados en este período.</div>`;
+      <div class="vacio">${esGasto ? t("analisisSinGastos") : t("analisisSinIngresos")}</div>`;
     return;
   }
-  const colores = ["#C4562E", "#2F6F5E", "#D9A441", "#5B7FBF", "#8B5FBF", "#4FA3A0", "#C2707C", "#7A8B4F"];
+  const colores = esGasto
+    ? ["#C4562E", "#2F6F5E", "#D9A441", "#5B7FBF", "#8B5FBF", "#4FA3A0", "#C2707C", "#7A8B4F"]
+    : ["#2F6F5E", "#4FA3A0", "#5B7FBF", "#D9A441", "#8B5FBF", "#C4562E", "#7A8B4F", "#C2707C"];
   let acumulado = 0;
   const segmentos = entradas.map(([, monto], i) => {
-    const pct = (monto / totalGastos) * 100;
+    const pct = (monto / total) * 100;
     const desde = acumulado;
     acumulado += pct;
     return `${colores[i % colores.length]} ${desde}% ${acumulado}%`;
   }).join(", ");
 
   const leyenda = entradas.map(([cat, monto], i) => {
-    const pct = totalGastos > 0 ? (monto / totalGastos) * 100 : 0;
+    const pct = total > 0 ? (monto / total) * 100 : 0;
     const color = colores[i % colores.length];
     return `
       <div class="analisis-item">
@@ -650,8 +929,8 @@ function renderCategoriasAnalisis(lista) {
   cont.innerHTML = `
     <div class="grafico-dona" style="background:conic-gradient(${segmentos})">
       <div class="grafico-dona-centro">
-        <span class="grafico-dona-total">${formatoMonto(totalGastos)}</span>
-        <span class="grafico-dona-label">Total gastos</span>
+        <span class="grafico-dona-total">${formatoMonto(total)}</span>
+        <span class="grafico-dona-label">${esGasto ? t("lblTotalGastos") : t("lblTotalIngresos")}</span>
       </div>
     </div>
     ${leyenda}`;
@@ -666,8 +945,9 @@ async function renderVistaAnalisis() {
   } else {
     lista = movimientos;
   }
+  ultimaListaAnalisis = lista;
   renderResumenAnalisis(lista);
-  renderCategoriasAnalisis(lista);
+  renderCategoriasAnalisis(lista, tipoAnalisis);
 }
 
 document.querySelectorAll("#segmentadoAnalisis .segmentado-item").forEach((btn) => {
@@ -676,6 +956,212 @@ document.querySelectorAll("#segmentadoAnalisis .segmentado-item").forEach((btn) 
     btn.classList.add("activo");
     periodoAnalisis = btn.dataset.periodo;
     renderVistaAnalisis();
+  });
+});
+
+document.querySelectorAll("#segmentadoTipoAnalisis .segmentado-item").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll("#segmentadoTipoAnalisis .segmentado-item").forEach((b) => b.classList.remove("activo"));
+    btn.classList.add("activo");
+    tipoAnalisis = btn.dataset.tipoAnalisis;
+    renderCategoriasAnalisis(ultimaListaAnalisis, tipoAnalisis);
+  });
+});
+
+// ============================================================
+// RENDER: Análisis — Evolución mensual / Día a día
+// ============================================================
+let subVistaAnalisis = "categorias";
+const NOMBRES_MES_CORTO = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"];
+
+function agruparPorMes(lista) {
+  const porMes = {};
+  lista.forEach((m) => {
+    const clave = m.fecha.slice(0, 7);
+    if (!porMes[clave]) porMes[clave] = { ing: 0, gas: 0 };
+    if (m.tipo === "Ingreso") porMes[clave].ing += Number(m.monto);
+    else porMes[clave].gas += Number(m.monto);
+  });
+  return porMes;
+}
+
+function abreviarNumero(n) {
+  const signo = n < 0 ? "-" : "";
+  const abs = Math.abs(n);
+  if (abs >= 1e6) return signo + (abs / 1e6).toFixed(1).replace(/\.0$/, "") + "M";
+  if (abs >= 1e3) return signo + (abs / 1e3).toFixed(1).replace(/\.0$/, "") + "k";
+  return signo + Math.round(abs);
+}
+
+async function renderEvolucionMensual() {
+  const cont = $("graficoEvolucion");
+  const todos = await listarTodosLosMovimientos(usuario.id);
+  if (!todos.length) {
+    cont.innerHTML = `<div class="vacio" data-i18n="analisisSinDatos">Todavía no hay movimientos cargados.</div>`;
+    $("evolBalance").textContent = "—";
+    $("evolIngresos").textContent = "—";
+    $("evolGastos").textContent = "—";
+    return;
+  }
+  const porMes = agruparPorMes(todos);
+  const claves = Object.keys(porMes).sort().slice(-6);
+  const max = Math.max(1, ...claves.map((c) => Math.max(porMes[c].ing, porMes[c].gas)));
+
+  const totIng = claves.reduce((s, c) => s + porMes[c].ing, 0);
+  const totGas = claves.reduce((s, c) => s + porMes[c].gas, 0);
+  $("evolBalance").textContent = formatoMonto(totIng - totGas);
+  $("evolIngresos").textContent = formatoMonto(totIng);
+  $("evolGastos").textContent = formatoMonto(totGas);
+
+  const ejeY = `
+    <div class="grafico-eje-y">
+      <span>${abreviarNumero(max)}</span>
+      <span>${abreviarNumero(max / 2)}</span>
+      <span>0</span>
+    </div>`;
+
+  const barras = claves.map((clave) => {
+    const [anio, mes] = clave.split("-");
+    const { ing, gas } = porMes[clave];
+    const altoIng = Math.max(2, Math.round((ing / max) * 100));
+    const altoGas = Math.max(2, Math.round((gas / max) * 100));
+    const neto = ing - gas;
+    const label = `${NOMBRES_MES_CORTO[Number(mes) - 1]} ${anio.slice(2)}`;
+    return `
+      <div class="barra-mes" title="${escapeHTML(label)}: ${t("lblIngresos")} ${formatoMonto(ing)} · ${t("lblGastos")} ${formatoMonto(gas)}">
+        <div class="barra-par">
+          <div class="barra barra-ingreso" style="height:${altoIng}%"></div>
+          <div class="barra barra-gasto" style="height:${altoGas}%"></div>
+        </div>
+        <span class="barra-mes-label">${escapeHTML(label)}</span>
+        <span class="barra-mes-neto ${neto >= 0 ? "color-ingreso" : "color-gasto"}">${neto >= 0 ? "+" : ""}${abreviarNumero(neto)}</span>
+      </div>`;
+  }).join("");
+
+  cont.innerHTML = `
+    <div class="grafico-barras-fila">
+      ${ejeY}
+      <div class="grafico-barras">${barras}</div>
+    </div>
+    <div class="grafico-leyenda">
+      <span class="grafico-leyenda-item"><span class="grafico-leyenda-swatch" style="background:#2F6F5E"></span>${t("lblIngresos")}</span>
+      <span class="grafico-leyenda-item"><span class="grafico-leyenda-swatch" style="background:#C4562E"></span>${t("lblGastos")}</span>
+    </div>`;
+}
+
+function pathSuave(puntos) {
+  if (puntos.length < 2) return "";
+  let d = `M ${puntos[0][0]},${puntos[0][1]}`;
+  for (let i = 0; i < puntos.length - 1; i++) {
+    const [x0, y0] = puntos[i];
+    const [x1, y1] = puntos[i + 1];
+    const mx = (x0 + x1) / 2;
+    const my = (y0 + y1) / 2;
+    d += ` Q ${x0},${y0} ${mx},${my}`;
+  }
+  const [xu, yu] = puntos[puntos.length - 1];
+  d += ` L ${xu},${yu}`;
+  return d;
+}
+
+function renderDiaADia() {
+  const cont = $("graficoDiaADia");
+  const { ing: totIng, gas: totGas, balance } = calcularResumenLista(movimientos);
+  $("diaBalance").textContent = formatoMonto(balance);
+  $("diaIngresos").textContent = formatoMonto(totIng);
+  $("diaGastos").textContent = formatoMonto(totGas);
+
+  if (!movimientos.length) {
+    cont.innerHTML = `<div class="vacio" data-i18n="analisisSinDatos">Todavía no hay movimientos cargados.</div>`;
+    return;
+  }
+  const anio = fechaVista.getFullYear();
+  const mes = fechaVista.getMonth();
+  const ultimoDia = new Date(anio, mes + 1, 0).getDate();
+
+  const porDia = {};
+  for (let d = 1; d <= ultimoDia; d++) porDia[d] = { ing: 0, gas: 0 };
+  movimientos.forEach((m) => {
+    const dia = Number(m.fecha.slice(8, 10));
+    if (!porDia[dia]) return;
+    if (m.tipo === "Ingreso") porDia[dia].ing += Number(m.monto);
+    else porDia[dia].gas += Number(m.monto);
+  });
+
+  let accIng = 0, accGas = 0;
+  const valoresIng = [], valoresGas = [];
+  for (let d = 1; d <= ultimoDia; d++) {
+    accIng += porDia[d].ing;
+    accGas += porDia[d].gas;
+    valoresIng.push(accIng);
+    valoresGas.push(accGas);
+  }
+  const max = Math.max(1, accIng, accGas);
+  const ancho = 320, alto = 190, padIzq = 8, padDer = 8, padArriba = 12, padAbajo = 26;
+  const baseY = alto - padAbajo;
+  const pasoX = (ancho - padIzq - padDer) / (ultimoDia - 1 || 1);
+  const x = (i) => padIzq + i * pasoX;
+  const y = (v) => baseY - (v / max) * (baseY - padArriba);
+
+  const puntosIng = valoresIng.map((v, i) => [x(i), y(v)]);
+  const puntosGas = valoresGas.map((v, i) => [x(i), y(v)]);
+  const lineaIng = pathSuave(puntosIng);
+  const lineaGas = pathSuave(puntosGas);
+  const areaIng = `${lineaIng} L ${x(ultimoDia - 1)},${baseY} L ${x(0)},${baseY} Z`;
+  const areaGas = `${lineaGas} L ${x(ultimoDia - 1)},${baseY} L ${x(0)},${baseY} Z`;
+
+  const gridY = [0, 0.5, 1].map((f) => {
+    const yy = baseY - f * (baseY - padArriba);
+    return `
+      <line x1="${padIzq}" y1="${yy}" x2="${ancho - padDer}" y2="${yy}" stroke="#E4DDD1" stroke-width="1" />
+      <text x="${padIzq}" y="${yy - 3}" font-size="9" fill="#6B7580">${abreviarNumero(max * f)}</text>`;
+  }).join("");
+
+  const diasEtiqueta = ultimoDia >= 20
+    ? [1, Math.round(ultimoDia * 0.5), ultimoDia]
+    : [1, ultimoDia];
+  const ejeX = diasEtiqueta.map((d) => `
+    <text x="${x(d - 1)}" y="${alto - 8}" font-size="9" fill="#6B7580" text-anchor="${d === 1 ? "start" : d === ultimoDia ? "end" : "middle"}">${d}</text>`).join("");
+
+  cont.innerHTML = `
+    <svg viewBox="0 0 ${ancho} ${alto}">
+      <defs>
+        <linearGradient id="gradIngreso" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#2F6F5E" stop-opacity="0.35" />
+          <stop offset="100%" stop-color="#2F6F5E" stop-opacity="0" />
+        </linearGradient>
+        <linearGradient id="gradGasto" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#C4562E" stop-opacity="0.30" />
+          <stop offset="100%" stop-color="#C4562E" stop-opacity="0" />
+        </linearGradient>
+      </defs>
+      ${gridY}
+      <path d="${areaGas}" fill="url(#gradGasto)" stroke="none" />
+      <path d="${areaIng}" fill="url(#gradIngreso)" stroke="none" />
+      <path d="${lineaGas}" fill="none" stroke="#C4562E" stroke-width="2.5" stroke-linecap="round" />
+      <path d="${lineaIng}" fill="none" stroke="#2F6F5E" stroke-width="2.5" stroke-linecap="round" />
+      ${ejeX}
+    </svg>
+    <div class="grafico-leyenda">
+      <span class="grafico-leyenda-item"><span class="grafico-leyenda-swatch" style="background:#2F6F5E"></span>${t("lblIngresos")} ${formatoMonto(accIng)}</span>
+      <span class="grafico-leyenda-item"><span class="grafico-leyenda-swatch" style="background:#C4562E"></span>${t("lblGastos")} ${formatoMonto(accGas)}</span>
+    </div>`;
+}
+
+function actualizarSubVistaAnalisis() {
+  $("subVistaCategorias").hidden = subVistaAnalisis !== "categorias";
+  $("subVistaEvolucion").hidden = subVistaAnalisis !== "evolucion";
+  $("subVistaDiaADia").hidden = subVistaAnalisis !== "diaadia";
+  if (subVistaAnalisis === "evolucion") renderEvolucionMensual();
+  if (subVistaAnalisis === "diaadia") renderDiaADia();
+}
+
+document.querySelectorAll("#segmentadoVistaAnalisis .segmentado-item").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll("#segmentadoVistaAnalisis .segmentado-item").forEach((b) => b.classList.remove("activo"));
+    btn.classList.add("activo");
+    subVistaAnalisis = btn.dataset.vistaAnalisis;
+    actualizarSubVistaAnalisis();
   });
 });
 
@@ -691,18 +1177,28 @@ function renderCuentasConfig() {
 }
 
 function renderCategoriasConfig() {
-  const cont = $("listaCategorias");
-  cont.innerHTML = categorias.length
-    ? categorias.map((c) => filaEditable(c, "categoria")).join("")
-    : `<div class="vacio">Todavía no agregaste ninguna categoría.</div>`;
+  const gasto = categorias.filter((c) => (c.tipo || "Gasto") === "Gasto");
+  const ingreso = categorias.filter((c) => c.tipo === "Ingreso");
+  $("listaCategoriasGasto").innerHTML = gasto.length
+    ? gasto.map((c) => filaEditable(c, "categoria")).join("")
+    : `<div class="vacio">Todavía no agregaste ninguna categoría de gasto.</div>`;
+  $("listaCategoriasIngreso").innerHTML = ingreso.length
+    ? ingreso.map((c) => filaEditable(c, "categoria")).join("")
+    : `<div class="vacio">Todavía no agregaste ninguna categoría de ingreso.</div>`;
   enlazarAccionesEditables("categoria");
 }
 
 function filaEditable(item, tipo) {
+  const esCategoria = tipo === "categoria";
+  const tipoItem = item.tipo || "Gasto";
+  const botonTipo = esCategoria
+    ? `<button data-accion="cambiar-tipo" data-tipo="${tipo}" title="Cambiar a ${tipoItem === "Gasto" ? "Ingreso" : "Gasto"}">${tipoItem === "Gasto" ? "↔️ Pasar a Ingreso" : "↔️ Pasar a Gasto"}</button>`
+    : "";
   return `
     <div class="editable-item" data-id="${item.id}">
       <span>${escapeHTML(item.nombre)}</span>
       <div class="editable-acciones">
+        ${botonTipo}
         <button data-accion="editar" data-tipo="${tipo}" title="Editar">✏️</button>
         <button data-accion="borrar" data-tipo="${tipo}" title="Borrar">🗑️</button>
       </div>
@@ -710,7 +1206,7 @@ function filaEditable(item, tipo) {
 }
 
 function enlazarAccionesEditables(tipo) {
-  const selector = tipo === "cuenta" ? "#listaCuentas" : "#listaCategorias";
+  const selector = tipo === "cuenta" ? "#listaCuentas" : "#listaCategoriasGasto, #listaCategoriasIngreso";
   document.querySelectorAll(`${selector} [data-accion]`).forEach((btn) => {
     btn.addEventListener("click", async (e) => {
       const item = e.target.closest(".editable-item");
@@ -738,6 +1234,15 @@ function enlazarAccionesEditables(tipo) {
           await cargarCuentasYCategorias();
           mostrarToast("Borrado.");
         } catch (err) { mostrarToast("No se pudo borrar (¿tiene movimientos asociados?)"); }
+      }
+
+      if (accion === "cambiar-tipo") {
+        const nuevoTipo = (actual.tipo || "Gasto") === "Gasto" ? "Ingreso" : "Gasto";
+        try {
+          await cambiarTipoCategoria(id, nuevoTipo);
+          await cargarCuentasYCategorias();
+          mostrarToast(`"${actual.nombre}" ahora es una categoría de ${nuevoTipo === "Gasto" ? "gasto" : "ingreso"}.`);
+        } catch (err) { mostrarToast(traducirErrorDatos(err)); }
       }
     });
   });
@@ -770,6 +1275,24 @@ if ($("selectIdioma")) {
   });
 }
 
+if ($("selectIdiomaTopbar")) {
+  $("selectIdiomaTopbar").addEventListener("change", async (e) => {
+    const nuevoIdioma = e.target.value;
+    aplicarIdioma(nuevoIdioma);
+    try {
+      await actualizarIdioma(usuario.id, nuevoIdioma);
+      if (perfil) perfil.idioma = nuevoIdioma;
+    } catch (err) {
+      mostrarToast(traducirErrorDatos(err));
+    }
+    renderResumen();
+    renderMovimientos();
+    renderCuentasConfig();
+    renderCategoriasConfig();
+    await renderVistaAnalisis();
+  });
+}
+
 $("btnAgregarCuenta").addEventListener("click", async () => {
   const input = $("inputNuevaCuenta");
   const v = input.value.trim();
@@ -781,20 +1304,35 @@ $("btnAgregarCuenta").addEventListener("click", async () => {
   } catch (err) { mostrarToast(traducirErrorDatos(err)); }
 });
 
+let tipoNuevaCategoria = "Gasto";
+document.querySelectorAll("#segmentadoTipoNuevaCategoria .segmentado-item").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll("#segmentadoTipoNuevaCategoria .segmentado-item").forEach((b) => b.classList.remove("activo"));
+    btn.classList.add("activo");
+    tipoNuevaCategoria = btn.dataset.tipoNuevaCategoria;
+  });
+});
+
 $("btnAgregarCategoria").addEventListener("click", async () => {
   const input = $("inputNuevaCategoria");
   const v = input.value.trim();
   if (!v) return;
   try {
-    await crearCategoria(usuario.id, v);
+    await crearCategoria(usuario.id, v, tipoNuevaCategoria);
     input.value = "";
     await cargarCuentasYCategorias();
   } catch (err) { mostrarToast(traducirErrorDatos(err)); }
 });
 
+function renderSelectCategorias(tipo) {
+  const tipoActivo = tipo || document.querySelector("#segmentadoTipo .activo")?.dataset.tipo || "Gasto";
+  const filtradas = categorias.filter((c) => (c.tipo || "Gasto") === tipoActivo);
+  $("movCategoria").innerHTML = filtradas.map((c) => `<option value="${escapeHTML(c.nombre)}">${escapeHTML(c.nombre)}</option>`).join("") || `<option value="">-- Agregá una categoría en Config --</option>`;
+}
+
 function renderSelects() {
   $("movCuenta").innerHTML = cuentas.map((c) => `<option value="${escapeHTML(c.nombre)}">${escapeHTML(c.nombre)}</option>`).join("") || `<option value="">-- Agregá una cuenta en Config --</option>`;
-  $("movCategoria").innerHTML = categorias.map((c) => `<option value="${escapeHTML(c.nombre)}">${escapeHTML(c.nombre)}</option>`).join("") || `<option value="">-- Agregá una categoría en Config --</option>`;
+  renderSelectCategorias();
 }
 
 // Si el movimiento tiene una cuenta o categoría que ya no está en la lista
@@ -838,13 +1376,13 @@ function abrirModalNuevo() {
 function abrirModalEditar(id) {
   const m = movimientos.find((x) => x.id === id);
   if (!m) return;
+  seleccionarTipo(m.tipo);
   renderSelects();
   asegurarOpcionSelect("movCuenta", m.cuenta);
   asegurarOpcionSelect("movCategoria", m.categoria);
   $("movId").value = m.id;
   $("modalTitulo").textContent = t("modalEditarTitulo");
   $("btnBorrarMov").hidden = false;
-  seleccionarTipo(m.tipo);
   $("movFecha").value = m.fecha;
   $("movCuenta").value = m.cuenta;
   $("movCategoria").value = m.categoria;
@@ -863,7 +1401,10 @@ function seleccionarTipo(tipo) {
   });
 }
 document.querySelectorAll("#segmentadoTipo .segmentado-item").forEach((b) => {
-  b.addEventListener("click", () => seleccionarTipo(b.dataset.tipo));
+  b.addEventListener("click", () => {
+    seleccionarTipo(b.dataset.tipo);
+    renderSelectCategorias(b.dataset.tipo);
+  });
 });
 
 // ============================================================
@@ -1240,9 +1781,15 @@ function escapeHTML(txt) {
 // ============================================================
 // INICIO
 // ============================================================
+// Si el link del mail de "olvidé mi clave" nos trae acá, no arrancamos
+// la app normal: dejamos que se muestre la pantalla de nueva clave.
+const esLinkDeRecuperacion = /type=recovery/.test(location.hash);
+
 (async function init() {
-  const u = await usuarioActual();
-  if (u) await arrancarApp();
+  if (!esLinkDeRecuperacion) {
+    const u = await usuarioActual();
+    if (u) await arrancarApp();
+  }
 
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("sw.js").catch(() => {});
