@@ -27,7 +27,16 @@
 <input type="email" id="inputEmail" required autocomplete="username" placeholder="tu@email.com">
 </label>
 <label><span data-i18n="labelClave">Clave</span>
+<div class="campo-clave">
 <input type="password" id="inputClave" required autocomplete="current-password" data-i18n-placeholder="placeholderClave" placeholder="Mínimo 6 caracteres">
+<button type="button" class="btn-ojito" data-target="inputClave" data-i18n-aria="ariaMostrarClave" aria-label="Mostrar clave">👁️</button>
+</div>
+</label>
+<label id="labelClaveConfirmar" hidden><span data-i18n="labelRepetirClave">Repetir clave</span>
+<div class="campo-clave">
+<input type="password" id="inputClaveConfirmar" autocomplete="new-password" data-i18n-placeholder="placeholderClave" placeholder="Mínimo 6 caracteres">
+<button type="button" class="btn-ojito" data-target="inputClaveConfirmar" data-i18n-aria="ariaMostrarClave" aria-label="Mostrar clave">👁️</button>
+</div>
 </label>
 <button type="submit" class="boton boton-primario boton-ancho" id="btnIngresar" data-i18n="btnEntrar">Entrar</button>
 </form>
@@ -52,7 +61,10 @@ Al crear una cuenta aceptás nuestros
 <div id="nuevaClaveOk" class="aviso aviso-ok" hidden></div>
 <form id="formNuevaClave" class="form-login">
 <label><span data-i18n="labelNuevaClave">Nueva clave</span>
+<div class="campo-clave">
 <input type="password" id="inputNuevaClave" required minlength="6" autocomplete="new-password" data-i18n-placeholder="placeholderClave" placeholder="Mínimo 6 caracteres">
+<button type="button" class="btn-ojito" data-target="inputNuevaClave" data-i18n-aria="ariaMostrarClave" aria-label="Mostrar clave">👁️</button>
+</div>
 </label>
 <button type="submit" class="boton boton-primario boton-ancho" id="btnGuardarNuevaClave" data-i18n="btnGuardarNuevaClave">Guardar nueva clave</button>
 </form>
@@ -334,12 +346,18 @@ Al crear una cuenta aceptás nuestros
 <form id="formCambiarClave">
 <div class="fila-config">
 <label><span data-i18n="labelNuevaClave">Nueva clave</span>
+<div class="campo-clave">
 <input type="password" id="inputCambiarClaveNueva" required minlength="6" autocomplete="new-password" data-i18n-placeholder="placeholderClave" placeholder="Mínimo 6 caracteres">
+<button type="button" class="btn-ojito" data-target="inputCambiarClaveNueva" data-i18n-aria="ariaMostrarClave" aria-label="Mostrar clave">👁️</button>
+</div>
 </label>
 </div>
 <div class="fila-config">
 <label><span data-i18n="labelRepetirClave">Repetir clave nueva</span>
+<div class="campo-clave">
 <input type="password" id="inputCambiarClaveRepetir" required minlength="6" autocomplete="new-password" data-i18n-placeholder="placeholderClave" placeholder="Mínimo 6 caracteres">
+<button type="button" class="btn-ojito" data-target="inputCambiarClaveRepetir" data-i18n-aria="ariaMostrarClave" aria-label="Mostrar clave">👁️</button>
+</div>
 </label>
 </div>
 <div class="fila-config">
