@@ -28,6 +28,12 @@ async function enviarRecuperacionClave(email) {
   if (error) throw error;
 }
 
+async function eliminarCuenta() {
+  const { error } = await sbClient.rpc("eliminar_mi_cuenta");
+  if (error) throw error;
+  await sbClient.auth.signOut();
+}
+
 function traducirErrorAuth(error) {
   const msg = String(error?.message || "").toLowerCase();
   if (msg.includes("invalid login credentials")) return "Email o clave incorrectos.";
@@ -35,5 +41,6 @@ function traducirErrorAuth(error) {
   if (msg.includes("password") && msg.includes("least")) return "La clave debe tener al menos 6 caracteres.";
   if (msg.includes("email") && msg.includes("valid")) return "Ese email no parece válido.";
   if (msg.includes("rate limit")) return "Demasiados intentos. Esperá un momento y probá de nuevo.";
+  if (msg.includes("email not confirmed")) return "Todavía no confirmaste tu cuenta. Revisá tu email (carpeta spam también) y tocá el link de confirmación.";
   return "Ocurrió un problema: " + (error?.message || "intentá de nuevo.");
 }
