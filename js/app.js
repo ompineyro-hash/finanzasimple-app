@@ -110,6 +110,9 @@ const TRADUCCIONES = {
     tituloZonaRiesgo: "Zona de riesgo",
     textoZonaRiesgo: "Esto borra tus movimientos, cuentas y categorías para empezar de cero. Tu usuario y tu clave no se ven afectados.",
     btnReiniciar: "🧹 Reiniciar todos mis datos",
+    tituloEliminarCuenta: "Eliminar cuenta",
+    textoEliminarCuenta: "Esto borra tu cuenta y todos tus datos de forma permanente. No se puede deshacer y vas a tener que crear una cuenta nueva si querés volver a usar Ingasto.",
+    btnEliminarCuenta: "🗑️ Eliminar mi cuenta",
     ariaNuevoMov: "Nuevo movimiento",
     navMovimientos: "Movimientos",
     navAnalisis: "Análisis",
@@ -223,6 +226,9 @@ const TRADUCCIONES = {
     tituloZonaRiesgo: "Zona de risco",
     textoZonaRiesgo: "Isso apaga seus lançamentos, contas e categorias para começar do zero. Seu usuário e sua senha não são afetados.",
     btnReiniciar: "🧹 Reiniciar todos os meus dados",
+    tituloEliminarCuenta: "Excluir conta",
+    textoEliminarCuenta: "Isso apaga sua conta e todos os seus dados de forma permanente. Não pode ser desfeito e você vai precisar criar uma conta nova se quiser usar o Ingasto de novo.",
+    btnEliminarCuenta: "🗑️ Excluir minha conta",
     ariaNuevoMov: "Novo lançamento",
     navMovimientos: "Lançamentos",
     navAnalisis: "Análise",
@@ -336,6 +342,9 @@ const TRADUCCIONES = {
     tituloZonaRiesgo: "Danger zone",
     textoZonaRiesgo: "This deletes your movements, accounts and categories to start fresh. Your user and password are not affected.",
     btnReiniciar: "🧹 Reset all my data",
+    tituloEliminarCuenta: "Delete account",
+    textoEliminarCuenta: "This permanently deletes your account and all your data. It can't be undone, and you'll need to create a new account if you want to use Ingasto again.",
+    btnEliminarCuenta: "🗑️ Delete my account",
     ariaNuevoMov: "New movement",
     navMovimientos: "Movements",
     navAnalisis: "Analysis",
@@ -1812,6 +1821,23 @@ $("btnReiniciarDatos").addEventListener("click", async () => {
     mostrarToast("Tus datos fueron reiniciados.");
   } catch (err) {
     mostrarToast(traducirErrorDatos(err));
+  }
+});
+
+// ============================================================
+// ELIMINAR CUENTA
+// ============================================================
+$("btnEliminarCuenta").addEventListener("click", async () => {
+  const paso1 = confirm("Vas a ELIMINAR TU CUENTA por completo: tu usuario, tu clave y todos tus datos (movimientos, cuentas, categorías).\n\nEsta acción no se puede deshacer.\n\n¿Continuar?");
+  if (!paso1) return;
+  const paso2 = confirm("Última confirmación: tu cuenta se va a borrar ahora mismo y no vas a poder recuperarla.\n\n¿Eliminar mi cuenta para siempre?");
+  if (!paso2) return;
+
+  try {
+    await eliminarCuenta();
+    location.href = location.origin + location.pathname;
+  } catch (err) {
+    mostrarToast(traducirErrorAuth(err));
   }
 });
 
