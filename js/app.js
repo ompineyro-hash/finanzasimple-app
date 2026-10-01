@@ -450,7 +450,9 @@ function formatoFecha(str) {
 }
 
 function nombreMes(fecha) {
-  return fecha.toLocaleString("es-AR", { month: "long", year: "numeric" });
+  const locale = LOCALES_POR_IDIOMA[idiomaActual] || "es-AR";
+  const texto = fecha.toLocaleString(locale, { month: "long", year: "numeric" });
+  return texto.charAt(0).toUpperCase() + texto.slice(1);
 }
 
 // Fecha de hoy en la barra superior, en el idioma elegido.
@@ -459,9 +461,10 @@ function mostrarFechaHoy() {
   const el = $("fechaHoy");
   if (!el) return;
   const locale = LOCALES_POR_IDIOMA[idiomaActual] || "es-AR";
-  el.textContent = new Date().toLocaleDateString(locale, {
+  const texto = new Date().toLocaleDateString(locale, {
     weekday: "long", day: "numeric", month: "long", year: "numeric",
   });
+  el.textContent = texto.charAt(0).toUpperCase() + texto.slice(1);
 }
 
 function numeroDesdeTexto(txt) {
