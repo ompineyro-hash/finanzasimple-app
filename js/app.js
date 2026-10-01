@@ -524,8 +524,8 @@ $("formLogin").addEventListener("submit", async (e) => {
       $("formLogin").reset();
       actualizarTextosDinamicosIdioma();
     } else {
-      await iniciarSesion(email, clave);
-      await arrancarApp();
+      const resultadoLogin = await iniciarSesion(email, clave);
+      await arrancarApp(resultadoLogin?.user);
     }
   } catch (err) {
     mostrarAviso($("loginError"), err?.message === "Las claves no coinciden." ? err.message : traducirErrorAuth(err));
@@ -642,8 +642,8 @@ function pruebaVencida() {
   return dias > DIAS_DE_PRUEBA;
 }
 
-async function arrancarApp() {
-  usuario = await usuarioActual();
+async function arrancarApp(usuarioYaObtenido) {
+  usuario = usuarioYaObtenido || (await usuarioActual());
   if (!usuario) return;
 
   try {
@@ -665,8 +665,11 @@ async function arrancarApp() {
   aplicarIdioma(perfil?.idioma || localStorage.getItem("fs_idioma") || "es");
   if ($("selectIdioma")) $("selectIdioma").value = idiomaActual;
 
-  await cargarCuentasYCategorias();
-  await cargarMesActual();
+  // Estas dos cargas no dependen una de la otra (los movimientos ya
+  // traen el nombre de categoría/cuenta como texto), así que las
+  // pedimos en paralelo en vez de una detrás de la otra: reduce
+  // bastante el tiempo de arranque, sobre todo con conexión lenta.
+  await Promise.all([cargarCuentasYCategorias(), cargarMesActual()]);
   suscribirActualizacionEnVivo();
 }
 
@@ -715,8 +718,10 @@ document.addEventListener("visibilitychange", () => {
 window.addEventListener("focus", actualizarDatosSiCorresponde);
 
 async function cargarCuentasYCategorias() {
-  cuentas = await listarCuentas(usuario.id);
-  categorias = await listarCategorias(usuario.id);
+  [cuentas, categorias] = await Promise.all([
+    listarCuentas(usuario.id),
+    listarCategorias(usuario.id),
+  ]);
   renderCuentasConfig();
   renderCategoriasConfig();
   renderSelects();
@@ -1858,7 +1863,7 @@ const esLinkDeRecuperacion = /type=recovery/.test(location.hash);
 (async function init() {
   if (!esLinkDeRecuperacion) {
     const u = await usuarioActual();
-    if (u) await arrancarApp();
+    if (u) await arrancarApp(u);
   }
 
   if ("serviceWorker" in navigator) {
