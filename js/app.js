@@ -401,6 +401,7 @@ function aplicarIdioma(idioma) {
 // Textos que se generan por código (no están fijos en el HTML) y hay
 // que actualizar a mano cada vez que cambia el idioma.
 function actualizarTextosDinamicosIdioma() {
+  mostrarFechaHoy();
   // Botones de login, si está en modo registro
   if ($("btnIngresar") && $("btnMostrarRegistro")) {
     $("btnIngresar").textContent = modoRegistro ? t("btnCrearCuentaSubmit") : t("btnEntrar");
@@ -447,6 +448,17 @@ function formatoFecha(str) {
 
 function nombreMes(fecha) {
   return fecha.toLocaleString("es-AR", { month: "long", year: "numeric" });
+}
+
+// Fecha de hoy en la barra superior, en el idioma elegido.
+const LOCALES_POR_IDIOMA = { es: "es-AR", pt: "pt-BR", en: "en-US" };
+function mostrarFechaHoy() {
+  const el = $("fechaHoy");
+  if (!el) return;
+  const locale = LOCALES_POR_IDIOMA[idiomaActual] || "es-AR";
+  el.textContent = new Date().toLocaleDateString(locale, {
+    weekday: "long", day: "numeric", month: "long", year: "numeric",
+  });
 }
 
 function numeroDesdeTexto(txt) {
@@ -708,6 +720,7 @@ function suscribirActualizacionEnVivo() {
 // a la pestaña igual refrescamos una vez.
 async function actualizarDatosSiCorresponde() {
   if (!usuario || !$("app") || $("app").hidden) return;
+  mostrarFechaHoy();
   try {
     await cargarMesActual();
   } catch {}
