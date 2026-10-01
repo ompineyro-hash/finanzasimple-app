@@ -137,6 +137,7 @@ const TRADUCCIONES = {
     btnSeguir: "✓ Seguir",
     btnBorrar: "Borrar",
     btnGuardarMov: "Guardar",
+    avisoFaltaNombreCategoria: "Escribí un nombre para la categoría antes de agregarla.",
   },
   pt: {
     subtitulo: "Seus gastos e receitas, claros e simples.",
@@ -253,6 +254,7 @@ const TRADUCCIONES = {
     btnSeguir: "✓ Continuar",
     btnBorrar: "Excluir",
     btnGuardarMov: "Salvar",
+    avisoFaltaNombreCategoria: "Escreva um nome para a categoria antes de adicioná-la.",
   },
   en: {
     subtitulo: "Your expenses and income, clear and simple.",
@@ -369,6 +371,7 @@ const TRADUCCIONES = {
     btnSeguir: "✓ Next",
     btnBorrar: "Delete",
     btnGuardarMov: "Save",
+    avisoFaltaNombreCategoria: "Type a name for the category before adding it.",
   },
 };
 
@@ -1380,12 +1383,23 @@ document.querySelectorAll("#segmentadoTipoNuevaCategoria .segmentado-item").forE
 $("btnAgregarCategoria").addEventListener("click", async () => {
   const input = $("inputNuevaCategoria");
   const v = input.value.trim();
-  if (!v) return;
+  if (!v) {
+    mostrarToast(t("avisoFaltaNombreCategoria"));
+    input.focus();
+    return;
+  }
   try {
     await crearCategoria(usuario.id, v, tipoNuevaCategoria);
     input.value = "";
     await cargarCuentasYCategorias();
   } catch (err) { mostrarToast(traducirErrorDatos(err)); }
+});
+
+$("inputNuevaCategoria").addEventListener("keydown", (ev) => {
+  if (ev.key === "Enter") {
+    ev.preventDefault();
+    $("btnAgregarCategoria").click();
+  }
 });
 
 function renderSelectCategorias(tipo) {
