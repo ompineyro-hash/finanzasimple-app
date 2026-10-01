@@ -127,11 +127,14 @@ input,select{font-family:inherit;font-size:16px;}
 .mes-selector{display:flex;align-items:center;gap:10px;font-weight:700;font-size:16px;}
 .fecha-hoy{margin-top:6px;font-size:15px;font-weight:600;opacity:1;text-align:center;text-transform:capitalize;}
 
-.resumen-tarjetas{display:flex;gap:8px;margin-top:16px;}
+.resumen-tarjetas{display:flex;flex-direction:column;gap:8px;margin-top:16px;}
+.resumen-tarjetas-fila{display:flex;gap:8px;}
 .tarjeta-resumen{
   flex:1;min-width:0;background:rgba(255,255,255,0.12);border-radius:12px;
   padding:10px 6px;text-align:center;
 }
+.tarjeta-resumen-balance{padding:12px 6px;}
+.tarjeta-resumen-balance .tarjeta-resumen-valor{font-size:22px;}
 .tarjeta-resumen-label{display:block;font-size:13px;font-weight:600;}
 .tarjeta-resumen-valor{
   display:block;font-size:17px;font-weight:800;margin-top:2px;
@@ -139,6 +142,7 @@ input,select{font-family:inherit;font-size:16px;}
 }
 @media (max-width:380px){
   .tarjeta-resumen-valor{font-size:14px;}
+  .tarjeta-resumen-balance .tarjeta-resumen-valor{font-size:19px;}
   .tarjeta-resumen-label{font-size:12px;}
 }
 .color-ingreso{color:#BFE8D6;}
