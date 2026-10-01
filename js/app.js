@@ -696,8 +696,16 @@ async function arrancarApp(usuarioYaObtenido) {
 // ============================================================
 let canalActualizacionEnVivo = null;
 
-function suscribirActualizacionEnVivo() {
-  if (canalActualizacionEnVivo) return; // ya suscripto, no duplicar
+function suscribirActualizacionEnVivo(forzarReconexion) {
+  // Si ya hay una conexión y no estamos forzando, no duplicamos.
+  // Si estamos forzando (por ejemplo, al volver de background después
+  // de un rato largo), tiramos la conexión vieja -que puede haber
+  // quedado cortada sin avisar- y abrimos una nueva.
+  if (canalActualizacionEnVivo) {
+    if (!forzarReconexion) return;
+    sbClient.removeChannel(canalActualizacionEnVivo);
+    canalActualizacionEnVivo = null;
+  }
   canalActualizacionEnVivo = sbClient
     .channel("cambios-" + usuario.id)
     .on(
@@ -724,6 +732,7 @@ function suscribirActualizacionEnVivo() {
 async function actualizarDatosSiCorresponde() {
   if (!usuario || !$("app") || $("app").hidden) return;
   mostrarFechaHoy();
+  suscribirActualizacionEnVivo(true);
   try {
     await cargarMesActual();
   } catch {}
