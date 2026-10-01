@@ -686,6 +686,21 @@ async function arrancarApp(usuarioYaObtenido) {
   // bastante el tiempo de arranque, sobre todo con conexión lenta.
   await Promise.all([cargarCuentasYCategorias(), cargarMesActual()]);
   suscribirActualizacionEnVivo();
+  arrancarLatidoDeRespaldo();
+}
+
+// Latido de respaldo: además de la conexión en vivo, cada 30 segundos
+// (mientras la pantalla esté visible) volvemos a pedir los datos del
+// mes. Es la misma idea que tenía la versión anterior de la app: así,
+// aunque la conexión en vivo falle silenciosamente en algún momento,
+// nunca se pasan más de unos segundos sin ver lo último.
+let latidoDeRespaldo = null;
+function arrancarLatidoDeRespaldo() {
+  clearInterval(latidoDeRespaldo);
+  latidoDeRespaldo = setInterval(() => {
+    if (!usuario || !$("app") || $("app").hidden || document.hidden) return;
+    cargarMesActual().catch(() => {});
+  }, 30000);
 }
 
 // ============================================================
