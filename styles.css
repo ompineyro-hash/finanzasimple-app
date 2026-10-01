@@ -225,6 +225,9 @@ input,select{font-family:inherit;font-size:16px;}
 .fila-config input{flex:1;min-width:0;padding:11px 12px;border-radius:10px;border:1.5px solid var(--borde);}
 .fila-config-moneda input,.fila-config-cuenta input,.fila-config-cuenta select{flex:1 1 140px;}
 .fila-config-moneda button,.fila-config-cuenta button{flex:1 1 100%;}
+.categorias-columnas{display:grid;grid-template-columns:1fr 1fr;gap:0 16px;}
+.categorias-columna .titulo-subseccion{margin-top:4px;}
+@media (max-width:480px){.categorias-columnas{grid-template-columns:1fr;}}
 .lista-editable{display:flex;flex-direction:column;gap:8px;}
 .editable-item{
   display:flex;align-items:center;justify-content:space-between;
