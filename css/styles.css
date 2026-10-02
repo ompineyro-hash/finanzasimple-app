@@ -118,32 +118,33 @@ input,select{font-family:inherit;font-size:16px;}
 .app{display:flex;flex-direction:column;height:100vh;height:100dvh;overflow:hidden;}
 .topbar{
   background:var(--primario);color:white;
-  padding:14px 16px 20px;
-  border-radius:0 0 22px 22px;
+  padding:10px 16px 12px;
+  border-radius:0 0 18px 18px;
 }
-.topbar-fila{display:flex;align-items:center;justify-content:space-between;}
+.topbar-fila{display:flex;align-items:center;justify-content:space-between;gap:6px;}
 .topbar .icono-btn{color:white;}
 .topbar .icono-btn:hover{background:rgba(255,255,255,0.15);}
-.mes-selector{display:flex;align-items:center;gap:10px;font-weight:700;font-size:16px;}
-.fecha-hoy{margin-top:6px;font-size:15px;font-weight:600;opacity:1;text-align:center;}
+.mes-selector{display:flex;align-items:center;gap:6px;font-weight:700;font-size:15px;white-space:nowrap;}
+.fecha-hoy{margin-top:2px;font-size:12.5px;font-weight:600;opacity:0.9;text-align:center;}
 
-.resumen-tarjetas{display:flex;flex-direction:column;gap:8px;margin-top:16px;}
-.resumen-tarjetas-fila{display:flex;gap:8px;}
+.resumen-tarjetas{display:flex;flex-direction:column;gap:6px;margin-top:10px;}
+.resumen-tarjetas-fila{display:flex;gap:6px;}
 .tarjeta-resumen{
-  flex:1;min-width:0;background:rgba(255,255,255,0.12);border-radius:12px;
-  padding:10px 6px;text-align:center;
+  flex:1;min-width:0;background:rgba(255,255,255,0.12);border-radius:10px;
+  padding:6px 6px;text-align:center;
 }
-.tarjeta-resumen-balance{padding:12px 6px;}
-.tarjeta-resumen-balance .tarjeta-resumen-valor{font-size:22px;}
-.tarjeta-resumen-label{display:block;font-size:13px;font-weight:600;}
+.tarjeta-resumen-balance{padding:7px 6px;}
+.tarjeta-resumen-balance .tarjeta-resumen-valor{font-size:19px;}
+.tarjeta-resumen-label{display:block;font-size:12px;font-weight:600;}
 .tarjeta-resumen-valor{
-  display:block;font-size:17px;font-weight:800;margin-top:2px;
+  display:block;font-size:15px;font-weight:800;margin-top:1px;
   overflow-wrap:break-word;
 }
 @media (max-width:380px){
-  .tarjeta-resumen-valor{font-size:14px;}
-  .tarjeta-resumen-balance .tarjeta-resumen-valor{font-size:19px;}
-  .tarjeta-resumen-label{font-size:12px;}
+  .mes-selector{font-size:13px;gap:4px;}
+  .tarjeta-resumen-valor{font-size:13px;}
+  .tarjeta-resumen-balance .tarjeta-resumen-valor{font-size:17px;}
+  .tarjeta-resumen-label{font-size:11px;}
 }
 .color-ingreso{color:#BFE8D6;}
 .color-gasto{color:#F7C9B4;}
@@ -260,15 +261,15 @@ input,select{font-family:inherit;font-size:16px;}
 
 /* ---------- Botón flotante ---------- */
 .boton-flotante{
-  position:fixed;right:20px;bottom:90px;
-  min-height:58px;border-radius:29px;padding:0 20px 0 16px;
-  background:var(--primario);color:white;font-size:16px;font-weight:700;
+  position:fixed;right:16px;bottom:86px;
+  min-height:48px;border-radius:24px;padding:0 16px 0 12px;
+  background:var(--primario);color:white;font-size:14px;font-weight:700;
   border:none;box-shadow:0 6px 16px rgba(47,111,94,0.4);
-  display:flex;align-items:center;justify-content:center;gap:6px;
+  display:flex;align-items:center;justify-content:center;gap:4px;
   z-index:20;
 }
 .boton-flotante:hover{background:var(--primario-oscuro);}
-.boton-flotante-signo{font-size:26px;line-height:1;}
+.boton-flotante-signo{font-size:21px;line-height:1;}
 
 /* ---------- Barra de navegación inferior ---------- */
 .navbar{
