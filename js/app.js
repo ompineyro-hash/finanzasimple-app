@@ -772,7 +772,6 @@ async function cargarCuentasYCategorias() {
 }
 
 async function cargarMesActual() {
-  $("etiquetaMes").textContent = nombreMes(fechaVista);
   movimientos = await listarMovimientosDelMes(usuario.id, fechaVista.getFullYear(), fechaVista.getMonth());
   renderResumen();
   renderMovimientos();
@@ -926,6 +925,7 @@ function pasaBusqueda(m) {
 // RENDER: Lista de movimientos
 // ============================================================
 function renderMovimientos() {
+  $("etiquetaMes").textContent = nombreMes(fechaVista);
   const cont = $("listaMovimientos");
   const visibles = movimientos.filter(pasaBusqueda);
 
