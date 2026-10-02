@@ -940,7 +940,7 @@ function renderMovimientos() {
     const esGasto = m.tipo === "Gasto";
     return `
       <div class="mov-item" data-id="${m.id}">
-        <div class="mov-icono ${esGasto ? "gasto" : "ingreso"}">${esGasto ? "↓" : "↑"}</div>
+        <div class="mov-icono ${esGasto ? "gasto" : "ingreso"}" role="img" aria-label="${esGasto ? t("segGasto") : t("segIngreso")}">${esGasto ? "↓" : "↑"}</div>
         <div class="mov-info">
           <div class="mov-categoria">${escapeHTML(m.categoria)}</div>
           <div class="mov-detalle">${escapeHTML(m.cuenta)}${m.detalle ? " · " + escapeHTML(m.detalle) : ""}</div>
