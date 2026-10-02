@@ -10,6 +10,7 @@ let movimientos = [];
 let fechaVista = new Date();
 let vistaActiva = "vistaMovimientos";
 let periodoAnalisis = "mes";
+let swRegistro = null; // referencia al Service Worker, para poder pedirle que revise si hay una versión nueva
 
 const $ = (id) => document.getElementById(id);
 
@@ -703,6 +704,7 @@ function arrancarLatidoDeRespaldo() {
   latidoDeRespaldo = setInterval(() => {
     if (!usuario || !$("app") || $("app").hidden || document.hidden) return;
     cargarMesActual().catch(() => {});
+    swRegistro?.update().catch(() => {});
   }, 30000);
 }
 
@@ -1921,6 +1923,37 @@ const esLinkDeRecuperacion = /type=recovery/.test(location.hash);
   }
 
   if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("sw.js").catch(() => {});
+    navigator.serviceWorker.register("sw.js").then((registro) => {
+      swRegistro = registro;
+      // Cada vez que volvés a esta pestaña (la traés al frente), le
+      // preguntamos al servidor si hay una versión nueva. Así no
+      // dependemos de que el navegador lo revise solo cada tanto.
+      document.addEventListener("visibilitychange", () => {
+        if (!document.hidden) registro.update().catch(() => {});
+      });
+    }).catch(() => {});
+
+    // Cuando una versión nueva del Service Worker toma el control
+    // (porque subimos un cambio), recargamos la página solos, una
+    // sola vez, para que se vea al toque sin que el usuario tenga
+    // que acordarse de apretar F5 o recargar a mano. Si justo está
+    // cargando un movimiento (modal abierto), esperamos a que lo
+    // cierre para no hacerle perder lo que estaba escribiendo.
+    let yaSeRecargoPorActualizacion = false;
+    navigator.serviceWorker.addEventListener("controllerchange", () => {
+      if (yaSeRecargoPorActualizacion) return;
+      yaSeRecargoPorActualizacion = true;
+      const haySeguro = () => $("modalFondo") && !$("modalFondo").hidden;
+      if (!haySeguro()) {
+        location.reload();
+        return;
+      }
+      const esperar = setInterval(() => {
+        if (!haySeguro()) {
+          clearInterval(esperar);
+          location.reload();
+        }
+      }, 2000);
+    });
   }
 })();
