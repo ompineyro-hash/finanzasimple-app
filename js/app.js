@@ -704,7 +704,6 @@ function arrancarLatidoDeRespaldo() {
   latidoDeRespaldo = setInterval(() => {
     if (!usuario || !$("app") || $("app").hidden || document.hidden) return;
     cargarMesActual().catch(() => {});
-    swRegistro?.update().catch(() => {});
   }, 30000);
 }
 
@@ -1931,6 +1930,11 @@ const esLinkDeRecuperacion = /type=recovery/.test(location.hash);
       document.addEventListener("visibilitychange", () => {
         if (!document.hidden) registro.update().catch(() => {});
       });
+      // Además, mientras la pestaña está a la vista, preguntamos cada
+      // 10 segundos (aparte del latido de datos, que es cada 30s).
+      setInterval(() => {
+        if (!document.hidden) registro.update().catch(() => {});
+      }, 10000);
     }).catch(() => {});
 
     // Cuando una versión nueva del Service Worker toma el control
