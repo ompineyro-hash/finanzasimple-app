@@ -261,13 +261,14 @@ input,select{font-family:inherit;font-size:16px;}
 /* ---------- Botón flotante ---------- */
 .boton-flotante{
   position:fixed;right:20px;bottom:90px;
-  width:58px;height:58px;border-radius:50%;
-  background:var(--primario);color:white;font-size:28px;
+  min-height:58px;border-radius:29px;padding:0 20px 0 16px;
+  background:var(--primario);color:white;font-size:16px;font-weight:700;
   border:none;box-shadow:0 6px 16px rgba(47,111,94,0.4);
-  display:flex;align-items:center;justify-content:center;line-height:0;
+  display:flex;align-items:center;justify-content:center;gap:6px;
   z-index:20;
 }
 .boton-flotante:hover{background:var(--primario-oscuro);}
+.boton-flotante-signo{font-size:26px;line-height:1;}
 
 /* ---------- Barra de navegación inferior ---------- */
 .navbar{
