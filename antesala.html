@@ -178,5 +178,11 @@
 </div>
 
 
+<script>
+document.addEventListener("click", function (e) {
+  var a = e.target.closest && e.target.closest('a[href="./"]');
+  if (a) { try { localStorage.setItem("ingasto_antesala_vista", "1"); } catch (_) {} }
+});
+</script>
 </body>
 </html>
