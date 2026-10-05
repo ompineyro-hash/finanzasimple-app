@@ -29,8 +29,8 @@
     <div style="display: flex; gap: 32px; align-items: center; flex-wrap: wrap;">
       <a href="#caracteristicas" style="font-size: 15px; font-weight: 500;">Características</a>
       <a href="#precio" style="font-size: 15px; font-weight: 500;">Precio</a>
-      <a href="./" style="font-size: 15px; font-weight: 500;">Ingresar</a>
-      <a href="./" class="btn-primary" style="color: #FFFFFF; padding: 11px 22px; border-radius: 8px; font-size: 15px; font-weight: 600;">Probar gratis</a>
+      <a href="./?entrar=1" style="font-size: 15px; font-weight: 500;">Ingresar</a>
+      <a href="./?entrar=1" class="btn-primary" style="color: #FFFFFF; padding: 11px 22px; border-radius: 8px; font-size: 15px; font-weight: 600;">Probar gratis</a>
     </div>
   </div>
 
@@ -48,7 +48,7 @@
         Ingasto es la forma más simple de anotar tus gastos e ingresos del día a día, y ver al toque en qué se te va el dinero cada mes.
       </div>
       <div style="display: flex; gap: 16px; flex-wrap: wrap; align-items: center; margin-top: 8px;">
-        <a href="./" class="btn-primary" style="color: #FFFFFF; padding: 15px 28px; border-radius: 10px; font-size: 16px; font-weight: 600;">Probar 15 días gratis</a>
+        <a href="./?entrar=1" class="btn-primary" style="color: #FFFFFF; padding: 15px 28px; border-radius: 10px; font-size: 16px; font-weight: 600;">Probar 15 días gratis</a>
         <a href="#caracteristicas" style="font-size: 15px; font-weight: 600; padding: 15px 4px;">Ver cómo funciona →</a>
       </div>
       <div style="font-size: 13px; color: #7A8780; margin-top: 4px;">Sin tarjeta para empezar. Cancelás cuando quieras.</div>
@@ -162,7 +162,7 @@
         <div style="font-size: 16px; color: #B9C4BC; font-weight: 500;">ARS / mes</div>
       </div>
       <div style="font-size: 14px; color: #B9C4BC; line-height: 1.5;">Empezás con 15 días gratis. Si te sirve, seguís por $4.000 por mes. Si no, no pagás nada.</div>
-      <a href="./" class="btn-primary" style="width: 100%; box-sizing: border-box; color: #FFFFFF; padding: 16px; border-radius: 10px; font-size: 16px; font-weight: 600; margin-top: 8px;">Empezar prueba gratis</a>
+      <a href="./?entrar=1" class="btn-primary" style="width: 100%; box-sizing: border-box; color: #FFFFFF; padding: 16px; border-radius: 10px; font-size: 16px; font-weight: 600; margin-top: 8px;">Empezar prueba gratis</a>
       <div style="font-size: 12px; color: #7A8780;">Cancelás cuando quieras, sin letra chica.</div>
     </div>
   </div>
@@ -178,11 +178,5 @@
 </div>
 
 
-<script>
-document.addEventListener("click", function (e) {
-  var a = e.target.closest && e.target.closest('a[href="./"]');
-  if (a) { try { localStorage.setItem("ingasto_antesala_vista", "1"); } catch (_) {} }
-});
-</script>
 </body>
 </html>

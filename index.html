@@ -7,17 +7,17 @@
 <meta name="google" content="notranslate">
 <title>Ingasto</title>
 <script>
-// Primera visita: quien no tiene sesion, no vio la antesala y no viene de un link
-// del mail (#...) ni de la app instalada, pasa antes por la antesala.
+// Entrada sin sesion: se pasa primero por la antesala (cada vez, para que siempre vea
+// precio y novedades). No aplica con sesion iniciada, en la app instalada, con links de
+// mail (#...) ni cuando viene de los botones de la antesala (?entrar=1).
 try {
   var _sesion = false;
   for (var i = 0; i < localStorage.length; i++) {
     var k = localStorage.key(i);
     if (k && k.indexOf("sb-") === 0 && k.slice(-11) === "-auth-token") { _sesion = true; break; }
   }
-  var _vista = localStorage.getItem("ingasto_antesala_vista") === "1";
   var _app = window.matchMedia && window.matchMedia("(display-mode: standalone)").matches;
-  if (!_sesion && !_vista && !_app && !location.hash && !location.search) {
+  if (!_sesion && !_app && !location.hash && !location.search) {
     location.replace("antesala.html");
   }
 } catch (e) {}
