@@ -656,8 +656,16 @@ if ($("btnSalirPruebaVencida")) {
 // Cuántos días de prueba gratis tiene cada usuario nuevo.
 const DIAS_DE_PRUEBA = 15;
 
+// Plan pago vigente: activo y, si tiene fecha de vencimiento, que no haya pasado.
+// Sin fecha (plan_vence vacío) = sin vencimiento (cuentas activadas a mano).
+function planVigente() {
+  if (!perfil?.plan_activo) return false;
+  if (!perfil.plan_vence) return true;
+  return new Date(perfil.plan_vence).getTime() > Date.now();
+}
+
 function pruebaVencida() {
-  if (perfil?.plan_activo) return false; // ya pagó, no hay bloqueo
+  if (planVigente()) return false; // ya pagó y sigue al día, no hay bloqueo
   if (!usuario?.created_at) return false; // por las dudas, no bloqueamos si no sabemos la fecha
   const creado = new Date(usuario.created_at).getTime();
   const dias = (Date.now() - creado) / (1000 * 60 * 60 * 24);
