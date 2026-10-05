@@ -42,7 +42,10 @@ const TRADUCCIONES = {
     tituloPruebaVencida: "Tu prueba gratuita terminó",
     textoPruebaVencida: "Tus datos siguen guardados y a salvo. Activá tu cuenta para seguir usando Ingasto.",
     btnPagarPrueba: "Pagar $4.000 y activar",
-    textoAvisoWhatsapp: "Después de pagar, avisanos por WhatsApp con el mail que usaste para registrarte, así te activamos la cuenta.",
+    textoAvisoWhatsapp: "Si después de verificar no se activa, avisanos por WhatsApp con el mail que usaste para registrarte.",
+    btnVerificarPago: "Ya pagué, verificar",
+    verificandoPago: "Verificando tu pago…",
+    pagoNoEncontrado: "Todavía no encontramos tu pago. Puede demorar unos minutos: probá de nuevo en un rato.",
     btnAvisarWhatsapp: "Avisar por WhatsApp",
     btnSalir2: "Salir",
     btnCrearCuentaSubmit: "Crear cuenta",
@@ -160,7 +163,10 @@ const TRADUCCIONES = {
     tituloPruebaVencida: "Seu período de teste terminou",
     textoPruebaVencida: "Seus dados continuam salvos e seguros. Ative sua conta para continuar usando o Ingasto.",
     btnPagarPrueba: "Pagar $4.000 e ativar",
-    textoAvisoWhatsapp: "Depois de pagar, avise-nos pelo WhatsApp com o e-mail que você usou para se cadastrar, para ativarmos sua conta.",
+    textoAvisoWhatsapp: "Se depois de verificar não ativar, avise-nos pelo WhatsApp com o e-mail que você usou para se cadastrar.",
+    btnVerificarPago: "Já paguei, verificar",
+    verificandoPago: "Verificando seu pagamento…",
+    pagoNoEncontrado: "Ainda não encontramos seu pagamento. Pode demorar alguns minutos: tente de novo daqui a pouco.",
     btnAvisarWhatsapp: "Avisar pelo WhatsApp",
     btnSalir2: "Sair",
     btnCrearCuentaSubmit: "Criar conta",
@@ -278,7 +284,10 @@ const TRADUCCIONES = {
     tituloPruebaVencida: "Your free trial has ended",
     textoPruebaVencida: "Your data is still saved and safe. Activate your account to keep using Ingasto.",
     btnPagarPrueba: "Pay $4,000 and activate",
-    textoAvisoWhatsapp: "After paying, message us on WhatsApp with the email you used to sign up, so we can activate your account.",
+    textoAvisoWhatsapp: "If it doesn't activate after checking, message us on WhatsApp with the email you used to sign up.",
+    btnVerificarPago: "I've paid, check now",
+    verificandoPago: "Checking your payment…",
+    pagoNoEncontrado: "We haven't found your payment yet. It can take a few minutes: please try again shortly.",
     btnAvisarWhatsapp: "Message us on WhatsApp",
     btnSalir2: "Log out",
     btnCrearCuentaSubmit: "Create account",
@@ -672,6 +681,44 @@ function pruebaVencida() {
   return dias > DIAS_DE_PRUEBA;
 }
 
+// Red de seguridad del cobro: le preguntamos a la función "verificar-pago"
+// si el mail de esta cuenta tiene un pago aprobado en Mercado Pago. Así el
+// acceso no depende de que llegue el aviso automático (webhook).
+let verificandoPago = false;
+let yaVerificoPagoAlAbrir = false;
+async function verificarPago(silencioso) {
+  if (verificandoPago) return false;
+  verificandoPago = true;
+  const msg = $("msgVerificarPago");
+  const btn = $("btnVerificarPago");
+  if (btn) btn.disabled = true;
+  if (!silencioso && msg) {
+    msg.textContent = t("verificandoPago");
+    msg.hidden = false;
+  }
+  try {
+    const { data, error } = await sbClient.functions.invoke("verificar-pago");
+    if (!error && data?.ok) {
+      verificandoPago = false;
+      await arrancarApp(usuario);
+      return true;
+    }
+  } catch {
+    // se informa abajo, igual que si no hubiera pago
+  }
+  if (!silencioso && msg) {
+    msg.textContent = t("pagoNoEncontrado");
+    msg.hidden = false;
+  }
+  verificandoPago = false;
+  if (btn) btn.disabled = false;
+  return false;
+}
+
+if ($("btnVerificarPago")) {
+  $("btnVerificarPago").addEventListener("click", () => verificarPago(false));
+}
+
 async function arrancarApp(usuarioYaObtenido) {
   usuario = usuarioYaObtenido || (await usuarioActual());
   if (!usuario) return;
@@ -686,10 +733,16 @@ async function arrancarApp(usuarioYaObtenido) {
     $("pantallaLogin").hidden = true;
     $("app").hidden = true;
     $("pantallaPruebaVencida").hidden = false;
+    // Si ya pagó pero el aviso de Mercado Pago no llegó, lo chequeamos solos.
+    if (!yaVerificoPagoAlAbrir) {
+      yaVerificoPagoAlAbrir = true;
+      verificarPago(true);
+    }
     return;
   }
 
   $("pantallaLogin").hidden = true;
+  $("pantallaPruebaVencida").hidden = true;
   $("app").hidden = false;
   $("inputMoneda").value = moneda();
   aplicarIdioma(perfil?.idioma || localStorage.getItem("fs_idioma") || "es");
