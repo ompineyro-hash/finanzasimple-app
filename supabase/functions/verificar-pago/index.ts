@@ -62,11 +62,12 @@ Deno.serve(async (req) => {
 
     // 2) Se buscan en Mercado Pago los pagos aprobados de ese mail.
     const desde = new Date(Date.now() - (DIAS_POR_PAGO + 5) * MS_DIA).toISOString();
+    // Mercado Pago no permite filtrar por mail del pagador en esta busqueda:
+    // se traen los pagos aprobados recientes y se filtra aca por el mail.
     const url =
       "https://api.mercadopago.com/v1/payments/search" +
-      `?payer.email=${encodeURIComponent(email)}` +
-      "&status=approved&sort=date_approved&criteria=desc&limit=30" +
-      `&begin_date=${encodeURIComponent(desde)}&end_date=NOW`;
+      "?status=approved&sort=date_approved&criteria=desc&limit=100" +
+      `&range=date_approved&begin_date=${encodeURIComponent(desde)}&end_date=NOW`;
 
     const resp = await fetch(url, { headers: { Authorization: `Bearer ${MP_ACCESS_TOKEN}` } });
     if (!resp.ok) {
@@ -74,17 +75,24 @@ Deno.serve(async (req) => {
       return responder({ ok: false, motivo: "error_mercadopago", estado: resp.status }, 502);
     }
     const busqueda = await resp.json();
-    const pagos: any[] = busqueda.results || [];
+    const todos: any[] = busqueda.results || [];
+    const pagos = todos.filter((p) => (p.payer?.email || "").toLowerCase() === email);
 
     // 3) Se queda con los pagos de Ingasto que todavia dan acceso.
+    //    (Se acepta tambien un pago de $4000, por si la descripcion no dice "Ingasto".)
     const vigentes = pagos
-      .filter((p) => p.status === "approved" && esDeIngasto(p))
+      .filter((p) => p.status === "approved" && (esDeIngasto(p) || p.transaction_amount === 4000))
       .map((p) => ({ id: p.id, fecha: new Date(p.date_approved || p.date_created).getTime() }))
       .filter((p) => !isNaN(p.fecha) && p.fecha + DIAS_POR_PAGO * MS_DIA > Date.now())
       .sort((a, b) => b.fecha - a.fecha);
 
     if (vigentes.length === 0) {
-      console.log("verificar-pago: sin pago vigente", { email, encontrados: pagos.length });
+      console.log("verificar-pago: sin pago vigente", {
+        email,
+        pagos_revisados: todos.length,
+        del_mail: pagos.length,
+        detalle: pagos.map((p) => ({ id: p.id, desc: p.description, ref: p.external_reference, monto: p.transaction_amount })),
+      });
       return responder({ ok: false, motivo: "sin_pago", encontrados: pagos.length });
     }
 
