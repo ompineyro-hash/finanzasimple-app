@@ -3,7 +3,7 @@
 // nunca ve información vieja. El "esqueleto" visual se guarda en caché
 // solo como respaldo para cuando no hay internet, pero SIEMPRE se intenta
 // primero traer la versión más nueva del servidor.
-const CACHE_NAME = "finanzasimple-v8";
+const CACHE_NAME = "finanzasimple-v9";
 const ARCHIVOS_ESQUELETO = [
   "./index.html",
   "./css/styles.css",
@@ -37,13 +37,30 @@ self.addEventListener("fetch", (event) => {
 
   // "Network first": siempre intenta traer la versión más nueva del
   // servidor. Solo usa la copia guardada si no hay internet.
+  // Solo se intervienen pedidos GET; el resto sigue su camino normal.
+  if (event.request.method !== "GET") return;
+
   event.respondWith(
     fetch(event.request)
       .then((respuesta) => {
-        const copia = respuesta.clone();
-        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copia));
+        // Solo se guarda lo que salio bien (no errores ni redirecciones).
+        if (respuesta.ok && respuesta.type === "basic") {
+          const copia = respuesta.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copia)).catch(() => {});
+        }
         return respuesta;
       })
-      .catch(() => caches.match(event.request))
+      .catch(async () => {
+        // Sin red: copia guardada (ignorando los parametros de la direccion,
+        // como ?preapproval_id=... que agrega Mercado Pago al volver).
+        const guardada = await caches.match(event.request, { ignoreSearch: true });
+        if (guardada) return guardada;
+        // Si es una pagina y no esta guardada, se muestra la app.
+        if (event.request.mode === "navigate") {
+          const app = await caches.match("./index.html");
+          if (app) return app;
+        }
+        return Response.error();
+      })
   );
 });
