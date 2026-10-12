@@ -99,8 +99,6 @@ async function listarMovimientosDelMes(userId, anio, mes) {
   const desde = `${anio}-${String(mes + 1).padStart(2, "0")}-01`;
   const ultimoDia = new Date(anio, mes + 1, 0).getDate();
   const hasta = `${anio}-${String(mes + 1).padStart(2, "0")}-${String(ultimoDia).padStart(2, "0")}`;
-  // Trae los movimientos del mes por su fecha, y también los que se pagan/cobran
-  // en este mes aunque se hayan cargado en otro (fecha_pago).
   const { data, error } = await sbClient
     .from("movimientos")
     .select("*")

@@ -12,6 +12,7 @@ let pendientesAbierto = false;
 let fechaVista = new Date();
 let vistaActiva = "vistaMovimientos";
 let periodoAnalisis = "mes";
+let swRegistro = null; // referencia al Service Worker, para poder pedirle que revise si hay una versión nueva
 
 const $ = (id) => document.getElementById(id);
 
@@ -32,6 +33,7 @@ const TRADUCCIONES = {
     btnEntrar: "Entrar",
     separadorO: "o",
     btnCrearCuenta: "Crear una cuenta nueva",
+    linkConocer: "Conocé qué es Ingasto",
     btnOlvideClave: "Olvidé mi clave",
     textoElegirNuevaClave: "Elegí tu nueva clave",
     labelNuevaClave: "Nueva clave",
@@ -42,7 +44,10 @@ const TRADUCCIONES = {
     tituloPruebaVencida: "Tu prueba gratuita terminó",
     textoPruebaVencida: "Tus datos siguen guardados y a salvo. Activá tu cuenta para seguir usando Ingasto.",
     btnPagarPrueba: "Pagar $4.000 y activar",
-    textoAvisoWhatsapp: "Después de pagar, avisanos por WhatsApp con el mail que usaste para registrarte, así te activamos la cuenta.",
+    textoAvisoWhatsapp: "Si después de verificar no se activa, avisanos por WhatsApp con el mail que usaste para registrarte.",
+    btnVerificarPago: "Ya pagué, verificar",
+    verificandoPago: "Verificando tu pago…",
+    pagoNoEncontrado: "Todavía no encontramos tu pago. Puede demorar unos minutos: probá de nuevo en un rato.",
     btnAvisarWhatsapp: "Avisar por WhatsApp",
     btnSalir2: "Salir",
     btnCrearCuentaSubmit: "Crear cuenta",
@@ -118,7 +123,7 @@ const TRADUCCIONES = {
     ariaNuevoMov: "Nuevo movimiento",
     navMovimientos: "Movimientos",
     navAnalisis: "Análisis",
-    navConfig: "Config",
+    navConfig: "Ajustes",
     modalNuevoTitulo: "Nuevo movimiento",
     modalEditarTitulo: "Editar movimiento",
     ariaCerrarModal: "Cerrar",
@@ -172,6 +177,7 @@ const TRADUCCIONES = {
     btnSeguir: "✓ Seguir",
     btnBorrar: "Borrar",
     btnGuardarMov: "Guardar",
+    avisoFaltaNombreCategoria: "Escribí un nombre para la categoría antes de agregarla.",
   },
   pt: {
     subtitulo: "Seus gastos e receitas, claros e simples.",
@@ -181,6 +187,7 @@ const TRADUCCIONES = {
     btnEntrar: "Entrar",
     separadorO: "ou",
     btnCrearCuenta: "Criar uma conta nova",
+    linkConocer: "Conheça o Ingasto",
     btnOlvideClave: "Esqueci minha senha",
     textoElegirNuevaClave: "Escolha sua nova senha",
     labelNuevaClave: "Nova senha",
@@ -191,7 +198,10 @@ const TRADUCCIONES = {
     tituloPruebaVencida: "Seu período de teste terminou",
     textoPruebaVencida: "Seus dados continuam salvos e seguros. Ative sua conta para continuar usando o Ingasto.",
     btnPagarPrueba: "Pagar $4.000 e ativar",
-    textoAvisoWhatsapp: "Depois de pagar, avise-nos pelo WhatsApp com o e-mail que você usou para se cadastrar, para ativarmos sua conta.",
+    textoAvisoWhatsapp: "Se depois de verificar não ativar, avise-nos pelo WhatsApp com o e-mail que você usou para se cadastrar.",
+    btnVerificarPago: "Já paguei, verificar",
+    verificandoPago: "Verificando seu pagamento…",
+    pagoNoEncontrado: "Ainda não encontramos seu pagamento. Pode demorar alguns minutos: tente de novo daqui a pouco.",
     btnAvisarWhatsapp: "Avisar pelo WhatsApp",
     btnSalir2: "Sair",
     btnCrearCuentaSubmit: "Criar conta",
@@ -267,7 +277,7 @@ const TRADUCCIONES = {
     ariaNuevoMov: "Novo lançamento",
     navMovimientos: "Lançamentos",
     navAnalisis: "Análise",
-    navConfig: "Config",
+    navConfig: "Ajustes",
     modalNuevoTitulo: "Novo lançamento",
     modalEditarTitulo: "Editar lançamento",
     ariaCerrarModal: "Fechar",
@@ -321,6 +331,7 @@ const TRADUCCIONES = {
     btnSeguir: "✓ Continuar",
     btnBorrar: "Excluir",
     btnGuardarMov: "Salvar",
+    avisoFaltaNombreCategoria: "Escreva um nome para a categoria antes de adicioná-la.",
   },
   en: {
     subtitulo: "Your expenses and income, clear and simple.",
@@ -330,6 +341,7 @@ const TRADUCCIONES = {
     btnEntrar: "Log in",
     separadorO: "or",
     btnCrearCuenta: "Create a new account",
+    linkConocer: "What is Ingasto?",
     btnOlvideClave: "Forgot my password",
     textoElegirNuevaClave: "Choose your new password",
     labelNuevaClave: "New password",
@@ -340,7 +352,10 @@ const TRADUCCIONES = {
     tituloPruebaVencida: "Your free trial has ended",
     textoPruebaVencida: "Your data is still saved and safe. Activate your account to keep using Ingasto.",
     btnPagarPrueba: "Pay $4,000 and activate",
-    textoAvisoWhatsapp: "After paying, message us on WhatsApp with the email you used to sign up, so we can activate your account.",
+    textoAvisoWhatsapp: "If it doesn't activate after checking, message us on WhatsApp with the email you used to sign up.",
+    btnVerificarPago: "I've paid, check now",
+    verificandoPago: "Checking your payment…",
+    pagoNoEncontrado: "We haven't found your payment yet. It can take a few minutes: please try again shortly.",
     btnAvisarWhatsapp: "Message us on WhatsApp",
     btnSalir2: "Log out",
     btnCrearCuentaSubmit: "Create account",
@@ -470,6 +485,7 @@ const TRADUCCIONES = {
     btnSeguir: "✓ Next",
     btnBorrar: "Delete",
     btnGuardarMov: "Save",
+    avisoFaltaNombreCategoria: "Type a name for the category before adding it.",
   },
 };
 
@@ -502,6 +518,7 @@ function aplicarIdioma(idioma) {
 // Textos que se generan por código (no están fijos en el HTML) y hay
 // que actualizar a mano cada vez que cambia el idioma.
 function actualizarTextosDinamicosIdioma() {
+  mostrarFechaHoy();
   // Botones de login, si está en modo registro
   if ($("btnIngresar") && $("btnMostrarRegistro")) {
     $("btnIngresar").textContent = modoRegistro ? t("btnCrearCuentaSubmit") : t("btnEntrar");
@@ -554,7 +571,21 @@ function formatoFecha(str) {
 }
 
 function nombreMes(fecha) {
-  return fecha.toLocaleString("es-AR", { month: "long", year: "numeric" });
+  const locale = LOCALES_POR_IDIOMA[idiomaActual] || "es-AR";
+  const texto = fecha.toLocaleString(locale, { month: "long", year: "numeric" });
+  return texto.charAt(0).toUpperCase() + texto.slice(1);
+}
+
+// Fecha de hoy en la barra superior, en el idioma elegido.
+const LOCALES_POR_IDIOMA = { es: "es-AR", pt: "pt-BR", en: "en-US" };
+function mostrarFechaHoy() {
+  const el = $("fechaHoy");
+  if (!el) return;
+  const locale = LOCALES_POR_IDIOMA[idiomaActual] || "es-AR";
+  const texto = new Date().toLocaleDateString(locale, {
+    weekday: "long", day: "numeric", month: "long", year: "numeric",
+  });
+  el.textContent = texto.charAt(0).toUpperCase() + texto.slice(1);
 }
 
 function numeroDesdeTexto(txt) {
@@ -632,8 +663,8 @@ $("formLogin").addEventListener("submit", async (e) => {
       $("formLogin").reset();
       actualizarTextosDinamicosIdioma();
     } else {
-      await iniciarSesion(email, clave);
-      await arrancarApp();
+      const resultadoLogin = await iniciarSesion(email, clave);
+      await arrancarApp(resultadoLogin?.user);
     }
   } catch (err) {
     mostrarAviso($("loginError"), err?.message === "Las claves no coinciden." ? err.message : traducirErrorAuth(err));
@@ -742,16 +773,62 @@ if ($("btnSalirPruebaVencida")) {
 // Cuántos días de prueba gratis tiene cada usuario nuevo.
 const DIAS_DE_PRUEBA = 15;
 
+// Plan pago vigente: activo y, si tiene fecha de vencimiento, que no haya pasado.
+// Sin fecha (plan_vence vacío) = sin vencimiento (cuentas activadas a mano).
+function planVigente() {
+  if (!perfil?.plan_activo) return false;
+  if (!perfil.plan_vence) return true;
+  return new Date(perfil.plan_vence).getTime() > Date.now();
+}
+
 function pruebaVencida() {
-  if (perfil?.plan_activo) return false; // ya pagó, no hay bloqueo
+  if (planVigente()) return false; // ya pagó y sigue al día, no hay bloqueo
   if (!usuario?.created_at) return false; // por las dudas, no bloqueamos si no sabemos la fecha
   const creado = new Date(usuario.created_at).getTime();
   const dias = (Date.now() - creado) / (1000 * 60 * 60 * 24);
   return dias > DIAS_DE_PRUEBA;
 }
 
-async function arrancarApp() {
-  usuario = await usuarioActual();
+// Red de seguridad del cobro: le preguntamos a la función "verificar-pago"
+// si el mail de esta cuenta tiene un pago aprobado en Mercado Pago. Así el
+// acceso no depende de que llegue el aviso automático (webhook).
+let verificandoPago = false;
+let yaVerificoPagoAlAbrir = false;
+async function verificarPago(silencioso) {
+  if (verificandoPago) return false;
+  verificandoPago = true;
+  const msg = $("msgVerificarPago");
+  const btn = $("btnVerificarPago");
+  if (btn) btn.disabled = true;
+  if (!silencioso && msg) {
+    msg.textContent = t("verificandoPago");
+    msg.hidden = false;
+  }
+  try {
+    const { data, error } = await sbClient.functions.invoke("verificar-pago");
+    if (!error && data?.ok) {
+      verificandoPago = false;
+      await arrancarApp(usuario);
+      return true;
+    }
+  } catch {
+    // se informa abajo, igual que si no hubiera pago
+  }
+  if (!silencioso && msg) {
+    msg.textContent = t("pagoNoEncontrado");
+    msg.hidden = false;
+  }
+  verificandoPago = false;
+  if (btn) btn.disabled = false;
+  return false;
+}
+
+if ($("btnVerificarPago")) {
+  $("btnVerificarPago").addEventListener("click", () => verificarPago(false));
+}
+
+async function arrancarApp(usuarioYaObtenido) {
+  usuario = usuarioYaObtenido || (await usuarioActual());
   if (!usuario) return;
 
   try {
@@ -764,18 +841,42 @@ async function arrancarApp() {
     $("pantallaLogin").hidden = true;
     $("app").hidden = true;
     $("pantallaPruebaVencida").hidden = false;
+    // Si ya pagó pero el aviso de Mercado Pago no llegó, lo chequeamos solos.
+    if (!yaVerificoPagoAlAbrir) {
+      yaVerificoPagoAlAbrir = true;
+      verificarPago(true);
+    }
     return;
   }
 
   $("pantallaLogin").hidden = true;
+  $("pantallaPruebaVencida").hidden = true;
   $("app").hidden = false;
   $("inputMoneda").value = moneda();
   aplicarIdioma(perfil?.idioma || localStorage.getItem("fs_idioma") || "es");
   if ($("selectIdioma")) $("selectIdioma").value = idiomaActual;
 
-  await cargarCuentasYCategorias();
-  await cargarMesActual();
+  // Estas dos cargas no dependen una de la otra (los movimientos ya
+  // traen el nombre de categoría/cuenta como texto), así que las
+  // pedimos en paralelo en vez de una detrás de la otra: reduce
+  // bastante el tiempo de arranque, sobre todo con conexión lenta.
+  await Promise.all([cargarCuentasYCategorias(), cargarMesActual()]);
   suscribirActualizacionEnVivo();
+  arrancarLatidoDeRespaldo();
+}
+
+// Latido de respaldo: además de la conexión en vivo, cada 30 segundos
+// (mientras la pantalla esté visible) volvemos a pedir los datos del
+// mes. Es la misma idea que tenía la versión anterior de la app: así,
+// aunque la conexión en vivo falle silenciosamente en algún momento,
+// nunca se pasan más de unos segundos sin ver lo último.
+let latidoDeRespaldo = null;
+function arrancarLatidoDeRespaldo() {
+  clearInterval(latidoDeRespaldo);
+  latidoDeRespaldo = setInterval(() => {
+    if (!usuario || !$("app") || $("app").hidden || document.hidden) return;
+    cargarMesActual().catch(() => {});
+  }, 30000);
 }
 
 // ============================================================
@@ -786,8 +887,16 @@ async function arrancarApp() {
 // ============================================================
 let canalActualizacionEnVivo = null;
 
-function suscribirActualizacionEnVivo() {
-  if (canalActualizacionEnVivo) return; // ya suscripto, no duplicar
+function suscribirActualizacionEnVivo(forzarReconexion) {
+  // Si ya hay una conexión y no estamos forzando, no duplicamos.
+  // Si estamos forzando (por ejemplo, al volver de background después
+  // de un rato largo), tiramos la conexión vieja -que puede haber
+  // quedado cortada sin avisar- y abrimos una nueva.
+  if (canalActualizacionEnVivo) {
+    if (!forzarReconexion) return;
+    sbClient.removeChannel(canalActualizacionEnVivo);
+    canalActualizacionEnVivo = null;
+  }
   canalActualizacionEnVivo = sbClient
     .channel("cambios-" + usuario.id)
     .on(
@@ -813,6 +922,8 @@ function suscribirActualizacionEnVivo() {
 // a la pestaña igual refrescamos una vez.
 async function actualizarDatosSiCorresponde() {
   if (!usuario || !$("app") || $("app").hidden) return;
+  mostrarFechaHoy();
+  suscribirActualizacionEnVivo(true);
   try {
     await cargarMesActual();
   } catch {}
@@ -823,15 +934,16 @@ document.addEventListener("visibilitychange", () => {
 window.addEventListener("focus", actualizarDatosSiCorresponde);
 
 async function cargarCuentasYCategorias() {
-  cuentas = await listarCuentas(usuario.id);
-  categorias = await listarCategorias(usuario.id);
+  [cuentas, categorias] = await Promise.all([
+    listarCuentas(usuario.id),
+    listarCategorias(usuario.id),
+  ]);
   renderCuentasConfig();
   renderCategoriasConfig();
   renderSelects();
 }
 
 async function cargarMesActual() {
-  $("etiquetaMes").textContent = nombreMes(fechaVista);
   const [delMes, losPendientes] = await Promise.all([
     listarMovimientosDelMes(usuario.id, fechaVista.getFullYear(), fechaVista.getMonth()),
     listarPendientes(usuario.id),
@@ -1149,6 +1261,7 @@ function pasaBusqueda(m) {
 // RENDER: Lista de movimientos
 // ============================================================
 function renderMovimientos() {
+  $("etiquetaMes").textContent = nombreMes(fechaVista);
   const cont = $("listaMovimientos");
   const visibles = movimientos.filter(pasaBusqueda);
 
@@ -1173,7 +1286,7 @@ function renderMovimientos() {
       : "";
     return `
       <div class="${clases}" data-id="${m.id}">
-        <div class="mov-icono ${esGasto ? "gasto" : "ingreso"}">${esGasto ? "↓" : "↑"}</div>
+        <div class="mov-icono ${esGasto ? "gasto" : "ingreso"}" role="img" aria-label="${esGasto ? t("segGasto") : t("segIngreso")}">${esGasto ? "↓" : "↑"}</div>
         <div class="mov-info">
           <div class="mov-categoria">${escapeHTML(m.categoria)}</div>
           <div class="mov-detalle">${escapeHTML(m.cuenta)}${m.detalle ? " · " + escapeHTML(m.detalle) : ""}</div>
@@ -1657,12 +1770,23 @@ document.querySelectorAll("#segmentadoTipoNuevaCategoria .segmentado-item").forE
 $("btnAgregarCategoria").addEventListener("click", async () => {
   const input = $("inputNuevaCategoria");
   const v = input.value.trim();
-  if (!v) return;
+  if (!v) {
+    mostrarToast(t("avisoFaltaNombreCategoria"));
+    input.focus();
+    return;
+  }
   try {
     await crearCategoria(usuario.id, v, tipoNuevaCategoria);
     input.value = "";
     await cargarCuentasYCategorias();
   } catch (err) { mostrarToast(traducirErrorDatos(err)); }
+});
+
+$("inputNuevaCategoria").addEventListener("keydown", (ev) => {
+  if (ev.key === "Enter") {
+    ev.preventDefault();
+    $("btnAgregarCategoria").click();
+  }
 });
 
 function renderSelectCategorias(tipo) {
@@ -2208,10 +2332,46 @@ const esLinkDeRecuperacion = /type=recovery/.test(location.hash);
 (async function init() {
   if (!esLinkDeRecuperacion) {
     const u = await usuarioActual();
-    if (u) await arrancarApp();
+    if (u) await arrancarApp(u);
   }
 
   if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("sw.js").catch(() => {});
+    navigator.serviceWorker.register("sw.js").then((registro) => {
+      swRegistro = registro;
+      // Cada vez que volvés a esta pestaña (la traés al frente), le
+      // preguntamos al servidor si hay una versión nueva. Así no
+      // dependemos de que el navegador lo revise solo cada tanto.
+      document.addEventListener("visibilitychange", () => {
+        if (!document.hidden) registro.update().catch(() => {});
+      });
+      // Además, mientras la pestaña está a la vista, preguntamos cada
+      // 10 segundos (aparte del latido de datos, que es cada 30s).
+      setInterval(() => {
+        if (!document.hidden) registro.update().catch(() => {});
+      }, 10000);
+    }).catch(() => {});
+
+    // Cuando una versión nueva del Service Worker toma el control
+    // (porque subimos un cambio), recargamos la página solos, una
+    // sola vez, para que se vea al toque sin que el usuario tenga
+    // que acordarse de apretar F5 o recargar a mano. Si justo está
+    // cargando un movimiento (modal abierto), esperamos a que lo
+    // cierre para no hacerle perder lo que estaba escribiendo.
+    let yaSeRecargoPorActualizacion = false;
+    navigator.serviceWorker.addEventListener("controllerchange", () => {
+      if (yaSeRecargoPorActualizacion) return;
+      yaSeRecargoPorActualizacion = true;
+      const haySeguro = () => $("modalFondo") && !$("modalFondo").hidden;
+      if (!haySeguro()) {
+        location.reload();
+        return;
+      }
+      const esperar = setInterval(() => {
+        if (!haySeguro()) {
+          clearInterval(esperar);
+          location.reload();
+        }
+      }, 2000);
+    });
   }
-})();
+})();
