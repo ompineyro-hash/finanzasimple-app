@@ -1,27 +1,10 @@
 <!DOCTYPE html>
-<html lang="es" translate="no">
+<html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#2F6F5E">
-<meta name="google" content="notranslate">
 <title>Ingasto</title>
-<script>
-// Entrada sin sesion: se pasa primero por la antesala (cada vez, para que siempre vea
-// precio y novedades). No aplica con sesion iniciada, en la app instalada, con links de
-// mail (#...) ni cuando viene de los botones de la antesala (?entrar=1).
-try {
-  var _sesion = false;
-  for (var i = 0; i < localStorage.length; i++) {
-    var k = localStorage.key(i);
-    if (k && k.indexOf("sb-") === 0 && k.slice(-11) === "-auth-token") { _sesion = true; break; }
-  }
-  var _app = window.matchMedia && window.matchMedia("(display-mode: standalone)").matches;
-  if (!_sesion && !_app && !location.hash && !location.search) {
-    location.replace("antesala.html");
-  }
-} catch (e) {}
-</script>
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
@@ -60,7 +43,6 @@ try {
 <div class="separador-login"><span data-i18n="separadorO">o</span></div>
 <button class="boton boton-secundario boton-ancho" id="btnMostrarRegistro" data-i18n="btnCrearCuenta">Crear una cuenta nueva</button>
 <button class="boton boton-texto boton-ancho" id="btnOlvideClave" data-i18n="btnOlvideClave">Olvidé mi clave</button>
-<p class="legal-login"><a href="antesala.html" data-i18n="linkConocer">Conocé qué es Ingasto</a></p>
 <p class="legal-login">
 Al crear una cuenta aceptás nuestros
 <a href="terminos.html">Términos de Uso</a> y nuestra
@@ -96,10 +78,8 @@ Al crear una cuenta aceptás nuestros
 <h1>Ingasto</h1>
 <p class="subtitulo-login" data-i18n="tituloPruebaVencida">Tu prueba gratuita terminó</p>
 <p class="texto-ayuda" data-i18n="textoPruebaVencida">Tus datos siguen guardados y a salvo. Activá tu cuenta para seguir usando Ingasto.</p>
-<a href="https://mpago.la/2tbm2G5" target="_blank" rel="noopener" class="boton boton-primario boton-ancho" data-i18n="btnPagarPrueba">Pagar $4.000 y activar</a>
-<button type="button" class="boton boton-secundario boton-ancho" id="btnVerificarPago" style="margin-top:12px" data-i18n="btnVerificarPago">Ya pagué, verificar</button>
-<p class="texto-ayuda" id="msgVerificarPago" role="status" hidden></p>
-<p class="texto-ayuda" data-i18n="textoAvisoWhatsapp">Si después de verificar no se activa, avisanos por WhatsApp con el mail que usaste para registrarte.</p>
+<a href="https://mpago.la/1H2WJWR" target="_blank" rel="noopener" class="boton boton-primario boton-ancho" data-i18n="btnPagarPrueba">Pagar $4.000 y activar</a>
+<p class="texto-ayuda" data-i18n="textoAvisoWhatsapp">Después de pagar, avisanos por WhatsApp con el mail que usaste para registrarte, así te activamos la cuenta.</p>
 <a href="https://wa.me/5492944686350?text=Hola!%20Ya%20pagu%C3%A9%20la%20suscripci%C3%B3n%20de%20Ingasto.%20Mi%20mail%20de%20registro%20es%3A%20" target="_blank" rel="noopener" class="boton boton-secundario boton-ancho" data-i18n="btnAvisarWhatsapp">Avisar por WhatsApp</a>
 <button type="button" class="boton boton-texto boton-ancho" id="btnSalirPruebaVencida" data-i18n="btnSalir2">Salir</button>
 </div>
@@ -121,13 +101,11 @@ Al crear una cuenta aceptás nuestros
 </div>
 <button id="btnSalir" class="icono-btn" data-i18n-aria="ariaSalir" aria-label="Salir">↪</button>
 </div>
-<div id="fechaHoy" class="fecha-hoy">—</div>
 <div class="resumen-tarjetas">
-<div class="tarjeta-resumen tarjeta-resumen-balance">
+<div class="tarjeta-resumen">
 <span class="tarjeta-resumen-label" data-i18n="lblBalance">Balance</span>
 <span id="valorBalance" class="tarjeta-resumen-valor">—</span>
 </div>
-<div class="resumen-tarjetas-fila">
 <div class="tarjeta-resumen">
 <span class="tarjeta-resumen-label" data-i18n="lblIngresos">Ingresos</span>
 <span id="valorIngresos" class="tarjeta-resumen-valor color-ingreso">—</span>
@@ -137,13 +115,14 @@ Al crear una cuenta aceptás nuestros
 <span id="valorGastos" class="tarjeta-resumen-valor color-gasto">—</span>
 </div>
 </div>
-</div>
+<div id="lineaPrevisto" class="linea-previsto" hidden></div>
 <div id="cotizacionesTopbar" class="chips-cotizaciones"></div>
 </header>
 
 <main class="contenido">
 <!-- Vista: Movimientos -->
 <section id="vistaMovimientos" class="vista">
+<div id="bannerPendientes" class="banner-pendientes" hidden></div>
 <div class="searchBox">
 <select id="filtroColumna">
 <option value="todo" data-i18n="searchTodo">Todo</option>
@@ -331,16 +310,10 @@ Al crear una cuenta aceptás nuestros
 <div id="configPanelCategorias" class="config-panel" hidden>
 <button type="button" class="config-volver">← Volver</button>
 <h2 class="titulo-seccion" data-i18n="tituloCategorias">Categorías</h2>
-<div class="categorias-columnas">
-<div class="categorias-columna">
 <h3 class="titulo-subseccion" data-i18n="tituloCategoriasGasto">Categorías de gasto</h3>
 <div id="listaCategoriasGasto" class="lista-editable"></div>
-</div>
-<div class="categorias-columna">
 <h3 class="titulo-subseccion" data-i18n="tituloCategoriasIngreso">Categorías de ingreso</h3>
 <div id="listaCategoriasIngreso" class="lista-editable"></div>
-</div>
-</div>
 <p class="texto-ayuda" data-i18n="textoNuevaCategoriaTipo">Elegí si la nueva categoría es para gastos o para ingresos:</p>
 <div class="segmentado segmentado-chico" id="segmentadoTipoNuevaCategoria">
 <button type="button" class="segmentado-item activo" data-tipo-nueva-categoria="Gasto" data-i18n="segGasto">Gasto</button>
@@ -413,7 +386,7 @@ Al crear una cuenta aceptás nuestros
 </section>
 </main>
 
-<button id="btnNuevo" class="boton-flotante" data-i18n-aria="ariaNuevoMov" aria-label="Nuevo movimiento"><span class="boton-flotante-signo">+</span><span data-i18n="btnAgregar">Agregar</span></button>
+<button id="btnNuevo" class="boton-flotante" data-i18n-aria="ariaNuevoMov" aria-label="Nuevo movimiento">+</button>
 
 <nav class="navbar">
 <button class="navbar-item activo" data-vista="vistaMovimientos">
@@ -423,7 +396,7 @@ Al crear una cuenta aceptás nuestros
 <span class="navbar-icono">📊</span><span data-i18n="navAnalisis">Análisis</span>
 </button>
 <button class="navbar-item" data-vista="vistaConfig">
-<span class="navbar-icono">⚙️</span><span data-i18n="navConfig">Ajustes</span>
+<span class="navbar-icono">⚙️</span><span data-i18n="navConfig">Config</span>
 </button>
 </nav>
 </div>
@@ -466,6 +439,15 @@ Al crear una cuenta aceptás nuestros
 <label><span data-i18n="labelDetalle">Detalle (opcional)</span>
 <input type="text" id="movDetalle" data-i18n-placeholder="placeholderDetalle" placeholder="Ej: Supermercado del sábado">
 </label>
+<div class="bloque-diferido">
+<label class="fila-check"><input type="checkbox" id="movDiferido"><span id="labelDiferido">Lo voy a pagar después</span></label>
+<div id="filaDiferido" hidden>
+<label><span id="labelFechaPago">Fecha en que se paga</span>
+<input type="date" id="movFechaPago">
+</label>
+<label class="fila-check" id="filaYaPagado" hidden><input type="checkbox" id="movYaPagado"><span id="labelYaPagado">Ya se pagó</span></label>
+</div>
+</div>
 <button type="button" id="btnCargarVoz" class="boton boton-voz boton-ancho" data-i18n="btnCargarVoz">🎙️ Cargar por voz (opcional)</button>
 <div id="voicePanel" class="voice-panel" hidden>
 <div id="voiceQuestion" class="voice-pregunta">Preparado para comenzar.</div>
