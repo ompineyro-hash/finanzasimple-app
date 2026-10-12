@@ -99,15 +99,38 @@ async function listarMovimientosDelMes(userId, anio, mes) {
   const desde = `${anio}-${String(mes + 1).padStart(2, "0")}-01`;
   const ultimoDia = new Date(anio, mes + 1, 0).getDate();
   const hasta = `${anio}-${String(mes + 1).padStart(2, "0")}-${String(ultimoDia).padStart(2, "0")}`;
+  // Trae los movimientos del mes por su fecha, y también los que se pagan/cobran
+  // en este mes aunque se hayan cargado en otro (fecha_pago).
   const { data, error } = await sbClient
     .from("movimientos")
     .select("*")
     .eq("user_id", userId)
-    .gte("fecha", desde)
-    .lte("fecha", hasta)
+    .or(`and(fecha.gte.${desde},fecha.lte.${hasta}),and(fecha_pago.gte.${desde},fecha_pago.lte.${hasta})`)
     .order("fecha", { ascending: false });
   if (error) throw error;
   return data;
+}
+
+// Todo lo que "todavía no salió" (gastos por pagar e ingresos por cobrar),
+// de cualquier mes, ordenado por la fecha en que vence.
+async function listarPendientes(userId) {
+  const { data, error } = await sbClient
+    .from("movimientos")
+    .select("*")
+    .eq("user_id", userId)
+    .eq("estado", "pendiente")
+    .order("fecha_pago", { ascending: true });
+  if (error) throw error;
+  return data;
+}
+
+// Cierra el ciclo: el movimiento pasa a pagado/cobrado con la fecha real.
+async function marcarMovimientoPagado(id, fechaReal) {
+  const { error } = await sbClient
+    .from("movimientos")
+    .update({ estado: "pagado", fecha_pago: fechaReal, actualizado_en: new Date().toISOString() })
+    .eq("id", id);
+  if (error) throw error;
 }
 
 async function crearMovimiento(userId, mov) {
@@ -135,8 +158,7 @@ async function listarMovimientosDelAnio(userId, anio) {
     .from("movimientos")
     .select("*")
     .eq("user_id", userId)
-    .gte("fecha", desde)
-    .lte("fecha", hasta)
+    .or(`and(fecha.gte.${desde},fecha.lte.${hasta}),and(fecha_pago.gte.${desde},fecha_pago.lte.${hasta})`)
     .order("fecha", { ascending: false });
   if (error) throw error;
   return data;

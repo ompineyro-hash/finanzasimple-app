@@ -7,10 +7,11 @@ let perfil = null;
 let cuentas = [];
 let categorias = [];
 let movimientos = [];
+let pendientes = [];
+let pendientesAbierto = false;
 let fechaVista = new Date();
 let vistaActiva = "vistaMovimientos";
 let periodoAnalisis = "mes";
-let swRegistro = null; // referencia al Service Worker, para poder pedirle que revise si hay una versión nueva
 
 const $ = (id) => document.getElementById(id);
 
@@ -31,7 +32,6 @@ const TRADUCCIONES = {
     btnEntrar: "Entrar",
     separadorO: "o",
     btnCrearCuenta: "Crear una cuenta nueva",
-    linkConocer: "Conocé qué es Ingasto",
     btnOlvideClave: "Olvidé mi clave",
     textoElegirNuevaClave: "Elegí tu nueva clave",
     labelNuevaClave: "Nueva clave",
@@ -42,10 +42,7 @@ const TRADUCCIONES = {
     tituloPruebaVencida: "Tu prueba gratuita terminó",
     textoPruebaVencida: "Tus datos siguen guardados y a salvo. Activá tu cuenta para seguir usando Ingasto.",
     btnPagarPrueba: "Pagar $4.000 y activar",
-    textoAvisoWhatsapp: "Si después de verificar no se activa, avisanos por WhatsApp con el mail que usaste para registrarte.",
-    btnVerificarPago: "Ya pagué, verificar",
-    verificandoPago: "Verificando tu pago…",
-    pagoNoEncontrado: "Todavía no encontramos tu pago. Puede demorar unos minutos: probá de nuevo en un rato.",
+    textoAvisoWhatsapp: "Después de pagar, avisanos por WhatsApp con el mail que usaste para registrarte, así te activamos la cuenta.",
     btnAvisarWhatsapp: "Avisar por WhatsApp",
     btnSalir2: "Salir",
     btnCrearCuentaSubmit: "Crear cuenta",
@@ -121,11 +118,44 @@ const TRADUCCIONES = {
     ariaNuevoMov: "Nuevo movimiento",
     navMovimientos: "Movimientos",
     navAnalisis: "Análisis",
-    navConfig: "Ajustes",
+    navConfig: "Config",
     modalNuevoTitulo: "Nuevo movimiento",
     modalEditarTitulo: "Editar movimiento",
     ariaCerrarModal: "Cerrar",
     ariaMostrarClave: "Mostrar clave",
+    labelDiferidoGasto: "Lo voy a pagar después",
+    labelDiferidoIngreso: "Lo voy a cobrar después",
+    labelFechaPagoGasto: "Fecha en que se paga",
+    labelFechaPagoIngreso: "Fecha en que se cobra",
+    labelYaPagadoGasto: "Ya se pagó",
+    labelYaPagadoIngreso: "Ya se cobró",
+    errFaltaFechaPago: "Falta la fecha de pago o cobro.",
+    errFechaPagoAnterior: "La fecha de pago no puede ser anterior a la fecha del movimiento.",
+    pendTitulo: "⏳ Todavía no salió",
+    pendPorPagar: "Por pagar",
+    pendPorCobrar: "Por cobrar",
+    pendVencidos: "vencidos",
+    pendVenceHoy: "vence hoy",
+    pendVenceEn: "vence en",
+    pendVencioHace: "venció hace",
+    pendVenceEl: "vence el",
+    pendDia: "día",
+    pendDias: "días",
+    pendVer: "Ver",
+    pendOcultar: "Ocultar",
+    pendMarcarPagado: "✔ Pagado",
+    pendMarcarCobrado: "✔ Cobrado",
+    toastMarcadoPagado: "Listo, marcado como pagado.",
+    toastMarcadoCobrado: "Listo, marcado como cobrado.",
+    badgePendienteGasto: "⏳ por pagar · {f}",
+    badgePendienteIngreso: "⏳ por cobrar · {f}",
+    badgeOrigenGasto: "↪ se paga el {f}",
+    badgeOrigenIngreso: "↪ se cobra el {f}",
+    badgeOrigenPagadoGasto: "↪ pagado el {f}",
+    badgeOrigenPagadoIngreso: "↪ cobrado el {f}",
+    badgeCerradoGasto: "✔ pagado",
+    badgeCerradoIngreso: "✔ cobrado",
+    previstoLinea: "⏳ Con lo pendiente: Balance {b}",
     segGasto: "Gasto",
     avisoVasACargarGasto: "📤 Vas a cargar un GASTO",
     avisoVasACargarIngreso: "📥 Vas a cargar un INGRESO",
@@ -142,7 +172,6 @@ const TRADUCCIONES = {
     btnSeguir: "✓ Seguir",
     btnBorrar: "Borrar",
     btnGuardarMov: "Guardar",
-    avisoFaltaNombreCategoria: "Escribí un nombre para la categoría antes de agregarla.",
   },
   pt: {
     subtitulo: "Seus gastos e receitas, claros e simples.",
@@ -152,7 +181,6 @@ const TRADUCCIONES = {
     btnEntrar: "Entrar",
     separadorO: "ou",
     btnCrearCuenta: "Criar uma conta nova",
-    linkConocer: "Conheça o Ingasto",
     btnOlvideClave: "Esqueci minha senha",
     textoElegirNuevaClave: "Escolha sua nova senha",
     labelNuevaClave: "Nova senha",
@@ -163,10 +191,7 @@ const TRADUCCIONES = {
     tituloPruebaVencida: "Seu período de teste terminou",
     textoPruebaVencida: "Seus dados continuam salvos e seguros. Ative sua conta para continuar usando o Ingasto.",
     btnPagarPrueba: "Pagar $4.000 e ativar",
-    textoAvisoWhatsapp: "Se depois de verificar não ativar, avise-nos pelo WhatsApp com o e-mail que você usou para se cadastrar.",
-    btnVerificarPago: "Já paguei, verificar",
-    verificandoPago: "Verificando seu pagamento…",
-    pagoNoEncontrado: "Ainda não encontramos seu pagamento. Pode demorar alguns minutos: tente de novo daqui a pouco.",
+    textoAvisoWhatsapp: "Depois de pagar, avise-nos pelo WhatsApp com o e-mail que você usou para se cadastrar, para ativarmos sua conta.",
     btnAvisarWhatsapp: "Avisar pelo WhatsApp",
     btnSalir2: "Sair",
     btnCrearCuentaSubmit: "Criar conta",
@@ -242,11 +267,44 @@ const TRADUCCIONES = {
     ariaNuevoMov: "Novo lançamento",
     navMovimientos: "Lançamentos",
     navAnalisis: "Análise",
-    navConfig: "Ajustes",
+    navConfig: "Config",
     modalNuevoTitulo: "Novo lançamento",
     modalEditarTitulo: "Editar lançamento",
     ariaCerrarModal: "Fechar",
     ariaMostrarClave: "Mostrar senha",
+    labelDiferidoGasto: "Vou pagar depois",
+    labelDiferidoIngreso: "Vou receber depois",
+    labelFechaPagoGasto: "Data em que será pago",
+    labelFechaPagoIngreso: "Data em que será recebido",
+    labelYaPagadoGasto: "Já foi pago",
+    labelYaPagadoIngreso: "Já foi recebido",
+    errFaltaFechaPago: "Falta a data de pagamento ou recebimento.",
+    errFechaPagoAnterior: "A data de pagamento não pode ser anterior à data do lançamento.",
+    pendTitulo: "⏳ Ainda não saiu",
+    pendPorPagar: "A pagar",
+    pendPorCobrar: "A receber",
+    pendVencidos: "vencidos",
+    pendVenceHoy: "vence hoje",
+    pendVenceEn: "vence em",
+    pendVencioHace: "venceu há",
+    pendVenceEl: "vence em",
+    pendDia: "dia",
+    pendDias: "dias",
+    pendVer: "Ver",
+    pendOcultar: "Ocultar",
+    pendMarcarPagado: "✔ Pago",
+    pendMarcarCobrado: "✔ Recebido",
+    toastMarcadoPagado: "Pronto, marcado como pago.",
+    toastMarcadoCobrado: "Pronto, marcado como recebido.",
+    badgePendienteGasto: "⏳ a pagar · {f}",
+    badgePendienteIngreso: "⏳ a receber · {f}",
+    badgeOrigenGasto: "↪ será pago em {f}",
+    badgeOrigenIngreso: "↪ será recebido em {f}",
+    badgeOrigenPagadoGasto: "↪ pago em {f}",
+    badgeOrigenPagadoIngreso: "↪ recebido em {f}",
+    badgeCerradoGasto: "✔ pago",
+    badgeCerradoIngreso: "✔ recebido",
+    previstoLinea: "⏳ Com o pendente: Saldo {b}",
     segGasto: "Despesa",
     avisoVasACargarGasto: "📤 Você vai lançar uma DESPESA",
     avisoVasACargarIngreso: "📥 Você vai lançar uma RECEITA",
@@ -263,7 +321,6 @@ const TRADUCCIONES = {
     btnSeguir: "✓ Continuar",
     btnBorrar: "Excluir",
     btnGuardarMov: "Salvar",
-    avisoFaltaNombreCategoria: "Escreva um nome para a categoria antes de adicioná-la.",
   },
   en: {
     subtitulo: "Your expenses and income, clear and simple.",
@@ -273,7 +330,6 @@ const TRADUCCIONES = {
     btnEntrar: "Log in",
     separadorO: "or",
     btnCrearCuenta: "Create a new account",
-    linkConocer: "What is Ingasto?",
     btnOlvideClave: "Forgot my password",
     textoElegirNuevaClave: "Choose your new password",
     labelNuevaClave: "New password",
@@ -284,10 +340,7 @@ const TRADUCCIONES = {
     tituloPruebaVencida: "Your free trial has ended",
     textoPruebaVencida: "Your data is still saved and safe. Activate your account to keep using Ingasto.",
     btnPagarPrueba: "Pay $4,000 and activate",
-    textoAvisoWhatsapp: "If it doesn't activate after checking, message us on WhatsApp with the email you used to sign up.",
-    btnVerificarPago: "I've paid, check now",
-    verificandoPago: "Checking your payment…",
-    pagoNoEncontrado: "We haven't found your payment yet. It can take a few minutes: please try again shortly.",
+    textoAvisoWhatsapp: "After paying, message us on WhatsApp with the email you used to sign up, so we can activate your account.",
     btnAvisarWhatsapp: "Message us on WhatsApp",
     btnSalir2: "Log out",
     btnCrearCuentaSubmit: "Create account",
@@ -368,6 +421,39 @@ const TRADUCCIONES = {
     modalEditarTitulo: "Edit movement",
     ariaCerrarModal: "Close",
     ariaMostrarClave: "Show password",
+    labelDiferidoGasto: "I'll pay this later",
+    labelDiferidoIngreso: "I'll get paid later",
+    labelFechaPagoGasto: "Date it will be paid",
+    labelFechaPagoIngreso: "Date it will be received",
+    labelYaPagadoGasto: "Already paid",
+    labelYaPagadoIngreso: "Already received",
+    errFaltaFechaPago: "The payment or collection date is missing.",
+    errFechaPagoAnterior: "The payment date can't be earlier than the entry date.",
+    pendTitulo: "⏳ Not settled yet",
+    pendPorPagar: "To pay",
+    pendPorCobrar: "To receive",
+    pendVencidos: "overdue",
+    pendVenceHoy: "due today",
+    pendVenceEn: "due in",
+    pendVencioHace: "overdue by",
+    pendVenceEl: "due on",
+    pendDia: "day",
+    pendDias: "days",
+    pendVer: "Show",
+    pendOcultar: "Hide",
+    pendMarcarPagado: "✔ Paid",
+    pendMarcarCobrado: "✔ Received",
+    toastMarcadoPagado: "Done, marked as paid.",
+    toastMarcadoCobrado: "Done, marked as received.",
+    badgePendienteGasto: "⏳ to pay · {f}",
+    badgePendienteIngreso: "⏳ to receive · {f}",
+    badgeOrigenGasto: "↪ will be paid on {f}",
+    badgeOrigenIngreso: "↪ will be received on {f}",
+    badgeOrigenPagadoGasto: "↪ paid on {f}",
+    badgeOrigenPagadoIngreso: "↪ received on {f}",
+    badgeCerradoGasto: "✔ paid",
+    badgeCerradoIngreso: "✔ received",
+    previstoLinea: "⏳ With what's pending: Balance {b}",
     segGasto: "Expense",
     avisoVasACargarGasto: "📤 You're logging an EXPENSE",
     avisoVasACargarIngreso: "📥 You're logging INCOME",
@@ -384,7 +470,6 @@ const TRADUCCIONES = {
     btnSeguir: "✓ Next",
     btnBorrar: "Delete",
     btnGuardarMov: "Save",
-    avisoFaltaNombreCategoria: "Type a name for the category before adding it.",
   },
 };
 
@@ -417,7 +502,6 @@ function aplicarIdioma(idioma) {
 // Textos que se generan por código (no están fijos en el HTML) y hay
 // que actualizar a mano cada vez que cambia el idioma.
 function actualizarTextosDinamicosIdioma() {
-  mostrarFechaHoy();
   // Botones de login, si está en modo registro
   if ($("btnIngresar") && $("btnMostrarRegistro")) {
     $("btnIngresar").textContent = modoRegistro ? t("btnCrearCuentaSubmit") : t("btnEntrar");
@@ -427,6 +511,13 @@ function actualizarTextosDinamicosIdioma() {
     $("labelClaveConfirmar").hidden = !modoRegistro;
     $("inputClaveConfirmar").required = modoRegistro;
     if (!modoRegistro) $("inputClaveConfirmar").value = "";
+  }
+  // Textos de "pago después" y de pendientes, si ya hay sesión iniciada
+  actualizarTextosDiferido();
+  if (usuario) {
+    renderPendientes();
+    renderMovimientos();
+    renderResumen();
   }
   // Título del modal de movimiento, según si se está editando o no
   const modalTitulo = $("modalTitulo");
@@ -463,21 +554,7 @@ function formatoFecha(str) {
 }
 
 function nombreMes(fecha) {
-  const locale = LOCALES_POR_IDIOMA[idiomaActual] || "es-AR";
-  const texto = fecha.toLocaleString(locale, { month: "long", year: "numeric" });
-  return texto.charAt(0).toUpperCase() + texto.slice(1);
-}
-
-// Fecha de hoy en la barra superior, en el idioma elegido.
-const LOCALES_POR_IDIOMA = { es: "es-AR", pt: "pt-BR", en: "en-US" };
-function mostrarFechaHoy() {
-  const el = $("fechaHoy");
-  if (!el) return;
-  const locale = LOCALES_POR_IDIOMA[idiomaActual] || "es-AR";
-  const texto = new Date().toLocaleDateString(locale, {
-    weekday: "long", day: "numeric", month: "long", year: "numeric",
-  });
-  el.textContent = texto.charAt(0).toUpperCase() + texto.slice(1);
+  return fecha.toLocaleString("es-AR", { month: "long", year: "numeric" });
 }
 
 function numeroDesdeTexto(txt) {
@@ -555,8 +632,8 @@ $("formLogin").addEventListener("submit", async (e) => {
       $("formLogin").reset();
       actualizarTextosDinamicosIdioma();
     } else {
-      const resultadoLogin = await iniciarSesion(email, clave);
-      await arrancarApp(resultadoLogin?.user);
+      await iniciarSesion(email, clave);
+      await arrancarApp();
     }
   } catch (err) {
     mostrarAviso($("loginError"), err?.message === "Las claves no coinciden." ? err.message : traducirErrorAuth(err));
@@ -665,62 +742,16 @@ if ($("btnSalirPruebaVencida")) {
 // Cuántos días de prueba gratis tiene cada usuario nuevo.
 const DIAS_DE_PRUEBA = 15;
 
-// Plan pago vigente: activo y, si tiene fecha de vencimiento, que no haya pasado.
-// Sin fecha (plan_vence vacío) = sin vencimiento (cuentas activadas a mano).
-function planVigente() {
-  if (!perfil?.plan_activo) return false;
-  if (!perfil.plan_vence) return true;
-  return new Date(perfil.plan_vence).getTime() > Date.now();
-}
-
 function pruebaVencida() {
-  if (planVigente()) return false; // ya pagó y sigue al día, no hay bloqueo
+  if (perfil?.plan_activo) return false; // ya pagó, no hay bloqueo
   if (!usuario?.created_at) return false; // por las dudas, no bloqueamos si no sabemos la fecha
   const creado = new Date(usuario.created_at).getTime();
   const dias = (Date.now() - creado) / (1000 * 60 * 60 * 24);
   return dias > DIAS_DE_PRUEBA;
 }
 
-// Red de seguridad del cobro: le preguntamos a la función "verificar-pago"
-// si el mail de esta cuenta tiene un pago aprobado en Mercado Pago. Así el
-// acceso no depende de que llegue el aviso automático (webhook).
-let verificandoPago = false;
-let yaVerificoPagoAlAbrir = false;
-async function verificarPago(silencioso) {
-  if (verificandoPago) return false;
-  verificandoPago = true;
-  const msg = $("msgVerificarPago");
-  const btn = $("btnVerificarPago");
-  if (btn) btn.disabled = true;
-  if (!silencioso && msg) {
-    msg.textContent = t("verificandoPago");
-    msg.hidden = false;
-  }
-  try {
-    const { data, error } = await sbClient.functions.invoke("verificar-pago");
-    if (!error && data?.ok) {
-      verificandoPago = false;
-      await arrancarApp(usuario);
-      return true;
-    }
-  } catch {
-    // se informa abajo, igual que si no hubiera pago
-  }
-  if (!silencioso && msg) {
-    msg.textContent = t("pagoNoEncontrado");
-    msg.hidden = false;
-  }
-  verificandoPago = false;
-  if (btn) btn.disabled = false;
-  return false;
-}
-
-if ($("btnVerificarPago")) {
-  $("btnVerificarPago").addEventListener("click", () => verificarPago(false));
-}
-
-async function arrancarApp(usuarioYaObtenido) {
-  usuario = usuarioYaObtenido || (await usuarioActual());
+async function arrancarApp() {
+  usuario = await usuarioActual();
   if (!usuario) return;
 
   try {
@@ -733,42 +764,18 @@ async function arrancarApp(usuarioYaObtenido) {
     $("pantallaLogin").hidden = true;
     $("app").hidden = true;
     $("pantallaPruebaVencida").hidden = false;
-    // Si ya pagó pero el aviso de Mercado Pago no llegó, lo chequeamos solos.
-    if (!yaVerificoPagoAlAbrir) {
-      yaVerificoPagoAlAbrir = true;
-      verificarPago(true);
-    }
     return;
   }
 
   $("pantallaLogin").hidden = true;
-  $("pantallaPruebaVencida").hidden = true;
   $("app").hidden = false;
   $("inputMoneda").value = moneda();
   aplicarIdioma(perfil?.idioma || localStorage.getItem("fs_idioma") || "es");
   if ($("selectIdioma")) $("selectIdioma").value = idiomaActual;
 
-  // Estas dos cargas no dependen una de la otra (los movimientos ya
-  // traen el nombre de categoría/cuenta como texto), así que las
-  // pedimos en paralelo en vez de una detrás de la otra: reduce
-  // bastante el tiempo de arranque, sobre todo con conexión lenta.
-  await Promise.all([cargarCuentasYCategorias(), cargarMesActual()]);
+  await cargarCuentasYCategorias();
+  await cargarMesActual();
   suscribirActualizacionEnVivo();
-  arrancarLatidoDeRespaldo();
-}
-
-// Latido de respaldo: además de la conexión en vivo, cada 30 segundos
-// (mientras la pantalla esté visible) volvemos a pedir los datos del
-// mes. Es la misma idea que tenía la versión anterior de la app: así,
-// aunque la conexión en vivo falle silenciosamente en algún momento,
-// nunca se pasan más de unos segundos sin ver lo último.
-let latidoDeRespaldo = null;
-function arrancarLatidoDeRespaldo() {
-  clearInterval(latidoDeRespaldo);
-  latidoDeRespaldo = setInterval(() => {
-    if (!usuario || !$("app") || $("app").hidden || document.hidden) return;
-    cargarMesActual().catch(() => {});
-  }, 30000);
 }
 
 // ============================================================
@@ -779,16 +786,8 @@ function arrancarLatidoDeRespaldo() {
 // ============================================================
 let canalActualizacionEnVivo = null;
 
-function suscribirActualizacionEnVivo(forzarReconexion) {
-  // Si ya hay una conexión y no estamos forzando, no duplicamos.
-  // Si estamos forzando (por ejemplo, al volver de background después
-  // de un rato largo), tiramos la conexión vieja -que puede haber
-  // quedado cortada sin avisar- y abrimos una nueva.
-  if (canalActualizacionEnVivo) {
-    if (!forzarReconexion) return;
-    sbClient.removeChannel(canalActualizacionEnVivo);
-    canalActualizacionEnVivo = null;
-  }
+function suscribirActualizacionEnVivo() {
+  if (canalActualizacionEnVivo) return; // ya suscripto, no duplicar
   canalActualizacionEnVivo = sbClient
     .channel("cambios-" + usuario.id)
     .on(
@@ -814,8 +813,6 @@ function suscribirActualizacionEnVivo(forzarReconexion) {
 // a la pestaña igual refrescamos una vez.
 async function actualizarDatosSiCorresponde() {
   if (!usuario || !$("app") || $("app").hidden) return;
-  mostrarFechaHoy();
-  suscribirActualizacionEnVivo(true);
   try {
     await cargarMesActual();
   } catch {}
@@ -826,18 +823,23 @@ document.addEventListener("visibilitychange", () => {
 window.addEventListener("focus", actualizarDatosSiCorresponde);
 
 async function cargarCuentasYCategorias() {
-  [cuentas, categorias] = await Promise.all([
-    listarCuentas(usuario.id),
-    listarCategorias(usuario.id),
-  ]);
+  cuentas = await listarCuentas(usuario.id);
+  categorias = await listarCategorias(usuario.id);
   renderCuentasConfig();
   renderCategoriasConfig();
   renderSelects();
 }
 
 async function cargarMesActual() {
-  movimientos = await listarMovimientosDelMes(usuario.id, fechaVista.getFullYear(), fechaVista.getMonth());
+  $("etiquetaMes").textContent = nombreMes(fechaVista);
+  const [delMes, losPendientes] = await Promise.all([
+    listarMovimientosDelMes(usuario.id, fechaVista.getFullYear(), fechaVista.getMonth()),
+    listarPendientes(usuario.id),
+  ]);
+  movimientos = delMes;
+  pendientes = losPendientes;
   renderResumen();
+  renderPendientes();
   renderMovimientos();
   await renderVistaAnalisis();
   if (subVistaAnalisis === "diaadia") renderDiaADia();
@@ -899,15 +901,173 @@ document.querySelectorAll(".config-volver").forEach((btn) => {
 // ============================================================
 // RENDER: Resumen del mes
 // ============================================================
-function renderResumen() {
-  let ing = 0, gas = 0;
-  movimientos.forEach((m) => {
-    if (m.tipo === "Ingreso") ing += Number(m.monto);
-    else gas += Number(m.monto);
+// ---------- Pendientes: "todavía no salió" ----------
+// Un movimiento puede tener fecha_pago (cuándo se paga o se cobra de verdad).
+// Mientras esté "pendiente" no suma al Balance: se ve como alerta hasta que se
+// marca como pagado/cobrado, y recién ahí cuenta en el mes en que se pagó.
+function hoyISO() {
+  const d = new Date();
+  return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+}
+
+function mesClave(fechaISO) { return String(fechaISO).slice(0, 7); }
+
+function claveMesVista() {
+  return fechaVista.getFullYear() + "-" + String(fechaVista.getMonth() + 1).padStart(2, "0");
+}
+
+function esPendiente(m) { return m.estado === "pendiente"; }
+function esDiferido(m) { return !!m.fecha_pago; }
+
+// "normal": sin diferir, cuenta en su fecha.
+// "pago": diferido, y su fecha de pago cae en el mes que se mira.
+// "origen": diferido, cargado en este mes pero se paga en otro (solo señal, no suma).
+function papelEnMes(m, clave) {
+  if (!esDiferido(m)) return "normal";
+  return mesClave(m.fecha_pago) === clave ? "pago" : "origen";
+}
+
+// Movimientos que cuentan en el Balance, con la fecha en que realmente se pagaron.
+function soloContables(lista) {
+  return lista.filter((m) => !esPendiente(m)).map((m) => (m.fecha_pago ? { ...m, fecha: m.fecha_pago } : m));
+}
+
+function contablesDelMes(lista, clave) {
+  return soloContables(lista).filter((m) => mesClave(m.fecha) === clave);
+}
+
+function diasHasta(fechaISO) {
+  const [a, m, d] = fechaISO.split("-").map(Number);
+  const [ha, hm, hd] = hoyISO().split("-").map(Number);
+  return Math.round((Date.UTC(a, m - 1, d) - Date.UTC(ha, hm - 1, hd)) / 86400000);
+}
+
+function textoVencimiento(fechaISO) {
+  const n = diasHasta(fechaISO);
+  if (n === 0) return t("pendVenceHoy");
+  if (n > 0 && n <= 7) return `${t("pendVenceEn")} ${n} ${n === 1 ? t("pendDia") : t("pendDias")}`;
+  if (n > 7) return `${t("pendVenceEl")} ${formatoFecha(fechaISO)}`;
+  const a = Math.abs(n);
+  return `${t("pendVencioHace")} ${a} ${a === 1 ? t("pendDia") : t("pendDias")}`;
+}
+
+function badgeMovimiento(m, papel) {
+  if (papel === "normal") return null;
+  const g = m.tipo === "Ingreso" ? "Ingreso" : "Gasto";
+  const f = formatoFecha(m.fecha_pago);
+  if (papel === "pago") {
+    if (!esPendiente(m)) return { texto: t("badgeCerrado" + g), clase: "badge-cerrado" };
+    const vencido = m.fecha_pago < hoyISO();
+    return { texto: t("badgePendiente" + g).replace("{f}", f), clase: vencido ? "badge-vencido" : "badge-pendiente" };
+  }
+  const clave = esPendiente(m) ? "badgeOrigen" + g : "badgeOrigenPagado" + g;
+  return { texto: t(clave).replace("{f}", f), clase: "badge-origen" };
+}
+
+async function cerrarPendiente(id) {
+  const m = pendientes.find((x) => x.id === id) || movimientos.find((x) => x.id === id);
+  if (!m) return;
+  try {
+    await marcarMovimientoPagado(id, hoyISO());
+    await cargarMesActual();
+    mostrarToast(t(m.tipo === "Ingreso" ? "toastMarcadoCobrado" : "toastMarcadoPagado"));
+  } catch (err) { mostrarToast(traducirErrorDatos(err)); }
+}
+
+function renderPendientes() {
+  const cont = $("bannerPendientes");
+  if (!cont) return;
+  if (!pendientes.length) {
+    cont.hidden = true;
+    cont.innerHTML = "";
+    return;
+  }
+  const hoy = hoyISO();
+  let porPagar = 0, porCobrar = 0, vencidos = 0;
+  pendientes.forEach((m) => {
+    if (m.tipo === "Ingreso") porCobrar += Number(m.monto);
+    else porPagar += Number(m.monto);
+    if (m.fecha_pago < hoy) vencidos++;
   });
+  const partes = [];
+  if (porPagar) partes.push(`${escapeHTML(t("pendPorPagar"))} <b>${escapeHTML(formatoMonto(porPagar))}</b>`);
+  if (porCobrar) partes.push(`${escapeHTML(t("pendPorCobrar"))} <b>${escapeHTML(formatoMonto(porCobrar))}</b>`);
+
+  const filas = pendientes.map((m) => {
+    const esGasto = m.tipo === "Gasto";
+    const vencido = m.fecha_pago < hoy;
+    return `
+      <div class="pend-fila" data-id="${m.id}">
+        <div class="pend-info">
+          <div class="pend-cat">${escapeHTML(m.categoria)}</div>
+          <div class="pend-sub">${escapeHTML(m.cuenta)}${m.detalle ? " · " + escapeHTML(m.detalle) : ""}</div>
+          <div class="pend-venc${vencido ? " vencido" : ""}">${escapeHTML(textoVencimiento(m.fecha_pago))}</div>
+        </div>
+        <div class="pend-derecha">
+          <div class="mov-monto ${esGasto ? "gasto" : "ingreso"}">${esGasto ? "-" : "+"}${escapeHTML(formatoMonto(m.monto))}</div>
+          <button type="button" class="boton boton-secundario pend-cerrar" data-id="${m.id}">${escapeHTML(t(esGasto ? "pendMarcarPagado" : "pendMarcarCobrado"))}</button>
+        </div>
+      </div>`;
+  }).join("");
+
+  cont.innerHTML = `
+    <div class="pend-cabecera">
+      <div class="pend-textos">
+        <div class="pend-titulo">${escapeHTML(t("pendTitulo"))} (${pendientes.length})${vencidos ? ` <span class="pend-alerta">⚠ ${escapeHTML(t("pendVencidos"))}: ${vencidos}</span>` : ""}</div>
+        <div class="pend-resumen">${partes.join(" · ")}</div>
+      </div>
+      <button type="button" class="boton boton-texto" id="btnTogglePendientes">${escapeHTML(t(pendientesAbierto ? "pendOcultar" : "pendVer"))}</button>
+    </div>
+    <div class="pend-lista"${pendientesAbierto ? "" : " hidden"}>${filas}</div>`;
+  cont.classList.toggle("tiene-vencidos", vencidos > 0);
+  cont.hidden = false;
+
+  $("btnTogglePendientes").addEventListener("click", () => {
+    pendientesAbierto = !pendientesAbierto;
+    renderPendientes();
+  });
+  cont.querySelectorAll(".pend-fila").forEach((el) => {
+    el.addEventListener("click", () => abrirModalEditar(el.dataset.id));
+  });
+  cont.querySelectorAll(".pend-cerrar").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      cerrarPendiente(btn.dataset.id);
+    });
+  });
+}
+
+function renderPrevisto() {
+  const el = $("lineaPrevisto");
+  if (!el) return;
+  const clave = claveMesVista();
+  let ingPend = 0, gasPend = 0;
+  movimientos.forEach((m) => {
+    if (esPendiente(m) && mesClave(m.fecha_pago) === clave) {
+      if (m.tipo === "Ingreso") ingPend += Number(m.monto);
+      else gasPend += Number(m.monto);
+    }
+  });
+  if (!ingPend && !gasPend) {
+    el.hidden = true;
+    el.innerHTML = "";
+    return;
+  }
+  const { balance } = calcularResumenLista(contablesDelMes(movimientos, clave));
+  const previsto = balance + ingPend - gasPend;
+  const partes = [];
+  if (gasPend) partes.push(`${t("pendPorPagar")} ${formatoMonto(gasPend)}`);
+  if (ingPend) partes.push(`${t("pendPorCobrar")} ${formatoMonto(ingPend)}`);
+  el.innerHTML = `<strong>${escapeHTML(t("previstoLinea").replace("{b}", formatoMonto(previsto)))}</strong><span>${escapeHTML(partes.join(" · "))}</span>`;
+  el.hidden = false;
+}
+
+function renderResumen() {
+  const { ing, gas } = calcularResumenLista(contablesDelMes(movimientos, claveMesVista()));
   $("valorBalance").textContent = formatoMonto(ing - gas);
   $("valorIngresos").textContent = formatoMonto(ing);
   $("valorGastos").textContent = formatoMonto(gas);
+  renderPrevisto();
 }
 
 function normalizarTexto(v) {
@@ -989,7 +1149,6 @@ function pasaBusqueda(m) {
 // RENDER: Lista de movimientos
 // ============================================================
 function renderMovimientos() {
-  $("etiquetaMes").textContent = nombreMes(fechaVista);
   const cont = $("listaMovimientos");
   const visibles = movimientos.filter(pasaBusqueda);
 
@@ -1001,22 +1160,41 @@ function renderMovimientos() {
     cont.innerHTML = `<div class="vacio">No hay resultados para esa búsqueda.<br>Probá limpiarla o cambiar el filtro.</div>`;
     return;
   }
+  const clave = claveMesVista();
   cont.innerHTML = visibles.map((m) => {
     const esGasto = m.tipo === "Gasto";
+    const papel = papelEnMes(m, clave);
+    const badge = badgeMovimiento(m, papel);
+    const clases = "mov-item"
+      + (papel === "origen" ? " mov-origen" : "")
+      + (papel === "pago" && esPendiente(m) ? " mov-pendiente" : "");
+    const botonCerrar = papel === "pago" && esPendiente(m)
+      ? `<button type="button" class="boton boton-secundario pend-cerrar" data-id="${m.id}">${escapeHTML(t(esGasto ? "pendMarcarPagado" : "pendMarcarCobrado"))}</button>`
+      : "";
     return `
-      <div class="mov-item" data-id="${m.id}">
-        <div class="mov-icono ${esGasto ? "gasto" : "ingreso"}" role="img" aria-label="${esGasto ? t("segGasto") : t("segIngreso")}">${esGasto ? "↓" : "↑"}</div>
+      <div class="${clases}" data-id="${m.id}">
+        <div class="mov-icono ${esGasto ? "gasto" : "ingreso"}">${esGasto ? "↓" : "↑"}</div>
         <div class="mov-info">
           <div class="mov-categoria">${escapeHTML(m.categoria)}</div>
           <div class="mov-detalle">${escapeHTML(m.cuenta)}${m.detalle ? " · " + escapeHTML(m.detalle) : ""}</div>
           <div class="mov-fecha">${formatoFecha(m.fecha)}</div>
+          ${badge ? `<div class="mov-badge ${badge.clase}">${escapeHTML(badge.texto)}</div>` : ""}
         </div>
-        <div class="mov-monto ${esGasto ? "gasto" : "ingreso"}">${esGasto ? "-" : "+"}${formatoMonto(m.monto)}</div>
+        <div class="mov-derecha">
+          <div class="mov-monto ${esGasto ? "gasto" : "ingreso"}">${esGasto ? "-" : "+"}${formatoMonto(m.monto)}</div>
+          ${botonCerrar}
+        </div>
       </div>`;
   }).join("");
 
   cont.querySelectorAll(".mov-item").forEach((el) => {
     el.addEventListener("click", () => abrirModalEditar(el.dataset.id));
+  });
+  cont.querySelectorAll(".pend-cerrar").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      cerrarPendiente(btn.dataset.id);
+    });
   });
 }
 
@@ -1095,12 +1273,15 @@ function renderCategoriasAnalisis(lista, tipo) {
 
 async function renderVistaAnalisis() {
   let lista;
+  // El Análisis cuenta solo lo que ya se pagó/cobró, en el mes en que se pagó.
   if (periodoAnalisis === "anio") {
-    lista = await listarMovimientosDelAnio(usuario.id, fechaVista.getFullYear());
+    const anio = String(fechaVista.getFullYear());
+    lista = soloContables(await listarMovimientosDelAnio(usuario.id, fechaVista.getFullYear()))
+      .filter((m) => m.fecha.startsWith(anio));
   } else if (periodoAnalisis === "todo") {
-    lista = await listarTodosLosMovimientos(usuario.id);
+    lista = soloContables(await listarTodosLosMovimientos(usuario.id));
   } else {
-    lista = movimientos;
+    lista = contablesDelMes(movimientos, claveMesVista());
   }
   ultimaListaAnalisis = lista;
   renderResumenAnalisis(lista);
@@ -1152,7 +1333,7 @@ function abreviarNumero(n) {
 
 async function renderEvolucionMensual() {
   const cont = $("graficoEvolucion");
-  const todos = await listarTodosLosMovimientos(usuario.id);
+  const todos = soloContables(await listarTodosLosMovimientos(usuario.id));
   if (!todos.length) {
     cont.innerHTML = `<div class="vacio" data-i18n="analisisSinDatos">Todavía no hay movimientos cargados.</div>`;
     $("evolBalance").textContent = "—";
@@ -1223,12 +1404,13 @@ function pathSuave(puntos) {
 
 function renderDiaADia() {
   const cont = $("graficoDiaADia");
-  const { ing: totIng, gas: totGas, balance } = calcularResumenLista(movimientos);
+  const delMes = contablesDelMes(movimientos, claveMesVista());
+  const { ing: totIng, gas: totGas, balance } = calcularResumenLista(delMes);
   $("diaBalance").textContent = formatoMonto(balance);
   $("diaIngresos").textContent = formatoMonto(totIng);
   $("diaGastos").textContent = formatoMonto(totGas);
 
-  if (!movimientos.length) {
+  if (!delMes.length) {
     cont.innerHTML = `<div class="vacio" data-i18n="analisisSinDatos">Todavía no hay movimientos cargados.</div>`;
     return;
   }
@@ -1238,7 +1420,7 @@ function renderDiaADia() {
 
   const porDia = {};
   for (let d = 1; d <= ultimoDia; d++) porDia[d] = { ing: 0, gas: 0 };
-  movimientos.forEach((m) => {
+  delMes.forEach((m) => {
     const dia = Number(m.fecha.slice(8, 10));
     if (!porDia[dia]) return;
     if (m.tipo === "Ingreso") porDia[dia].ing += Number(m.monto);
@@ -1475,23 +1657,12 @@ document.querySelectorAll("#segmentadoTipoNuevaCategoria .segmentado-item").forE
 $("btnAgregarCategoria").addEventListener("click", async () => {
   const input = $("inputNuevaCategoria");
   const v = input.value.trim();
-  if (!v) {
-    mostrarToast(t("avisoFaltaNombreCategoria"));
-    input.focus();
-    return;
-  }
+  if (!v) return;
   try {
     await crearCategoria(usuario.id, v, tipoNuevaCategoria);
     input.value = "";
     await cargarCuentasYCategorias();
   } catch (err) { mostrarToast(traducirErrorDatos(err)); }
-});
-
-$("inputNuevaCategoria").addEventListener("keydown", (ev) => {
-  if (ev.key === "Enter") {
-    ev.preventDefault();
-    $("btnAgregarCategoria").click();
-  }
 });
 
 function renderSelectCategorias(tipo) {
@@ -1536,7 +1707,9 @@ function abrirModalNuevo() {
   $("modalTitulo").textContent = t("modalNuevoTitulo");
   $("btnBorrarMov").hidden = true;
   seleccionarTipo("Gasto");
-  $("movFecha").value = new Date().toISOString().slice(0, 10);
+  $("movFecha").value = hoyISO();
+  $("movFechaPago").value = "";
+  sincronizarDiferidoUI();
   renderSelects();
   ocultarAviso($("movError"));
   $("modalFondo").hidden = false;
@@ -1544,7 +1717,7 @@ function abrirModalNuevo() {
 }
 
 function abrirModalEditar(id) {
-  const m = movimientos.find((x) => x.id === id);
+  const m = movimientos.find((x) => x.id === id) || pendientes.find((x) => x.id === id);
   if (!m) return;
   seleccionarTipo(m.tipo);
   renderSelects();
@@ -1558,12 +1731,52 @@ function abrirModalEditar(id) {
   $("movCategoria").value = m.categoria;
   $("movMonto").value = String(m.monto).replace(".", ",");
   $("movDetalle").value = m.detalle || "";
+  $("movDiferido").checked = esDiferido(m);
+  $("movFechaPago").value = m.fecha_pago || "";
+  $("movYaPagado").checked = !esPendiente(m);
+  sincronizarDiferidoUI();
   ocultarAviso($("movError"));
   $("modalFondo").hidden = false;
   fsVoiceOcultar();
 }
 
 function cerrarModal() { $("modalFondo").hidden = true; }
+
+// ---------- "Lo voy a pagar / cobrar después" dentro del formulario ----------
+function tipoDelFormulario() {
+  return document.querySelector("#segmentadoTipo .activo")?.dataset.tipo === "Ingreso" ? "Ingreso" : "Gasto";
+}
+
+function actualizarTextosDiferido() {
+  if (!$("labelDiferido")) return;
+  const g = tipoDelFormulario();
+  $("labelDiferido").textContent = t("labelDiferido" + g);
+  $("labelFechaPago").textContent = t("labelFechaPago" + g);
+  $("labelYaPagado").textContent = t("labelYaPagado" + g);
+}
+
+function sincronizarDiferidoUI() {
+  actualizarTextosDiferido();
+  const activo = $("movDiferido").checked;
+  $("filaDiferido").hidden = !activo;
+  // "Ya se pagó" solo tiene sentido al editar un movimiento que ya existe.
+  $("filaYaPagado").hidden = !activo || !$("movId").value;
+}
+
+// Misma fecha del mes siguiente (o el último día, si el mes siguiente es más corto).
+function sumarUnMes(fechaISO) {
+  const [a, m, d] = fechaISO.split("-").map(Number);
+  const ultimo = new Date(a, m + 1, 0).getDate();
+  const f = new Date(a, m, Math.min(d, ultimo));
+  return f.getFullYear() + "-" + String(f.getMonth() + 1).padStart(2, "0") + "-" + String(f.getDate()).padStart(2, "0");
+}
+
+$("movDiferido").addEventListener("change", () => {
+  if ($("movDiferido").checked && !$("movFechaPago").value) {
+    $("movFechaPago").value = sumarUnMes($("movFecha").value || hoyISO());
+  }
+  sincronizarDiferidoUI();
+});
 
 function seleccionarTipo(tipo) {
   document.querySelectorAll("#segmentadoTipo .segmentado-item").forEach((b) => {
@@ -1576,6 +1789,7 @@ function seleccionarTipo(tipo) {
     aviso.classList.toggle("aviso-tipo-gasto", esGasto);
     aviso.classList.toggle("aviso-tipo-ingreso", !esGasto);
   }
+  actualizarTextosDiferido();
 }
 document.querySelectorAll("#segmentadoTipo .segmentado-item").forEach((b) => {
   b.addEventListener("click", () => {
@@ -1846,7 +2060,17 @@ $("formMovimiento").addEventListener("submit", async (e) => {
   if (!categoria) return mostrarAviso($("movError"), "Elegí una categoría.");
   if (!Number.isFinite(monto) || monto <= 0) return mostrarAviso($("movError"), "El monto tiene que ser mayor a cero.");
 
-  const datos = { tipo, fecha, cuenta, categoria, detalle, monto };
+  // Si se paga/cobra después: queda "pendiente" hasta que se marque como pagado.
+  let estado = "pagado";
+  let fechaPago = null;
+  if ($("movDiferido").checked) {
+    fechaPago = $("movFechaPago").value;
+    if (!fechaPago) return mostrarAviso($("movError"), t("errFaltaFechaPago"));
+    if (fechaPago < fecha) return mostrarAviso($("movError"), t("errFechaPagoAnterior"));
+    estado = id && $("movYaPagado").checked ? "pagado" : "pendiente";
+  }
+
+  const datos = { tipo, fecha, cuenta, categoria, detalle, monto, estado, fecha_pago: fechaPago };
 
   try {
     if (id) await actualizarMovimiento(id, datos);
@@ -1896,10 +2120,12 @@ $("btnExportarExcel").addEventListener("click", async () => {
         <td>${valorEscapadoExcel(m.categoria)}</td>
         <td>${valorEscapadoExcel(m.detalle || "")}</td>
         <td style="mso-number-format:'0.00';">${montoConSigno}</td>
+        <td>${valorEscapadoExcel(esPendiente(m) ? "Pendiente" : "Pagado")}</td>
+        <td>${valorEscapadoExcel(m.fecha_pago ? formatoFecha(m.fecha_pago) : "")}</td>
       </tr>`;
     }).join("");
     const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body>
-      <table border="1"><thead><tr><th>Fecha</th><th>Tipo</th><th>Cuenta</th><th>Categoría</th><th>Detalle</th><th>Monto</th></tr></thead>
+      <table border="1"><thead><tr><th>Fecha</th><th>Tipo</th><th>Cuenta</th><th>Categoría</th><th>Detalle</th><th>Monto</th><th>Estado</th><th>Fecha de pago</th></tr></thead>
       <tbody>${filas}</tbody></table></body></html>`;
     descargarArchivo(`Ingasto_${fechaParaNombreArchivo()}.xls`, html, "application/vnd.ms-excel;charset=utf-8");
     mostrarToast("Archivo descargado.");
@@ -1917,10 +2143,10 @@ $("btnExportarCSV").addEventListener("click", async () => {
     mostrarToast("Preparando archivo...");
     const todos = await listarTodosLosMovimientos(usuario.id);
     if (!todos.length) return mostrarToast("Todavía no tenés movimientos para exportar.");
-    const encabezado = ["Fecha", "Tipo", "Cuenta", "Categoría", "Detalle", "Monto"].map(valorCSV).join(",");
+    const encabezado = ["Fecha", "Tipo", "Cuenta", "Categoría", "Detalle", "Monto", "Estado", "Fecha de pago"].map(valorCSV).join(",");
     const filas = todos.map((m) => {
       const montoConSigno = m.tipo === "Gasto" ? -Math.abs(m.monto) : Math.abs(m.monto);
-      return [formatoFecha(m.fecha), m.tipo, m.cuenta, m.categoria, m.detalle || "", montoConSigno].map(valorCSV).join(",");
+      return [formatoFecha(m.fecha), m.tipo, m.cuenta, m.categoria, m.detalle || "", montoConSigno, esPendiente(m) ? "Pendiente" : "Pagado", m.fecha_pago ? formatoFecha(m.fecha_pago) : ""].map(valorCSV).join(",");
     }).join("\n");
     descargarArchivo(`Ingasto_${fechaParaNombreArchivo()}.csv`, "﻿" + encabezado + "\n" + filas, "text/csv;charset=utf-8");
     mostrarToast("Archivo descargado.");
@@ -1982,46 +2208,10 @@ const esLinkDeRecuperacion = /type=recovery/.test(location.hash);
 (async function init() {
   if (!esLinkDeRecuperacion) {
     const u = await usuarioActual();
-    if (u) await arrancarApp(u);
+    if (u) await arrancarApp();
   }
 
   if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("sw.js").then((registro) => {
-      swRegistro = registro;
-      // Cada vez que volvés a esta pestaña (la traés al frente), le
-      // preguntamos al servidor si hay una versión nueva. Así no
-      // dependemos de que el navegador lo revise solo cada tanto.
-      document.addEventListener("visibilitychange", () => {
-        if (!document.hidden) registro.update().catch(() => {});
-      });
-      // Además, mientras la pestaña está a la vista, preguntamos cada
-      // 10 segundos (aparte del latido de datos, que es cada 30s).
-      setInterval(() => {
-        if (!document.hidden) registro.update().catch(() => {});
-      }, 10000);
-    }).catch(() => {});
-
-    // Cuando una versión nueva del Service Worker toma el control
-    // (porque subimos un cambio), recargamos la página solos, una
-    // sola vez, para que se vea al toque sin que el usuario tenga
-    // que acordarse de apretar F5 o recargar a mano. Si justo está
-    // cargando un movimiento (modal abierto), esperamos a que lo
-    // cierre para no hacerle perder lo que estaba escribiendo.
-    let yaSeRecargoPorActualizacion = false;
-    navigator.serviceWorker.addEventListener("controllerchange", () => {
-      if (yaSeRecargoPorActualizacion) return;
-      yaSeRecargoPorActualizacion = true;
-      const haySeguro = () => $("modalFondo") && !$("modalFondo").hidden;
-      if (!haySeguro()) {
-        location.reload();
-        return;
-      }
-      const esperar = setInterval(() => {
-        if (!haySeguro()) {
-          clearInterval(esperar);
-          location.reload();
-        }
-      }, 2000);
-    });
+    navigator.serviceWorker.register("sw.js").catch(() => {});
   }
 })();
