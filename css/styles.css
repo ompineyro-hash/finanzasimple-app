@@ -401,3 +401,7 @@ input,select{font-family:inherit;font-size:16px;}
   padding: 8px 0 16px;
   cursor: pointer;
 }
+
+/* Boton de voz chico, en la cabecera del formulario */
+.boton-voz-chico{margin-left:auto;margin-right:8px;background:#EFEAFB;color:#6B46C1;border:none;border-radius:16px;padding:6px 12px;font-size:13px;font-weight:700;min-height:34px;}
+.modal-cabecera h3{flex:0 1 auto;}
