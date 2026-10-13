@@ -441,6 +441,17 @@ Al crear una cuenta aceptás nuestros
 </div>
 <form id="formMovimiento" class="modal-cuerpo">
 <input type="hidden" id="movId">
+<button type="button" id="btnCargarVoz" class="boton boton-voz boton-ancho" data-i18n="btnCargarVoz">🎙️ Cargar por voz (opcional)</button>
+<div id="voicePanel" class="voice-panel" hidden>
+<div id="voiceQuestion" class="voice-pregunta">Preparado para comenzar.</div>
+<div id="voiceHeard" class="voice-escuchado">La respuesta escuchada aparecerá acá.</div>
+<div id="voiceStatus" class="voice-estado">Tocá Responder para hablar. También podés completar el campo a mano.</div>
+<div class="voice-acciones">
+<button type="button" id="voiceListen" class="boton boton-secundario" data-i18n="btnResponder">🎤 Responder</button>
+<button type="button" id="voiceRepeat" class="boton boton-texto" data-i18n="btnRepetir">↻ Repetir</button>
+<button type="button" id="voiceNext" class="boton boton-primario" data-i18n="btnSeguir">✓ Seguir</button>
+</div>
+</div>
 <div class="segmentado" id="segmentadoTipo">
 <button type="button" class="segmentado-item activo" data-tipo="Gasto" data-i18n="segGasto">Gasto</button>
 <button type="button" class="segmentado-item" data-tipo="Ingreso" data-i18n="segIngreso">Ingreso</button>
@@ -477,17 +488,6 @@ Al crear una cuenta aceptás nuestros
 <input type="date" id="movFechaPago">
 </label>
 <label class="fila-check" id="filaYaPagado" hidden><input type="checkbox" id="movYaPagado"><span id="labelYaPagado">Ya se pagó</span></label>
-</div>
-</div>
-<button type="button" id="btnCargarVoz" class="boton boton-voz boton-ancho" data-i18n="btnCargarVoz">🎙️ Cargar por voz (opcional)</button>
-<div id="voicePanel" class="voice-panel" hidden>
-<div id="voiceQuestion" class="voice-pregunta">Preparado para comenzar.</div>
-<div id="voiceHeard" class="voice-escuchado">La respuesta escuchada aparecerá acá.</div>
-<div id="voiceStatus" class="voice-estado">Tocá Responder para hablar. También podés completar el campo a mano.</div>
-<div class="voice-acciones">
-<button type="button" id="voiceListen" class="boton boton-secundario" data-i18n="btnResponder">🎤 Responder</button>
-<button type="button" id="voiceRepeat" class="boton boton-texto" data-i18n="btnRepetir">↻ Repetir</button>
-<button type="button" id="voiceNext" class="boton boton-primario" data-i18n="btnSeguir">✓ Seguir</button>
 </div>
 </div>
 <div id="movError" class="aviso aviso-error" hidden></div>
