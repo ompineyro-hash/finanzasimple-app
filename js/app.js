@@ -1006,13 +1006,55 @@ $("btnLimpiarBusqueda").addEventListener("click", () => {
 // ============================================================
 // NAVEGACIÓN ENTRE VISTAS
 // ============================================================
+// ---- Boton "atras" del celu ----
+// Cada pantalla que se abre "encima" (ventana de movimiento, panel de
+// Ajustes, otra pestania) guarda un paso en el historial. Asi el boton
+// atras del celu cierra esa pantalla en vez de sacar al usuario de la app.
+let saltarPop = 0;
+
+function guardarPasoAtras(nombre) {
+  try { history.pushState({ fs: nombre }, ""); } catch (e) {}
+}
+
+function volverUnPaso(nombre) {
+  // Se usa cuando la pantalla se cierra con un boton de la app (X, Volver):
+  // se retira el paso guardado para que no quede uno de mas.
+  if (history.state && history.state.fs === nombre) {
+    saltarPop++;
+    history.back();
+  }
+}
+
+function irAVista(id) {
+  document.querySelectorAll(".navbar-item").forEach((b) => {
+    b.classList.toggle("activo", b.dataset.vista === id);
+  });
+  document.querySelectorAll(".vista").forEach((v) => (v.hidden = true));
+  vistaActiva = id;
+  $(vistaActiva).hidden = false;
+}
+
+function volverAlMenuConfig() {
+  document.querySelectorAll(".config-panel").forEach((p) => (p.hidden = true));
+  const menu = $("configMenu");
+  if (menu) menu.hidden = false;
+}
+
+window.addEventListener("popstate", () => {
+  if (saltarPop > 0) { saltarPop--; return; }
+  const modal = $("modalFondo");
+  if (modal && !modal.hidden) { modal.hidden = true; return; }
+  if (document.querySelector(".config-panel:not([hidden])")) { volverAlMenuConfig(); return; }
+  if (vistaActiva !== "vistaMovimientos") irAVista("vistaMovimientos");
+});
+
 document.querySelectorAll(".navbar-item[data-vista]").forEach((btn) => {
   btn.addEventListener("click", () => {
-    document.querySelectorAll(".navbar-item").forEach((b) => b.classList.remove("activo"));
-    btn.classList.add("activo");
-    document.querySelectorAll(".vista").forEach((v) => (v.hidden = true));
-    vistaActiva = btn.dataset.vista;
-    $(vistaActiva).hidden = false;
+    const destino = btn.dataset.vista;
+    if (destino === vistaActiva) return;
+    if (destino !== "vistaMovimientos" && vistaActiva === "vistaMovimientos") guardarPasoAtras("vista");
+    else if (destino === "vistaMovimientos") volverUnPaso("vista");
+    irAVista(destino);
   });
 });
 
@@ -1027,15 +1069,14 @@ document.querySelectorAll(".config-tarjeta").forEach((btn) => {
     if (menu) menu.hidden = true;
     document.querySelectorAll(".config-panel").forEach((p) => (p.hidden = true));
     const panel = $(panelId);
-    if (panel) panel.hidden = false;
+    if (panel) { panel.hidden = false; guardarPasoAtras("panel"); }
   });
 });
 
 document.querySelectorAll(".config-volver").forEach((btn) => {
   btn.addEventListener("click", () => {
-    document.querySelectorAll(".config-panel").forEach((p) => (p.hidden = true));
-    const menu = $("configMenu");
-    if (menu) menu.hidden = false;
+    volverAlMenuConfig();
+    volverUnPaso("panel");
   });
 });
 
@@ -1866,7 +1907,7 @@ function abrirModalNuevo() {
   sincronizarDiferidoUI();
   renderSelects();
   ocultarAviso($("movError"));
-  $("modalFondo").hidden = false;
+  abrirVentanaMovimiento();
   fsVozPrepararNuevo();
 }
 
@@ -1890,11 +1931,20 @@ function abrirModalEditar(id) {
   $("movYaPagado").checked = !esPendiente(m);
   sincronizarDiferidoUI();
   ocultarAviso($("movError"));
-  $("modalFondo").hidden = false;
+  abrirVentanaMovimiento();
   fsVoiceOcultar();
 }
 
-function cerrarModal() { $("modalFondo").hidden = true; }
+function abrirVentanaMovimiento() {
+  if ($("modalFondo").hidden) guardarPasoAtras("modal");
+  $("modalFondo").hidden = false;
+}
+
+function cerrarModal() {
+  if ($("modalFondo").hidden) return;
+  $("modalFondo").hidden = true;
+  volverUnPaso("modal");
+}
 
 // ---------- "Lo voy a pagar / cobrar después" dentro del formulario ----------
 function tipoDelFormulario() {
