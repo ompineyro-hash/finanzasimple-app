@@ -136,6 +136,13 @@ const TRADUCCIONES = {
     labelYaPagadoGasto: "Ya se pagó",
     labelYaPagadoIngreso: "Ya se cobró",
     errFaltaFechaPago: "Falta la fecha de pago o cobro.",
+    labelCuotas: "Pagar en cuotas",
+    labelCantCuotas: "Cantidad de cuotas",
+    labelPrimeraCuota: "Fecha de la primera cuota",
+    ayudaCuotas: "El monto es el valor de cada cuota. Se crea una por mes y quedan como pendientes hasta que las marques como pagadas.",
+    textoCuota: "Cuota",
+    toastCuotas: "Se crearon {n} cuotas.",
+    errCuotas: "Las cuotas tienen que ser entre 2 y 60.",
     errFechaPagoAnterior: "La fecha de pago no puede ser anterior a la fecha del movimiento.",
     pendTitulo: "⏳ Todavía no salió",
     pendPorPagar: "Por pagar",
@@ -292,6 +299,13 @@ const TRADUCCIONES = {
     labelYaPagadoGasto: "Já foi pago",
     labelYaPagadoIngreso: "Já foi recebido",
     errFaltaFechaPago: "Falta a data de pagamento ou recebimento.",
+    labelCuotas: "Pagar em parcelas",
+    labelCantCuotas: "Número de parcelas",
+    labelPrimeraCuota: "Data da primeira parcela",
+    ayudaCuotas: "O valor é o de cada parcela. Cria-se uma por mês e ficam pendentes até você marcá-las como pagas.",
+    textoCuota: "Parcela",
+    toastCuotas: "{n} parcelas criadas.",
+    errCuotas: "As parcelas devem ser entre 2 e 60.",
     errFechaPagoAnterior: "A data de pagamento não pode ser anterior à data do lançamento.",
     pendTitulo: "⏳ Ainda não saiu",
     pendPorPagar: "A pagar",
@@ -448,6 +462,13 @@ const TRADUCCIONES = {
     labelYaPagadoGasto: "Already paid",
     labelYaPagadoIngreso: "Already received",
     errFaltaFechaPago: "The payment or collection date is missing.",
+    labelCuotas: "Pay in installments",
+    labelCantCuotas: "Number of installments",
+    labelPrimeraCuota: "Date of the first installment",
+    ayudaCuotas: "The amount is the value of each installment. One is created per month and they stay pending until you mark them as paid.",
+    textoCuota: "Installment",
+    toastCuotas: "{n} installments created.",
+    errCuotas: "Installments must be between 2 and 60.",
     errFechaPagoAnterior: "The payment date can't be earlier than the entry date.",
     pendTitulo: "⏳ Not settled yet",
     pendPorPagar: "To pay",
@@ -1904,6 +1925,9 @@ function abrirModalNuevo() {
   seleccionarTipo("Gasto");
   $("movFecha").value = hoyISO();
   $("movFechaPago").value = "";
+  $("movCuotas").checked = false;
+  $("movCuotaN").value = "6";
+  $("movCuotaFecha").value = "";
   sincronizarDiferidoUI();
   renderSelects();
   ocultarAviso($("movError"));
@@ -1929,6 +1953,7 @@ function abrirModalEditar(id) {
   $("movDiferido").checked = esDiferido(m);
   $("movFechaPago").value = m.fecha_pago || "";
   $("movYaPagado").checked = !esPendiente(m);
+  $("movCuotas").checked = false;
   sincronizarDiferidoUI();
   ocultarAviso($("movError"));
   abrirVentanaMovimiento();
@@ -1965,7 +1990,30 @@ function sincronizarDiferidoUI() {
   $("filaDiferido").hidden = !activo;
   // "Ya se pagó" solo tiene sentido al editar un movimiento que ya existe.
   $("filaYaPagado").hidden = !activo || !$("movId").value;
+  sincronizarCuotasUI();
 }
+
+// ---------- Pagar en cuotas (solo al crear un movimiento nuevo) ----------
+function sincronizarCuotasUI() {
+  const nuevo = !$("movId").value;
+  const diferido = $("movDiferido").checked;
+  // Las cuotas y "lo pago después" no se mezclan: se elige una u otra.
+  $("bloqueCuotas").hidden = !nuevo || diferido;
+  const cuotas = nuevo && !diferido && $("movCuotas").checked;
+  $("filaCuotas").hidden = !cuotas;
+  document.querySelector(".bloque-diferido:not(#bloqueCuotas)").hidden = cuotas;
+  if (cuotas && !$("movCuotaFecha").value) $("movCuotaFecha").value = $("movFecha").value || hoyISO();
+}
+
+// Misma fecha, k meses despues (si el mes es mas corto, el ultimo dia).
+function sumarMesesISO(fechaISO, k) {
+  const [a, m, d] = fechaISO.split("-").map(Number);
+  const ultimo = new Date(a, m - 1 + k + 1, 0).getDate();
+  const f = new Date(a, m - 1 + k, Math.min(d, ultimo));
+  return f.getFullYear() + "-" + String(f.getMonth() + 1).padStart(2, "0") + "-" + String(f.getDate()).padStart(2, "0");
+}
+
+$("movCuotas").addEventListener("change", sincronizarCuotasUI);
 
 // Misma fecha del mes siguiente (o el último día, si el mes siguiente es más corto).
 function sumarUnMes(fechaISO) {
@@ -2272,6 +2320,31 @@ $("formMovimiento").addEventListener("submit", async (e) => {
     if (!fechaPago) return mostrarAviso($("movError"), t("errFaltaFechaPago"));
     if (fechaPago < fecha) return mostrarAviso($("movError"), t("errFechaPagoAnterior"));
     estado = id && $("movYaPagado").checked ? "pagado" : "pendiente";
+  }
+
+  // Pagar en cuotas: se crea una por mes, cada una pendiente hasta que se marque pagada.
+  if (!id && $("movCuotas").checked && !$("movDiferido").checked) {
+    const n = parseInt($("movCuotaN").value, 10);
+    const primera = $("movCuotaFecha").value || fecha;
+    if (!Number.isInteger(n) || n < 2 || n > 60) return mostrarAviso($("movError"), t("errCuotas"));
+    const cuotas = [];
+    for (let k = 0; k < n; k++) {
+      const f = sumarMesesISO(primera, k);
+      cuotas.push({
+        tipo, fecha: f, cuenta, categoria, monto,
+        detalle: (detalle ? detalle + " · " : "") + t("textoCuota") + " " + (k + 1) + "/" + n,
+        estado: "pendiente", fecha_pago: f,
+      });
+    }
+    try {
+      await crearMovimientos(usuario.id, cuotas);
+      cerrarModal();
+      await cargarMesActual();
+      mostrarToast(t("toastCuotas").replace("{n}", n));
+    } catch (err) {
+      mostrarAviso($("movError"), traducirErrorDatos(err));
+    }
+    return;
   }
 
   const datos = { tipo, fecha, cuenta, categoria, detalle, monto, estado, fecha_pago: fechaPago };

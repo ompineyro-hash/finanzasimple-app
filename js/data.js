@@ -136,6 +136,13 @@ async function crearMovimiento(userId, mov) {
   if (error) throw error;
 }
 
+// Crea varios movimientos juntos (cuotas): o se guardan todos o ninguno.
+async function crearMovimientos(userId, lista) {
+  const filas = lista.map((mov) => ({ user_id: userId, ...mov }));
+  const { error } = await sbClient.from("movimientos").insert(filas);
+  if (error) throw error;
+}
+
 async function actualizarMovimiento(id, mov) {
   const { error } = await sbClient
     .from("movimientos")

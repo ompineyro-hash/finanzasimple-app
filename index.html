@@ -490,6 +490,18 @@ Al crear una cuenta aceptás nuestros
 <label class="fila-check" id="filaYaPagado" hidden><input type="checkbox" id="movYaPagado"><span id="labelYaPagado">Ya se pagó</span></label>
 </div>
 </div>
+<div class="bloque-diferido" id="bloqueCuotas">
+<label class="fila-check"><input type="checkbox" id="movCuotas"><span data-i18n="labelCuotas">Pagar en cuotas</span></label>
+<div id="filaCuotas" hidden>
+<label><span data-i18n="labelCantCuotas">Cantidad de cuotas</span>
+<input type="number" id="movCuotaN" min="2" max="60" value="6" inputmode="numeric">
+</label>
+<label><span data-i18n="labelPrimeraCuota">Fecha de la primera cuota</span>
+<input type="date" id="movCuotaFecha">
+</label>
+<p class="texto-ayuda" data-i18n="ayudaCuotas">El monto es el valor de cada cuota. Se crea una por mes y quedan como pendientes hasta que las marques como pagadas.</p>
+</div>
+</div>
 <div id="movError" class="aviso aviso-error" hidden></div>
 <div class="modal-acciones">
 <button type="button" id="btnBorrarMov" class="boton boton-peligro" hidden data-i18n="btnBorrar">Borrar</button>
