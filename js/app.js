@@ -55,6 +55,7 @@ const TRADUCCIONES = {
     ariaMesAnterior: "Mes anterior",
     ariaMesSiguiente: "Mes siguiente",
     ariaSalir: "Salir",
+    confirmarSalir: "¿Querés cerrar tu sesión?",
     lblBalance: "Balance",
     lblIngresos: "Ingresos",
     lblGastos: "Gastos",
@@ -209,6 +210,7 @@ const TRADUCCIONES = {
     ariaMesAnterior: "Mês anterior",
     ariaMesSiguiente: "Próximo mês",
     ariaSalir: "Sair",
+    confirmarSalir: "Quer encerrar a sessão?",
     lblBalance: "Saldo",
     lblIngresos: "Receitas",
     lblGastos: "Despesas",
@@ -363,6 +365,7 @@ const TRADUCCIONES = {
     ariaMesAnterior: "Previous month",
     ariaMesSiguiente: "Next month",
     ariaSalir: "Log out",
+    confirmarSalir: "Do you want to log out?",
     lblBalance: "Balance",
     lblIngresos: "Income",
     lblGastos: "Expenses",
@@ -588,6 +591,27 @@ function mostrarFechaHoy() {
   el.textContent = texto.charAt(0).toUpperCase() + texto.slice(1);
 }
 
+// Da formato de miles mientras se escribe un importe: 1000000,5 -> 1.000.000,5
+function formatearImporteEscrito(texto) {
+  let s = String(texto || "");
+  // Un punto escrito al final (teclado sin coma) se toma como coma decimal.
+  if (/\.$/.test(s) && !s.includes(",")) s = s.slice(0, -1) + ",";
+  s = s.replace(/[^\d,]/g, "");
+  const i = s.indexOf(",");
+  let entero = i === -1 ? s : s.slice(0, i);
+  let decimal = i === -1 ? null : s.slice(i + 1).replace(/,/g, "").slice(0, 2);
+  entero = entero.replace(/^0+(?=\d)/, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  return decimal === null ? entero : entero + "," + decimal;
+}
+
+function activarFormatoImporte(input) {
+  if (!input) return;
+  input.addEventListener("input", () => {
+    const formateado = formatearImporteEscrito(input.value);
+    if (formateado !== input.value) input.value = formateado;
+  });
+}
+
 function numeroDesdeTexto(txt) {
   let t = String(txt || "").trim().replace(/\./g, "").replace(",", ".");
   return Number(t);
@@ -756,6 +780,8 @@ if ($("formCambiarClave")) {
 }
 
 $("btnSalir").addEventListener("click", async () => {
+  // Pedir confirmacion: evita salir de la app por un toque sin querer.
+  if (!window.confirm(t("confirmarSalir"))) return;
   await cerrarSesion();
   location.reload();
 });
@@ -977,7 +1003,7 @@ $("btnLimpiarBusqueda").addEventListener("click", () => {
 // ============================================================
 // NAVEGACIÓN ENTRE VISTAS
 // ============================================================
-document.querySelectorAll(".navbar-item").forEach((btn) => {
+document.querySelectorAll(".navbar-item[data-vista]").forEach((btn) => {
   btn.addEventListener("click", () => {
     document.querySelectorAll(".navbar-item").forEach((b) => b.classList.remove("activo"));
     btn.classList.add("activo");
@@ -1819,6 +1845,7 @@ function asegurarOpcionSelect(id, valor) {
 // MODAL: Nuevo / Editar movimiento
 // ============================================================
 $("btnNuevo").addEventListener("click", () => abrirModalNuevo());
+activarFormatoImporte($("movMonto"));
 $("btnCerrarModal").addEventListener("click", cerrarModal);
 $("modalFondo").addEventListener("click", (e) => { if (e.target.id === "modalFondo") cerrarModal(); });
 
@@ -1853,7 +1880,7 @@ function abrirModalEditar(id) {
   $("movFecha").value = m.fecha;
   $("movCuenta").value = m.cuenta;
   $("movCategoria").value = m.categoria;
-  $("movMonto").value = String(m.monto).replace(".", ",");
+  $("movMonto").value = formatearImporteEscrito(String(m.monto).replace(".", ","));
   $("movDetalle").value = m.detalle || "";
   $("movDiferido").checked = esDiferido(m);
   $("movFechaPago").value = m.fecha_pago || "";
@@ -2144,7 +2171,7 @@ function fsVoiceEscuchar() {
       fsVoiceSetSel(paso.id, val);
       mostrado = $(paso.id).selectedOptions[0] ? $(paso.id).selectedOptions[0].textContent : val;
     } else if (paso.id === "movMonto") {
-      $("movMonto").value = String(val).replace(".", ",");
+      $("movMonto").value = formatearImporteEscrito(String(val).replace(".", ","));
       mostrado = "$ " + Number(val).toLocaleString("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     } else {
       $(paso.id).value = val;
