@@ -15,6 +15,14 @@
   a:hover { color: #2A7050; }
   .btn-primary { background: #2A7050; }
   .btn-primary:hover { background: #1F5E42; }
+  .faq-item { background: #FFFFFF; border: 1px solid #ECEAE2; border-radius: 14px; }
+  .faq-item summary { list-style: none; cursor: pointer; padding: 20px 22px; font-size: 16px; font-weight: 600; display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-item summary::after { content: "+"; font-size: 22px; font-weight: 500; color: #2A7050; line-height: 1; }
+  .faq-item[open] summary::after { content: "\2212"; }
+  .faq-item .faq-resp { padding: 0 22px 20px; font-size: 15px; color: #4A5750; line-height: 1.6; }
+  .faq-item .faq-resp ol { margin: 8px 0 0; padding-left: 22px; }
+  .faq-item .faq-resp a { color: #2A7050; font-weight: 600; text-decoration: underline; }
 </style>
 </head>
 <body>
@@ -29,6 +37,7 @@
     <div style="display: flex; gap: 32px; align-items: center; flex-wrap: wrap;">
       <a href="#caracteristicas" style="font-size: 15px; font-weight: 500;">Características</a>
       <a href="#precio" style="font-size: 15px; font-weight: 500;">Precio</a>
+      <a href="#preguntas" style="font-size: 15px; font-weight: 500;">Preguntas</a>
       <a href="./?entrar=1" style="font-size: 15px; font-weight: 500;">Ingresar</a>
       <a href="./?entrar=1" class="btn-primary" style="color: #FFFFFF; padding: 11px 22px; border-radius: 8px; font-size: 15px; font-weight: 600;">Probar gratis</a>
     </div>
@@ -164,6 +173,41 @@
       <div style="font-size: 14px; color: #B9C4BC; line-height: 1.5;">Empezás con 15 días gratis. Si te sirve, seguís por $4.000 por mes. Si no, no pagás nada.</div>
       <a href="./?entrar=1" class="btn-primary" style="width: 100%; box-sizing: border-box; color: #FFFFFF; padding: 16px; border-radius: 10px; font-size: 16px; font-weight: 600; margin-top: 8px;">Empezar prueba gratis</a>
       <div style="font-size: 12px; color: #7A8780;">Cancelás cuando quieras, sin letra chica.</div>
+    </div>
+  </div>
+
+  <!-- PREGUNTAS FRECUENTES -->
+  <div id="preguntas" style="width: 100%; max-width: 760px; padding: 0 24px 96px; box-sizing: border-box; display: flex; flex-direction: column; gap: 28px;">
+    <h2 style="font-size: 32px; letter-spacing: -0.01em; text-align: center;">Preguntas frecuentes</h2>
+    <div style="display: flex; flex-direction: column; gap: 12px;">
+      <details class="faq-item" open>
+        <summary>¿Cuánto cuesta?</summary>
+        <div class="faq-resp">Empezás con <strong>15 días gratis</strong>, sin cargar ninguna tarjeta. Después son <strong>$4.000 por mes</strong>.</div>
+      </details>
+      <details class="faq-item">
+        <summary>¿Qué pasa cuando terminan los 15 días?</summary>
+        <div class="faq-resp">La app se pausa hasta que actives tu cuenta con el pago de $4.000. <strong>Tus datos quedan guardados y a salvo</strong>, y apenas pagás los volvés a ver todos.</div>
+      </details>
+      <details class="faq-item">
+        <summary>¿Cómo pago?</summary>
+        <div class="faq-resp">Con Mercado Pago, desde la misma app: tocás <strong>Pagar y activar</strong> y listo. Usá el mismo mail con el que te registraste.</div>
+      </details>
+      <details class="faq-item">
+        <summary>¿Cómo la instalo en el celular?</summary>
+        <div class="faq-resp">No hace falta ninguna tienda de aplicaciones. Es gratis y tarda un minuto:<br><br><strong>Android:</strong><ol><li>Abrí <strong>Chrome</strong> y entrá a ingasto.com.</li><li>Tocá los tres puntitos de arriba a la derecha.</li><li>Tocá <strong>Instalar app</strong> (o <strong>Agregar a la pantalla principal</strong>).</li></ol><br><strong>iPhone:</strong><ol><li>Abrí <strong>Safari</strong> y entrá a ingasto.com.</li><li>Tocá el botón <strong>Compartir</strong> (el cuadradito con la flecha hacia arriba).</li><li>Tocá <strong>Agregar a inicio</strong>.</li></ol></div>
+      </details>
+      <details class="faq-item">
+        <summary>¿Puedo cancelar cuando quiera?</summary>
+        <div class="faq-resp">Sí. Podés cancelar cuando quieras desde Mercado Pago y seguís usando la app hasta que termine el período que ya pagaste.</div>
+      </details>
+      <details class="faq-item">
+        <summary>¿Mis datos están seguros?</summary>
+        <div class="faq-resp">Ingasto no se conecta a tu banco ni te pide claves. Tus movimientos solo los ves vos. El pago lo procesa Mercado Pago: nosotros no vemos ni guardamos los datos de tu tarjeta.</div>
+      </details>
+      <details class="faq-item">
+        <summary>Tengo un problema, ¿a quién le escribo?</summary>
+        <div class="faq-resp">Escribinos a <a href="mailto:ingastosoporte@gmail.com">ingastosoporte@gmail.com</a> y te respondemos.</div>
+      </details>
     </div>
   </div>
 
