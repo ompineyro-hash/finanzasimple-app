@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Panel de Ingasto</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #F6F4EE; color: #1E2420; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 24px 16px 64px; }
+  header { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+  h1 { font-size: 26px; margin: 0; letter-spacing: -0.01em; }
+  .sub { color: #6B766F; font-size: 14px; margin-top: 4px; }
+  .acciones { display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn { background: #2A7050; color: #fff; border: 0; border-radius: 10px; padding: 11px 18px; font-size: 15px; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-block; }
+  .btn.sec { background: #fff; color: #1E2420; border: 1px solid #DDD9CC; }
+  .aviso { background: #fff; border: 1px solid #ECEAE2; border-radius: 14px; padding: 24px; font-size: 16px; line-height: 1.5; }
+  .aviso.error { border-color: #E4B9B1; background: #FBEAE6; }
+  .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin-bottom: 20px; }
+  .kpi { background: #fff; border: 1px solid #ECEAE2; border-radius: 14px; padding: 16px 18px; }
+  .kpi .num { font-size: 34px; font-weight: 700; letter-spacing: -0.02em; }
+  .kpi .txt { font-size: 13px; color: #6B766F; margin-top: 2px; line-height: 1.35; }
+  .caja { background: #fff; border: 1px solid #ECEAE2; border-radius: 14px; padding: 18px; margin-bottom: 20px; }
+  .caja h2 { font-size: 16px; margin: 0 0 14px; }
+  .barras { display: flex; align-items: flex-end; gap: 6px; height: 120px; }
+  .barra { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; font-size: 11px; color: #6B766F; }
+  .barra .col { width: 100%; background: #2A7050; border-radius: 4px 4px 0 0; min-height: 2px; }
+  .barra .n { margin-bottom: 3px; color: #1E2420; font-weight: 600; }
+  .barra .d { margin-top: 4px; }
+  .filtros { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; margin-bottom: 12px; }
+  .filtros input[type=search] { padding: 10px 12px; border: 1px solid #DDD9CC; border-radius: 10px; font-size: 15px; min-width: 220px; }
+  .filtros label { font-size: 14px; display: flex; gap: 6px; align-items: center; }
+  .tabla-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th { text-align: left; font-size: 12px; color: #6B766F; text-transform: uppercase; letter-spacing: .04em; padding: 8px 10px; border-bottom: 1px solid #ECEAE2; white-space: nowrap; }
+  td { padding: 10px; border-bottom: 1px solid #F1EFE7; white-space: nowrap; }
+  td.num, th.num { text-align: right; }
+  .etq { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+  .e-pago { background: #E7EFE9; color: #1F5E42; }
+  .e-prueba { background: #FFF3D6; color: #8A6212; }
+  .e-vencida { background: #FBEAE6; color: #B0463A; }
+  .e-equipo { background: #ECEAE2; color: #4A5750; margin-left: 6px; }
+  .pie { font-size: 12px; color: #6B766F; margin-top: 12px; line-height: 1.5; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Panel de Ingasto</h1>
+      <div class="sub" id="sub">Quién entra y cómo usa la app</div>
+    </div>
+    <div class="acciones">
+      <button class="btn" id="btnActualizar" type="button">Actualizar</button>
+      <a class="btn sec" href="./">Volver a la app</a>
+    </div>
+  </header>
+
+  <div id="mensaje" class="aviso" hidden></div>
+
+  <div id="contenido" hidden>
+    <div class="kpis" id="kpis"></div>
+
+    <div class="caja">
+      <h2>Registros por día (últimos 14 días)</h2>
+      <div class="barras" id="barras"></div>
+    </div>
+
+    <div class="caja">
+      <h2>Usuarios</h2>
+      <div class="filtros">
+        <input type="search" id="buscar" placeholder="Buscar por mail…">
+        <label><input type="checkbox" id="ocultarEquipo" checked> Ocultar cuentas del equipo y de prueba</label>
+      </div>
+      <div class="tabla-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Mail</th>
+              <th>Se registró</th>
+              <th>Último ingreso</th>
+              <th class="num">Movimientos</th>
+              <th>Último movimiento</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody id="filas"></tbody>
+        </table>
+      </div>
+      <div class="pie">
+        “Último ingreso” es el último inicio de sesión, no cada vez que abren la app: quien deja la sesión abierta puede usarla todos los días y figurar con una fecha vieja. Los movimientos son el mejor indicador de uso real. Acá solo se ven cantidades y fechas, nunca el contenido de los movimientos de nadie.
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabaseClient.js"></script>
+<script>
+  var DIAS_DE_PRUEBA = 15;
+  var DIA_MS = 24 * 60 * 60 * 1000;
+  var TZ = "America/Argentina/Buenos_Aires";
+  var filasActuales = [];
+
+  function $(id) { return document.getElementById(id); }
+
+  function mostrarMensaje(texto, esError) {
+    var m = $("mensaje");
+    m.textContent = texto;
+    m.className = "aviso" + (esError ? " error" : "");
+    m.hidden = false;
+    $("contenido").hidden = true;
+  }
+
+  function fechaCorta(iso) {
+    if (!iso) return "—";
+    var d = new Date(iso);
+    if (isNaN(d)) return "—";
+    return d.toLocaleDateString("es-AR", { day: "2-digit", month: "2-digit", year: "2-digit", timeZone: TZ });
+  }
+  function fechaHora(iso) {
+    if (!iso) return "—";
+    var d = new Date(iso);
+    if (isNaN(d)) return "—";
+    return d.toLocaleDateString("es-AR", { day: "2-digit", month: "2-digit", timeZone: TZ }) + " " +
+      d.toLocaleTimeString("es-AR", { hour: "2-digit", minute: "2-digit", timeZone: TZ });
+  }
+  function diaClave(iso) {
+    return new Date(iso).toLocaleDateString("en-CA", { timeZone: TZ }); // AAAA-MM-DD
+  }
+  function esc(t) {
+    return String(t == null ? "" : t).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+
+  // Misma regla que usa la app para dar o no acceso.
+  function estadoDe(f) {
+    var ahora = Date.now();
+    var pagoVigente = f.plan_activo && (!f.plan_vence || new Date(f.plan_vence).getTime() > ahora);
+    if (pagoVigente) {
+      return { tipo: "pago", texto: f.plan_vence ? "Pago activo hasta " + fechaCorta(f.plan_vence) : "Activa (sin vencimiento)", dias: null };
+    }
+    var finPrueba = new Date(f.se_registro).getTime() + DIAS_DE_PRUEBA * DIA_MS;
+    var quedan = Math.ceil((finPrueba - ahora) / DIA_MS);
+    if (quedan > 0) return { tipo: "prueba", texto: "Prueba: quedan " + quedan + (quedan === 1 ? " día" : " días"), dias: quedan };
+    return { tipo: "vencida", texto: "Prueba vencida", dias: 0 };
+  }
+
+  function pintarKpis(filas) {
+    var externas = filas.filter(function (f) { return !f.interna; });
+    var ahora = Date.now();
+    var conMov = externas.filter(function (f) { return Number(f.movimientos) > 0; }).length;
+    var activos7 = externas.filter(function (f) { return f.ultimo_ingreso && (ahora - new Date(f.ultimo_ingreso).getTime()) <= 7 * DIA_MS; }).length;
+    var pagos = externas.filter(function (f) { return estadoDe(f).tipo === "pago"; }).length;
+    var porVencer = externas.filter(function (f) { var e = estadoDe(f); return e.tipo === "prueba" && e.dias <= 3; }).length;
+    var vencidas = externas.filter(function (f) { return estadoDe(f).tipo === "vencida"; }).length;
+    var items = [
+      [externas.length, "Personas registradas (sin cuentas del equipo)"],
+      [conMov, "Cargaron al menos un movimiento"],
+      [activos7, "Iniciaron sesión en los últimos 7 días"],
+      [pagos, "Con pago activo"],
+      [porVencer, "Pruebas que vencen en 3 días o menos"],
+      [vencidas, "Pruebas vencidas sin pago"]
+    ];
+    $("kpis").innerHTML = items.map(function (i) {
+      return '<div class="kpi"><div class="num">' + i[0] + '</div><div class="txt">' + i[1] + '</div></div>';
+    }).join("");
+  }
+
+  function pintarBarras(filas) {
+    var externas = filas.filter(function (f) { return !f.interna; });
+    var cuenta = {};
+    externas.forEach(function (f) { var k = diaClave(f.se_registro); cuenta[k] = (cuenta[k] || 0) + 1; });
+    var dias = [];
+    for (var i = 13; i >= 0; i--) {
+      var d = new Date(Date.now() - i * DIA_MS);
+      dias.push({ clave: diaClave(d.toISOString()), etiqueta: d.toLocaleDateString("es-AR", { day: "2-digit", month: "2-digit", timeZone: TZ }) });
+    }
+    var max = Math.max.apply(null, dias.map(function (d) { return cuenta[d.clave] || 0; }).concat([1]));
+    $("barras").innerHTML = dias.map(function (d) {
+      var n = cuenta[d.clave] || 0;
+      return '<div class="barra"><div class="n">' + (n || "") + '</div><div class="col" style="height:' + Math.round((n / max) * 80) + '%"></div><div class="d">' + d.etiqueta + '</div></div>';
+    }).join("");
+  }
+
+  function pintarTabla() {
+    var q = $("buscar").value.trim().toLowerCase();
+    var ocultar = $("ocultarEquipo").checked;
+    var filas = filasActuales.filter(function (f) {
+      if (ocultar && f.interna) return false;
+      return !q || String(f.email || "").toLowerCase().indexOf(q) !== -1;
+    });
+    $("filas").innerHTML = filas.map(function (f) {
+      var e = estadoDe(f);
+      var clase = e.tipo === "pago" ? "e-pago" : (e.tipo === "prueba" ? "e-prueba" : "e-vencida");
+      return "<tr><td>" + esc(f.email) + (f.interna ? '<span class="etq e-equipo">equipo</span>' : "") + "</td>" +
+        "<td>" + fechaCorta(f.se_registro) + "</td>" +
+        "<td>" + fechaHora(f.ultimo_ingreso) + "</td>" +
+        '<td class="num">' + Number(f.movimientos || 0) + "</td>" +
+        "<td>" + (f.ultimo_movimiento ? fechaCorta(f.ultimo_movimiento + "T12:00:00") : "—") + "</td>" +
+        '<td><span class="etq ' + clase + '">' + esc(e.texto) + "</span></td></tr>";
+    }).join("") || '<tr><td colspan="6" style="color:#6B766F">No hay usuarios para mostrar con ese filtro.</td></tr>';
+  }
+
+  function pintar(filas) {
+    filasActuales = filas.slice().sort(function (a, b) { return new Date(b.se_registro) - new Date(a.se_registro); });
+    $("mensaje").hidden = true;
+    $("contenido").hidden = false;
+    pintarKpis(filasActuales);
+    pintarBarras(filasActuales);
+    pintarTabla();
+    $("sub").textContent = "Actualizado " + new Date().toLocaleString("es-AR", { timeZone: TZ, day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" });
+  }
+
+  async function cargar() {
+    if (!window.supabase || typeof sbClient === "undefined") {
+      mostrarMensaje("No se pudo cargar la conexión. Revisá tu internet y probá de nuevo.", true);
+      return;
+    }
+    mostrarMensaje("Cargando…", false);
+    var sesion = await sbClient.auth.getSession();
+    if (!sesion.data || !sesion.data.session) {
+      mostrarMensaje("Primero tenés que entrar a Ingasto con tu mail. Tocá “Volver a la app”, iniciá sesión y después volvé a abrir este panel.", false);
+      return;
+    }
+    var r = await sbClient.rpc("panel_dueno");
+    if (r.error) {
+      var msg = String(r.error.message || "");
+      if (msg.indexOf("sin_permiso") !== -1 || r.error.code === "42501") {
+        mostrarMensaje("Esta cuenta no tiene permiso para ver el panel.", true);
+      } else if (r.error.code === "PGRST202" || msg.indexOf("panel_dueno") !== -1) {
+        mostrarMensaje("Falta crear la función del panel en Supabase (un paso de una sola vez).", true);
+      } else {
+        mostrarMensaje("No se pudo cargar: " + msg, true);
+      }
+      return;
+    }
+    pintar((r.data || []).map(function (x) {
+      return {
+        email: x.u_email, se_registro: x.u_creado, ultimo_ingreso: x.u_ultimo_ingreso,
+        movimientos: x.u_movimientos, ultimo_movimiento: x.u_ultimo_mov,
+        plan_activo: x.u_plan_activo, plan_vence: x.u_plan_vence, interna: x.u_interna
+      };
+    }));
+  }
+
+  $("btnActualizar").addEventListener("click", cargar);
+  $("buscar").addEventListener("input", pintarTabla);
+  $("ocultarEquipo").addEventListener("change", pintarTabla);
+  cargar();
+</script>
+</body>
+</html>
