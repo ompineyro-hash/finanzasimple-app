@@ -112,7 +112,11 @@ const TRADUCCIONES = {
     textoNuevaCategoriaTipo: "Elegí si la nueva categoría es para gastos o para ingresos:",
     placeholderNuevaCategoria: "Nueva categoría (ej: Alimentos)",
     tituloExportar: "Exportar mis datos",
-    textoExportar: "Descarga todos tus movimientos, de todos los meses, en un archivo para abrir en Excel o Google Sheets.",
+    textoExportar: "Descarga tus movimientos en un archivo para abrir en Excel o Google Sheets. Si dejás las fechas vacías, se exportan todos, de todos los meses.",
+    labelExportDesde: "Desde (opcional)",
+    labelExportHasta: "Hasta (opcional)",
+    toastExportRangoInvalido: "La fecha \"Desde\" no puede ser posterior a \"Hasta\".",
+    toastExportSinMovs: "No hay movimientos en ese período.",
     btnExcel: "📊 Exportar a Excel",
     btnCSV: "📄 Exportar a CSV",
     tituloZonaRiesgo: "Zona de riesgo",
@@ -275,7 +279,11 @@ const TRADUCCIONES = {
     textoNuevaCategoriaTipo: "Escolha se a nova categoria é para despesas ou receitas:",
     placeholderNuevaCategoria: "Nova categoria (ex: Alimentação)",
     tituloExportar: "Exportar meus dados",
-    textoExportar: "Baixe todos os seus lançamentos, de todos os meses, em um arquivo para abrir no Excel ou Google Sheets.",
+    textoExportar: "Baixe seus lançamentos em um arquivo para abrir no Excel ou Google Sheets. Se deixar as datas vazias, todos são exportados, de todos os meses.",
+    labelExportDesde: "De (opcional)",
+    labelExportHasta: "Até (opcional)",
+    toastExportRangoInvalido: "A data \"De\" não pode ser posterior a \"Até\".",
+    toastExportSinMovs: "Não há lançamentos nesse período.",
     btnExcel: "📊 Exportar para Excel",
     btnCSV: "📄 Exportar para CSV",
     tituloZonaRiesgo: "Zona de risco",
@@ -438,7 +446,11 @@ const TRADUCCIONES = {
     textoNuevaCategoriaTipo: "Choose whether the new category is for expenses or income:",
     placeholderNuevaCategoria: "New category (e.g: Groceries)",
     tituloExportar: "Export my data",
-    textoExportar: "Download all your movements, from every month, in a file to open in Excel or Google Sheets.",
+    textoExportar: "Download your movements in a file to open in Excel or Google Sheets. If you leave the dates empty, all of them are exported, from every month.",
+    labelExportDesde: "From (optional)",
+    labelExportHasta: "To (optional)",
+    toastExportRangoInvalido: "The \"From\" date can't be after the \"To\" date.",
+    toastExportSinMovs: "There are no movements in that period.",
     btnExcel: "📊 Export to Excel",
     btnCSV: "📄 Export to CSV",
     tituloZonaRiesgo: "Danger zone",
@@ -2386,11 +2398,37 @@ function valorEscapadoExcel(v) {
   return String(v ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
+// Trae los movimientos a exportar, según el período elegido (por la fecha del
+// movimiento). Con las dos fechas vacías devuelve todos. Devuelve null si
+// ya avisó con un cartel por qué no hay nada para exportar.
+async function movimientosParaExportar() {
+  const desde = $("exportDesde").value; // "AAAA-MM-DD" o ""
+  const hasta = $("exportHasta").value;
+  if (desde && hasta && desde > hasta) {
+    mostrarToast(t("toastExportRangoInvalido"));
+    return null;
+  }
+  mostrarToast("Preparando archivo...");
+  const todos = await listarTodosLosMovimientos(usuario.id);
+  if (!todos.length) {
+    mostrarToast("Todavía no tenés movimientos para exportar.");
+    return null;
+  }
+  const elegidos = todos.filter((m) => {
+    const f = String(m.fecha || "").slice(0, 10);
+    return (!desde || f >= desde) && (!hasta || f <= hasta);
+  });
+  if (!elegidos.length) {
+    mostrarToast(t("toastExportSinMovs"));
+    return null;
+  }
+  return elegidos;
+}
+
 $("btnExportarExcel").addEventListener("click", async () => {
   try {
-    mostrarToast("Preparando archivo...");
-    const todos = await listarTodosLosMovimientos(usuario.id);
-    if (!todos.length) return mostrarToast("Todavía no tenés movimientos para exportar.");
+    const todos = await movimientosParaExportar();
+    if (!todos) return;
     const filas = todos.map((m) => {
       const montoConSigno = m.tipo === "Gasto" ? -Math.abs(m.monto) : Math.abs(m.monto);
       return `<tr>
@@ -2420,9 +2458,8 @@ function valorCSV(v) {
 
 $("btnExportarCSV").addEventListener("click", async () => {
   try {
-    mostrarToast("Preparando archivo...");
-    const todos = await listarTodosLosMovimientos(usuario.id);
-    if (!todos.length) return mostrarToast("Todavía no tenés movimientos para exportar.");
+    const todos = await movimientosParaExportar();
+    if (!todos) return;
     const encabezado = ["Fecha", "Tipo", "Cuenta", "Categoría", "Detalle", "Monto", "Estado", "Fecha de pago"].map(valorCSV).join(",");
     const filas = todos.map((m) => {
       const montoConSigno = m.tipo === "Gasto" ? -Math.abs(m.monto) : Math.abs(m.monto);

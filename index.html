@@ -359,7 +359,17 @@ Al crear una cuenta aceptás nuestros
 <div id="configPanelExportar" class="config-panel" hidden>
 <button type="button" class="config-volver">← Volver</button>
 <h2 class="titulo-seccion" data-i18n="tituloExportar">Exportar mis datos</h2>
-<p class="texto-ayuda" data-i18n="textoExportar">Descarga todos tus movimientos, de todos los meses, en un archivo para abrir en Excel o Google Sheets.</p>
+<p class="texto-ayuda" data-i18n="textoExportar">Descarga tus movimientos en un archivo para abrir en Excel o Google Sheets. Si dejás las fechas vacías, se exportan todos, de todos los meses.</p>
+<div class="fila-config">
+<label><span data-i18n="labelExportDesde">Desde (opcional)</span>
+<input type="date" id="exportDesde">
+</label>
+</div>
+<div class="fila-config">
+<label><span data-i18n="labelExportHasta">Hasta (opcional)</span>
+<input type="date" id="exportHasta">
+</label>
+</div>
 <div class="fila-config">
 <button class="boton boton-secundario boton-ancho" id="btnExportarExcel" data-i18n="btnExcel">📊 Exportar a Excel</button>
 </div>
