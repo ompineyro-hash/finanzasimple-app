@@ -241,7 +241,9 @@
       return {
         email: x.u_email, se_registro: x.u_creado, ultimo_ingreso: x.u_ultimo_ingreso,
         movimientos: x.u_movimientos, ultimo_movimiento: x.u_ultimo_mov,
-        plan_activo: x.u_plan_activo, plan_vence: x.u_plan_vence, interna: x.u_interna
+        plan_activo: x.u_plan_activo, plan_vence: x.u_plan_vence,
+        // Las cuentas de prueba (mail con "+prueba") cuentan como del equipo.
+        interna: x.u_interna || /\+prueba/i.test(x.u_email || "")
       };
     }));
   }
