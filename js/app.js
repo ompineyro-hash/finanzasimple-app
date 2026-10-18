@@ -910,6 +910,9 @@ async function arrancarApp(usuarioYaObtenido) {
   // traen el nombre de categoría/cuenta como texto), así que las
   // pedimos en paralelo en vez de una detrás de la otra: reduce
   // bastante el tiempo de arranque, sobre todo con conexión lenta.
+  try {
+    await sembrarDatosInicialesSiHaceFalta(usuario.id, idiomaActual);
+  } catch {}
   await Promise.all([cargarCuentasYCategorias(), cargarMesActual()]);
   suscribirActualizacionEnVivo();
   arrancarLatidoDeRespaldo();

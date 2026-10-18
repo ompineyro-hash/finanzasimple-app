@@ -74,6 +74,42 @@ async function borrarCategoria(id) {
   if (error) throw error;
 }
 
+// Para quien entra por primera vez y no tiene ni cuentas ni categorías:
+// le dejamos una cuenta y unas categorías básicas para que pueda cargar su
+// primer movimiento sin pasar antes por Config. Después las puede renombrar o borrar.
+const DATOS_INICIALES = {
+  es: {
+    cuenta: "Efectivo",
+    gastos: ["Alimentos", "Supermercado", "Transporte", "Vivienda", "Servicios", "Salud", "Educación", "Ropa", "Salidas", "Otros"],
+    ingresos: ["Sueldo", "Otros ingresos"],
+  },
+  pt: {
+    cuenta: "Dinheiro",
+    gastos: ["Alimentação", "Supermercado", "Transporte", "Moradia", "Serviços", "Saúde", "Educação", "Roupas", "Lazer", "Outros"],
+    ingresos: ["Salário", "Outras receitas"],
+  },
+  en: {
+    cuenta: "Cash",
+    gastos: ["Food", "Groceries", "Transport", "Housing", "Utilities", "Health", "Education", "Clothing", "Going out", "Other"],
+    ingresos: ["Salary", "Other income"],
+  },
+};
+
+async function sembrarDatosInicialesSiHaceFalta(userId, idioma) {
+  const d = DATOS_INICIALES[idioma] || DATOS_INICIALES.es;
+  const [ctas, cats] = await Promise.all([listarCuentas(userId), listarCategorias(userId)]);
+  if (ctas.length || cats.length) return false;
+  const filasCat = [
+    ...d.gastos.map((nombre) => ({ user_id: userId, nombre, tipo: "Gasto" })),
+    ...d.ingresos.map((nombre) => ({ user_id: userId, nombre, tipo: "Ingreso" })),
+  ];
+  const { error: e1 } = await sbClient.from("cuentas").insert({ user_id: userId, nombre: d.cuenta });
+  if (e1) throw e1;
+  const { error: e2 } = await sbClient.from("categorias").insert(filasCat);
+  if (e2) throw e2;
+  return true;
+}
+
 async function listarMonedas(userId) {
   const { data, error } = await sbClient.from("monedas").select("*").eq("user_id", userId).order("nombre");
   if (error) throw error;
