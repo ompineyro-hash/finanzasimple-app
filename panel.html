@@ -67,6 +67,25 @@
       <div class="barras" id="barras"></div>
     </div>
 
+    <div class="caja" id="cajaSemanal" hidden>
+      <h2>Movimientos por semana (últimas 8 semanas)</h2>
+      <div class="tabla-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Semana (desde el lunes)</th>
+              <th class="num">Movimientos cargados</th>
+              <th class="num">Personas que cargaron</th>
+            </tr>
+          </thead>
+          <tbody id="filasSemanal"></tbody>
+        </table>
+      </div>
+      <div class="pie">
+        Se cuentan los movimientos según su fecha, sin las cuentas del equipo ni de prueba. Si alguien carga un gasto con fecha vieja, se suma a la semana de esa fecha.
+      </div>
+    </div>
+
     <div class="caja">
       <h2>Usuarios</h2>
       <div class="filtros">
@@ -214,6 +233,22 @@
     $("sub").textContent = "Actualizado " + new Date().toLocaleString("es-AR", { timeZone: TZ, day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" });
   }
 
+  // Datos semanales: si la función todavía no existe en Supabase, esta caja queda oculta.
+  async function cargarSemanal() {
+    $("cajaSemanal").hidden = true;
+    try {
+      var r = await sbClient.rpc("panel_semanal");
+      if (r.error || !r.data) return;
+      var filas = r.data.slice().sort(function (a, b) { return String(b.s_semana).localeCompare(String(a.s_semana)); }).slice(0, 8);
+      $("filasSemanal").innerHTML = filas.map(function (x) {
+        var d = new Date(String(x.s_semana) + "T12:00:00");
+        return "<tr><td>" + d.toLocaleDateString("es-AR", { day: "2-digit", month: "2-digit", year: "2-digit" }) + "</td>" +
+          '<td class="num">' + Number(x.s_movimientos) + '</td><td class="num">' + Number(x.s_personas) + "</td></tr>";
+      }).join("") || '<tr><td colspan="3" style="color:#6B766F">Todavía no hay movimientos para mostrar.</td></tr>';
+      $("cajaSemanal").hidden = false;
+    } catch (e) {}
+  }
+
   async function cargar() {
     if (!window.supabase || typeof sbClient === "undefined") {
       mostrarMensaje("No se pudo cargar la conexión. Revisá tu internet y probá de nuevo.", true);
@@ -246,6 +281,7 @@
         interna: x.u_interna || /\+prueba/i.test(x.u_email || "")
       };
     }));
+    cargarSemanal();
   }
 
   $("btnActualizar").addEventListener("click", cargar);
