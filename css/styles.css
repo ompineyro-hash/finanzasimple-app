@@ -188,6 +188,19 @@ input,select{font-family:inherit;font-size:16px;}
 .mov-monto.ingreso{color:var(--ingreso);}
 .mov-item{cursor:pointer;}
 
+/* En pantallas anchas (PC): lista más ancha y cada movimiento en una sola fila. */
+@media (min-width:900px){
+  .contenido:has(#vistaMovimientos:not([hidden])){max-width:1100px;}
+  .lista-movimientos{gap:8px;}
+  .mov-item{padding:16px 18px;gap:16px;}
+  .mov-info{display:flex;align-items:center;gap:18px;}
+  .mov-info .mov-fecha{order:1;width:90px;flex-shrink:0;margin-top:0;}
+  .mov-info .mov-categoria{order:2;width:190px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .mov-info .mov-detalle{order:3;flex:1;min-width:0;font-size:14px;}
+  .mov-info .mov-badge{order:4;margin-top:0;flex-shrink:0;}
+  .mov-item .mov-derecha{flex-direction:row;align-items:center;gap:16px;}
+}
+
 .vacio{
   text-align:center;color:var(--texto-suave);padding:50px 20px;
   font-size:14px;line-height:1.5;
