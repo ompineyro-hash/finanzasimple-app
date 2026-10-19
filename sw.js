@@ -3,7 +3,7 @@
 // nunca ve información vieja. El "esqueleto" visual se guarda en caché
 // solo como respaldo para cuando no hay internet, pero SIEMPRE se intenta
 // primero traer la versión más nueva del servidor.
-const CACHE_NAME = "finanzasimple-v19";
+const CACHE_NAME = "finanzasimple-v20";
 const ARCHIVOS_ESQUELETO = [
   "./index.html",
   "./css/styles.css",
@@ -41,7 +41,10 @@ self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") return;
 
   event.respondWith(
-    fetch(event.request)
+    // cache:"no-cache" = preguntar siempre al servidor si hay algo nuevo (si no hay,
+    // responde "sin cambios" y se usa la copia). Sin esto, el navegador reutiliza durante
+    // ~10 minutos la copia que GitHub Pages le dijo que guarde.
+    fetch(event.request, { cache: "no-cache" })
       .then((respuesta) => {
         // Solo se guarda lo que salio bien (no errores ni redirecciones).
         if (respuesta.ok && respuesta.type === "basic") {
