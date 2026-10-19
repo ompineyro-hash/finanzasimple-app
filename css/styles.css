@@ -191,8 +191,10 @@ input,select{font-family:inherit;font-size:16px;}
 /* En pantallas anchas (PC): lista más ancha y cada movimiento en una sola fila. */
 @media (min-width:900px){
   .contenido:has(#vistaMovimientos:not([hidden])){max-width:1100px;}
-  .lista-movimientos{gap:8px;}
-  .mov-item{padding:16px 16px;gap:12px;}
+  .lista-movimientos{gap:5px;}
+  .mov-item{padding:8px 14px;gap:12px;}
+  .mov-item .mov-icono{width:32px;height:32px;font-size:16px;}
+  .mov-item .pend-cerrar{padding:4px 10px;}
   .mov-info{display:flex;align-items:center;gap:12px;}
   .mov-info .mov-fecha{order:1;width:84px;flex-shrink:0;margin-top:0;}
   .mov-info .mov-categoria{order:2;width:150px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
