@@ -1369,6 +1369,24 @@ function pasaBusqueda(m) {
   });
 })();
 
+// En pantallas anchas la categoría ocupa solo lo que necesita el nombre más largo,
+// así el detalle queda pegado y las columnas siguen alineadas.
+function ajustarAnchoCategorias() {
+  const cont = $("listaMovimientos");
+  if (!cont) return;
+  if (!window.matchMedia("(min-width:900px)").matches) {
+    cont.style.removeProperty("--ancho-cat");
+    return;
+  }
+  // Primero que cada categoría tome el ancho de su texto, y recién ahí medimos la más larga.
+  cont.style.setProperty("--ancho-cat", "max-content");
+  let max = 0;
+  cont.querySelectorAll(".mov-categoria").forEach((el) => { max = Math.max(max, el.getBoundingClientRect().width); });
+  if (max) cont.style.setProperty("--ancho-cat", Math.min(Math.max(Math.ceil(max) + 2, 60), 260) + "px");
+  else cont.style.removeProperty("--ancho-cat");
+}
+window.addEventListener("resize", ajustarAnchoCategorias);
+
 // ============================================================
 // RENDER: Lista de movimientos
 // ============================================================
@@ -1412,6 +1430,7 @@ function renderMovimientos() {
       </div>`;
   }).join("");
 
+  ajustarAnchoCategorias();
   cont.querySelectorAll(".mov-item").forEach((el) => {
     el.addEventListener("click", () => abrirModalEditar(el.dataset.id));
   });
@@ -2573,4 +2592,4 @@ const esLinkDeRecuperacion = /type=recovery/.test(location.hash);
       }, 2000);
     });
   }
-})();
+})();
