@@ -1231,8 +1231,8 @@ function renderPendientes() {
   cont.innerHTML = `
     <div class="pend-cabecera">
       <div class="pend-textos">
-        <div class="pend-titulo">${escapeHTML(t("pendTitulo"))} (${pendientes.length})${vencidos ? ` <span class="pend-alerta">⚠ ${escapeHTML(t("pendVencidos"))}: ${vencidos}</span>` : ""}</div>
-        <div class="pend-resumen">${partes.join(" · ")}</div>
+        <div class="pend-titulo">${escapeHTML(t("pendTitulo"))} (${pendientes.length})</div>
+        <div class="pend-resumen">${vencidos ? `<span class="pend-alerta">⚠ ${escapeHTML(t("pendVencidos"))}: ${vencidos}</span>` : ""}${partes.join(" · ")}</div>
       </div>
       <button type="button" class="boton boton-texto" id="btnTogglePendientes">${escapeHTML(t(pendientesAbierto ? "pendOcultar" : "pendVer"))}</button>
     </div>
@@ -1328,7 +1328,8 @@ function pasaBusqueda(m) {
   const segmentado = document.createElement("div");
   segmentado.className = "segmentado";
   segmentado.id = "segmentadoTipoLista";
-  segmentado.style.marginBottom = "10px";
+  segmentado.style.flex = "1";
+  segmentado.style.minWidth = "0";
   segmentado.innerHTML = `
     <button type="button" class="segmentado-item activo" data-tipolista="todo">${t("accesoTodo")}</button>
     <button type="button" class="segmentado-item" data-tipolista="Ingreso">${t("accesoIngresos")}</button>
@@ -1339,12 +1340,17 @@ function pasaBusqueda(m) {
   btnBuscar.type = "button";
   btnBuscar.id = "btnBuscarSimple";
   btnBuscar.className = "boton boton-secundario";
-  btnBuscar.style.marginBottom = "10px";
+  btnBuscar.style.flexShrink = "0";
+  btnBuscar.style.padding = "8px 12px";
   btnBuscar.textContent = t("btnBuscarSimple");
 
+  // Filtros y buscador en una sola fila para ganar lugar para la lista.
+  const filaAccesos = document.createElement("div");
+  filaAccesos.id = "filaAccesosLista";
+  filaAccesos.style.cssText = "display:flex;gap:8px;align-items:stretch;margin-bottom:8px;";
+  filaAccesos.append(segmentado, btnBuscar);
   if (filaBusqueda && filaBusqueda.parentElement) {
-    filaBusqueda.parentElement.insertBefore(segmentado, filaBusqueda);
-    filaBusqueda.parentElement.insertBefore(btnBuscar, filaBusqueda);
+    filaBusqueda.parentElement.insertBefore(filaAccesos, filaBusqueda);
   }
   filaBusqueda.hidden = true;
 

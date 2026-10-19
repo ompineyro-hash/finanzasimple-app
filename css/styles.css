@@ -140,6 +140,17 @@ input,select{font-family:inherit;font-size:16px;}
   display:block;font-size:15px;font-weight:800;margin-top:1px;
   overflow-wrap:break-word;
 }
+/* Encabezado compacto: Balance, Ingresos y Gastos en una sola fila, sin la fecha de hoy aparte. */
+.topbar{padding:6px 12px 8px;}
+.topbar .fecha-hoy{display:none;}
+.topbar .resumen-tarjetas{flex-direction:row;gap:6px;margin-top:6px;}
+.topbar .resumen-tarjetas-fila{display:contents;}
+.topbar .tarjeta-resumen,.topbar .tarjeta-resumen-balance{padding:5px 4px;}
+.topbar .tarjeta-resumen-label{font-size:11px;}
+.topbar .tarjeta-resumen-valor,.topbar .tarjeta-resumen-balance .tarjeta-resumen-valor{font-size:13px;overflow-wrap:anywhere;}
+@media (max-width:380px){
+  .topbar .tarjeta-resumen-valor,.topbar .tarjeta-resumen-balance .tarjeta-resumen-valor{font-size:12px;}
+}
 @media (max-width:380px){
   .mes-selector{font-size:13px;gap:4px;}
   .tarjeta-resumen-valor{font-size:13px;}
@@ -316,6 +327,7 @@ input,select{font-family:inherit;font-size:16px;}
 }
 .segmentado-item.activo{background:var(--papel-alto);color:var(--texto);box-shadow:var(--sombra);}
 
+#segmentadoTipoLista .segmentado-item{padding:7px 4px;font-size:14px;}
 .segmentado-chico{max-width:220px;margin-bottom:14px;}
 .segmentado-chico .segmentado-item{padding:7px;font-size:13px;}
 

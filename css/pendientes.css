@@ -1,21 +1,22 @@
 /* ---------- Pendientes: "todavía no salió" ---------- */
 .linea-previsto{
-  margin-top:10px;padding:8px 12px;border-radius:10px;
+  margin-top:6px;padding:5px 10px;border-radius:10px;
   background:rgba(255,255,255,0.16);color:#fff;
-  display:flex;flex-direction:column;gap:2px;font-size:13px;
+  display:flex;flex-direction:row;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:0 10px;font-size:12.5px;
 }
 .linea-previsto span{opacity:.85;font-size:12px;}
 
 .banner-pendientes{
   background:#FFF4DC;border:1.5px solid #E8C46A;border-radius:var(--radio);
-  padding:12px 14px;margin-bottom:12px;
+  padding:7px 12px;margin-bottom:8px;
 }
 .banner-pendientes.tiene-vencidos{background:var(--gasto-fondo);border-color:var(--gasto);}
 .pend-cabecera{display:flex;align-items:center;justify-content:space-between;gap:10px;}
-.pend-textos{min-width:0;}
-.pend-titulo{font-weight:800;font-size:15px;}
-.pend-alerta{display:block;color:var(--peligro);font-size:12px;font-weight:800;margin-top:2px;}
-.pend-resumen{font-size:13px;color:var(--texto-suave);margin-top:2px;}
+.pend-textos{min-width:0;display:flex;flex-wrap:wrap;align-items:baseline;gap:0 10px;}
+.pend-titulo{font-weight:800;font-size:14px;}
+.pend-alerta{display:inline;color:var(--peligro);font-size:12px;font-weight:800;margin-right:10px;white-space:nowrap;}
+.pend-titulo{white-space:nowrap;}
+.pend-resumen{font-size:12.5px;color:var(--texto-suave);}
 .pend-lista{margin-top:10px;display:flex;flex-direction:column;gap:8px;}
 .pend-fila{
   background:var(--papel-alto);border-radius:12px;padding:10px 12px;
