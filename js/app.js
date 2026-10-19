@@ -622,9 +622,10 @@ function mostrarFechaHoy() {
   if (!el) return;
   const locale = LOCALES_POR_IDIOMA[idiomaActual] || "es-AR";
   const texto = new Date().toLocaleDateString(locale, {
-    weekday: "long", day: "numeric", month: "long", year: "numeric",
-  });
-  el.textContent = texto.charAt(0).toUpperCase() + texto.slice(1);
+    weekday: "short", day: "numeric", month: "short",
+  }).replace(/\./g, "");
+  const hoy = { es: "Hoy", pt: "Hoje", en: "Today" }[idiomaActual] || "Hoy";
+  el.textContent = hoy + ": " + texto;
 }
 
 // Da formato de miles mientras se escribe un importe: 1000000,5 -> 1.000.000,5

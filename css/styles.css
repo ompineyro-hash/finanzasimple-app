@@ -142,7 +142,8 @@ input,select{font-family:inherit;font-size:16px;}
 }
 /* Encabezado compacto: Balance, Ingresos y Gastos en una sola fila, sin la fecha de hoy aparte. */
 .topbar{padding:6px 12px 8px;}
-.topbar .fecha-hoy{display:none;}
+.mes-centro{display:flex;flex-direction:column;align-items:center;line-height:1.2;}
+.topbar .fecha-hoy{margin:0;font-size:11.5px;font-weight:600;opacity:.85;}
 .topbar .resumen-tarjetas{flex-direction:row;gap:6px;margin-top:6px;}
 .topbar .resumen-tarjetas-fila{display:contents;}
 .topbar .tarjeta-resumen,.topbar .tarjeta-resumen-balance{padding:5px 4px;}
