@@ -1281,11 +1281,27 @@ function renderPrevisto() {
   el.hidden = false;
 }
 
+// Achica la letra de un monto solo lo necesario para que entre en su tarjeta, en una línea.
+function ajustarMontoAlCaber(el) {
+  if (!el) return;
+  el.style.fontSize = "";
+  let tam = parseFloat(getComputedStyle(el).fontSize) || 13;
+  while (el.scrollWidth > el.clientWidth && tam > 9) {
+    tam -= 0.5;
+    el.style.fontSize = tam + "px";
+  }
+}
+function ajustarMontosResumen() {
+  ["valorBalance", "valorIngresos", "valorGastos"].forEach((id) => ajustarMontoAlCaber($(id)));
+}
+window.addEventListener("resize", ajustarMontosResumen);
+
 function renderResumen() {
   const { ing, gas } = calcularResumenLista(contablesDelMes(movimientos, claveMesVista()));
   $("valorBalance").textContent = formatoMonto(ing - gas);
   $("valorIngresos").textContent = formatoMonto(ing);
   $("valorGastos").textContent = formatoMonto(gas);
+  ajustarMontosResumen();
   renderPrevisto();
 }
 
