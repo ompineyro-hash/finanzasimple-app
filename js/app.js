@@ -715,6 +715,16 @@ $("formLogin").addEventListener("submit", async (e) => {
         throw { message: "Las claves no coinciden." };
       }
       const resultado = await registrarUsuario(email, clave);
+      // Si el mail ya tenía cuenta, Supabase no da error ni manda mail: devuelve un usuario
+      // sin "identities". Se avisa en vez de decir que se envió un mail que nunca llega.
+      if (resultado?.user && Array.isArray(resultado.user.identities) && resultado.user.identities.length === 0) {
+        modoRegistro = false;
+        $("inputClave").value = "";
+        $("inputClaveConfirmar").value = "";
+        actualizarTextosDinamicosIdioma();
+        mostrarAviso($("loginError"), "Ese email ya tiene una cuenta. Probá entrar con tu clave, o tocá “Olvidé mi clave”.");
+        return;
+      }
       // Si Supabase pide confirmar el mail, no llega una sesión activa todavía.
       if (resultado?.user && !resultado.session) {
         mostrarAviso($("loginOk"), "¡Casi! Te enviamos un mail a " + email + " para confirmar tu cuenta. Abrilo y tocá el link antes de entrar.");
