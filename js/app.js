@@ -671,7 +671,8 @@ function ocultarAviso(el) { el.hidden = true; }
 // ============================================================
 // LOGIN / REGISTRO
 // ============================================================
-let modoRegistro = false;
+// Si viene de "Probar gratis" (?registro=1), arranca directo en el formulario de alta.
+let modoRegistro = new URLSearchParams(location.search).get("registro") === "1";
 
 // Antes de loguearse, aplicamos el último idioma usado en este dispositivo
 // (o español por defecto) para que la pantalla de login también se vea traducida.
