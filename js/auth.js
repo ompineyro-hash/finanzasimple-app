@@ -23,6 +23,11 @@ async function usuarioActual() {
   return data?.user || null;
 }
 
+async function reenviarConfirmacion(email) {
+  const { error } = await sbClient.auth.resend({ type: "signup", email });
+  if (error) throw error;
+}
+
 async function enviarRecuperacionClave(email) {
   const { error } = await sbClient.auth.resetPasswordForEmail(email);
   if (error) throw error;

@@ -663,6 +663,9 @@ function mostrarToast(msg) {
 }
 
 function mostrarAviso(el, msg) {
+  // En la pantalla de acceso, un aviso nuevo reemplaza al anterior (no quedan el rojo y el verde juntos).
+  if (el.id === "loginError") $("loginOk").hidden = true;
+  if (el.id === "loginOk") $("loginError").hidden = true;
   el.textContent = msg;
   el.hidden = false;
 }
@@ -673,6 +676,21 @@ function ocultarAviso(el) { el.hidden = true; }
 // ============================================================
 // Si viene de "Probar gratis" (?registro=1), arranca directo en el formulario de alta.
 let modoRegistro = new URLSearchParams(location.search).get("registro") === "1";
+
+// Evita pedir mails seguidos por toques repetidos: 60 s de espera por email.
+// (Es una ayuda para el usuario; el límite real contra abusos lo pone Supabase.)
+const ENVIO_MAIL_ESPERA_MS = 60000;
+const ultimosEnviosMail = {};
+let emailPendienteConfirmar = "";
+function segundosParaPedirMail(email) {
+  const ultimo = ultimosEnviosMail[email.toLowerCase()] || 0;
+  const resta = ENVIO_MAIL_ESPERA_MS - (Date.now() - ultimo);
+  return resta > 0 ? Math.ceil(resta / 1000) : 0;
+}
+function anotarEnvioMail(email) { ultimosEnviosMail[email.toLowerCase()] = Date.now(); }
+function avisarEsperaMail(email, segundos) {
+  mostrarAviso($("loginOk"), "Ya te enviamos un mail a " + email + " hace un momento. Esperá " + segundos + " segundos antes de pedir otro, y revisá también la carpeta Spam.");
+}
 
 // Antes de loguearse, aplicamos el último idioma usado en este dispositivo
 // (o español por defecto) para que la pantalla de login también se vea traducida.
@@ -703,6 +721,7 @@ $("formLogin").addEventListener("submit", async (e) => {
   e.preventDefault();
   ocultarAviso($("loginError"));
   ocultarAviso($("loginOk"));
+  $("btnReenviarConfirmacion").hidden = true;
   const email = $("inputEmail").value.trim();
   const clave = $("inputClave").value;
   const btn = $("btnIngresar");
@@ -713,6 +732,13 @@ $("formLogin").addEventListener("submit", async (e) => {
       const claveConfirmar = $("inputClaveConfirmar").value;
       if (clave !== claveConfirmar) {
         throw { message: "Las claves no coinciden." };
+      }
+      const espera = segundosParaPedirMail(email);
+      if (espera) {
+        emailPendienteConfirmar = email;
+        $("btnReenviarConfirmacion").hidden = false;
+        avisarEsperaMail(email, espera);
+        return;
       }
       const resultado = await registrarUsuario(email, clave);
       // Si el mail ya tenía cuenta, Supabase no da error ni manda mail: devuelve un usuario
@@ -727,7 +753,10 @@ $("formLogin").addEventListener("submit", async (e) => {
       }
       // Si Supabase pide confirmar el mail, no llega una sesión activa todavía.
       if (resultado?.user && !resultado.session) {
+        anotarEnvioMail(email);
+        emailPendienteConfirmar = email;
         mostrarAviso($("loginOk"), "¡Casi! Te enviamos un mail a " + email + " para confirmar tu cuenta. Abrilo y tocá el link antes de entrar.");
+        $("btnReenviarConfirmacion").hidden = false;
       } else {
         mostrarAviso($("loginOk"), "Cuenta creada. Ya podés entrar con tu email y clave.");
       }
@@ -740,6 +769,11 @@ $("formLogin").addEventListener("submit", async (e) => {
     }
   } catch (err) {
     mostrarAviso($("loginError"), err?.message === "Las claves no coinciden." ? err.message : traducirErrorAuth(err));
+    // Si todavía no confirmó la cuenta, le ofrecemos reenviar el mail.
+    if (!modoRegistro && String(err?.message || "").toLowerCase().includes("email not confirmed")) {
+      emailPendienteConfirmar = email;
+      $("btnReenviarConfirmacion").hidden = false;
+    }
   } finally {
     btn.disabled = false;
   }
@@ -749,14 +783,33 @@ $("btnMostrarRegistro").addEventListener("click", () => {
   modoRegistro = !modoRegistro;
   ocultarAviso($("loginError"));
   ocultarAviso($("loginOk"));
+  $("btnReenviarConfirmacion").hidden = true;
   actualizarTextosDinamicosIdioma();
+});
+
+$("btnReenviarConfirmacion").addEventListener("click", async () => {
+  const email = emailPendienteConfirmar;
+  if (!email) return;
+  const espera = segundosParaPedirMail(email);
+  if (espera) return avisarEsperaMail(email, espera);
+  try {
+    await reenviarConfirmacion(email);
+    anotarEnvioMail(email);
+    mostrarAviso($("loginOk"), "Te lo mandamos de nuevo a " + email + ". Revisá también la carpeta Spam.");
+  } catch (err) {
+    mostrarAviso($("loginError"), traducirErrorAuth(err));
+  }
 });
 
 $("btnOlvideClave").addEventListener("click", async () => {
   const email = $("inputEmail").value.trim();
+  $("btnReenviarConfirmacion").hidden = true;
   if (!email) return mostrarAviso($("loginError"), "Escribí tu email arriba primero.");
+  const espera = segundosParaPedirMail(email);
+  if (espera) return avisarEsperaMail(email, espera);
   try {
     await enviarRecuperacionClave(email);
+    anotarEnvioMail(email);
     mostrarAviso($("loginOk"), "Te enviamos un email para restablecer tu clave.");
   } catch (err) {
     mostrarAviso($("loginError"), traducirErrorAuth(err));
