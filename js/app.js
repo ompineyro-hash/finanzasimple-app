@@ -57,6 +57,7 @@ const TRADUCCIONES = {
     ariaSalir: "Salir",
     confirmarSalir: "¿Querés cerrar tu sesión?",
     lblBalance: "Balance",
+    lblResultadoMes: "Resultado del mes",
     lblIngresos: "Ingresos",
     lblGastos: "Gastos",
     searchTodo: "Todo",
@@ -144,6 +145,8 @@ const TRADUCCIONES = {
     labelCantCuotas: "Cantidad de cuotas",
     labelPrimeraCuota: "Fecha de la primera cuota",
     ayudaCuotas: "El monto es el valor de cada cuota. Se crea una por mes y quedan como pendientes hasta que las marques como pagadas.",
+    labelMontoCuota: "Valor de cada cuota",
+    vistaCuotas: "{n} cuotas de {c} = {t} en total · primera {p}, última {u}",
     textoCuota: "Cuota",
     toastCuotas: "Se crearon {n} cuotas.",
     errCuotas: "Las cuotas tienen que ser entre 2 y 60.",
@@ -172,7 +175,7 @@ const TRADUCCIONES = {
     badgeOrigenPagadoIngreso: "↪ cobrado el {f}",
     badgeCerradoGasto: "✔ pagado",
     badgeCerradoIngreso: "✔ cobrado",
-    previstoLinea: "⏳ Con lo pendiente: Balance {b}",
+    previstoLinea: "⏳ Previsto del mes (con lo pendiente): {b}",
     segGasto: "Gasto",
     avisoVasACargarGasto: "📤 Vas a cargar un GASTO",
     avisoVasACargarIngreso: "📥 Vas a cargar un INGRESO",
@@ -224,6 +227,7 @@ const TRADUCCIONES = {
     ariaSalir: "Sair",
     confirmarSalir: "Quer encerrar a sessão?",
     lblBalance: "Saldo",
+    lblResultadoMes: "Resultado do mês",
     lblIngresos: "Receitas",
     lblGastos: "Despesas",
     searchTodo: "Tudo",
@@ -311,6 +315,8 @@ const TRADUCCIONES = {
     labelCantCuotas: "Número de parcelas",
     labelPrimeraCuota: "Data da primeira parcela",
     ayudaCuotas: "O valor é o de cada parcela. Cria-se uma por mês e ficam pendentes até você marcá-las como pagas.",
+    labelMontoCuota: "Valor de cada parcela",
+    vistaCuotas: "{n} parcelas de {c} = {t} no total · primeira {p}, última {u}",
     textoCuota: "Parcela",
     toastCuotas: "{n} parcelas criadas.",
     errCuotas: "As parcelas devem ser entre 2 e 60.",
@@ -339,7 +345,7 @@ const TRADUCCIONES = {
     badgeOrigenPagadoIngreso: "↪ recebido em {f}",
     badgeCerradoGasto: "✔ pago",
     badgeCerradoIngreso: "✔ recebido",
-    previstoLinea: "⏳ Com o pendente: Saldo {b}",
+    previstoLinea: "⏳ Previsto do mês (com o pendente): {b}",
     segGasto: "Despesa",
     avisoVasACargarGasto: "📤 Você vai lançar uma DESPESA",
     avisoVasACargarIngreso: "📥 Você vai lançar uma RECEITA",
@@ -391,6 +397,7 @@ const TRADUCCIONES = {
     ariaSalir: "Log out",
     confirmarSalir: "Do you want to log out?",
     lblBalance: "Balance",
+    lblResultadoMes: "Month result",
     lblIngresos: "Income",
     lblGastos: "Expenses",
     searchTodo: "All",
@@ -478,6 +485,8 @@ const TRADUCCIONES = {
     labelCantCuotas: "Number of installments",
     labelPrimeraCuota: "Date of the first installment",
     ayudaCuotas: "The amount is the value of each installment. One is created per month and they stay pending until you mark them as paid.",
+    labelMontoCuota: "Value of each installment",
+    vistaCuotas: "{n} installments of {c} = {t} total · first {p}, last {u}",
     textoCuota: "Installment",
     toastCuotas: "{n} installments created.",
     errCuotas: "Installments must be between 2 and 60.",
@@ -506,7 +515,7 @@ const TRADUCCIONES = {
     badgeOrigenPagadoIngreso: "↪ received on {f}",
     badgeCerradoGasto: "✔ paid",
     badgeCerradoIngreso: "✔ received",
-    previstoLinea: "⏳ With what's pending: Balance {b}",
+    previstoLinea: "⏳ Month forecast (with what's pending): {b}",
     segGasto: "Expense",
     avisoVasACargarGasto: "📤 You're logging an EXPENSE",
     avisoVasACargarIngreso: "📥 You're logging INCOME",
@@ -2124,7 +2133,30 @@ function sincronizarCuotasUI() {
   $("filaCuotas").hidden = !cuotas;
   document.querySelector(".bloque-diferido:not(#bloqueCuotas)").hidden = cuotas;
   if (cuotas && !$("movCuotaFecha").value) $("movCuotaFecha").value = $("movFecha").value || hoyISO();
+  actualizarVistaCuotas();
 }
+
+// Cartel con el total de la compra en cuotas y las fechas de la primera y la última.
+function actualizarVistaCuotas() {
+  const cuotas = !$("filaCuotas").hidden;
+  $("labelMontoTexto").textContent = t(cuotas ? "labelMontoCuota" : "labelMonto");
+  const vista = $("vistaCuotas");
+  const monto = numeroDesdeTexto($("movMonto").value);
+  const n = parseInt($("movCuotaN").value, 10);
+  const primera = $("movCuotaFecha").value;
+  if (!cuotas || !Number.isFinite(monto) || monto <= 0 || !Number.isInteger(n) || n < 2 || n > 60 || !primera) {
+    vista.hidden = true;
+    return;
+  }
+  vista.textContent = t("vistaCuotas")
+    .replace("{n}", n)
+    .replace("{c}", formatoMonto(monto))
+    .replace("{t}", formatoMonto(Math.round(monto * n * 100) / 100))
+    .replace("{p}", formatoFecha(primera))
+    .replace("{u}", formatoFecha(sumarMesesISO(primera, n - 1)));
+  vista.hidden = false;
+}
+["movMonto", "movCuotaN", "movCuotaFecha"].forEach((id) => $(id).addEventListener("input", actualizarVistaCuotas));
 
 // Misma fecha, k meses despues (si el mes es mas corto, el ultimo dia).
 function sumarMesesISO(fechaISO, k) {

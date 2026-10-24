@@ -125,7 +125,7 @@ Al crear una cuenta aceptás nuestros
 </div>
 <div class="resumen-tarjetas">
 <div class="tarjeta-resumen tarjeta-resumen-balance">
-<span class="tarjeta-resumen-label" data-i18n="lblBalance">Balance</span>
+<span class="tarjeta-resumen-label" data-i18n="lblResultadoMes">Resultado del mes</span>
 <span id="valorBalance" class="tarjeta-resumen-valor">—</span>
 </div>
 <div class="resumen-tarjetas-fila">
@@ -225,7 +225,7 @@ Al crear una cuenta aceptás nuestros
 <p class="texto-ayuda" data-i18n="textoDiaADia">Acumulado de ingresos y egresos, día a día, del mes que estás viendo.</p>
 <div class="resumen-tarjetas resumen-tarjetas-analisis">
 <div class="tarjeta-resumen tarjeta-resumen-clara">
-<span class="tarjeta-resumen-label" data-i18n="lblBalance">Balance</span>
+<span class="tarjeta-resumen-label" data-i18n="lblResultadoMes">Resultado del mes</span>
 <span id="diaBalance" class="tarjeta-resumen-valor">—</span>
 </div>
 <div class="tarjeta-resumen tarjeta-resumen-clara">
@@ -485,7 +485,7 @@ Al crear una cuenta aceptás nuestros
 <label><span data-i18n="labelCategoria">Categoría</span>
 <select id="movCategoria" required></select>
 </label>
-<label><span data-i18n="labelMonto">Monto</span>
+<label><span id="labelMontoTexto" data-i18n="labelMonto">Monto</span>
 <input type="text" inputmode="decimal" id="movMonto" placeholder="0,00" required>
 </label>
 <label><span data-i18n="labelDetalle">Detalle (opcional)</span>
@@ -510,6 +510,7 @@ Al crear una cuenta aceptás nuestros
 <input type="date" id="movCuotaFecha">
 </label>
 <p class="texto-ayuda" data-i18n="ayudaCuotas">El monto es el valor de cada cuota. Se crea una por mes y quedan como pendientes hasta que las marques como pagadas.</p>
+<p id="vistaCuotas" class="texto-ayuda" hidden></p>
 </div>
 </div>
 <div id="movError" class="aviso aviso-error" hidden></div>
