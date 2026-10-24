@@ -163,6 +163,9 @@ Al crear una cuenta aceptás nuestros
 <div id="listaMovimientos" class="lista-movimientos"></div>
 </section>
 
+<!-- Vista: Mi situación -->
+<section id="vistaSituacion" class="vista" hidden></section>
+
 <!-- Vista: Análisis -->
 <section id="vistaAnalisis" class="vista" hidden>
 
@@ -430,11 +433,14 @@ Al crear una cuenta aceptás nuestros
 <button class="navbar-item activo" data-vista="vistaMovimientos">
 <span class="navbar-icono">📋</span><span data-i18n="navMovimientos">Movimientos</span>
 </button>
-<button class="navbar-item" data-vista="vistaAnalisis">
-<span class="navbar-icono">📊</span><span data-i18n="navAnalisis">Análisis</span>
+<button class="navbar-item" data-vista="vistaSituacion">
+<span class="navbar-icono">🧭</span><span data-i18n="navSituacion">Situación</span>
 </button>
 <button id="btnNuevo" type="button" class="navbar-agregar" data-i18n-aria="ariaNuevoMov" aria-label="Nuevo movimiento">
 <span class="navbar-agregar-signo">+</span><span data-i18n="btnAgregar">Agregar</span>
+</button>
+<button class="navbar-item" data-vista="vistaAnalisis">
+<span class="navbar-icono">📊</span><span data-i18n="navAnalisis">Análisis</span>
 </button>
 <button class="navbar-item" data-vista="vistaConfig">
 <span class="navbar-icono">⚙️</span><span data-i18n="navConfig">Ajustes</span>

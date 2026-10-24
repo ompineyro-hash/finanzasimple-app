@@ -48,3 +48,27 @@
 }
 .fila-check{flex-direction:row !important;align-items:center;gap:10px !important;font-size:14px !important;color:var(--texto) !important;}
 .fila-check input{width:20px;height:20px;flex-shrink:0;}
+
+/* ---------- Mi situación ---------- */
+.sit-cabecera{display:flex;align-items:center;gap:10px;margin-bottom:12px;min-height:44px;}
+.sit-titulo{margin:0;font-size:20px;font-weight:800;}
+.sit-ruta{font-size:12.5px;color:var(--texto-suave);}
+.sit-volver{flex:none;width:44px;height:44px;border-radius:12px;border:1.5px solid var(--borde);background:var(--papel-alto);color:var(--texto);font-size:20px;}
+.sit-card{display:block;width:100%;text-align:left;font:inherit;color:inherit;background:var(--papel-alto);border:1.5px solid var(--borde);border-radius:var(--radio);padding:14px;margin-bottom:10px;box-shadow:var(--sombra);}
+button.sit-card{cursor:pointer;}
+.sit-etq{display:flex;justify-content:space-between;gap:8px;font-size:12.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--texto-suave);}
+.sit-ver{color:var(--primario);text-transform:none;letter-spacing:0;font-weight:700;}
+.sit-grande{font-size:26px;font-weight:800;margin-top:4px;font-variant-numeric:tabular-nums;overflow-wrap:anywhere;}
+.sit-sub{font-size:13px;color:var(--texto-suave);margin-top:2px;}
+.sit-mal{color:var(--gasto);}
+.sit-bien{color:var(--ingreso);}
+.sit-resumen{background:var(--ingreso-fondo);border-color:transparent;box-shadow:none;}
+.sit-vacio-card,.sit-vacio{color:var(--texto-suave);font-size:14px;}
+.sit-lista{display:flex;flex-direction:column;gap:8px;}
+.sit-barras{display:flex;flex-direction:column;gap:10px;margin-top:12px;}
+.sit-barra{display:grid;grid-template-columns:44px 1fr auto;gap:10px;align-items:center;font-size:13.5px;font-variant-numeric:tabular-nums;}
+.sit-riel{background:var(--borde);border-radius:6px;height:12px;overflow:hidden;}
+.sit-riel i{display:block;height:100%;background:var(--gasto);border-radius:6px;}
+.navbar-item span:last-child,.navbar-agregar span:last-child{white-space:nowrap;}
+
+@media (max-width:380px){.navbar-item,.navbar-agregar{font-size:10.5px;}}

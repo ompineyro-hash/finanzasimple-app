@@ -129,6 +129,23 @@ const TRADUCCIONES = {
     ariaNuevoMov: "Nuevo movimiento",
     navMovimientos: "Movimientos",
     navAnalisis: "Análisis",
+    navSituacion: "Situación",
+    sitTitulo: "Mi situación",
+    sitInicio: "Inicio",
+    sitVolver: "Volver",
+    sitDebo: "Debo",
+    sitMeDeben: "Me deben",
+    sitSeViene: "Se viene, mes a mes",
+    sitVencido: "Vencido",
+    sitProx7: "Próximos 7 días",
+    sitMasAdelante: "Más adelante",
+    sitVerN: "Ver {n} ›",
+    sitVerDetalle: "Ver detalle ›",
+    sitVerMeses: "Ver meses ›",
+    sitTotal: "Total",
+    sitNetoMes: "Neto del mes",
+    sitNadaGrupo: "No hay nada en este grupo.",
+    sitVacio: "No tenés pagos ni cobros pendientes. Cuando cargues algo para pagar o cobrar después, o una compra en cuotas, lo vas a ver acá ordenado.",
     navConfig: "Ajustes",
     modalNuevoTitulo: "Nuevo movimiento",
     modalEditarTitulo: "Editar movimiento",
@@ -299,6 +316,23 @@ const TRADUCCIONES = {
     ariaNuevoMov: "Novo lançamento",
     navMovimientos: "Lançamentos",
     navAnalisis: "Análise",
+    navSituacion: "Situação",
+    sitTitulo: "Minha situação",
+    sitInicio: "Início",
+    sitVolver: "Voltar",
+    sitDebo: "Eu devo",
+    sitMeDeben: "Me devem",
+    sitSeViene: "Vem aí, mês a mês",
+    sitVencido: "Vencido",
+    sitProx7: "Próximos 7 dias",
+    sitMasAdelante: "Mais adiante",
+    sitVerN: "Ver {n} ›",
+    sitVerDetalle: "Ver detalhes ›",
+    sitVerMeses: "Ver meses ›",
+    sitTotal: "Total",
+    sitNetoMes: "Líquido do mês",
+    sitNadaGrupo: "Não há nada neste grupo.",
+    sitVacio: "Você não tem pagamentos nem recebimentos pendentes. Quando lançar algo para pagar ou receber depois, ou uma compra parcelada, você vai ver aqui, organizado.",
     navConfig: "Ajustes",
     modalNuevoTitulo: "Novo lançamento",
     modalEditarTitulo: "Editar lançamento",
@@ -469,6 +503,23 @@ const TRADUCCIONES = {
     ariaNuevoMov: "New movement",
     navMovimientos: "Movements",
     navAnalisis: "Analysis",
+    navSituacion: "Overview",
+    sitTitulo: "My situation",
+    sitInicio: "Home",
+    sitVolver: "Back",
+    sitDebo: "I owe",
+    sitMeDeben: "Owed to me",
+    sitSeViene: "Coming up, month by month",
+    sitVencido: "Overdue",
+    sitProx7: "Next 7 days",
+    sitMasAdelante: "Later",
+    sitVerN: "See {n} ›",
+    sitVerDetalle: "See details ›",
+    sitVerMeses: "See months ›",
+    sitTotal: "Total",
+    sitNetoMes: "Month net",
+    sitNadaGrupo: "Nothing in this group.",
+    sitVacio: "You have no pending payments or collections. When you add something to pay or collect later, or an installment purchase, it will show up here, organized.",
     navConfig: "Settings",
     modalNuevoTitulo: "New movement",
     modalEditarTitulo: "Edit movement",
@@ -1164,6 +1215,7 @@ document.querySelectorAll(".navbar-item[data-vista]").forEach((btn) => {
     if (destino === vistaActiva) return;
     if (destino !== "vistaMovimientos" && vistaActiva === "vistaMovimientos") guardarPasoAtras("vista");
     else if (destino === "vistaMovimientos") volverUnPaso("vista");
+    if (destino === "vistaSituacion") sitReiniciar();
     irAVista(destino);
   });
 });
@@ -1266,7 +1318,131 @@ async function cerrarPendiente(id) {
   } catch (err) { mostrarToast(traducirErrorDatos(err)); }
 }
 
+// ============================================================
+// MI SITUACIÓN: lo que debo, lo que me deben y lo que se viene, del resumen al detalle
+// ============================================================
+let sitPila = [{ v: "inicio" }];
+
+function sitIr(v, id) { sitPila.push({ v, id }); renderSituacion(); $("vistaSituacion").scrollTop = 0; window.scrollTo(0, 0); }
+function sitAtras() { if (sitPila.length > 1) sitPila.pop(); renderSituacion(); }
+function sitReiniciar() { sitPila = [{ v: "inicio" }]; renderSituacion(); }
+
+function sitGrupo(m) {
+  const n = diasHasta(m.fecha_pago);
+  return n < 0 ? "venc" : n <= 7 ? "sem" : "mas";
+}
+function sitNombreGrupo(k) { return t({ venc: "sitVencido", sem: "sitProx7", mas: "sitMasAdelante" }[k]); }
+function sitSuma(l) { return l.reduce((a, m) => a + Number(m.monto), 0); }
+function sitDeudas() { return pendientes.filter((m) => m.tipo === "Gasto"); }
+function sitCobros() { return pendientes.filter((m) => m.tipo === "Ingreso"); }
+function sitFuturos() { return pendientes.filter((m) => diasHasta(m.fecha_pago) >= 0); }
+function sitMeses() {
+  return [...new Set(sitFuturos().map((m) => mesClave(m.fecha_pago)))].sort();
+}
+function sitNombreMes(clave) {
+  const [a, m] = clave.split("-").map(Number);
+  const loc = { es: "es-AR", pt: "pt-BR", en: "en-US" }[idiomaActual] || "es-AR";
+  const n = new Date(a, m - 1, 1).toLocaleDateString(loc, { month: "long", year: "numeric" });
+  return n.charAt(0).toUpperCase() + n.slice(1);
+}
+
+function sitCabecera(titulo, ruta) {
+  const volver = sitPila.length > 1 ? `<button type="button" class="sit-volver" data-sit-atras aria-label="${escapeHTML(t("sitVolver"))}">←</button>` : "";
+  return `<div class="sit-cabecera">${volver}<div><h2 class="sit-titulo">${escapeHTML(titulo)}</h2>${ruta ? `<div class="sit-ruta">${escapeHTML(ruta)}</div>` : ""}</div></div>`;
+}
+function sitTarjeta(vista, id, etq, ver, grande, sub, claseGrande) {
+  return `<button type="button" class="sit-card" data-sit-ir="${vista}"${id ? ` data-sit-id="${escapeHTML(id)}"` : ""}>
+    <div class="sit-etq"><span>${escapeHTML(etq)}</span><span class="sit-ver">${escapeHTML(ver)}</span></div>
+    <div class="sit-grande ${claseGrande || ""}">${escapeHTML(grande)}</div>${sub ? `<div class="sit-sub">${sub}</div>` : ""}</button>`;
+}
+function sitFila(m) {
+  const esGasto = m.tipo === "Gasto";
+  const vencido = diasHasta(m.fecha_pago) < 0;
+  return `<div class="pend-fila" data-id="${m.id}">
+    <div class="pend-info">
+      <div class="pend-cat">${escapeHTML(m.categoria)}</div>
+      <div class="pend-sub">${escapeHTML(m.cuenta)}${m.detalle ? " · " + escapeHTML(m.detalle) : ""}</div>
+      <div class="pend-venc${vencido ? " vencido" : ""}">${escapeHTML(textoVencimiento(m.fecha_pago))}</div>
+    </div>
+    <div class="pend-derecha">
+      <div class="mov-monto ${esGasto ? "gasto" : "ingreso"}">${esGasto ? "-" : "+"}${escapeHTML(formatoMonto(m.monto))}</div>
+      <button type="button" class="boton boton-secundario pend-cerrar" data-id="${m.id}">${escapeHTML(t(esGasto ? "pendMarcarPagado" : "pendMarcarCobrado"))}</button>
+    </div></div>`;
+}
+function sitLista(l) {
+  return `<div class="sit-lista">${l.length ? l.map(sitFila).join("") : `<div class="sit-vacio">${escapeHTML(t("sitNadaGrupo"))}</div>`}</div>`;
+}
+function sitOrdenar(l) { return [...l].sort((a, b) => String(a.fecha_pago).localeCompare(String(b.fecha_pago))); }
+
+function renderSituacion() {
+  const cont = $("vistaSituacion");
+  if (!cont || !usuario) return;
+  const s = sitPila[sitPila.length - 1];
+  const inicio = t("sitInicio");
+  const deudas = sitDeudas(), cobros = sitCobros();
+  let h = "";
+
+  if (s.v === "inicio") {
+    h = sitCabecera(t("sitTitulo"), "");
+    if (!pendientes.length) {
+      h += `<div class="sit-card sit-vacio-card">${escapeHTML(t("sitVacio"))}</div>`;
+    } else {
+      const venc = sitSuma(deudas.filter((m) => sitGrupo(m) === "venc"));
+      const sem = sitSuma(deudas.filter((m) => sitGrupo(m) === "sem"));
+      h += sitTarjeta("debo", "", t("sitDebo"), t("sitVerDetalle"), formatoMonto(sitSuma(deudas)),
+        `${venc ? `<span class="sit-mal">${escapeHTML(t("sitVencido"))} ${escapeHTML(formatoMonto(venc))}</span> · ` : ""}${escapeHTML(t("sitProx7"))} ${escapeHTML(formatoMonto(sem))}`, "sit-mal");
+      if (cobros.length) h += sitTarjeta("cobrar", "", t("sitMeDeben"), t("sitVerDetalle"), formatoMonto(sitSuma(cobros)), "", "sit-bien");
+      const meses = sitMeses();
+      if (meses.length) {
+        const tot = (k) => sitSuma(sitFuturos().filter((m) => m.tipo === "Gasto" && mesClave(m.fecha_pago) === k));
+        const max = Math.max(1, ...meses.map(tot));
+        const barras = meses.map((k) => `<div class="sit-barra"><span>${escapeHTML(sitNombreMes(k).split(" ")[0].slice(0, 3))}</span><span class="sit-riel"><i style="width:${Math.max(4, Math.round(tot(k) / max * 100))}%"></i></span><span>${escapeHTML(formatoMonto(tot(k)))}</span></div>`).join("");
+        h += `<button type="button" class="sit-card" data-sit-ir="viene"><div class="sit-etq"><span>${escapeHTML(t("sitSeViene"))}</span><span class="sit-ver">${escapeHTML(t("sitVerMeses"))}</span></div><div class="sit-barras">${barras}</div></button>`;
+      }
+    }
+  } else if (s.v === "debo") {
+    h = sitCabecera(t("sitDebo"), `${inicio} › ${t("sitDebo")}`);
+    h += `<div class="sit-card sit-resumen"><div class="sit-etq"><span>${escapeHTML(t("sitTotal"))}</span></div><div class="sit-grande">${escapeHTML(formatoMonto(sitSuma(deudas)))}</div></div>`;
+    ["venc", "sem", "mas"].forEach((k) => {
+      const l = deudas.filter((m) => sitGrupo(m) === k);
+      h += sitTarjeta("grupo", k, sitNombreGrupo(k), t("sitVerN").replace("{n}", l.length), formatoMonto(sitSuma(l)), "", k === "venc" && l.length ? "sit-mal" : "");
+    });
+  } else if (s.v === "grupo") {
+    const l = sitOrdenar(deudas.filter((m) => sitGrupo(m) === s.id));
+    h = sitCabecera(sitNombreGrupo(s.id), `${inicio} › ${t("sitDebo")} › ${sitNombreGrupo(s.id)}`);
+    h += `<div class="sit-card sit-resumen"><div class="sit-etq"><span>${escapeHTML(t("sitTotal"))}</span></div><div class="sit-grande">${escapeHTML(formatoMonto(sitSuma(l)))}</div></div>` + sitLista(l);
+  } else if (s.v === "cobrar") {
+    h = sitCabecera(t("sitMeDeben"), `${inicio} › ${t("sitMeDeben")}`);
+    h += `<div class="sit-card sit-resumen"><div class="sit-etq"><span>${escapeHTML(t("sitTotal"))}</span></div><div class="sit-grande">${escapeHTML(formatoMonto(sitSuma(cobros)))}</div></div>` + sitLista(sitOrdenar(cobros));
+  } else if (s.v === "viene") {
+    h = sitCabecera(t("sitSeViene"), `${inicio} › ${t("sitSeViene")}`);
+    sitMeses().forEach((k) => {
+      const l = sitFuturos().filter((m) => mesClave(m.fecha_pago) === k);
+      const d = sitSuma(l.filter((m) => m.tipo === "Gasto")), c = sitSuma(l.filter((m) => m.tipo === "Ingreso"));
+      h += sitTarjeta("mes", k, sitNombreMes(k), t("sitVerN").replace("{n}", l.length), "-" + formatoMonto(d),
+        c ? `<span class="sit-bien">+${escapeHTML(formatoMonto(c))} ${escapeHTML(t("pendPorCobrar").toLowerCase())}</span>` : "", "sit-mal");
+    });
+  } else if (s.v === "mes") {
+    const l = sitOrdenar(sitFuturos().filter((m) => mesClave(m.fecha_pago) === s.id));
+    const d = sitSuma(l.filter((m) => m.tipo === "Gasto")), c = sitSuma(l.filter((m) => m.tipo === "Ingreso"));
+    h = sitCabecera(sitNombreMes(s.id), `${inicio} › ${t("sitSeViene")} › ${sitNombreMes(s.id)}`);
+    h += `<div class="sit-card sit-resumen"><div class="sit-etq"><span>${escapeHTML(t("sitNetoMes"))}</span></div><div class="sit-grande ${c - d < 0 ? "sit-mal" : "sit-bien"}">${c - d < 0 ? "-" : "+"}${escapeHTML(formatoMonto(Math.abs(c - d)))}</div><div class="sit-sub">${escapeHTML(t("pendPorPagar"))} ${escapeHTML(formatoMonto(d))} · ${escapeHTML(t("pendPorCobrar"))} ${escapeHTML(formatoMonto(c))}</div></div>` + sitLista(l);
+  }
+  cont.innerHTML = h;
+}
+
+$("vistaSituacion").addEventListener("click", (e) => {
+  if (e.target.closest("[data-sit-atras]")) return sitAtras();
+  const cerrar = e.target.closest(".pend-cerrar");
+  if (cerrar) { e.stopPropagation(); return cerrarPendiente(cerrar.dataset.id); }
+  const fila = e.target.closest(".pend-fila");
+  if (fila) return abrirModalEditar(fila.dataset.id);
+  const ir = e.target.closest("[data-sit-ir]");
+  if (ir) sitIr(ir.dataset.sitIr, ir.dataset.sitId);
+});
+
 function renderPendientes() {
+  renderSituacion();
   const cont = $("bannerPendientes");
   if (!cont) return;
   if (!pendientes.length) {
