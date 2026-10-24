@@ -184,6 +184,8 @@ const TRADUCCIONES = {
     pendMarcarCobrado: "Marcar como cobrado",
     toastMarcadoPagado: "Listo, marcado como pagado.",
     toastMarcadoCobrado: "Listo, marcado como cobrado.",
+    toastPagadoDet: "Listo: {d} · {m} marcado como pagado.",
+    toastCobradoDet: "Listo: {d} · {m} marcado como cobrado.",
     badgePendienteGasto: "⏳ por pagar · {f}",
     badgePendienteIngreso: "⏳ por cobrar · {f}",
     badgeOrigenGasto: "↪ se paga el {f}",
@@ -371,6 +373,8 @@ const TRADUCCIONES = {
     pendMarcarCobrado: "Marcar como recebido",
     toastMarcadoPagado: "Pronto, marcado como pago.",
     toastMarcadoCobrado: "Pronto, marcado como recebido.",
+    toastPagadoDet: "Pronto: {d} · {m} marcado como pago.",
+    toastCobradoDet: "Pronto: {d} · {m} marcado como recebido.",
     badgePendienteGasto: "⏳ a pagar · {f}",
     badgePendienteIngreso: "⏳ a receber · {f}",
     badgeOrigenGasto: "↪ será pago em {f}",
@@ -558,6 +562,8 @@ const TRADUCCIONES = {
     pendMarcarCobrado: "Mark as received",
     toastMarcadoPagado: "Done, marked as paid.",
     toastMarcadoCobrado: "Done, marked as received.",
+    toastPagadoDet: "Done: {d} · {m} marked as paid.",
+    toastCobradoDet: "Done: {d} · {m} marked as received.",
     badgePendienteGasto: "⏳ to pay · {f}",
     badgePendienteIngreso: "⏳ to receive · {f}",
     badgeOrigenGasto: "↪ will be paid on {f}",
@@ -714,12 +720,12 @@ function numeroDesdeTexto(txt) {
   return Number(t);
 }
 
-function mostrarToast(msg) {
+function mostrarToast(msg, ms) {
   const t = $("toast");
   t.textContent = msg;
   t.hidden = false;
   clearTimeout(window._toastTimer);
-  window._toastTimer = setTimeout(() => { t.hidden = true; }, 3000);
+  window._toastTimer = setTimeout(() => { t.hidden = true; }, ms || 3000);
 }
 
 function mostrarAviso(el, msg) {
@@ -1316,7 +1322,7 @@ async function cerrarPendiente(id) {
   try {
     await marcarMovimientoPagado(id, hoyISO());
     await cargarMesActual();
-    mostrarToast(t(m.tipo === "Ingreso" ? "toastMarcadoCobrado" : "toastMarcadoPagado"));
+    mostrarToast(t(m.tipo === "Ingreso" ? "toastCobradoDet" : "toastPagadoDet").replace("{d}", () => m.categoria).replace("{m}", () => formatoMonto(m.monto)), 6000);
   } catch (err) { mostrarToast(traducirErrorDatos(err)); }
 }
 
