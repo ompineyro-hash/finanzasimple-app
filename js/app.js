@@ -1193,6 +1193,8 @@ function irAVista(id) {
   document.querySelectorAll(".vista").forEach((v) => (v.hidden = true));
   vistaActiva = id;
   $(vistaActiva).hidden = false;
+  // En "Mi situación" no corresponde el selector de mes ni el resumen del mes.
+  $("app").classList.toggle("modo-situacion", id === "vistaSituacion");
 }
 
 function volverAlMenuConfig() {

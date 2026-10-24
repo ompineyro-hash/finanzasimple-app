@@ -72,3 +72,7 @@ button.sit-card{cursor:pointer;}
 .navbar-item span:last-child,.navbar-agregar span:last-child{white-space:nowrap;}
 
 @media (max-width:380px){.navbar-item,.navbar-agregar{font-size:10.5px;}}
+
+/* En "Mi situación" se esconde lo que depende del mes que se mira. */
+.modo-situacion .mes-selector,.modo-situacion .resumen-tarjetas,.modo-situacion .linea-previsto{display:none !important;}
+.modo-situacion .topbar-fila{justify-content:space-between;}
