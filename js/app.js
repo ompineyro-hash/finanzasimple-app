@@ -184,6 +184,16 @@ const TRADUCCIONES = {
     pendMarcarCobrado: "Marcar como cobrado",
     toastMarcadoPagado: "Listo, marcado como pagado.",
     toastMarcadoCobrado: "Listo, marcado como cobrado.",
+    ayudaCotizacion: "Esta cuenta está en {c}. Escribí a cuántos {b} equivale 1 {c}.",
+    errCotizacion: "Indicá la cotización (tiene que ser mayor a cero).",
+    avisoSinCotiz: "⚠ {n} movimiento(s) en otra moneda no tienen cotización y no están sumados.",
+    avisoDesfasados: "⚠ {n} movimiento(s) están en una cuenta de otra moneda pero figuran en {b}. Editalos para indicar la cotización.",
+    sinCotizTag: "sin cotización",
+    confirmCambioBase: "Cambiar tu moneda no convierte los movimientos que ya cargaste. ¿Querés seguir?",
+    ariaMonedaCuenta: "Moneda de la cuenta",
+    errMonedaDatos: "Completá el nombre, el código de 3 letras y el símbolo.",
+    vacioMonedas: "No agregaste monedas propias. Las más comunes ya están disponibles para elegir.",
+    toastMonedaGuardada: "Guardado.",
     toastPagadoDet: "Listo: {d} · {m} marcado como pagado.",
     toastCobradoDet: "Listo: {d} · {m} marcado como cobrado.",
     badgePendienteGasto: "⏳ por pagar · {f}",
@@ -373,6 +383,16 @@ const TRADUCCIONES = {
     pendMarcarCobrado: "Marcar como recebido",
     toastMarcadoPagado: "Pronto, marcado como pago.",
     toastMarcadoCobrado: "Pronto, marcado como recebido.",
+    ayudaCotizacion: "Esta conta está em {c}. Escreva quantos {b} vale 1 {c}.",
+    errCotizacion: "Informe a cotação (tem que ser maior que zero).",
+    avisoSinCotiz: "⚠ {n} lançamento(s) em outra moeda não têm cotação e não estão somados.",
+    avisoDesfasados: "⚠ {n} lançamento(s) estão numa conta de outra moeda mas aparecem em {b}. Edite-os para informar a cotação.",
+    sinCotizTag: "sem cotação",
+    confirmCambioBase: "Mudar sua moeda não converte os lançamentos que você já fez. Quer continuar?",
+    ariaMonedaCuenta: "Moeda da conta",
+    errMonedaDatos: "Preencha o nome, o código de 3 letras e o símbolo.",
+    vacioMonedas: "Você não adicionou moedas próprias. As mais comuns já estão disponíveis para escolher.",
+    toastMonedaGuardada: "Salvo.",
     toastPagadoDet: "Pronto: {d} · {m} marcado como pago.",
     toastCobradoDet: "Pronto: {d} · {m} marcado como recebido.",
     badgePendienteGasto: "⏳ a pagar · {f}",
@@ -562,6 +582,16 @@ const TRADUCCIONES = {
     pendMarcarCobrado: "Mark as received",
     toastMarcadoPagado: "Done, marked as paid.",
     toastMarcadoCobrado: "Done, marked as received.",
+    ayudaCotizacion: "This account is in {c}. Enter how many {b} 1 {c} is worth.",
+    errCotizacion: "Enter the exchange rate (it must be greater than zero).",
+    avisoSinCotiz: "⚠ {n} entry(ies) in another currency have no exchange rate and are not included in the totals.",
+    avisoDesfasados: "⚠ {n} entry(ies) belong to an account in another currency but are recorded in {b}. Edit them to enter the exchange rate.",
+    sinCotizTag: "no rate",
+    confirmCambioBase: "Changing your currency does not convert the entries you already logged. Continue?",
+    ariaMonedaCuenta: "Account currency",
+    errMonedaDatos: "Fill in the name, the 3-letter code and the symbol.",
+    vacioMonedas: "You haven't added any custom currencies. The most common ones are already available to choose.",
+    toastMonedaGuardada: "Saved.",
     toastPagadoDet: "Done: {d} · {m} marked as paid.",
     toastCobradoDet: "Done: {d} · {m} marked as received.",
     badgePendienteGasto: "⏳ to pay · {f}",
@@ -668,6 +698,97 @@ function moneda() { return perfil?.moneda || "$"; }
 
 function formatoMonto(n) {
   return moneda() + " " + Number(n).toLocaleString("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+// ---------- Monedas ----------
+// Cada movimiento se guarda en la moneda de su cuenta, con la cotización de ese día
+// (cuánto vale 1 de esa moneda en la moneda base). Los totales se arman convirtiendo
+// cada movimiento con su propia cotización.
+const CATALOGO_MONEDAS = [
+  { codigo: "ARS", simbolo: "$", n: { es: "Peso argentino", pt: "Peso argentino", en: "Argentine peso" } },
+  { codigo: "USD", simbolo: "US$", n: { es: "Dólar estadounidense", pt: "Dólar americano", en: "US dollar" } },
+  { codigo: "EUR", simbolo: "€", n: { es: "Euro", pt: "Euro", en: "Euro" } },
+  { codigo: "BRL", simbolo: "R$", n: { es: "Real brasileño", pt: "Real brasileiro", en: "Brazilian real" } },
+  { codigo: "UYU", simbolo: "$U", n: { es: "Peso uruguayo", pt: "Peso uruguaio", en: "Uruguayan peso" } },
+  { codigo: "CLP", simbolo: "CLP$", n: { es: "Peso chileno", pt: "Peso chileno", en: "Chilean peso" } },
+  { codigo: "MXN", simbolo: "MX$", n: { es: "Peso mexicano", pt: "Peso mexicano", en: "Mexican peso" } },
+  { codigo: "COP", simbolo: "COL$", n: { es: "Peso colombiano", pt: "Peso colombiano", en: "Colombian peso" } },
+  { codigo: "PEN", simbolo: "S/", n: { es: "Sol peruano", pt: "Sol peruano", en: "Peruvian sol" } },
+  { codigo: "PYG", simbolo: "₲", n: { es: "Guaraní", pt: "Guarani", en: "Paraguayan guaraní" } },
+  { codigo: "BOB", simbolo: "Bs", n: { es: "Boliviano", pt: "Boliviano", en: "Bolivian boliviano" } },
+  { codigo: "GBP", simbolo: "£", n: { es: "Libra esterlina", pt: "Libra esterlina", en: "Pound sterling" } },
+];
+let monedasUsuario = [];
+
+function monedaBase() { return perfil?.moneda_base || "ARS"; }
+
+function todasLasMonedas() {
+  const lista = CATALOGO_MONEDAS.map((m) => ({ codigo: m.codigo, simbolo: m.simbolo, nombre: m.n[idiomaActual] || m.n.es }));
+  monedasUsuario.forEach((m) => {
+    const cod = String(m.codigo || "").toUpperCase();
+    if (cod && !lista.some((x) => x.codigo === cod)) lista.push({ codigo: cod, simbolo: m.simbolo || cod, nombre: m.nombre || cod });
+  });
+  return lista;
+}
+
+function simboloDe(codigo) {
+  if (codigo === monedaBase()) return moneda();
+  return todasLasMonedas().find((m) => m.codigo === codigo)?.simbolo || codigo;
+}
+
+function opcionesMonedas(seleccionada, corto) {
+  return todasLasMonedas().map((m) =>
+    `<option value="${escapeHTML(m.codigo)}"${m.codigo === seleccionada ? " selected" : ""}>${escapeHTML(corto ? m.codigo + " (" + m.simbolo + ")" : m.codigo + " · " + m.nombre + " (" + m.simbolo + ")")}</option>`
+  ).join("");
+}
+
+function monedaDeCuentaNombre(nombre) {
+  const c = cuentas.find((x) => x.nombre === nombre);
+  return (c && c.moneda) || monedaBase();
+}
+function monedaDeMov(m) { return m.moneda || monedaDeCuentaNombre(m.cuenta); }
+function cotizDeMov(m) {
+  if (monedaDeMov(m) === monedaBase()) return 1;
+  const c = Number(m.cotizacion);
+  return c > 0 ? c : null;
+}
+// Monto del movimiento convertido a la moneda base (0 si falta la cotización: se avisa aparte).
+function montoBase(m) {
+  const c = cotizDeMov(m);
+  return c === null ? 0 : Number(m.monto) * c;
+}
+function formatoNum(n) {
+  return Number(n).toLocaleString("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+function formatoMontoMov(m) { return simboloDe(monedaDeMov(m)) + " " + formatoNum(m.monto); }
+function equivMovHTML(m) {
+  if (monedaDeMov(m) === monedaBase()) return "";
+  const c = cotizDeMov(m);
+  return `<div class="mov-equiv">${c === null ? escapeHTML(t("sinCotizTag")) : "≈ " + escapeHTML(formatoMonto(Number(m.monto) * c))}</div>`;
+}
+
+function leerCotiz() { try { return JSON.parse(localStorage.getItem("fs_cotiz") || "{}"); } catch { return {}; } }
+function guardarCotiz(cod, v) { try { const o = leerCotiz(); o[cod] = v; localStorage.setItem("fs_cotiz", JSON.stringify(o)); } catch {} }
+
+function avisoMonedasHTML() {
+  const todos = [...movimientos, ...pendientes.filter((p) => !movimientos.some((m) => m.id === p.id))];
+  let sin = 0, desfasados = 0;
+  todos.forEach((m) => {
+    const cod = monedaDeMov(m);
+    if (cod !== monedaBase()) { if (cotizDeMov(m) === null) sin++; }
+    else if (monedaDeCuentaNombre(m.cuenta) !== monedaBase()) desfasados++;
+  });
+  let h = "";
+  if (sin) h += `<div>${escapeHTML(t("avisoSinCotiz").replace("{n}", sin))}</div>`;
+  if (desfasados) h += `<div>${escapeHTML(t("avisoDesfasados").replace("{n}", desfasados).replace("{b}", simboloDe(monedaBase())))}</div>`;
+  return h;
+}
+function renderAvisoMonedas() {
+  const el = $("avisoMonedas");
+  if (!el) return;
+  const h = avisoMonedasHTML();
+  el.innerHTML = h;
+  el.hidden = !h;
 }
 
 function formatoFecha(str) {
@@ -1130,10 +1251,12 @@ document.addEventListener("visibilitychange", () => {
 window.addEventListener("focus", actualizarDatosSiCorresponde);
 
 async function cargarCuentasYCategorias() {
-  [cuentas, categorias] = await Promise.all([
+  [cuentas, categorias, monedasUsuario] = await Promise.all([
     listarCuentas(usuario.id),
     listarCategorias(usuario.id),
+    listarMonedas(usuario.id).catch(() => []),
   ]);
+  renderMonedasConfig();
   renderCuentasConfig();
   renderCategoriasConfig();
   renderSelects();
@@ -1322,7 +1445,7 @@ async function cerrarPendiente(id) {
   try {
     await marcarMovimientoPagado(id, hoyISO());
     await cargarMesActual();
-    mostrarToast(t(m.tipo === "Ingreso" ? "toastCobradoDet" : "toastPagadoDet").replace("{d}", () => m.categoria).replace("{m}", () => formatoMonto(m.monto)), 6000);
+    mostrarToast(t(m.tipo === "Ingreso" ? "toastCobradoDet" : "toastPagadoDet").replace("{d}", () => m.categoria).replace("{m}", () => formatoMontoMov(m)), 6000);
   } catch (err) { mostrarToast(traducirErrorDatos(err)); }
 }
 
@@ -1340,7 +1463,7 @@ function sitGrupo(m) {
   return n < 0 ? "venc" : n <= 7 ? "sem" : "mas";
 }
 function sitNombreGrupo(k) { return t({ venc: "sitVencido", sem: "sitProx7", mas: "sitMasAdelante" }[k]); }
-function sitSuma(l) { return l.reduce((a, m) => a + Number(m.monto), 0); }
+function sitSuma(l) { return l.reduce((a, m) => a + montoBase(m), 0); }
 function sitDeudas() { return pendientes.filter((m) => m.tipo === "Gasto"); }
 function sitCobros() { return pendientes.filter((m) => m.tipo === "Ingreso"); }
 function sitFuturos() { return pendientes.filter((m) => diasHasta(m.fecha_pago) >= 0); }
@@ -1373,7 +1496,7 @@ function sitFila(m) {
       <div class="pend-venc${vencido ? " vencido" : ""}">${escapeHTML(textoVencimiento(m.fecha_pago))}</div>
     </div>
     <div class="pend-derecha">
-      <div class="mov-monto ${esGasto ? "gasto" : "ingreso"}">${esGasto ? "-" : "+"}${escapeHTML(formatoMonto(m.monto))}</div>
+      <div class="mov-monto ${esGasto ? "gasto" : "ingreso"}">${esGasto ? "-" : "+"}${escapeHTML(formatoMontoMov(m))}</div>${equivMovHTML(m)}
       <button type="button" class="boton boton-secundario pend-cerrar" data-id="${m.id}">${escapeHTML(t(esGasto ? "pendMarcarPagado" : "pendMarcarCobrado"))}</button>
     </div></div>`;
 }
@@ -1392,6 +1515,8 @@ function renderSituacion() {
 
   if (s.v === "inicio") {
     h = sitCabecera(t("sitTitulo"), "");
+    const avisoM = avisoMonedasHTML();
+    if (avisoM) h += `<div class="aviso-monedas">${avisoM}</div>`;
     if (!pendientes.length) {
       h += `<div class="sit-card sit-vacio-card">${escapeHTML(t("sitVacio"))}</div>`;
     } else {
@@ -1451,6 +1576,7 @@ $("vistaSituacion").addEventListener("click", (e) => {
 
 function renderPendientes() {
   renderSituacion();
+  renderAvisoMonedas();
   const cont = $("bannerPendientes");
   if (!cont) return;
   if (!pendientes.length) {
@@ -1461,8 +1587,8 @@ function renderPendientes() {
   const hoy = hoyISO();
   let porPagar = 0, porCobrar = 0, vencidos = 0;
   pendientes.forEach((m) => {
-    if (m.tipo === "Ingreso") porCobrar += Number(m.monto);
-    else porPagar += Number(m.monto);
+    if (m.tipo === "Ingreso") porCobrar += montoBase(m);
+    else porPagar += montoBase(m);
     if (m.fecha_pago < hoy) vencidos++;
   });
   const partes = [];
@@ -1480,7 +1606,7 @@ function renderPendientes() {
           <div class="pend-venc${vencido ? " vencido" : ""}">${escapeHTML(textoVencimiento(m.fecha_pago))}</div>
         </div>
         <div class="pend-derecha">
-          <div class="mov-monto ${esGasto ? "gasto" : "ingreso"}">${esGasto ? "-" : "+"}${escapeHTML(formatoMonto(m.monto))}</div>
+          <div class="mov-monto ${esGasto ? "gasto" : "ingreso"}">${esGasto ? "-" : "+"}${escapeHTML(formatoMontoMov(m))}</div>${equivMovHTML(m)}
           <button type="button" class="boton boton-secundario pend-cerrar" data-id="${m.id}">${escapeHTML(t(esGasto ? "pendMarcarPagado" : "pendMarcarCobrado"))}</button>
         </div>
       </div>`;
@@ -1520,8 +1646,8 @@ function renderPrevisto() {
   let ingPend = 0, gasPend = 0;
   movimientos.forEach((m) => {
     if (esPendiente(m) && mesClave(m.fecha_pago) === clave) {
-      if (m.tipo === "Ingreso") ingPend += Number(m.monto);
-      else gasPend += Number(m.monto);
+      if (m.tipo === "Ingreso") ingPend += montoBase(m);
+      else gasPend += montoBase(m);
     }
   });
   if (!ingPend && !gasPend) {
@@ -1698,7 +1824,7 @@ function renderMovimientos() {
           ${badge ? `<div class="mov-badge ${badge.clase}">${escapeHTML(badge.texto)}</div>` : ""}
         </div>
         <div class="mov-derecha">
-          <div class="mov-monto ${esGasto ? "gasto" : "ingreso"}">${esGasto ? "-" : "+"}${formatoMonto(m.monto)}</div>
+          <div class="mov-monto ${esGasto ? "gasto" : "ingreso"}">${esGasto ? "-" : "+"}${escapeHTML(formatoMontoMov(m))}</div>${equivMovHTML(m)}
           ${botonCerrar}
         </div>
       </div>`;
@@ -1722,8 +1848,8 @@ function renderMovimientos() {
 function calcularResumenLista(lista) {
   let ing = 0, gas = 0;
   lista.forEach((m) => {
-    if (m.tipo === "Ingreso") ing += Number(m.monto);
-    else gas += Number(m.monto);
+    if (m.tipo === "Ingreso") ing += montoBase(m);
+    else gas += montoBase(m);
   });
   return { ing, gas, balance: ing - gas };
 }
@@ -1745,8 +1871,8 @@ function renderCategoriasAnalisis(lista, tipo) {
   const porCategoria = {};
   let total = 0;
   lista.filter((m) => m.tipo === tipo).forEach((m) => {
-    porCategoria[m.categoria] = (porCategoria[m.categoria] || 0) + Number(m.monto);
-    total += Number(m.monto);
+    porCategoria[m.categoria] = (porCategoria[m.categoria] || 0) + montoBase(m);
+    total += montoBase(m);
   });
   const entradas = Object.entries(porCategoria).sort((a, b) => b[1] - a[1]);
   if (!entradas.length) {
@@ -1835,8 +1961,8 @@ function agruparPorMes(lista) {
   lista.forEach((m) => {
     const clave = m.fecha.slice(0, 7);
     if (!porMes[clave]) porMes[clave] = { ing: 0, gas: 0 };
-    if (m.tipo === "Ingreso") porMes[clave].ing += Number(m.monto);
-    else porMes[clave].gas += Number(m.monto);
+    if (m.tipo === "Ingreso") porMes[clave].ing += montoBase(m);
+    else porMes[clave].gas += montoBase(m);
   });
   return porMes;
 }
@@ -1941,8 +2067,8 @@ function renderDiaADia() {
   delMes.forEach((m) => {
     const dia = Number(m.fecha.slice(8, 10));
     if (!porDia[dia]) return;
-    if (m.tipo === "Ingreso") porDia[dia].ing += Number(m.monto);
-    else porDia[dia].gas += Number(m.monto);
+    if (m.tipo === "Ingreso") porDia[dia].ing += montoBase(m);
+    else porDia[dia].gas += montoBase(m);
   });
 
   let accIng = 0, accGas = 0;
@@ -2031,6 +2157,69 @@ function renderCuentasConfig() {
     ? cuentas.map((c) => filaEditable(c, "cuenta")).join("")
     : `<div class="vacio">Todavía no agregaste ninguna cuenta.</div>`;
   enlazarAccionesEditables("cuenta");
+  cont.querySelectorAll(".sel-moneda-cuenta").forEach((sel) => {
+    sel.addEventListener("change", async () => {
+      try {
+        await actualizarMonedaCuenta(sel.dataset.id, sel.value);
+        await cargarCuentasYCategorias();
+        await cargarMesActual();
+        mostrarToast(t("toastMonedaGuardada"));
+      } catch (err) { mostrarToast(traducirErrorDatos(err)); }
+    });
+  });
+}
+
+function renderMonedasConfig() {
+  const base = monedaBase();
+  if ($("selectMonedaBase")) $("selectMonedaBase").innerHTML = opcionesMonedas(base);
+  if ($("selectMonedaNuevaCuenta")) $("selectMonedaNuevaCuenta").innerHTML = opcionesMonedas(base, true);
+  const cont = $("listaMonedas");
+  if (cont) {
+    cont.innerHTML = monedasUsuario.length
+      ? monedasUsuario.map((m) => `<div class="editable-item" data-id="${m.id}"><span>${escapeHTML(m.nombre)} · ${escapeHTML(m.codigo)} (${escapeHTML(m.simbolo || "")})</span><div class="editable-acciones"><button data-borrar-moneda="${m.id}" title="Borrar">🗑️</button></div></div>`).join("")
+      : `<div class="vacio">${escapeHTML(t("vacioMonedas"))}</div>`;
+    cont.querySelectorAll("[data-borrar-moneda]").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        try { await borrarMoneda(btn.dataset.borrarMoneda); await cargarCuentasYCategorias(); mostrarToast(t("toastMonedaGuardada")); }
+        catch (err) { mostrarToast(traducirErrorDatos(err)); }
+      });
+    });
+  }
+}
+
+if ($("selectMonedaBase")) {
+  $("selectMonedaBase").addEventListener("change", async (e) => {
+    const nueva = e.target.value;
+    if (nueva === monedaBase()) return;
+    if (!confirm(t("confirmCambioBase"))) { e.target.value = monedaBase(); return; }
+    try {
+      const simbolo = todasLasMonedas().find((m) => m.codigo === nueva)?.simbolo || nueva;
+      await actualizarMonedaBase(usuario.id, nueva);
+      await actualizarMoneda(usuario.id, simbolo);
+      perfil.moneda_base = nueva;
+      perfil.moneda = simbolo;
+      $("inputMoneda").value = simbolo;
+      renderMonedasConfig();
+      await cargarCuentasYCategorias();
+      await cargarMesActual();
+      mostrarToast(t("toastMonedaGuardada"));
+    } catch (err) { mostrarToast(traducirErrorDatos(err)); e.target.value = monedaBase(); }
+  });
+}
+
+if ($("btnAgregarMoneda")) {
+  $("btnAgregarMoneda").addEventListener("click", async () => {
+    const nombre = $("inputNuevaMonedaNombre").value.trim();
+    const codigo = $("inputNuevaMonedaCodigo").value.trim().toUpperCase();
+    const simbolo = $("inputNuevaMonedaSimbolo").value.trim();
+    if (!nombre || !/^[A-Z]{3}$/.test(codigo) || !simbolo) return mostrarToast(t("errMonedaDatos"));
+    try {
+      await crearMoneda(usuario.id, nombre, codigo, simbolo);
+      $("inputNuevaMonedaNombre").value = ""; $("inputNuevaMonedaCodigo").value = ""; $("inputNuevaMonedaSimbolo").value = "";
+      await cargarCuentasYCategorias();
+      mostrarToast(t("toastMonedaGuardada"));
+    } catch (err) { mostrarToast(traducirErrorDatos(err)); }
+  });
 }
 
 function renderCategoriasConfig() {
@@ -2047,6 +2236,9 @@ function renderCategoriasConfig() {
 
 function filaEditable(item, tipo) {
   const esCategoria = tipo === "categoria";
+  const selMoneda = tipo === "cuenta"
+    ? `<select class="sel-moneda-cuenta" data-id="${item.id}" aria-label="${escapeHTML(t("ariaMonedaCuenta"))}">${opcionesMonedas(item.moneda || monedaBase(), true)}</select>`
+    : "";
   const tipoItem = item.tipo || "Gasto";
   const botonTipo = esCategoria
     ? `<button data-accion="cambiar-tipo" data-tipo="${tipo}" title="Cambiar a ${tipoItem === "Gasto" ? "Ingreso" : "Gasto"}">${tipoItem === "Gasto" ? "↔️ Pasar a Ingreso" : "↔️ Pasar a Gasto"}</button>`
@@ -2055,6 +2247,7 @@ function filaEditable(item, tipo) {
     <div class="editable-item" data-id="${item.id}">
       <span>${escapeHTML(item.nombre)}</span>
       <div class="editable-acciones">
+        ${selMoneda}
         ${botonTipo}
         <button data-accion="editar" data-tipo="${tipo}" title="Editar">✏️</button>
         <button data-accion="borrar" data-tipo="${tipo}" title="Borrar">🗑️</button>
@@ -2157,7 +2350,7 @@ $("btnAgregarCuenta").addEventListener("click", async () => {
   const v = input.value.trim();
   if (!v) return;
   try {
-    await crearCuenta(usuario.id, v);
+    await crearCuenta(usuario.id, v, $("selectMonedaNuevaCuenta")?.value || monedaBase());
     input.value = "";
     await cargarCuentasYCategorias();
   } catch (err) { mostrarToast(traducirErrorDatos(err)); }
@@ -2201,7 +2394,7 @@ function renderSelectCategorias(tipo) {
 }
 
 function renderSelects() {
-  $("movCuenta").innerHTML = cuentas.map((c) => `<option value="${escapeHTML(c.nombre)}">${escapeHTML(c.nombre)}</option>`).join("") || `<option value="">-- Agregá una cuenta en Config --</option>`;
+  $("movCuenta").innerHTML = cuentas.map((c) => `<option value="${escapeHTML(c.nombre)}">${escapeHTML(c.nombre)}${c.moneda && c.moneda !== monedaBase() ? " (" + escapeHTML(simboloDe(c.moneda)) + ")" : ""}</option>`).join("") || `<option value="">-- Agregá una cuenta en Config --</option>`;
   renderSelectCategorias();
 }
 
@@ -2228,6 +2421,22 @@ activarFormatoImporte($("movMonto"));
 $("btnCerrarModal").addEventListener("click", cerrarModal);
 $("modalFondo").addEventListener("click", (e) => { if (e.target.id === "modalFondo") cerrarModal(); });
 
+// Cotización: solo aparece si la cuenta elegida está en otra moneda que la base.
+function actualizarFilaCotizacion(valorGuardado) {
+  const fila = $("filaCotizacion");
+  if (!fila) return;
+  const cod = monedaDeCuentaNombre($("movCuenta").value);
+  const base = monedaBase();
+  if (cod === base) { fila.hidden = true; return; }
+  fila.hidden = false;
+  $("labelMonedaMov").textContent = t("ayudaCotizacion").replace(/\{c\}/g, () => simboloDe(cod)).replace(/\{b\}/g, () => simboloDe(base));
+  const inp = $("movCotizacion");
+  if (valorGuardado > 0) inp.value = formatearImporteEscrito(String(valorGuardado).replace(".", ","));
+  else if (!inp.value && leerCotiz()[cod] > 0) inp.value = formatearImporteEscrito(String(leerCotiz()[cod]).replace(".", ","));
+}
+$("movCuenta").addEventListener("change", () => { $("movCotizacion").value = ""; actualizarFilaCotizacion(); });
+activarFormatoImporte($("movCotizacion"));
+
 function abrirModalNuevo() {
   if (!cuentas.length || !categorias.length) {
     return mostrarToast("Primero agregá al menos una cuenta y una categoría en Config.");
@@ -2244,6 +2453,8 @@ function abrirModalNuevo() {
   $("movCuotaFecha").value = "";
   sincronizarDiferidoUI();
   renderSelects();
+  $("movCotizacion").value = "";
+  actualizarFilaCotizacion();
   ocultarAviso($("movError"));
   abrirVentanaMovimiento();
   fsVozPrepararNuevo();
@@ -2269,6 +2480,8 @@ function abrirModalEditar(id) {
   $("movYaPagado").checked = !esPendiente(m);
   $("movCuotas").checked = false;
   sincronizarDiferidoUI();
+  $("movCotizacion").value = "";
+  actualizarFilaCotizacion(monedaDeMov(m) !== monedaBase() ? Number(m.cotizacion) : 0);
   ocultarAviso($("movError"));
   abrirVentanaMovimiento();
   fsVoiceOcultar();
@@ -2649,6 +2862,15 @@ $("formMovimiento").addEventListener("submit", async (e) => {
   if (!categoria) return mostrarAviso($("movError"), "Elegí una categoría.");
   if (!Number.isFinite(monto) || monto <= 0) return mostrarAviso($("movError"), "El monto tiene que ser mayor a cero.");
 
+  // Moneda y cotización: la moneda es la de la cuenta; si no es la base, hace falta la cotización.
+  const monedaMov = monedaDeCuentaNombre(cuenta);
+  let cotizacion = 1;
+  if (monedaMov !== monedaBase()) {
+    cotizacion = numeroDesdeTexto($("movCotizacion").value);
+    if (!Number.isFinite(cotizacion) || cotizacion <= 0) return mostrarAviso($("movError"), t("errCotizacion"));
+    guardarCotiz(monedaMov, cotizacion);
+  }
+
   // Si se paga/cobra después: queda "pendiente" hasta que se marque como pagado.
   let estado = "pagado";
   let fechaPago = null;
@@ -2668,7 +2890,7 @@ $("formMovimiento").addEventListener("submit", async (e) => {
     for (let k = 0; k < n; k++) {
       const f = sumarMesesISO(primera, k);
       cuotas.push({
-        tipo, fecha: f, cuenta, categoria, monto,
+        tipo, fecha: f, cuenta, categoria, monto, moneda: monedaMov, cotizacion,
         detalle: (detalle ? detalle + " · " : "") + t("textoCuota") + " " + (k + 1) + "/" + n,
         estado: "pendiente", fecha_pago: f,
       });
@@ -2684,7 +2906,7 @@ $("formMovimiento").addEventListener("submit", async (e) => {
     return;
   }
 
-  const datos = { tipo, fecha, cuenta, categoria, detalle, monto, estado, fecha_pago: fechaPago };
+  const datos = { tipo, fecha, cuenta, categoria, detalle, monto, moneda: monedaMov, cotizacion, estado, fecha_pago: fechaPago };
 
   try {
     if (id) await actualizarMovimiento(id, datos);
@@ -2762,10 +2984,12 @@ $("btnExportarExcel").addEventListener("click", async () => {
         <td style="mso-number-format:'0.00';">${montoConSigno}</td>
         <td>${valorEscapadoExcel(esPendiente(m) ? "Pendiente" : "Pagado")}</td>
         <td>${valorEscapadoExcel(m.fecha_pago ? formatoFecha(m.fecha_pago) : "")}</td>
+        <td>${valorEscapadoExcel(monedaDeMov(m))}</td>
+        <td style="mso-number-format:'0.00';">${cotizDeMov(m) === null ? "" : cotizDeMov(m)}</td>
       </tr>`;
     }).join("");
     const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body>
-      <table border="1"><thead><tr><th>Fecha</th><th>Tipo</th><th>Cuenta</th><th>Categoría</th><th>Detalle</th><th>Monto</th><th>Estado</th><th>Fecha de pago</th></tr></thead>
+      <table border="1"><thead><tr><th>Fecha</th><th>Tipo</th><th>Cuenta</th><th>Categoría</th><th>Detalle</th><th>Monto</th><th>Estado</th><th>Fecha de pago</th><th>Moneda</th><th>Cotización</th></tr></thead>
       <tbody>${filas}</tbody></table></body></html>`;
     descargarArchivo(`Ingasto_${fechaParaNombreArchivo()}.xls`, html, "application/vnd.ms-excel;charset=utf-8");
     mostrarToast("Archivo descargado.");
@@ -2782,10 +3006,10 @@ $("btnExportarCSV").addEventListener("click", async () => {
   try {
     const todos = await movimientosParaExportar();
     if (!todos) return;
-    const encabezado = ["Fecha", "Tipo", "Cuenta", "Categoría", "Detalle", "Monto", "Estado", "Fecha de pago"].map(valorCSV).join(",");
+    const encabezado = ["Fecha", "Tipo", "Cuenta", "Categoría", "Detalle", "Monto", "Estado", "Fecha de pago", "Moneda", "Cotización"].map(valorCSV).join(",");
     const filas = todos.map((m) => {
       const montoConSigno = m.tipo === "Gasto" ? -Math.abs(m.monto) : Math.abs(m.monto);
-      return [formatoFecha(m.fecha), m.tipo, m.cuenta, m.categoria, m.detalle || "", montoConSigno, esPendiente(m) ? "Pendiente" : "Pagado", m.fecha_pago ? formatoFecha(m.fecha_pago) : ""].map(valorCSV).join(",");
+      return [formatoFecha(m.fecha), m.tipo, m.cuenta, m.categoria, m.detalle || "", montoConSigno, esPendiente(m) ? "Pendiente" : "Pagado", m.fecha_pago ? formatoFecha(m.fecha_pago) : "", monedaDeMov(m), cotizDeMov(m) === null ? "" : cotizDeMov(m)].map(valorCSV).join(",");
     }).join("\n");
     descargarArchivo(`Ingasto_${fechaParaNombreArchivo()}.csv`, "﻿" + encabezado + "\n" + filas, "text/csv;charset=utf-8");
     mostrarToast("Archivo descargado.");
