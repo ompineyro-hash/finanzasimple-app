@@ -216,6 +216,51 @@ const TRADUCCIONES = {
     labelDetalle: "Detalle (opcional)",
     placeholderDetalle: "Ej: Supermercado del sábado",
     btnCargarVoz: "🎙️ Cargar por voz (opcional)",
+    vozPTipo: "Tipo",
+    vozPCuenta: "Cuenta",
+    vozPCat: "Categoría",
+    vozPCotiz: "Cotización",
+    vozPMonto: "Monto",
+    vozPDetalle: "Detalle",
+    vozQTipo: "¿Es un gasto o un ingreso?",
+    vozQCuenta: "¿Con qué cuenta?",
+    vozQCat: "¿Qué categoría?",
+    vozQCotiz: "¿A qué cotización? Decí el número.",
+    vozQMonto: "¿Cuál es el monto? Podés decir pesos y centavos.",
+    vozQDetalle: "¿Cuál es el detalle? (podés omitirlo)",
+    vozPaso: "Paso {n} de {total}",
+    vozListoTitulo: "¡Todo cargado!",
+    vozListoPreg: "Revisá y guardá",
+    vozToque: "Tocá el micrófono y hablá, o elegí abajo.",
+    vozEscuchando: "🔴 Escuchando…",
+    vozNoEntendi: "No pude interpretar el dato. Repetilo o escribilo.",
+    vozNoTipo: "No entendí si es gasto o ingreso. Decí “gasto” o “ingreso”, o tocá un botón.",
+    vozNoEscuche: "No escuché nada. Tocá el micrófono y hablá apenas empiece.",
+    vozMicBloq: "El micrófono está bloqueado para esta página. Revisá los permisos del navegador (candado junto a la dirección).",
+    vozSinSoporte: "Este navegador no ofrece voz. Probá con Chrome, o cargá a mano.",
+    vozNoPude: "No pude escuchar.",
+    vozDeshacer: "↩ Deshacer",
+    vozOmitir: "Omitir detalle",
+    vozSeguir: "Seguir",
+    vozGuardar: "Guardar movimiento",
+    vozRevisar: "Cambiar en el formulario",
+    vozCerrarAria: "Cerrar la carga por voz",
+    vozTitulo: "Cargar por voz",
+    vozMicAria: "Hablar",
+    vozPDif: "Pagar después",
+    vozPFechaPago: "Fecha de pago",
+    vozPCuotas: "En cuotas",
+    vozPCuotaN: "Cuántas cuotas",
+    vozPCuotaF: "1ª cuota",
+    vozQDif: "¿Lo vas a pagar después? Decí sí o no.",
+    vozQFechaPago: "¿Cuándo lo pagás? Decí por ejemplo “el 15” o “en 10 días”.",
+    vozQCuotas: "¿Lo pagás en cuotas? Decí sí o no.",
+    vozQCuotaN: "¿En cuántas cuotas?",
+    vozQCuotaF: "¿Cuándo vence la primera cuota?",
+    vozSi: "Sí",
+    vozNo: "No",
+    vozNoSiNo: "No entendí. Decí “sí” o “no”, o tocá un botón.",
+    vozNoCuotas: "Las cuotas van de 2 a 60.",
     btnVozChico: "🎙️ Voz",
     btnResponder: "🎤 Responder",
     btnRepetir: "↻ Repetir",
@@ -415,6 +460,51 @@ const TRADUCCIONES = {
     labelDetalle: "Detalhe (opcional)",
     placeholderDetalle: "Ex: Supermercado de sábado",
     btnCargarVoz: "🎙️ Adicionar por voz (opcional)",
+    vozPTipo: "Tipo",
+    vozPCuenta: "Conta",
+    vozPCat: "Categoria",
+    vozPCotiz: "Cotação",
+    vozPMonto: "Valor",
+    vozPDetalle: "Detalhe",
+    vozQTipo: "É uma despesa ou uma receita?",
+    vozQCuenta: "Com qual conta?",
+    vozQCat: "Qual categoria?",
+    vozQCotiz: "Qual cotação? Diga o número.",
+    vozQMonto: "Qual o valor? Pode dizer reais e centavos.",
+    vozQDetalle: "Qual o detalhe? (pode pular)",
+    vozPaso: "Passo {n} de {total}",
+    vozListoTitulo: "Tudo preenchido!",
+    vozListoPreg: "Revise e salve",
+    vozToque: "Toque no microfone e fale, ou escolha abaixo.",
+    vozEscuchando: "🔴 Ouvindo…",
+    vozNoEntendi: "Não consegui interpretar. Repita ou digite.",
+    vozNoTipo: "Não entendi se é despesa ou receita. Diga “gasto” ou “ingreso”, ou toque num botão.",
+    vozNoEscuche: "Não ouvi nada. Toque no microfone e fale assim que começar.",
+    vozMicBloq: "O microfone está bloqueado para esta página. Verifique as permissões do navegador.",
+    vozSinSoporte: "Este navegador não oferece voz. Use o Chrome ou preencha à mão.",
+    vozNoPude: "Não consegui ouvir.",
+    vozDeshacer: "↩ Desfazer",
+    vozOmitir: "Pular detalhe",
+    vozSeguir: "Continuar",
+    vozGuardar: "Salvar movimento",
+    vozRevisar: "Alterar no formulário",
+    vozCerrarAria: "Fechar o preenchimento por voz",
+    vozTitulo: "Adicionar por voz",
+    vozMicAria: "Falar",
+    vozPDif: "Pagar depois",
+    vozPFechaPago: "Data de pagamento",
+    vozPCuotas: "Parcelado",
+    vozPCuotaN: "Quantas parcelas",
+    vozPCuotaF: "1ª parcela",
+    vozQDif: "Vai pagar depois? Diga “sí” ou “no”.",
+    vozQFechaPago: "Quando vai pagar? Diga por exemplo “el 15” ou “en 10 días”.",
+    vozQCuotas: "Vai pagar em parcelas? Diga “sí” ou “no”.",
+    vozQCuotaN: "Em quantas parcelas?",
+    vozQCuotaF: "Quando vence a primeira parcela?",
+    vozSi: "Sim",
+    vozNo: "Não",
+    vozNoSiNo: "Não entendi. Diga “sí” ou “no”, ou toque num botão.",
+    vozNoCuotas: "As parcelas vão de 2 a 60.",
     btnVozChico: "🎙️ Voz",
     btnResponder: "🎤 Responder",
     btnRepetir: "↻ Repetir",
@@ -614,6 +704,51 @@ const TRADUCCIONES = {
     labelDetalle: "Detail (optional)",
     placeholderDetalle: "E.g: Saturday groceries",
     btnCargarVoz: "🎙️ Voice entry (optional)",
+    vozPTipo: "Type",
+    vozPCuenta: "Account",
+    vozPCat: "Category",
+    vozPCotiz: "Exchange rate",
+    vozPMonto: "Amount",
+    vozPDetalle: "Detail",
+    vozQTipo: "Is it an expense or income?",
+    vozQCuenta: "Which account?",
+    vozQCat: "Which category?",
+    vozQCotiz: "What exchange rate? Say the number.",
+    vozQMonto: "What is the amount?",
+    vozQDetalle: "What is the detail? (you can skip it)",
+    vozPaso: "Step {n} of {total}",
+    vozListoTitulo: "All filled in!",
+    vozListoPreg: "Review and save",
+    vozToque: "Tap the microphone and speak, or pick below.",
+    vozEscuchando: "🔴 Listening…",
+    vozNoEntendi: "Couldn't read that. Say it again or type it.",
+    vozNoTipo: "Couldn't tell expense from income. Say “gasto” or “ingreso”, or tap a button.",
+    vozNoEscuche: "I heard nothing. Tap the microphone and speak right away.",
+    vozMicBloq: "The microphone is blocked for this page. Check your browser permissions.",
+    vozSinSoporte: "This browser has no voice support. Try Chrome, or type it.",
+    vozNoPude: "Couldn't listen.",
+    vozDeshacer: "↩ Undo",
+    vozOmitir: "Skip detail",
+    vozSeguir: "Next",
+    vozGuardar: "Save entry",
+    vozRevisar: "Edit in the form",
+    vozCerrarAria: "Close voice entry",
+    vozTitulo: "Voice entry",
+    vozMicAria: "Speak",
+    vozPDif: "Pay later",
+    vozPFechaPago: "Payment date",
+    vozPCuotas: "Instalments",
+    vozPCuotaN: "How many",
+    vozPCuotaF: "1st instalment",
+    vozQDif: "Will you pay it later? Say “sí” or “no”.",
+    vozQFechaPago: "When will you pay? Say for example “el 15” or “en 10 días”.",
+    vozQCuotas: "Pay in instalments? Say “sí” or “no”.",
+    vozQCuotaN: "How many instalments?",
+    vozQCuotaF: "When is the first instalment due?",
+    vozSi: "Yes",
+    vozNo: "No",
+    vozNoSiNo: "Couldn't tell. Say “sí” or “no”, or tap a button.",
+    vozNoCuotas: "Instalments go from 2 to 60.",
     btnVozChico: "🎙️ Voice",
     btnResponder: "🎤 Answer",
     btnRepetir: "↻ Repeat",
@@ -2601,22 +2736,326 @@ document.querySelectorAll("#segmentadoTipo .segmentado-item").forEach((b) => {
 });
 
 // ============================================================
-// Carga de movimiento por voz (opcional) - paso a paso
-// Pregunta un dato a la vez (tipo, cuenta, categoría, monto, detalle).
-// Cada "Responder" arranca un reconocimiento nuevo con un toque del
-// usuario, que es lo que hace que el celular pida permiso de forma
-// confiable (en vez de un solo reconocimiento largo al abrir el modal).
+// CARGA POR VOZ — pantalla dedicada. Un dato por vez; arriba siempre se ve
+// en qué paso estás y lo ya cargado. Los valores se escriben en el formulario
+// real, así que al final "Guardar" usa el mismo camino de siempre.
 // ============================================================
-let fsVoiceStep = 0;
+let fsVozIdx = 0;
 let fsVoiceRec = null;
-let fsVoicePending = "";
-const fsVoiceSteps = [
-  { id: "tipo", q: "¿Es un gasto o un ingreso?" },
-  { id: "movCuenta", q: "¿Con qué cuenta?" },
-  { id: "movCategoria", q: "¿Qué categoría?" },
-  { id: "movMonto", q: "¿Cuál es el monto? Podés decir pesos y centavos." },
-  { id: "movDetalle", q: "¿Cuál es el detalle?" },
-];
+let fsVozAvance = null;
+let fsVozUltimo = null; // { id, previo } para Deshacer
+
+function fsVozPasos() {
+  const p = ["tipo", "movCuenta", "movCategoria"];
+  const fila = $("filaCotizacion");
+  if (fila && !fila.hidden) p.push("movCotizacion");
+  p.push("movMonto", "movDetalle", "movDiferido");
+  if ($("movDiferido").checked) p.push("movFechaPago");
+  else { p.push("movCuotas"); if ($("movCuotas").checked) p.push("movCuotaN", "movCuotaFecha"); }
+  return p;
+}
+function fsVozNombrePaso(id) {
+  return t({ tipo: "vozPTipo", movCuenta: "vozPCuenta", movCategoria: "vozPCat", movCotizacion: "vozPCotiz", movMonto: "vozPMonto", movDetalle: "vozPDetalle", movDiferido: "vozPDif", movFechaPago: "vozPFechaPago", movCuotas: "vozPCuotas", movCuotaN: "vozPCuotaN", movCuotaFecha: "vozPCuotaF" }[id]);
+}
+function fsVozPregunta(id) {
+  return t({ tipo: "vozQTipo", movCuenta: "vozQCuenta", movCategoria: "vozQCat", movCotizacion: "vozQCotiz", movMonto: "vozQMonto", movDetalle: "vozQDetalle", movDiferido: "vozQDif", movFechaPago: "vozQFechaPago", movCuotas: "vozQCuotas", movCuotaN: "vozQCuotaN", movCuotaFecha: "vozQCuotaF" }[id]);
+}
+function fsVozValorMostrado(id) {
+  if (id === "tipo") {
+    const a = document.querySelector("#segmentadoTipo .segmentado-item.activo");
+    return a ? a.textContent.trim() : "";
+  }
+  const el = $(id);
+  if (el && el.type === "checkbox") return el.checked ? t("vozSi") : t("vozNo");
+  if (!el || !el.value) return "";
+  if (el.type === "date") return el.value.split("-").reverse().join("/");
+  if (el.tagName === "SELECT") return el.selectedOptions[0] ? el.selectedOptions[0].textContent : "";
+  if (id === "movMonto") {
+    const cod = monedaDeCuentaNombre($("movCuenta").value);
+    return simboloDe(cod) + " " + el.value;
+  }
+  return el.value;
+}
+
+// Se pasa a "ya cargado" solo lo que el usuario realmente dijo/eligió en esta pantalla.
+let fsVozHecho = {};
+
+function fsVozDibujar() {
+  const pasos = fsVozPasos();
+  const fin = fsVozIdx >= pasos.length;
+  const total = pasos.length;
+  $("vozProgresoTxt").textContent = fin ? t("vozListoTitulo") : t("vozPaso").replace("{n}", () => fsVozIdx + 1).replace("{total}", () => total);
+  $("vozBarra").style.width = Math.round(((fin ? total : fsVozIdx) / total) * 100) + "%";
+
+  const lista = $("vozLista");
+  lista.innerHTML = "";
+  pasos.forEach((id, i) => {
+    const li = document.createElement("button");
+    li.type = "button";
+    const hecho = !!fsVozHecho[id];
+    li.className = "voz-item" + (i === fsVozIdx ? " actual" : "") + (hecho ? " hecho" : "");
+    const v = hecho ? fsVozValorMostrado(id) : "";
+    li.innerHTML = '<span class="voz-marca">' + (hecho ? "✓" : (i + 1)) + '</span><span class="voz-textos"><span class="voz-nombre"></span><span class="voz-valor"></span></span>';
+    li.querySelector(".voz-nombre").textContent = fsVozNombrePaso(id);
+    li.querySelector(".voz-valor").textContent = hecho ? (v || "—") : "";
+    li.onclick = () => { fsVozCancelarAvance(); fsVozIdx = i; fsVozDibujar(); };
+    lista.appendChild(li);
+  });
+
+  const cont = $("vozPaso");
+  cont.innerHTML = "";
+  $("vozDeshacer").hidden = !fsVozUltimo;
+  if (fin) {
+    $("vozPregunta").textContent = t("vozListoPreg");
+    $("vozEscuchado").textContent = "";
+    $("vozEstado").textContent = "";
+    $("vozMic").hidden = true;
+    $("vozFin").hidden = false;
+    return;
+  }
+  $("vozFin").hidden = true;
+  $("vozMic").hidden = false;
+  const id = pasos[fsVozIdx];
+  $("vozPregunta").textContent = fsVozPregunta(id);
+  $("vozEscuchado").textContent = "";
+  $("vozEstado").textContent = t("vozToque");
+
+  if (id === "tipo") {
+    [["Gasto", t("segGasto")], ["Ingreso", t("segIngreso")]].forEach(([val, txt]) => fsVozChip(cont, txt, () => fsVozAplicar(id, val)));
+  } else if (id === "movCuenta" || id === "movCategoria") {
+    [...$(id).options].filter((o) => o.value).forEach((o) => fsVozChip(cont, o.textContent, () => fsVozAplicar(id, o.value)));
+  } else if (id === "movDiferido" || id === "movCuotas") {
+    fsVozChip(cont, t("vozSi"), () => fsVozAplicar(id, "si", true));
+    fsVozChip(cont, t("vozNo"), () => fsVozAplicar(id, "no", true));
+  } else if (id === "movFechaPago" || id === "movCuotaFecha" || id === "movCuotaN") {
+    const fila = document.createElement("div");
+    fila.className = "voz-entrada";
+    const inp = document.createElement("input");
+    inp.id = "vozInput";
+    if (id === "movCuotaN") { inp.type = "number"; inp.min = 2; inp.max = 60; inp.inputMode = "numeric"; }
+    else inp.type = "date";
+    inp.value = $(id).value || "";
+    const ok = document.createElement("button");
+    ok.type = "button"; ok.className = "boton boton-primario"; ok.textContent = "OK";
+    ok.onclick = () => { if (inp.value) fsVozAplicar(id, inp.value); };
+    inp.addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); ok.click(); } });
+    fila.appendChild(inp); fila.appendChild(ok);
+    cont.appendChild(fila);
+  } else {
+    const fila = document.createElement("div");
+    fila.className = "voz-entrada";
+    const inp = document.createElement("input");
+    inp.type = "text";
+    inp.id = "vozInput";
+    inp.inputMode = id === "movDetalle" ? "text" : "decimal";
+    inp.placeholder = id === "movDetalle" ? t("placeholderDetalle") : "0,00";
+    if (id !== "movDetalle") activarFormatoImporte(inp);
+    const ok = document.createElement("button");
+    ok.type = "button";
+    ok.className = "boton boton-primario";
+    ok.textContent = id === "movDetalle" ? t("vozSeguir") : "OK";
+    ok.onclick = () => {
+      const v = inp.value.trim();
+      if (id === "movDetalle") return fsVozAplicar(id, v, true);
+      if (!v) return;
+      fsVozAplicar(id, v.replace(/\./g, "").replace(",", "."), false, true);
+    };
+    inp.addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); ok.click(); } });
+    fila.appendChild(inp); fila.appendChild(ok);
+    cont.appendChild(fila);
+    if (id === "movDetalle") {
+      const om = document.createElement("button");
+      om.type = "button"; om.className = "boton boton-texto"; om.textContent = t("vozOmitir");
+      om.onclick = () => fsVozAplicar(id, "", true);
+      cont.appendChild(om);
+    }
+  }
+}
+function fsVozChip(cont, txt, fn) {
+  const b = document.createElement("button");
+  b.type = "button"; b.className = "voz-chip"; b.textContent = txt; b.onclick = fn;
+  cont.appendChild(b);
+}
+
+function fsVozCancelarAvance() { if (fsVozAvance) { clearTimeout(fsVozAvance); fsVozAvance = null; } }
+
+// Escribe el dato en el formulario real y avanza.
+function fsVozAplicar(id, val, vacioOk, esNumero) {
+  fsVozCancelarAvance();
+  if (fsVoiceRec) { try { fsVoiceRec.abort(); } catch {} }
+  const previo = id === "tipo" ? (document.querySelector("#segmentadoTipo .segmentado-item.activo") || {}).dataset?.tipo
+    : ($(id) && $(id).type === "checkbox") ? $(id).checked : ($(id) || {}).value;
+  if (id === "tipo") {
+    seleccionarTipo(val);
+    renderSelectCategorias(val);
+  } else if (id === "movCuenta" || id === "movCategoria") {
+    $(id).value = val;
+    $(id).dispatchEvent(new Event("change", { bubbles: true })); // la cuenta puede abrir el paso de cotización
+  } else if (id === "movMonto" || id === "movCotizacion") {
+    if (!(Number(val) > 0)) { $("vozEstado").textContent = t("vozNoEntendi"); return; }
+    $(id).value = formatearImporteEscrito(String(val).replace(".", ","));
+  } else if (id === "movDiferido" || id === "movCuotas") {
+    $(id).checked = val === "si";
+    $(id).dispatchEvent(new Event("change", { bubbles: true }));
+  } else if (id === "movFechaPago" || id === "movCuotaFecha") {
+    $(id).value = val;
+    $(id).dispatchEvent(new Event("change", { bubbles: true }));
+  } else if (id === "movCuotaN") {
+    const n = parseInt(val, 10);
+    if (!(n >= 2 && n <= 60)) { $("vozEstado").textContent = t("vozNoCuotas"); return; }
+    $(id).value = n;
+    $(id).dispatchEvent(new Event("input", { bubbles: true }));
+  } else {
+    if (!val && !vacioOk) return;
+    $("movDetalle").value = val;
+  }
+  fsVozHecho[id] = true;
+  fsVozUltimo = { id, previo };
+  const pasos = fsVozPasos();
+  // Siguiente paso = el primero no hecho a partir del actual
+  let sig = pasos.indexOf(id) + 1;
+  fsVozIdx = sig;
+  if (id !== "movDetalle") {
+    $("vozEstado").textContent = "✓ " + fsVozValorMostrado(id);
+  }
+  fsVozDibujar();
+  if (fsVozIdx >= fsVozPasos().length) $("vozEstado").textContent = "";
+  $("vozEscuchado").textContent = "✓ " + fsVozNombrePaso(id) + ": " + (fsVozValorMostrado(id) || "—");
+}
+
+function fsVozDeshacer() {
+  if (!fsVozUltimo) return;
+  fsVozCancelarAvance();
+  const { id, previo } = fsVozUltimo;
+  delete fsVozHecho[id];
+  if (id === "tipo") { if (previo) { seleccionarTipo(previo); renderSelectCategorias(previo); } }
+  else if (id === "movCuenta" || id === "movCategoria") { $(id).value = previo || ""; $(id).dispatchEvent(new Event("change", { bubbles: true })); }
+  else if ($(id).type === "checkbox") { $(id).checked = !!previo; $(id).dispatchEvent(new Event("change", { bubbles: true })); }
+  else $(id).value = previo || "";
+  fsVozUltimo = null;
+  const pasos = fsVozPasos();
+  fsVozIdx = Math.max(0, pasos.indexOf(id));
+  fsVozDibujar();
+}
+
+function fsVozAbrir() {
+  fsVozHecho = {}; fsVozUltimo = null; fsVozIdx = 0;
+  $("vozPantalla").hidden = false;
+  document.body.classList.add("voz-abierta");
+  fsVozDibujar();
+}
+function fsVozCerrar() {
+  fsVozCancelarAvance();
+  if (fsVoiceRec) { try { fsVoiceRec.abort(); } catch {} }
+  const p = $("vozPantalla");
+  if (p) p.hidden = true;
+  document.body.classList.remove("voz-abierta");
+}
+
+function fsVozPrepararNuevo() {
+  const b = $("btnCargarVoz");
+  if (!b) return;
+  b.hidden = false;
+  b.onclick = fsVozAbrir;
+  $("vozCerrar").onclick = fsVozCerrar;
+  $("vozMic").onclick = fsVoiceEscuchar;
+  $("vozDeshacer").onclick = fsVozDeshacer;
+  $("vozGuardar").onclick = () => { fsVozCerrar(); $("formMovimiento").requestSubmit(); };
+  $("vozRevisar").onclick = fsVozCerrar;
+}
+function fsVoiceOcultar() {
+  const b = $("btnCargarVoz");
+  if (b) b.hidden = true;
+  fsVozCerrar();
+}
+
+function fsVoiceEscuchar() {
+  const Reconocimiento = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const st = $("vozEstado"), heard = $("vozEscuchado"), mic = $("vozMic");
+  if (!Reconocimiento) { st.textContent = t("vozSinSoporte"); return; }
+  const pasos = fsVozPasos();
+  const id = pasos[fsVozIdx];
+  if (!id) return;
+  let pendiente = "";
+  fsVoiceRec = new Reconocimiento();
+  fsVoiceRec.lang = "es-AR";
+  fsVoiceRec.continuous = false;
+  fsVoiceRec.interimResults = false;
+  fsVoiceRec.maxAlternatives = 5;
+  fsVoiceRec.onstart = () => { st.textContent = t("vozEscuchando"); mic.classList.add("grabando"); };
+  fsVoiceRec.onresult = (e) => {
+    const cand = [];
+    for (let i = 0; i < e.results.length; i++) for (let j = 0; j < e.results[i].length; j++) cand.push(e.results[i][j].transcript.trim());
+    let elegido = cand.find((x) => !!fsVozInterpretar(id, x)) || cand[0] || "";
+    if (id === "movMonto" || id === "movCotizacion") {
+      const esc = cand.find((x) => /\bmil\b|\bmill[oó]n(?:es)?\b/i.test(x) && !!fsVoiceMonto(x));
+      if (esc) elegido = esc;
+    }
+    pendiente = elegido;
+    heard.textContent = "“" + elegido + "”";
+  };
+  fsVoiceRec.onerror = (e) => {
+    mic.classList.remove("grabando");
+    if (e.error === "not-allowed" || e.error === "permission-denied") st.textContent = t("vozMicBloq");
+    else if (e.error === "no-speech") st.textContent = t("vozNoEscuche");
+    else if (e.error !== "aborted") st.textContent = t("vozNoPude") + " (" + e.error + ")";
+    pendiente = "";
+  };
+  fsVoiceRec.onend = () => {
+    mic.classList.remove("grabando");
+    if (!pendiente) { if (!st.textContent || st.textContent === t("vozEscuchando")) st.textContent = t("vozNoEscuche"); return; }
+    const val = fsVozInterpretar(id, pendiente);
+    if (!val) { st.textContent = id === "tipo" ? t("vozNoTipo") : (id === "movDiferido" || id === "movCuotas") ? t("vozNoSiNo") : t("vozNoEntendi"); return; }
+    fsVozAplicar(id, val, true);
+  };
+  try { fsVoiceRec.start(); } catch (err) { st.textContent = t("vozNoPude"); }
+}
+// movCotizacion se interpreta igual que un monto.
+function fsVoiceIdInterno(id) { return id === "movCotizacion" ? "movMonto" : id; }
+
+function fsVozNum(w) { w = String(w || "").trim(); return /^\d+$/.test(w) ? parseInt(w, 10) : fsVoiceNumeroPalabras(w); }
+function fsVozFecha(txt) {
+  const q = fsVoiceNorm(txt), base = new Date();
+  base.setHours(12, 0, 0, 0);
+  const iso = (d) => d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+  const add = (n) => { const d = new Date(base); d.setDate(d.getDate() + n); return iso(d); };
+  if (/\bpasado manana\b/.test(q)) return add(2);
+  if (/\bmanana\b/.test(q)) return add(1);
+  if (/\bhoy\b/.test(q)) return add(0);
+  let m = q.match(/\ben ([a-z0-9]+) (dias?|semanas?)\b/);
+  if (m) { const n = fsVozNum(m[1]); if (n) return add(/sem/.test(m[2]) ? n * 7 : n); }
+  const meses = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+  m = q.match(/\b([a-z0-9]+) de (enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre)\b/);
+  if (m) {
+    const dia = fsVozNum(m[1]);
+    if (dia >= 1 && dia <= 31) {
+      let d = new Date(base.getFullYear(), meses.indexOf(m[2]), dia, 12);
+      if (d < new Date(base.getFullYear(), base.getMonth(), base.getDate())) d = new Date(base.getFullYear() + 1, meses.indexOf(m[2]), dia, 12);
+      return iso(d);
+    }
+  }
+  m = q.match(/\bel ([a-z0-9]+)\b/);
+  if (m) {
+    const dia = fsVozNum(m[1]);
+    if (dia >= 1 && dia <= 31) {
+      let d = new Date(base.getFullYear(), base.getMonth(), dia, 12);
+      if (d < new Date(base.getFullYear(), base.getMonth(), base.getDate())) d = new Date(base.getFullYear(), base.getMonth() + 1, dia, 12);
+      return iso(d);
+    }
+  }
+  return "";
+}
+function fsVozInterpretar(id, texto) {
+  if (id === "movDiferido" || id === "movCuotas") {
+    const q = fsVoiceNorm(texto);
+    if (/\bno\b/.test(q)) return "no";
+    if (/\b(si|dale|claro|ok|afirmativo|obvio)\b/.test(q)) return "si";
+    return "";
+  }
+  if (id === "movFechaPago" || id === "movCuotaFecha") return fsVozFecha(texto);
+  if (id === "movCuotaN") { const m = fsVoiceNorm(texto).match(/\b(\d+)\b/); const n = m ? parseInt(m[1], 10) : fsVoiceNumeroPalabras(fsVoiceNorm(texto)); return n ? String(n) : ""; }
+  return fsVoiceInterpretar(fsVoiceIdInterno(id), texto);
+}
 
 function fsVoiceNorm(t) {
   return String(t || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").trim();
@@ -2643,10 +3082,18 @@ function fsVoiceOpcion(id, t) {
   const el = $(id);
   if (!el) return "";
   t = fsVoiceNorm(t);
-  for (const o of [...el.options].filter((x) => x.value)) {
-    if (t.includes(fsVoiceNorm(o.textContent))) return o.value;
+  const ops = [...el.options].filter((x) => x.value);
+  // La lista puede mostrar la moneda junto al nombre: se compara con el nombre puro y con el texto completo.
+  for (const o of ops) {
+    if (t.includes(fsVoiceNorm(o.value)) || t.includes(fsVoiceNorm(o.textContent))) return o.value;
   }
-  return "";
+  // Respaldo: lo dicho está dentro del nombre (ej. "dolar" dentro de "Efectivo Dolar"), solo si es único.
+  const dentro = ops.filter((o) => t.length >= 3 && fsVoiceNorm(o.value).includes(t));
+  if (dentro.length === 1) return dentro[0].value;
+  // Palabras sueltas (ej. "junín" o "la de junín"): sirve si una sola opción contiene alguna palabra dicha.
+  const palabras = t.split(/\s+/).filter((w) => w.length >= 4 && !["cuenta", "categoria", "banco", "tarjeta"].includes(w));
+  const porPalabra = ops.filter((o) => palabras.some((w) => fsVoiceNorm(o.value).split(/\s+/).includes(w)));
+  return porPalabra.length === 1 ? porPalabra[0].value : "";
 }
 
 function fsVoiceNumeroPalabras(txt) {
@@ -2694,144 +3141,6 @@ function fsVoiceInterpretar(id, t) {
   return "";
 }
 
-function fsVoicePregunta() {
-  const q = $("voiceQuestion"), st = $("voiceStatus");
-  fsVoiceResaltarCampoActual();
-  if (!q) return;
-  if (fsVoiceStep >= fsVoiceSteps.length) {
-    q.textContent = "✅ Datos completos. Revisalos y tocá Guardar.";
-    st.textContent = "Podés corregir cualquier campo manualmente antes de guardar.";
-    $("voiceHeard").textContent = "La respuesta escuchada aparecerá acá.";
-    return;
-  }
-  q.textContent = "Paso " + (fsVoiceStep + 1) + " de " + fsVoiceSteps.length + " — " + fsVoiceSteps[fsVoiceStep].q;
-  st.textContent = "Tocá Responder. También podés completar el campo a mano.";
-  $("voiceHeard").textContent = "La respuesta escuchada aparecerá acá.";
-}
-
-function fsVoiceCampoDeStep(id) {
-  if (id === "tipo") return $("segmentadoTipo");
-  return $(id);
-}
-
-function fsVoiceResaltarCampoActual() {
-  fsVoiceSteps.forEach((s) => {
-    const el = fsVoiceCampoDeStep(s.id);
-    if (el) el.classList.remove("voz-campo-actual");
-  });
-  const paso = fsVoiceSteps[fsVoiceStep];
-  if (!paso) return;
-  const el = fsVoiceCampoDeStep(paso.id);
-  if (el) el.classList.add("voz-campo-actual");
-}
-
-function fsVozPrepararNuevo() {
-  const b = $("btnCargarVoz"), panel = $("voicePanel");
-  if (!b || !panel) return;
-  b.hidden = false;
-  panel.hidden = true;
-  b.onclick = () => {
-    panel.hidden = !panel.hidden;
-    if (!panel.hidden) { fsVoiceStep = 0; fsVoicePregunta(); }
-    else fsVoiceLimpiarResaltado();
-  };
-  const li = $("voiceListen"), rp = $("voiceRepeat"), nx = $("voiceNext");
-  if (li) li.onclick = fsVoiceEscuchar;
-  if (rp) rp.onclick = () => {
-    fsVoicePending = "";
-    $("voiceHeard").textContent = "Dato borrado. Tocá Responder otra vez.";
-  };
-  if (nx) nx.onclick = () => { fsVoiceStep++; fsVoicePregunta(); };
-}
-
-function fsVoiceLimpiarResaltado() {
-  fsVoiceSteps.forEach((s) => {
-    const el = fsVoiceCampoDeStep(s.id);
-    if (el) el.classList.remove("voz-campo-actual");
-  });
-}
-
-function fsVoiceOcultar() {
-  const b = $("btnCargarVoz"), panel = $("voicePanel");
-  if (b) b.hidden = true;
-  if (panel) panel.hidden = true;
-  fsVoiceLimpiarResaltado();
-}
-
-function fsVoiceEscuchar() {
-  const Reconocimiento = window.SpeechRecognition || window.webkitSpeechRecognition;
-  const st = $("voiceStatus"), heard = $("voiceHeard");
-  if (!Reconocimiento) {
-    st.textContent = "Este navegador no ofrece reconocimiento de voz. Probá desde Chrome, o cargá el dato a mano.";
-    return;
-  }
-
-  fsVoicePending = "";
-  fsVoiceRec = new Reconocimiento();
-  fsVoiceRec.lang = "es-AR";
-  fsVoiceRec.continuous = false;
-  fsVoiceRec.interimResults = false;
-  fsVoiceRec.maxAlternatives = 5;
-
-  fsVoiceRec.onstart = () => { st.textContent = "🔴 Escuchando este dato…"; };
-
-  fsVoiceRec.onresult = (e) => {
-    let candidatos = [];
-    for (let i = 0; i < e.results.length; i++) for (let j = 0; j < e.results[i].length; j++) candidatos.push(e.results[i][j].transcript.trim());
-    const pasoActual = fsVoiceSteps[fsVoiceStep];
-    let elegido = candidatos[0] || "";
-    if (pasoActual) {
-      const interpretable = candidatos.find((x) => !!fsVoiceInterpretar(pasoActual.id, x));
-      if (interpretable) elegido = interpretable;
-    }
-    if (pasoActual && pasoActual.id === "movMonto") {
-      const esc = candidatos.find((x) => /\bmil\b|\bmill[oó]n(?:es)?\b/i.test(x) && !!fsVoiceMonto(x));
-      if (esc) elegido = esc;
-    }
-    fsVoicePending = elegido;
-    heard.textContent = elegido || "Escuchando…";
-  };
-
-  fsVoiceRec.onerror = (e) => {
-    if (e.error === "not-allowed" || e.error === "permission-denied") {
-      st.textContent = "El micrófono está bloqueado para esta página. Revisá los permisos de Chrome (candado junto a la dirección) y volvé a intentar.";
-    } else if (e.error === "no-speech") {
-      st.textContent = "No escuché nada. Tocá Responder y hablá apenas empiece a escuchar.";
-    } else {
-      st.textContent = "No pude escuchar (" + e.error + "). Podés repetir o escribir manualmente.";
-    }
-  };
-
-  fsVoiceRec.onend = () => {
-    if (!fsVoicePending) { if (st.textContent.indexOf("bloqueado") === -1) st.textContent = "No escuché nada. Intentá otra vez."; return; }
-    const paso = fsVoiceSteps[fsVoiceStep];
-    const val = fsVoiceInterpretar(paso.id, fsVoicePending);
-    if (!val) {
-      if (paso.id === "tipo") {
-        st.textContent = "No entendí si es gasto o ingreso. Decí claramente \"gasto\" o \"ingreso\" (o elegilo con los botones de arriba) y tocá Responder de nuevo.";
-      } else {
-        st.textContent = "No pude interpretar este dato. Repetilo o escribilo manualmente.";
-      }
-      return;
-    }
-
-    let mostrado = val;
-    if (paso.id === "tipo") {
-      seleccionarTipo(val);
-    } else if (paso.id === "movCuenta" || paso.id === "movCategoria") {
-      fsVoiceSetSel(paso.id, val);
-      mostrado = $(paso.id).selectedOptions[0] ? $(paso.id).selectedOptions[0].textContent : val;
-    } else if (paso.id === "movMonto") {
-      $("movMonto").value = formatearImporteEscrito(String(val).replace(".", ","));
-      mostrado = "$ " + Number(val).toLocaleString("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    } else {
-      $(paso.id).value = val;
-    }
-    st.textContent = "✓ " + mostrado + " cargado. Tocá Seguir para continuar.";
-  };
-
-  try { fsVoiceRec.start(); } catch (err) { st.textContent = "No pude iniciar el micrófono. Podés continuar manualmente."; }
-}
 
 $("btnBorrarMov").addEventListener("click", async () => {
   const id = $("movId").value;

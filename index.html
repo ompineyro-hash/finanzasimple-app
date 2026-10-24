@@ -449,6 +449,28 @@ Al crear una cuenta aceptás nuestros
 </nav>
 </div>
 
+<!-- ===================== PANTALLA: CARGA POR VOZ ===================== -->
+<div id="vozPantalla" class="voz-pantalla" hidden role="dialog" aria-modal="true">
+<div class="voz-cabecera">
+<h3 data-i18n="vozTitulo">Cargar por voz</h3>
+<button type="button" id="vozCerrar" class="icono-btn" data-i18n-aria="vozCerrarAria" aria-label="Cerrar">✖</button>
+</div>
+<div class="voz-progreso"><span id="vozProgresoTxt"></span><div class="voz-barra-fondo"><div id="vozBarra" class="voz-barra"></div></div></div>
+<div id="vozLista" class="voz-lista"></div>
+<div class="voz-tarjeta">
+<div id="vozPregunta" class="voz-q"></div>
+<button type="button" id="vozMic" class="voz-mic" data-i18n-aria="vozMicAria" aria-label="Hablar">🎤</button>
+<div id="vozEscuchado" class="voz-oido"></div>
+<div id="vozEstado" class="voz-est"></div>
+<div id="vozPaso" class="voz-paso"></div>
+<div id="vozFin" class="voz-fin" hidden>
+<button type="button" id="vozGuardar" class="boton boton-primario" data-i18n="vozGuardar">Guardar movimiento</button>
+<button type="button" id="vozRevisar" class="boton boton-texto" data-i18n="vozRevisar">Cambiar en el formulario</button>
+</div>
+<button type="button" id="vozDeshacer" class="boton boton-texto" data-i18n="vozDeshacer" hidden>↩ Deshacer</button>
+</div>
+</div>
+
 <!-- ===================== MODAL: NUEVO / EDITAR MOVIMIENTO ===================== -->
 <div id="modalFondo" class="modal-fondo" hidden>
 <div class="modal">
@@ -459,16 +481,6 @@ Al crear una cuenta aceptás nuestros
 </div>
 <form id="formMovimiento" class="modal-cuerpo">
 <input type="hidden" id="movId">
-<div id="voicePanel" class="voice-panel" hidden>
-<div id="voiceQuestion" class="voice-pregunta">Preparado para comenzar.</div>
-<div id="voiceHeard" class="voice-escuchado">La respuesta escuchada aparecerá acá.</div>
-<div id="voiceStatus" class="voice-estado">Tocá Responder para hablar. También podés completar el campo a mano.</div>
-<div class="voice-acciones">
-<button type="button" id="voiceListen" class="boton boton-secundario" data-i18n="btnResponder">🎤 Responder</button>
-<button type="button" id="voiceRepeat" class="boton boton-texto" data-i18n="btnRepetir">↻ Repetir</button>
-<button type="button" id="voiceNext" class="boton boton-primario" data-i18n="btnSeguir">✓ Seguir</button>
-</div>
-</div>
 <div class="segmentado" id="segmentadoTipo">
 <button type="button" class="segmentado-item activo" data-tipo="Gasto" data-i18n="segGasto">Gasto</button>
 <button type="button" class="segmentado-item" data-tipo="Ingreso" data-i18n="segIngreso">Ingreso</button>
