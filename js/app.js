@@ -3310,10 +3310,6 @@ function fechaParaNombreArchivo() {
   return d.toISOString().slice(0, 10) + "_" + String(d.getHours()).padStart(2, "0") + "-" + String(d.getMinutes()).padStart(2, "0");
 }
 
-function valorEscapadoExcel(v) {
-  return String(v ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-}
-
 // Trae los movimientos a exportar, según el período elegido (por la fecha del
 // movimiento). Con las dos fechas vacías devuelve todos. Devuelve null si
 // ya avisó con un cartel por qué no hay nada para exportar.
@@ -3341,29 +3337,81 @@ async function movimientosParaExportar() {
   return elegidos;
 }
 
+// Número de serie de Excel para una fecha "AAAA-MM-DD" (días desde 1899-12-30).
+function serialExcel(fechaISO) {
+  const [y, m, d] = String(fechaISO || "").slice(0, 10).split("-").map(Number);
+  if (!y || !m || !d) return null;
+  return Math.round((Date.UTC(y, m - 1, d) - Date.UTC(1899, 11, 30)) / 86400000);
+}
+function montoFirmado(m) {
+  return m.tipo === "Gasto" ? -Math.abs(m.monto) : Math.abs(m.monto);
+}
+function montoBaseFirmado(m) {
+  return m.tipo === "Gasto" ? -Math.abs(montoBase(m)) : Math.abs(montoBase(m));
+}
+
+// ---- Archivo .xlsx real (zip sin comprimir + XML), sin librerías ----
+const tablaCRC = (() => { const t = []; for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
+function crc32(bytes) { let c = 0xFFFFFFFF; for (let i = 0; i < bytes.length; i++) c = tablaCRC[(c ^ bytes[i]) & 0xFF] ^ (c >>> 8); return (c ^ 0xFFFFFFFF) >>> 0; }
+function zipSinComprimir(archivos) {
+  const enc = new TextEncoder();
+  const partes = [], central = [];
+  let offset = 0;
+  const u16 = (v) => [v & 255, (v >>> 8) & 255];
+  const u32 = (v) => [v & 255, (v >>> 8) & 255, (v >>> 16) & 255, (v >>> 24) & 255];
+  archivos.forEach(({ nombre, texto }) => {
+    const nom = enc.encode(nombre), dat = enc.encode(texto), crc = crc32(dat);
+    const cab = [...u32(0x04034b50), ...u16(20), ...u16(0x0800), ...u16(0), ...u16(0), ...u16(0x21), ...u32(crc), ...u32(dat.length), ...u32(dat.length), ...u16(nom.length), ...u16(0)];
+    partes.push(new Uint8Array(cab), nom, dat);
+    central.push(new Uint8Array([...u32(0x02014b50), ...u16(20), ...u16(20), ...u16(0x0800), ...u16(0), ...u16(0), ...u16(0x21), ...u32(crc), ...u32(dat.length), ...u32(dat.length), ...u16(nom.length), ...u16(0), ...u16(0), ...u16(0), ...u16(0), ...u32(0), ...u32(offset)]), nom);
+    offset += cab.length + nom.length + dat.length;
+  });
+  const tamCentral = central.reduce((n, x) => n + x.length, 0);
+  const fin = new Uint8Array([...u32(0x06054b50), ...u16(0), ...u16(0), ...u16(archivos.length), ...u16(archivos.length), ...u32(tamCentral), ...u32(offset), ...u16(0)]);
+  return new Blob([...partes, ...central, fin], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+}
+function letraCol(i) { return String.fromCharCode(65 + i); }
+function xmlEsc(v) { return String(v ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])).replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, ""); }
+// estilos: 0 normal, 1 fecha, 2 numero con 2 decimales, 3 encabezado en negrita
+function celdaX(col, fila, v, tipo) {
+  const ref = letraCol(col) + fila;
+  if (v === null || v === undefined || v === "") return "";
+  if (tipo === "num" && Number.isFinite(Number(v))) return `<c r="${ref}" s="2"><v>${Number(v)}</v></c>`;
+  if (tipo === "fecha") { const n = serialExcel(v); return n === null ? "" : `<c r="${ref}" s="1"><v>${n}</v></c>`; }
+  return `<c r="${ref}" t="inlineStr"${tipo === "enc" ? ' s="3"' : ""}><is><t xml:space="preserve">${xmlEsc(v)}</t></is></c>`;
+}
+function armarXlsx(encabezados, filas, anchos) {
+  const f = (cols, n) => `<row r="${n}">${cols}</row>`;
+  let n = 1;
+  let datos = f(encabezados.map((h, i) => celdaX(i, n, h, "enc")).join(""), n);
+  filas.forEach((fila) => { n++; datos += f(fila.map((c, i) => celdaX(i, n, c.v, c.t)).join(""), n); });
+  const hoja = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews><cols>${anchos.map((w, i) => `<col min="${i + 1}" max="${i + 1}" width="${w}" customWidth="1"/>`).join("")}</cols><sheetData>${datos}</sheetData></worksheet>`;
+  const estilos = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><numFmts count="1"><numFmt numFmtId="164" formatCode="dd/mm/yyyy"/></numFmts><fonts count="2"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><name val="Calibri"/></font></fonts><fills count="2"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="4"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="164" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/><xf numFmtId="4" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/><xf numFmtId="0" fontId="1" fillId="0" borderId="0" xfId="0" applyFont="1"/></cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>`;
+  return zipSinComprimir([
+    { nombre: "[Content_Types].xml", texto: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>` },
+    { nombre: "_rels/.rels", texto: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>` },
+    { nombre: "xl/workbook.xml", texto: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="Ingasto" sheetId="1" r:id="rId1"/></sheets></workbook>` },
+    { nombre: "xl/_rels/workbook.xml.rels", texto: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>` },
+    { nombre: "xl/styles.xml", texto: estilos },
+    { nombre: "xl/worksheets/sheet1.xml", texto: hoja },
+  ]);
+}
+
 $("btnExportarExcel").addEventListener("click", async () => {
   try {
     const todos = await movimientosParaExportar();
     if (!todos) return;
+    const encabezados = ["Fecha", "Tipo", "Cuenta", "Categoría", "Detalle", "Monto", "Estado", "Fecha de pago", "Moneda", "Cotización", "Monto en " + monedaBase()];
     const filas = todos.map((m) => {
-      const montoConSigno = m.tipo === "Gasto" ? -Math.abs(m.monto) : Math.abs(m.monto);
-      return `<tr>
-        <td>${valorEscapadoExcel(formatoFecha(m.fecha))}</td>
-        <td>${valorEscapadoExcel(m.tipo)}</td>
-        <td>${valorEscapadoExcel(m.cuenta)}</td>
-        <td>${valorEscapadoExcel(m.categoria)}</td>
-        <td>${valorEscapadoExcel(m.detalle || "")}</td>
-        <td style="mso-number-format:'0.00';">${montoConSigno}</td>
-        <td>${valorEscapadoExcel(esPendiente(m) ? "Pendiente" : "Pagado")}</td>
-        <td>${valorEscapadoExcel(m.fecha_pago ? formatoFecha(m.fecha_pago) : "")}</td>
-        <td>${valorEscapadoExcel(monedaDeMov(m))}</td>
-        <td style="mso-number-format:'0.00';">${cotizDeMov(m) === null ? "" : cotizDeMov(m)}</td>
-      </tr>`;
-    }).join("");
-    const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body>
-      <table border="1"><thead><tr><th>Fecha</th><th>Tipo</th><th>Cuenta</th><th>Categoría</th><th>Detalle</th><th>Monto</th><th>Estado</th><th>Fecha de pago</th><th>Moneda</th><th>Cotización</th></tr></thead>
-      <tbody>${filas}</tbody></table></body></html>`;
-    descargarArchivo(`Ingasto_${fechaParaNombreArchivo()}.xls`, html, "application/vnd.ms-excel;charset=utf-8");
+      const cot = cotizDeMov(m);
+      return [
+        { v: m.fecha, t: "fecha" }, { v: m.tipo }, { v: m.cuenta }, { v: m.categoria }, { v: m.detalle || "" },
+        { v: montoFirmado(m), t: "num" }, { v: esPendiente(m) ? "Pendiente" : "Pagado" }, { v: m.fecha_pago, t: "fecha" },
+        { v: monedaDeMov(m) }, { v: cot, t: "num" }, { v: cot === null ? "" : montoBaseFirmado(m), t: "num" },
+      ];
+    });
+    const blob = armarXlsx(encabezados, filas, [12, 10, 18, 18, 30, 14, 11, 13, 9, 11, 16]);
+    descargarArchivo(`Ingasto_${fechaParaNombreArchivo()}.xlsx`, blob, blob.type);
     mostrarToast("Archivo descargado.");
   } catch (err) {
     mostrarToast(traducirErrorDatos(err));
@@ -3378,10 +3426,15 @@ $("btnExportarCSV").addEventListener("click", async () => {
   try {
     const todos = await movimientosParaExportar();
     if (!todos) return;
-    const encabezado = ["Fecha", "Tipo", "Cuenta", "Categoría", "Detalle", "Monto", "Estado", "Fecha de pago", "Moneda", "Cotización"].map(valorCSV).join(",");
+    // En español y portugués los programas esperan ";" como separador y coma decimal.
+    const coma = idiomaActual !== "en";
+    const sep = coma ? ";" : ",";
+    const num = (v) => (v === null || v === undefined || v === "" ? "" : coma ? String(v).replace(".", ",") : String(v));
+    const celda = (v) => valorCSV(v);
+    const encabezado = ["Fecha", "Tipo", "Cuenta", "Categoría", "Detalle", "Monto", "Estado", "Fecha de pago", "Moneda", "Cotización", "Monto en " + monedaBase()].map(celda).join(sep);
     const filas = todos.map((m) => {
-      const montoConSigno = m.tipo === "Gasto" ? -Math.abs(m.monto) : Math.abs(m.monto);
-      return [formatoFecha(m.fecha), m.tipo, m.cuenta, m.categoria, m.detalle || "", montoConSigno, esPendiente(m) ? "Pendiente" : "Pagado", m.fecha_pago ? formatoFecha(m.fecha_pago) : "", monedaDeMov(m), cotizDeMov(m) === null ? "" : cotizDeMov(m)].map(valorCSV).join(",");
+      const cot = cotizDeMov(m);
+      return [celda(formatoFecha(m.fecha)), celda(m.tipo), celda(m.cuenta), celda(m.categoria), celda(m.detalle || ""), num(montoFirmado(m)), celda(esPendiente(m) ? "Pendiente" : "Pagado"), celda(m.fecha_pago ? formatoFecha(m.fecha_pago) : ""), celda(monedaDeMov(m)), num(cot === null ? "" : cot), num(cot === null ? "" : montoBaseFirmado(m))].join(sep);
     }).join("\n");
     descargarArchivo(`Ingasto_${fechaParaNombreArchivo()}.csv`, "﻿" + encabezado + "\n" + filas, "text/csv;charset=utf-8");
     mostrarToast("Archivo descargado.");
