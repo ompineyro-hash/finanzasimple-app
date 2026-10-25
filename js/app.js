@@ -168,7 +168,7 @@ const TRADUCCIONES = {
     toastCuotas: "Se crearon {n} cuotas.",
     errCuotas: "Las cuotas tienen que ser entre 2 y 60.",
     errFechaPagoAnterior: "La fecha de pago no puede ser anterior a la fecha del movimiento.",
-    pendTitulo: "⏳ Todavía no salió",
+    pendTitulo: "⏳ Pendientes",
     pendPorPagar: "Por pagar",
     pendPorCobrar: "Por cobrar",
     pendVencidos: "vencidos",
@@ -416,7 +416,7 @@ const TRADUCCIONES = {
     toastCuotas: "{n} parcelas criadas.",
     errCuotas: "As parcelas devem ser entre 2 e 60.",
     errFechaPagoAnterior: "A data de pagamento não pode ser anterior à data do lançamento.",
-    pendTitulo: "⏳ Ainda não saiu",
+    pendTitulo: "⏳ Pendentes",
     pendPorPagar: "A pagar",
     pendPorCobrar: "A receber",
     pendVencidos: "vencidos",
@@ -664,7 +664,7 @@ const TRADUCCIONES = {
     toastCuotas: "{n} installments created.",
     errCuotas: "Installments must be between 2 and 60.",
     errFechaPagoAnterior: "The payment date can't be earlier than the entry date.",
-    pendTitulo: "⏳ Not settled yet",
+    pendTitulo: "⏳ Pending",
     pendPorPagar: "To pay",
     pendPorCobrar: "To receive",
     pendVencidos: "overdue",
@@ -1742,7 +1742,7 @@ function renderPendientes() {
   if (porPagar) partes.push(`${escapeHTML(t("pendPorPagar"))} <b>${escapeHTML(formatoMonto(porPagar))}</b>`);
   if (porCobrar) partes.push(`${escapeHTML(t("pendPorCobrar"))} <b>${escapeHTML(formatoMonto(porCobrar))}</b>`);
 
-  const filas = pendientes.map((m) => {
+  const filaHTML = (m) => {
     const esGasto = m.tipo === "Gasto";
     const vencido = m.fecha_pago < hoy;
     return `
@@ -1757,7 +1757,13 @@ function renderPendientes() {
           <button type="button" class="boton boton-secundario pend-cerrar" data-id="${m.id}">${escapeHTML(t(esGasto ? "pendMarcarPagado" : "pendMarcarCobrado"))}</button>
         </div>
       </div>`;
-  }).join("");
+  };
+  // Pagos y cobros en bloques separados, cada uno con su total.
+  const bloque = (lista, claveTitulo, total) => lista.length
+    ? `<div class="pend-grupo-titulo">${escapeHTML(t(claveTitulo))} · <b>${escapeHTML(formatoMonto(total))}</b> (${lista.length})</div>${lista.map(filaHTML).join("")}`
+    : "";
+  const filas = bloque(pendientes.filter((m) => m.tipo !== "Ingreso"), "pendPorPagar", porPagar)
+    + bloque(pendientes.filter((m) => m.tipo === "Ingreso"), "pendPorCobrar", porCobrar);
 
   cont.innerHTML = `
     <div class="pend-cabecera">
