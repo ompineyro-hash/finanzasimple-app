@@ -3169,6 +3169,7 @@ function fsVoiceNumeroPalabras(txt) {
   let total = 0, actual = 0, vio = false;
   for (const w of txt.split(" ")) {
     if (w in u) { actual += u[w]; vio = true; continue; }
+    if (/^\d+$/.test(w)) { actual += parseInt(w, 10); vio = true; continue; } // "15 mil", "5 mil 500"
     if (w === "mil") { total += (actual || 1) * 1000; actual = 0; vio = true; continue; }
     if (w === "millon" || w === "millones") { total += (actual || 1) * 1000000; actual = 0; vio = true; continue; }
   }
@@ -3183,7 +3184,7 @@ function fsVoiceMonto(t) {
     let mm = q.match(/^(.*?)\bmillon(?:es)?\b\s*(.*)$/), pref = mm ? mm[1].trim() : "", resto = mm ? mm[2].trim() : "";
     let mult = vp(pref); if (mult === null || mult === 0) mult = 1; let total = mult * 1000000;
     let p = resto.split(/\bcon\b/), pesos = (p[0] || "").replace(/\bde\b/g, " ").replace(/\bpesos?\b/g, " ").trim(), cent = p.length > 1 ? p.slice(1).join(" ").trim() : "";
-    if (pesos) { let nr = pesos.match(/\b(\d{1,3}(?:[.,]\d{3})+|\d{1,6})\b/); if (nr) total += parseInt(nr[1].replace(/[.,]/g, ""), 10); else { let n = vp(pesos); if (n !== null) total += n; } }
+    if (pesos && /\bmil\b/.test(pesos)) { let n = vp(pesos); if (n !== null) total += n; } else if (pesos) { let nr = pesos.match(/\b(\d{1,3}(?:[.,]\d{3})+|\d{1,6})\b/); if (nr) total += parseInt(nr[1].replace(/[.,]/g, ""), 10); else { let n = vp(pesos); if (n !== null) total += n; } }
     let c = cents(cent); return c !== null ? (total + c / 100).toFixed(2) : String(total);
   }
   let m = q.match(/\b(\d{1,3}(?:,\d{3})+)\.(\d{1,2})\b/); if (m) return (parseInt(m[1].replace(/,/g, ""), 10) + parseInt((m[2] + "0").slice(0, 2), 10) / 100).toFixed(2);
