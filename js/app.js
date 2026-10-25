@@ -247,6 +247,7 @@ const TRADUCCIONES = {
     vozCerrarAria: "Cerrar la carga por voz",
     vozTitulo: "Cargar por voz",
     vozMicAria: "Hablar",
+    vozCual: "Hay más de una parecida. ¿Cuál es?",
     vozAddDif: "⏳ Lo voy a pagar después",
     vozAddCuotas: "🗓️ Pagar en cuotas",
     vozQuitar: "Quitar esto",
@@ -494,6 +495,7 @@ const TRADUCCIONES = {
     vozCerrarAria: "Fechar o preenchimento por voz",
     vozTitulo: "Adicionar por voz",
     vozMicAria: "Falar",
+    vozCual: "Há mais de uma parecida. Qual é?",
     vozAddDif: "⏳ Vou pagar depois",
     vozAddCuotas: "🗓️ Pagar em parcelas",
     vozQuitar: "Remover isto",
@@ -741,6 +743,7 @@ const TRADUCCIONES = {
     vozCerrarAria: "Close voice entry",
     vozTitulo: "Voice entry",
     vozMicAria: "Speak",
+    vozCual: "More than one looks similar. Which one?",
     vozAddDif: "⏳ I'll pay it later",
     vozAddCuotas: "🗓️ Pay in instalments",
     vozQuitar: "Remove this",
@@ -2753,6 +2756,7 @@ let fsVozIdx = 0;
 let fsVoiceRec = null;
 let fsVozAvance = null;
 let fsVozUltimo = null; // { id, previo } para Deshacer
+let fsVozFiltro = null; // { id, vals } cuando lo dicho coincide con varias opciones
 
 function fsVozPasos() {
   const p = ["tipo", "movCuenta", "movCategoria"];
@@ -2808,7 +2812,7 @@ function fsVozDibujar() {
     li.innerHTML = '<span class="voz-marca">' + (hecho ? "✓" : (i + 1)) + '</span><span class="voz-textos"><span class="voz-nombre"></span><span class="voz-valor"></span></span>';
     li.querySelector(".voz-nombre").textContent = fsVozNombrePaso(id);
     li.querySelector(".voz-valor").textContent = hecho ? (v || "—") : "";
-    li.onclick = () => { fsVozCancelarAvance(); fsVozIdx = i; fsVozDibujar(); };
+    li.onclick = () => { fsVozCancelarAvance(); fsVozFiltro = null; fsVozIdx = i; fsVozDibujar(); };
     lista.appendChild(li);
   });
 
@@ -2836,7 +2840,8 @@ function fsVozDibujar() {
   if (id === "tipo") {
     [["Gasto", t("segGasto")], ["Ingreso", t("segIngreso")]].forEach(([val, txt]) => fsVozChip(cont, txt, () => fsVozAplicar(id, val)));
   } else if (id === "movCuenta" || id === "movCategoria") {
-    [...$(id).options].filter((o) => o.value).forEach((o) => fsVozChip(cont, o.textContent, () => fsVozAplicar(id, o.value)));
+    const filtro = fsVozFiltro && fsVozFiltro.id === id ? fsVozFiltro.vals : null;
+    [...$(id).options].filter((o) => o.value && (!filtro || filtro.includes(o.value))).forEach((o) => fsVozChip(cont, o.textContent, () => fsVozAplicar(id, o.value)));
   } else if (id === "movDiferido" || id === "movCuotas") {
     fsVozChip(cont, t("vozSi"), () => fsVozAplicar(id, "si", true));
     fsVozChip(cont, t("vozNo"), () => fsVozAplicar(id, "no", true));
@@ -2905,6 +2910,7 @@ function fsVozCancelarAvance() { if (fsVozAvance) { clearTimeout(fsVozAvance); f
 // Escribe el dato en el formulario real y avanza.
 function fsVozAplicar(id, val, vacioOk, esNumero) {
   fsVozCancelarAvance();
+  fsVozFiltro = null;
   if (fsVoiceRec) { try { fsVoiceRec.abort(); } catch {} }
   const previo = id === "tipo" ? (document.querySelector("#segmentadoTipo .segmentado-item.activo") || {}).dataset?.tipo
     : ($(id) && $(id).type === "checkbox") ? $(id).checked : ($(id) || {}).value;
@@ -2962,7 +2968,7 @@ function fsVozDeshacer() {
 }
 
 function fsVozAbrir() {
-  fsVozHecho = {}; fsVozUltimo = null; fsVozIdx = 0;
+  fsVozHecho = {}; fsVozUltimo = null; fsVozIdx = 0; fsVozFiltro = null;
   $("vozPantalla").hidden = false;
   document.body.classList.add("voz-abierta");
   fsVozDibujar();
@@ -3018,7 +3024,9 @@ function fsVoiceEscuchar() {
   fsVoiceRec.onresult = (e) => {
     const cand = [];
     for (let i = 0; i < e.results.length; i++) for (let j = 0; j < e.results[i].length; j++) cand.push(e.results[i][j].transcript.trim());
-    let elegido = cand.find((x) => !!fsVozInterpretar(id, x)) || cand[0] || "";
+    let elegido = cand.find((x) => !!fsVozInterpretar(id, x))
+      || ((id === "movCuenta" || id === "movCategoria") ? cand.find((x) => fsVoiceOpcionLista(id, x).length > 1) : "")
+      || cand[0] || "";
     if (id === "movMonto" || id === "movCotizacion") {
       const esc = cand.find((x) => /\bmil\b|\bmill[oó]n(?:es)?\b/i.test(x) && !!fsVoiceMonto(x));
       if (esc) elegido = esc;
@@ -3037,6 +3045,16 @@ function fsVoiceEscuchar() {
     mic.classList.remove("grabando");
     if (!pendiente) { if (!st.textContent || st.textContent === t("vozEscuchando")) st.textContent = t("vozNoEscuche"); return; }
     const val = fsVozInterpretar(id, pendiente);
+    if (!val && (id === "movCuenta" || id === "movCategoria")) {
+      const l = fsVoiceOpcionLista(id, pendiente);
+      if (l.length > 1) {
+        fsVozFiltro = { id, vals: l };
+        fsVozDibujar();
+        $("vozEscuchado").textContent = "“" + pendiente + "”";
+        $("vozEstado").textContent = t("vozCual");
+        return;
+      }
+    }
     if (!val) { st.textContent = id === "tipo" ? t("vozNoTipo") : (id === "movDiferido" || id === "movCuotas") ? t("vozNoSiNo") : t("vozNoEntendi"); return; }
     fsVozAplicar(id, val, true);
   };
@@ -3110,22 +3128,29 @@ function fsVoiceTipo(t) {
   return "";
 }
 
-function fsVoiceOpcion(id, t) {
+// Suena igual en español rioplatense: b/v, s/z/c, ll/y, h muda. Se compara por sonido.
+function fsVoiceFon(t) {
+  return fsVoiceNorm(t).replace(/v/g, "b").replace(/z/g, "s").replace(/c(?=[ei])/g, "s").replace(/ll/g, "y").replace(/h/g, "");
+}
+// Lista de opciones que coinciden con lo dicho (de más a menos exacta).
+function fsVoiceOpcionLista(id, t) {
   const el = $(id);
-  if (!el) return "";
-  t = fsVoiceNorm(t);
+  if (!el) return [];
+  t = fsVoiceFon(t);
   const ops = [...el.options].filter((x) => x.value);
-  // La lista puede mostrar la moneda junto al nombre: se compara con el nombre puro y con el texto completo.
-  for (const o of ops) {
-    if (t.includes(fsVoiceNorm(o.value)) || t.includes(fsVoiceNorm(o.textContent))) return o.value;
-  }
-  // Respaldo: lo dicho está dentro del nombre (ej. "dolar" dentro de "Efectivo Dolar"), solo si es único.
-  const dentro = ops.filter((o) => t.length >= 3 && fsVoiceNorm(o.value).includes(t));
-  if (dentro.length === 1) return dentro[0].value;
-  // Palabras sueltas (ej. "junín" o "la de junín"): sirve si una sola opción contiene alguna palabra dicha.
+  const nom = (o) => fsVoiceFon(o.value);
+  let r = ops.filter((o) => t.includes(nom(o)) || t.includes(fsVoiceFon(o.textContent)));
+  if (r.length) return r.map((o) => o.value);
+  r = ops.filter((o) => t.length >= 3 && nom(o).includes(t));
+  if (r.length) return r.map((o) => o.value);
   const palabras = t.split(/\s+/).filter((w) => w.length >= 4 && !["cuenta", "categoria", "banco", "tarjeta"].includes(w));
-  const porPalabra = ops.filter((o) => palabras.some((w) => fsVoiceNorm(o.value).split(/\s+/).includes(w)));
-  return porPalabra.length === 1 ? porPalabra[0].value : "";
+  r = ops.filter((o) => palabras.some((w) => nom(o).split(/\s+/).includes(w)));
+  return r.map((o) => o.value);
+}
+// Devuelve la opción solo si es única; si hay dudas, devuelve vacío.
+function fsVoiceOpcion(id, t) {
+  const l = fsVoiceOpcionLista(id, t);
+  return l.length === 1 ? l[0] : "";
 }
 
 function fsVoiceNumeroPalabras(txt) {
