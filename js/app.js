@@ -247,6 +247,9 @@ const TRADUCCIONES = {
     vozCerrarAria: "Cerrar la carga por voz",
     vozTitulo: "Cargar por voz",
     vozMicAria: "Hablar",
+    vozAddDif: "⏳ Lo voy a pagar después",
+    vozAddCuotas: "🗓️ Pagar en cuotas",
+    vozQuitar: "Quitar esto",
     vozPDif: "Pagar después",
     vozPFechaPago: "Fecha de pago",
     vozPCuotas: "En cuotas",
@@ -491,6 +494,9 @@ const TRADUCCIONES = {
     vozCerrarAria: "Fechar o preenchimento por voz",
     vozTitulo: "Adicionar por voz",
     vozMicAria: "Falar",
+    vozAddDif: "⏳ Vou pagar depois",
+    vozAddCuotas: "🗓️ Pagar em parcelas",
+    vozQuitar: "Remover isto",
     vozPDif: "Pagar depois",
     vozPFechaPago: "Data de pagamento",
     vozPCuotas: "Parcelado",
@@ -735,6 +741,9 @@ const TRADUCCIONES = {
     vozCerrarAria: "Close voice entry",
     vozTitulo: "Voice entry",
     vozMicAria: "Speak",
+    vozAddDif: "⏳ I'll pay it later",
+    vozAddCuotas: "🗓️ Pay in instalments",
+    vozQuitar: "Remove this",
     vozPDif: "Pay later",
     vozPFechaPago: "Payment date",
     vozPCuotas: "Instalments",
@@ -2749,9 +2758,10 @@ function fsVozPasos() {
   const p = ["tipo", "movCuenta", "movCategoria"];
   const fila = $("filaCotizacion");
   if (fila && !fila.hidden) p.push("movCotizacion");
-  p.push("movMonto", "movDetalle", "movDiferido");
+  p.push("movMonto", "movDetalle");
+  // "Pagar después" y "En cuotas" son opcionales: solo entran si se eligen al final.
   if ($("movDiferido").checked) p.push("movFechaPago");
-  else { p.push("movCuotas"); if ($("movCuotas").checked) p.push("movCuotaN", "movCuotaFecha"); }
+  else if ($("movCuotas").checked) p.push("movCuotaN", "movCuotaFecha");
   return p;
 }
 function fsVozNombrePaso(id) {
@@ -2811,6 +2821,9 @@ function fsVozDibujar() {
     $("vozEstado").textContent = "";
     $("vozMic").hidden = true;
     $("vozFin").hidden = false;
+    const sinExtra = !$("movDiferido").checked && !$("movCuotas").checked;
+    $("vozAddDif").hidden = !sinExtra;
+    $("vozAddCuotas").hidden = !sinExtra || !!$("movId").value;
     return;
   }
   $("vozFin").hidden = true;
@@ -2828,6 +2841,15 @@ function fsVozDibujar() {
     fsVozChip(cont, t("vozSi"), () => fsVozAplicar(id, "si", true));
     fsVozChip(cont, t("vozNo"), () => fsVozAplicar(id, "no", true));
   } else if (id === "movFechaPago" || id === "movCuotaFecha" || id === "movCuotaN") {
+    const quitar = document.createElement("button");
+    quitar.type = "button"; quitar.className = "boton boton-texto"; quitar.textContent = t("vozQuitar");
+    quitar.onclick = () => {
+      ["movDiferido", "movCuotas"].forEach((k) => { if ($(k).checked) { $(k).checked = false; $(k).dispatchEvent(new Event("change", { bubbles: true })); } });
+      ["movFechaPago", "movCuotaN", "movCuotaFecha"].forEach((k) => delete fsVozHecho[k]);
+      fsVozUltimo = null;
+      fsVozIdx = fsVozPasos().length;
+      fsVozDibujar();
+    };
     const fila = document.createElement("div");
     fila.className = "voz-entrada";
     const inp = document.createElement("input");
@@ -2841,6 +2863,7 @@ function fsVozDibujar() {
     inp.addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); ok.click(); } });
     fila.appendChild(inp); fila.appendChild(ok);
     cont.appendChild(fila);
+    cont.appendChild(quitar);
   } else {
     const fila = document.createElement("div");
     fila.className = "voz-entrada";
@@ -2962,6 +2985,15 @@ function fsVozPrepararNuevo() {
   $("vozDeshacer").onclick = fsVozDeshacer;
   $("vozGuardar").onclick = () => { fsVozCerrar(); $("formMovimiento").requestSubmit(); };
   $("vozRevisar").onclick = fsVozCerrar;
+  const extra = (chk) => {
+    $(chk).checked = true;
+    $(chk).dispatchEvent(new Event("change", { bubbles: true }));
+    fsVozUltimo = null;
+    fsVozIdx = fsVozPasos().length - (chk === "movCuotas" ? 2 : 1);
+    fsVozDibujar();
+  };
+  $("vozAddDif").onclick = () => extra("movDiferido");
+  $("vozAddCuotas").onclick = () => extra("movCuotas");
 }
 function fsVoiceOcultar() {
   const b = $("btnCargarVoz");
