@@ -470,3 +470,16 @@ input,select{font-family:inherit;font-size:16px;}
 .fijos-form input,.fijos-form select{padding:12px 14px;border-radius:10px;border:1.5px solid var(--borde);color:var(--texto);background:#fff}
 .fijo-info{flex:1;min-width:0}.fijo-info b{display:block}.fijo-info small{display:block;color:var(--texto-suave)}
 .fijo-monto{font-weight:800;white-space:nowrap}
+
+/* Presupuesto: letras negras y en negrita, como pidió Edu, para que se noten */
+#subVistaPresupuesto .titulo-seccion{color:var(--texto);font-size:16px;font-weight:800}
+#subVistaPresupuesto .texto-ayuda{color:var(--texto);font-size:14px;font-weight:600}
+#subVistaPresupuesto label span,.pres-ahorro-pct span{color:var(--texto);font-size:14px;font-weight:700}
+#subVistaPresupuesto input{color:var(--texto);font-weight:700}
+.pres-ahorro-pct b{color:var(--texto)}
+.pres-detalle{color:var(--texto);font-size:14px;font-weight:600}
+.pres-detalle-2{font-weight:800}
+.pres-cats summary{color:var(--texto)}
+.pres-cat-fila span{color:var(--texto);font-weight:700;font-size:14px}
+.pres-cat-fila select{color:var(--texto);font-weight:700}
+.pres-tarjeta .analisis-fila{color:var(--texto)}
