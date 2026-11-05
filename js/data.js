@@ -233,3 +233,26 @@ function traducirErrorDatos(error) {
   if (msg.includes("network")) return "Sin conexión a internet. Probá de nuevo en un momento.";
   return "No se pudo guardar: " + (error?.message || "intentá de nuevo.");
 }
+
+// ---------- Presupuesto (una fila por usuario) ----------
+function esTablaInexistente(e) {
+  return /PGRST205|42P01|does not exist|schema cache/i.test(String(e?.message || "") + String(e?.code || ""));
+}
+
+// Devuelve la fila, null si todavía no hay, o { noDisponible: true } si la tabla aún no existe en Supabase.
+async function obtenerPresupuesto(userId) {
+  const { data, error } = await sbClient.from("presupuestos").select("*").eq("user_id", userId).maybeSingle();
+  if (error) {
+    if (esTablaInexistente(error)) return { noDisponible: true };
+    throw error;
+  }
+  return data;
+}
+
+async function guardarPresupuesto(userId, p) {
+  const { error } = await sbClient.from("presupuestos").upsert(
+    { user_id: userId, ingreso_base: p.ingreso_base, pct_fijos: p.pct_fijos, pct_vida: p.pct_vida, grupos: p.grupos || {}, actualizado_en: new Date().toISOString() },
+    { onConflict: "user_id" }
+  );
+  if (error) throw error;
+}

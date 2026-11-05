@@ -88,6 +88,26 @@ const TRADUCCIONES = {
     analisisPorCategoria: "Por categoría",
     analisisEvolucion: "Evolución mensual",
     analisisDiaADia: "Día a día",
+    analisisPresupuesto: "Presupuesto",
+    tituloPresupuesto: "Presupuesto del mes",
+    textoPresupuesto: "Repartí tu ingreso entre gastos fijos, vida y salidas, y ahorro. Podés cambiar los porcentajes.",
+    lblIngresoBase: "Ingreso del mes para repartir",
+    presUsaReal: "Vacío = lo que ingresó este mes",
+    presFijos: "Gastos fijos (%)",
+    presVida: "Vida y salidas (%)",
+    presAhorro: "Ahorro (%)",
+    presGrupoFijos: "Gastos fijos",
+    presGrupoVida: "Vida y salidas",
+    presGrupoAhorro: "Meta de ahorro",
+    presGastadoDe: "Gastaste {g} de {l}",
+    presQueda: "Te quedan {r}",
+    presPasaste: "Te pasaste {r}",
+    presAhorroPosible: "Hoy podrías ahorrar {a} de una meta de {m}",
+    presSinIngreso: "Cargá un ingreso este mes o escribí uno arriba para ver tu presupuesto.",
+    presCambiarGrupos: "Elegir qué categorías son fijas",
+    presOpcFijo: "Fijo",
+    presOpcVida: "Vida y salidas",
+    presRestablecer: "Volver a 50/30/20",
     tituloEvolucionMensual: "Evolución mensual",
     textoEvolucionMensual: "Ingresos y egresos totales de los últimos meses.",
     tituloDiaADia: "Ingresos y egresos del mes",
@@ -336,6 +356,26 @@ const TRADUCCIONES = {
     analisisPorCategoria: "Por categoria",
     analisisEvolucion: "Evolução mensal",
     analisisDiaADia: "Dia a dia",
+    analisisPresupuesto: "Orçamento",
+    tituloPresupuesto: "Orçamento do mês",
+    textoPresupuesto: "Divida sua renda entre gastos fixos, vida e lazer, e poupança. Você pode mudar as porcentagens.",
+    lblIngresoBase: "Renda do mês para dividir",
+    presUsaReal: "Vazio = o que entrou neste mês",
+    presFijos: "Gastos fixos (%)",
+    presVida: "Vida e lazer (%)",
+    presAhorro: "Poupança (%)",
+    presGrupoFijos: "Gastos fixos",
+    presGrupoVida: "Vida e lazer",
+    presGrupoAhorro: "Meta de poupança",
+    presGastadoDe: "Você gastou {g} de {l}",
+    presQueda: "Restam {r}",
+    presPasaste: "Você passou {r}",
+    presAhorroPosible: "Hoje você poderia poupar {a} de uma meta de {m}",
+    presSinIngreso: "Registre uma receita neste mês ou digite uma acima para ver seu orçamento.",
+    presCambiarGrupos: "Escolher quais categorias são fixas",
+    presOpcFijo: "Fixo",
+    presOpcVida: "Vida e lazer",
+    presRestablecer: "Voltar para 50/30/20",
     tituloEvolucionMensual: "Evolução mensal",
     textoEvolucionMensual: "Receitas e despesas totais dos últimos meses.",
     tituloDiaADia: "Receitas e despesas do mês",
@@ -584,6 +624,26 @@ const TRADUCCIONES = {
     analisisPorCategoria: "By category",
     analisisEvolucion: "Monthly trend",
     analisisDiaADia: "Day by day",
+    analisisPresupuesto: "Budget",
+    tituloPresupuesto: "Monthly budget",
+    textoPresupuesto: "Split your income into fixed costs, living and fun, and savings. You can change the percentages.",
+    lblIngresoBase: "Income to split this month",
+    presUsaReal: "Empty = this month's income",
+    presFijos: "Fixed costs (%)",
+    presVida: "Living and fun (%)",
+    presAhorro: "Savings (%)",
+    presGrupoFijos: "Fixed costs",
+    presGrupoVida: "Living and fun",
+    presGrupoAhorro: "Savings goal",
+    presGastadoDe: "You spent {g} of {l}",
+    presQueda: "{r} left",
+    presPasaste: "Over by {r}",
+    presAhorroPosible: "Today you could save {a} of a {m} goal",
+    presSinIngreso: "Add an income this month or type one above to see your budget.",
+    presCambiarGrupos: "Choose which categories are fixed",
+    presOpcFijo: "Fixed",
+    presOpcVida: "Living and fun",
+    presRestablecer: "Reset to 50/30/20",
     tituloEvolucionMensual: "Monthly trend",
     textoEvolucionMensual: "Total income and expenses over the last few months.",
     tituloDiaADia: "Income and expenses this month",
@@ -2083,6 +2143,8 @@ async function renderVistaAnalisis() {
   ultimaListaAnalisis = lista;
   renderResumenAnalisis(lista);
   renderCategoriasAnalisis(lista, tipoAnalisis);
+  await cargarPresupuesto();
+  if (subVistaAnalisis === "presupuesto") renderPresupuesto();
 }
 
 document.querySelectorAll("#segmentadoAnalisis .segmentado-item").forEach((btn) => {
@@ -2288,6 +2350,8 @@ function actualizarSubVistaAnalisis() {
   $("subVistaCategorias").hidden = subVistaAnalisis !== "categorias";
   $("subVistaEvolucion").hidden = subVistaAnalisis !== "evolucion";
   $("subVistaDiaADia").hidden = subVistaAnalisis !== "diaadia";
+  $("subVistaPresupuesto").hidden = subVistaAnalisis !== "presupuesto";
+  if (subVistaAnalisis === "presupuesto") renderPresupuesto();
   if (subVistaAnalisis === "evolucion") renderEvolucionMensual();
   if (subVistaAnalisis === "diaadia") renderDiaADia();
 }
@@ -2299,6 +2363,147 @@ document.querySelectorAll("#segmentadoVistaAnalisis .segmentado-item").forEach((
     subVistaAnalisis = btn.dataset.vistaAnalisis;
     actualizarSubVistaAnalisis();
   });
+});
+
+
+// ============================================================
+// PRESUPUESTO: reparto del ingreso (fijos / vida y salidas / ahorro)
+// ============================================================
+let presupuesto = null;           // fila del usuario (o null si todavía no guardó nada)
+let presupuestoDisponible = null; // null = sin comprobar, false = la tabla no existe todavía
+let presupuestoUsuario = null;
+
+const PRES_FIJAS = ["vivienda", "servicios", "salud", "educación", "educacion", "transporte",
+  "moradia", "serviços", "servicos", "saúde", "saude", "educação",
+  "housing", "utilities", "health", "education", "transport"];
+
+async function cargarPresupuesto() {
+  if (presupuestoUsuario !== usuario.id) { presupuestoUsuario = usuario.id; presupuestoDisponible = null; presupuesto = null; }
+  if (presupuestoDisponible !== null) return;
+  try {
+    const r = await obtenerPresupuesto(usuario.id);
+    if (r && r.noDisponible) { presupuestoDisponible = false; }
+    else { presupuestoDisponible = true; presupuesto = r || null; }
+  } catch { presupuestoDisponible = false; }
+  $("btnVistaPresupuesto").hidden = !presupuestoDisponible;
+}
+
+function presGrupoDe(nombre) {
+  const g = (presupuesto?.grupos || {})[nombre];
+  if (g === "fijo" || g === "vida") return g;
+  return PRES_FIJAS.includes(String(nombre).toLowerCase()) ? "fijo" : "vida";
+}
+
+function presPorcentajes() {
+  const f = Number.isFinite(presupuesto?.pct_fijos) ? presupuesto.pct_fijos : 50;
+  const v = Number.isFinite(presupuesto?.pct_vida) ? presupuesto.pct_vida : 30;
+  return { f, v, a: Math.max(0, 100 - f - v) };
+}
+
+async function presGuardar() {
+  try {
+    const { f, v } = presPorcentajes();
+    await guardarPresupuesto(usuario.id, {
+      ingreso_base: presupuesto?.ingreso_base > 0 ? presupuesto.ingreso_base : null,
+      pct_fijos: f, pct_vida: v, grupos: presupuesto?.grupos || {},
+    });
+  } catch (err) { mostrarToast(traducirErrorDatos(err)); }
+}
+
+function presTarjeta(titulo, pct, color, linea1, linea2, clase) {
+  return `<div class="analisis-item pres-tarjeta ${clase || ""}">
+    <div class="analisis-fila"><span>${escapeHTML(titulo)}</span><span>${Math.round(pct)}%</span></div>
+    <div class="analisis-barra-fondo"><div class="analisis-barra" style="width:${Math.min(100, Math.max(0, pct))}%;background:${color}"></div></div>
+    <div class="pres-detalle">${escapeHTML(linea1)}</div>
+    <div class="pres-detalle pres-detalle-2">${escapeHTML(linea2)}</div>
+  </div>`;
+}
+
+function renderPresupuesto() {
+  if (!presupuestoDisponible) return;
+  const lista = contablesDelMes(movimientos, claveMesVista());
+  let ingReal = 0, gF = 0, gV = 0;
+  lista.forEach((m) => {
+    if (m.tipo === "Ingreso") ingReal += montoBase(m);
+    else if (presGrupoDe(m.categoria) === "fijo") gF += montoBase(m);
+    else gV += montoBase(m);
+  });
+  const base = presupuesto?.ingreso_base > 0 ? presupuesto.ingreso_base : ingReal;
+  const { f, v, a } = presPorcentajes();
+
+  const inIng = $("presIngreso");
+  if (document.activeElement !== inIng) inIng.value = presupuesto?.ingreso_base > 0 ? String(presupuesto.ingreso_base).replace(".", ",") : "";
+  if (document.activeElement !== $("presPctFijos")) $("presPctFijos").value = f;
+  if (document.activeElement !== $("presPctVida")) $("presPctVida").value = v;
+  $("presPctAhorro").textContent = a;
+
+  const cont = $("presGrupos");
+  if (!(base > 0)) {
+    cont.innerHTML = `<div class="vacio">${escapeHTML(t("presSinIngreso"))}</div>`;
+  } else {
+    const color = (p) => (p > 100 ? "#C4562E" : p >= 85 ? "#D9A441" : "#2F6F5E");
+    const grupo = (clave, pctGrupo, gastado) => {
+      const limite = base * pctGrupo / 100;
+      const p = limite > 0 ? gastado / limite * 100 : (gastado > 0 ? 101 : 0);
+      const resto = limite - gastado;
+      return presTarjeta(t(clave), p, color(p),
+        t("presGastadoDe").replace("{g}", formatoMonto(gastado)).replace("{l}", formatoMonto(limite)),
+        resto >= 0 ? t("presQueda").replace("{r}", formatoMonto(resto)) : t("presPasaste").replace("{r}", formatoMonto(-resto)),
+        resto < 0 ? "pres-pasado" : "");
+    };
+    const meta = base * a / 100;
+    const ahorroPosible = Math.max(0, base - gF - gV);
+    const pA = meta > 0 ? ahorroPosible / meta * 100 : 0;
+    cont.innerHTML = grupo("presGrupoFijos", f, gF) + grupo("presGrupoVida", v, gV) +
+      presTarjeta(t("presGrupoAhorro"), pA, pA >= 100 ? "#2F6F5E" : "#5B7FBF",
+        t("presAhorroPosible").replace("{a}", formatoMonto(ahorroPosible)).replace("{m}", formatoMonto(meta)), "", "pres-ahorro");
+  }
+
+  const cats = categorias.filter((c) => c.tipo === "Gasto");
+  $("presListaCats").innerHTML = cats.map((c) => {
+    const g = presGrupoDe(c.nombre);
+    return `<div class="pres-cat-fila"><span>${escapeHTML(c.nombre)}</span>
+      <select data-pres-cat="${escapeHTML(c.nombre)}">
+        <option value="fijo"${g === "fijo" ? " selected" : ""}>${escapeHTML(t("presOpcFijo"))}</option>
+        <option value="vida"${g === "vida" ? " selected" : ""}>${escapeHTML(t("presOpcVida"))}</option>
+      </select></div>`;
+  }).join("");
+}
+
+function presAsegurarObjeto() { if (!presupuesto) presupuesto = { ingreso_base: null, pct_fijos: 50, pct_vida: 30, grupos: {} }; }
+
+$("presIngreso").addEventListener("change", async () => {
+  presAsegurarObjeto();
+  const n = numeroDesdeTexto($("presIngreso").value);
+  presupuesto.ingreso_base = Number.isFinite(n) && n > 0 ? n : null;
+  renderPresupuesto();
+  await presGuardar();
+});
+["presPctFijos", "presPctVida"].forEach((id) => {
+  $(id).addEventListener("change", async () => {
+    presAsegurarObjeto();
+    let f = parseInt($("presPctFijos").value, 10), v = parseInt($("presPctVida").value, 10);
+    f = Number.isFinite(f) ? Math.min(100, Math.max(0, f)) : 50;
+    v = Number.isFinite(v) ? Math.min(100, Math.max(0, v)) : 30;
+    if (f + v > 100) { if (id === "presPctFijos") f = 100 - v; else v = 100 - f; }
+    presupuesto.pct_fijos = f; presupuesto.pct_vida = v;
+    renderPresupuesto();
+    await presGuardar();
+  });
+});
+$("btnPresReset").addEventListener("click", async () => {
+  presAsegurarObjeto();
+  presupuesto.pct_fijos = 50; presupuesto.pct_vida = 30;
+  renderPresupuesto();
+  await presGuardar();
+});
+$("presListaCats").addEventListener("change", async (e) => {
+  const sel = e.target.closest("select[data-pres-cat]");
+  if (!sel) return;
+  presAsegurarObjeto();
+  presupuesto.grupos = { ...(presupuesto.grupos || {}), [sel.dataset.presCat]: sel.value };
+  renderPresupuesto();
+  await presGuardar();
 });
 
 // ============================================================
