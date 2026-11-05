@@ -108,6 +108,9 @@ const TRADUCCIONES = {
     presOpcFijo: "Fijo",
     presOpcVida: "Vida y salidas",
     presRestablecer: "Volver a 50/30/20",
+    presNotaAuto: "Tomado de tus ingresos de este mes. Podés cambiarlo.",
+    presNotaManual: "Estás usando un valor propio.",
+    presUsarReal: "Usar mis ingresos del mes",
     tituloFijos: "Gastos fijos",
     fijosAyuda: "Cargá lo que pagás todos los meses. Cada mes, en el día elegido, te aparece en Pendientes para marcarlo como pagado.",
     fijosPorMes: "Fijos por mes",
@@ -389,6 +392,9 @@ const TRADUCCIONES = {
     presOpcFijo: "Fixo",
     presOpcVida: "Vida e lazer",
     presRestablecer: "Voltar para 50/30/20",
+    presNotaAuto: "Tirado das suas receitas deste mês. Você pode mudar.",
+    presNotaManual: "Você está usando um valor próprio.",
+    presUsarReal: "Usar minhas receitas do mês",
     tituloFijos: "Gastos fixos",
     fijosAyuda: "Registre o que você paga todo mês. Todo mês, no dia escolhido, aparece em Pendentes para marcar como pago.",
     fijosPorMes: "Fixos por mês",
@@ -670,6 +676,9 @@ const TRADUCCIONES = {
     presOpcFijo: "Fixed",
     presOpcVida: "Living and fun",
     presRestablecer: "Reset to 50/30/20",
+    presNotaAuto: "Taken from this month's income. You can change it.",
+    presNotaManual: "You are using your own value.",
+    presUsarReal: "Use my income for the month",
     tituloFijos: "Fixed expenses",
     fijosAyuda: "Add what you pay every month. Each month, on the chosen day, it shows up in Pending so you can mark it as paid.",
     fijosPorMes: "Fixed per month",
@@ -2573,7 +2582,13 @@ function renderPresupuesto() {
   const { f, v, a } = presPorcentajes();
 
   const inIng = $("presIngreso");
-  if (document.activeElement !== inIng) inIng.value = presupuesto?.ingreso_base > 0 ? String(presupuesto.ingreso_base).replace(".", ",") : "";
+  const manual = presupuesto?.ingreso_base > 0;
+  if (document.activeElement !== inIng) {
+    const fmt = (n) => Number(n).toLocaleString("de-DE", { maximumFractionDigits: 2 });
+    inIng.value = manual ? fmt(presupuesto.ingreso_base) : (ingReal > 0 ? fmt(ingReal) : "");
+  }
+  $("presIngresoNota").textContent = manual ? t("presNotaManual") : (ingReal > 0 ? t("presNotaAuto") : "");
+  $("btnPresUsarReal").hidden = !manual;
   if (document.activeElement !== $("presPctFijos")) $("presPctFijos").value = f;
   if (document.activeElement !== $("presPctVida")) $("presPctVida").value = v;
   $("presPctAhorro").textContent = a;
@@ -2631,6 +2646,13 @@ $("presIngreso").addEventListener("change", async () => {
     renderPresupuesto();
     await presGuardar();
   });
+});
+$("btnPresUsarReal").addEventListener("click", async () => {
+  presAsegurarObjeto();
+  presupuesto.ingreso_base = null;
+  $("presIngreso").blur();
+  renderPresupuesto();
+  await presGuardar();
 });
 $("btnPresReset").addEventListener("click", async () => {
   presAsegurarObjeto();
