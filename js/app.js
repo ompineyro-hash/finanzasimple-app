@@ -108,6 +108,19 @@ const TRADUCCIONES = {
     presOpcFijo: "Fijo",
     presOpcVida: "Vida y salidas",
     presRestablecer: "Volver a 50/30/20",
+    tituloFijos: "Gastos fijos",
+    fijosAyuda: "Cargá lo que pagás todos los meses. Cada mes, en el día elegido, te aparece en Pendientes para marcarlo como pagado.",
+    fijosPorMes: "Fijos por mes",
+    fijoPlaceholder: "Ej: Alquiler",
+    fijoDia: "Día del mes",
+    fijoDiaN: "Día {d}",
+    fijoSinFijos: "Todavía no cargaste gastos fijos.",
+    fijoToastAgregado: "Gasto fijo guardado.",
+    fijoToastGenerados: "Gastos fijos de este mes cargados en Pendientes: {n}.",
+    fijoError: "Completá detalle, cuenta, categoría, un monto mayor a cero y un día entre 1 y 31.",
+    fijoNotaMoneda: "Solo se pueden elegir cuentas en {m}.",
+    fijoConfirmarBorrar: "¿Borrar este gasto fijo? Lo que ya está en Pendientes no se borra.",
+    fijoBorrar: "Borrar",
     tituloEvolucionMensual: "Evolución mensual",
     textoEvolucionMensual: "Ingresos y egresos totales de los últimos meses.",
     tituloDiaADia: "Ingresos y egresos del mes",
@@ -376,6 +389,19 @@ const TRADUCCIONES = {
     presOpcFijo: "Fixo",
     presOpcVida: "Vida e lazer",
     presRestablecer: "Voltar para 50/30/20",
+    tituloFijos: "Gastos fixos",
+    fijosAyuda: "Registre o que você paga todo mês. Todo mês, no dia escolhido, aparece em Pendentes para marcar como pago.",
+    fijosPorMes: "Fixos por mês",
+    fijoPlaceholder: "Ex: Aluguel",
+    fijoDia: "Dia do mês",
+    fijoDiaN: "Dia {d}",
+    fijoSinFijos: "Você ainda não registrou gastos fixos.",
+    fijoToastAgregado: "Gasto fixo salvo.",
+    fijoToastGenerados: "Gastos fixos deste mês em Pendentes: {n}.",
+    fijoError: "Preencha detalhe, conta, categoria, um valor maior que zero e um dia entre 1 e 31.",
+    fijoNotaMoneda: "Só é possível escolher contas em {m}.",
+    fijoConfirmarBorrar: "Apagar este gasto fixo? O que já está em Pendentes não é apagado.",
+    fijoBorrar: "Apagar",
     tituloEvolucionMensual: "Evolução mensal",
     textoEvolucionMensual: "Receitas e despesas totais dos últimos meses.",
     tituloDiaADia: "Receitas e despesas do mês",
@@ -644,6 +670,19 @@ const TRADUCCIONES = {
     presOpcFijo: "Fixed",
     presOpcVida: "Living and fun",
     presRestablecer: "Reset to 50/30/20",
+    tituloFijos: "Fixed expenses",
+    fijosAyuda: "Add what you pay every month. Each month, on the chosen day, it shows up in Pending so you can mark it as paid.",
+    fijosPorMes: "Fixed per month",
+    fijoPlaceholder: "E.g. Rent",
+    fijoDia: "Day of the month",
+    fijoDiaN: "Day {d}",
+    fijoSinFijos: "You have not added fixed expenses yet.",
+    fijoToastAgregado: "Fixed expense saved.",
+    fijoToastGenerados: "Fixed expenses for this month added to Pending: {n}.",
+    fijoError: "Fill in detail, account, category, an amount above zero and a day between 1 and 31.",
+    fijoNotaMoneda: "Only accounts in {m} can be chosen.",
+    fijoConfirmarBorrar: "Delete this fixed expense? What is already in Pending is not deleted.",
+    fijoBorrar: "Delete",
     tituloEvolucionMensual: "Monthly trend",
     textoEvolucionMensual: "Total income and expenses over the last few months.",
     tituloDiaADia: "Income and expenses this month",
@@ -1385,6 +1424,7 @@ async function arrancarApp(usuarioYaObtenido) {
     await sembrarDatosInicialesSiHaceFalta(usuario.id, idiomaActual);
   } catch {}
   await Promise.all([cargarCuentasYCategorias(), cargarMesActual()]);
+  generarFijosDelMes().catch(() => {});
   suscribirActualizacionEnVivo();
   arrancarLatidoDeRespaldo();
 }
@@ -2365,6 +2405,107 @@ document.querySelectorAll("#segmentadoVistaAnalisis .segmentado-item").forEach((
   });
 });
 
+
+
+// ============================================================
+// GASTOS FIJOS: se repiten todos los meses y aparecen solos en Pendientes
+// ============================================================
+let fijos = [];
+let fijosDisponible = null; // null = sin comprobar, false = la tabla no existe todavía
+let fijosUsuario = null;
+
+function diaDelMesISO(mes, dia) {
+  const [a, m] = mes.split("-").map(Number);
+  const ultimo = new Date(a, m, 0).getDate();
+  return mes + "-" + String(Math.min(dia, ultimo)).padStart(2, "0");
+}
+
+async function cargarFijos() {
+  if (fijosUsuario !== usuario.id) { fijosUsuario = usuario.id; fijosDisponible = null; fijos = []; }
+  try {
+    const r = await listarFijos(usuario.id);
+    if (r && r.noDisponible) { fijosDisponible = false; fijos = []; }
+    else { fijosDisponible = true; fijos = r; }
+  } catch { fijosDisponible = false; fijos = []; }
+  $("tarjetaFijos").hidden = !fijosDisponible;
+}
+
+// Una vez por apertura: crea en Pendientes los fijos de este mes que todavía no se crearon.
+async function generarFijosDelMes() {
+  await cargarFijos();
+  if (!fijosDisponible) return;
+  const mes = hoyISO().slice(0, 7);
+  let creados = 0;
+  for (const f of fijos.filter((x) => x.activo !== false && String(x.ultimo_mes || "") < mes)) {
+    if (monedaDeCuentaNombre(f.cuenta) !== monedaBase()) continue;
+    let ganado = false;
+    try { ganado = await reclamarFijoDelMes(f.id, mes); } catch { continue; }
+    if (!ganado) continue;
+    const fecha = diaDelMesISO(mes, f.dia);
+    try {
+      await crearMovimiento(usuario.id, {
+        tipo: f.tipo || "Gasto", fecha, cuenta: f.cuenta, categoria: f.categoria, detalle: f.detalle,
+        monto: Number(f.monto), moneda: monedaBase(), cotizacion: 1, estado: "pendiente", fecha_pago: fecha,
+      });
+      creados++;
+    } catch { try { await devolverFijoDelMes(f.id, f.ultimo_mes); } catch {} }
+  }
+  if (creados) {
+    await cargarFijos();
+    await cargarMesActual();
+    mostrarToast(t("fijoToastGenerados").replace("{n}", creados), 6000);
+  }
+}
+
+function renderFijos() {
+  if (!fijosDisponible) return;
+  const base = monedaBase();
+  const lista = $("listaFijos");
+  const total = fijos.filter((f) => f.activo !== false).reduce((s, f) => s + Number(f.monto), 0);
+  $("fijosTotal").textContent = formatoMonto(total);
+  lista.innerHTML = fijos.length
+    ? fijos.map((f) => `<div class="editable-item"><div class="fijo-info"><b>${escapeHTML(f.detalle)}</b>
+        <small>${escapeHTML(t("fijoDiaN").replace("{d}", f.dia))} · ${escapeHTML(f.cuenta)} · ${escapeHTML(f.categoria)}</small></div>
+        <span class="fijo-monto">${escapeHTML(formatoMonto(Number(f.monto)))}</span>
+        <button type="button" class="icono-btn" data-borrar-fijo="${f.id}" aria-label="${escapeHTML(t("fijoBorrar"))}">🗑️</button></div>`).join("")
+    : `<div class="vacio">${escapeHTML(t("fijoSinFijos"))}</div>`;
+  const cu = cuentas.filter((c) => (c.moneda || base) === base);
+  $("fijoCuenta").innerHTML = cu.map((c) => `<option value="${escapeHTML(c.nombre)}">${escapeHTML(c.nombre)}</option>`).join("");
+  $("fijoCategoria").innerHTML = categorias.filter((c) => c.tipo === "Gasto")
+    .map((c) => `<option value="${escapeHTML(c.nombre)}">${escapeHTML(c.nombre)}</option>`).join("");
+  $("fijoNotaMoneda").textContent = cuentas.length > cu.length ? t("fijoNotaMoneda").replace("{m}", base) : "";
+}
+
+$("tarjetaFijos").addEventListener("click", () => { cargarFijos().then(renderFijos); });
+
+$("btnAgregarFijo").addEventListener("click", async () => {
+  const detalle = $("fijoDetalle").value.trim();
+  const cuenta = $("fijoCuenta").value, categoria = $("fijoCategoria").value;
+  const monto = numeroDesdeTexto($("fijoMonto").value);
+  const dia = parseInt($("fijoDia").value, 10);
+  if (!detalle || !cuenta || !categoria || !Number.isFinite(monto) || monto <= 0 || !Number.isInteger(dia) || dia < 1 || dia > 31) {
+    return mostrarAviso($("fijoError"), t("fijoError"));
+  }
+  $("fijoError").hidden = true;
+  const hoy = hoyISO();
+  // Si el día de este mes ya pasó, el primero se genera el mes que viene (no se carga hacia atrás).
+  const ultimo_mes = diaDelMesISO(hoy.slice(0, 7), dia) < hoy ? hoy.slice(0, 7) : null;
+  try {
+    await crearFijo(usuario.id, { tipo: "Gasto", detalle, cuenta, categoria, monto, dia, activo: true, ultimo_mes });
+    $("fijoDetalle").value = ""; $("fijoMonto").value = ""; $("fijoDia").value = "";
+    await cargarFijos();
+    renderFijos();
+    mostrarToast(t("fijoToastAgregado"));
+    await generarFijosDelMes();
+  } catch (err) { mostrarAviso($("fijoError"), traducirErrorDatos(err)); }
+});
+
+$("listaFijos").addEventListener("click", async (e) => {
+  const b = e.target.closest("[data-borrar-fijo]");
+  if (!b || !confirm(t("fijoConfirmarBorrar"))) return;
+  try { await borrarFijo(b.dataset.borrarFijo); await cargarFijos(); renderFijos(); }
+  catch (err) { mostrarToast(traducirErrorDatos(err)); }
+});
 
 // ============================================================
 // PRESUPUESTO: reparto del ingreso (fijos / vida y salidas / ahorro)

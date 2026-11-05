@@ -462,3 +462,11 @@ input,select{font-family:inherit;font-size:16px;}
 #subVistaPresupuesto input{width:100%;padding:11px 12px;border-radius:10px;border:1.5px solid var(--borde);background:#fff;font-size:16px}
 #subVistaPresupuesto .texto-ayuda{font-size:13px;margin:0 0 4px}
 .pres-cat-fila select{padding:8px 10px;border-radius:10px;border:1.5px solid var(--borde);background:#fff}
+
+/* ---- Gastos fijos ---- */
+.fijos-total{margin:10px 0}
+.fijos-form{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+.fijos-form label{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:600;color:var(--texto-suave)}
+.fijos-form input,.fijos-form select{padding:12px 14px;border-radius:10px;border:1.5px solid var(--borde);color:var(--texto);background:#fff}
+.fijo-info{flex:1;min-width:0}.fijo-info b{display:block}.fijo-info small{display:block;color:var(--texto-suave)}
+.fijo-monto{font-weight:800;white-space:nowrap}

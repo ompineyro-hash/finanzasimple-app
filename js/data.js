@@ -256,3 +256,36 @@ async function guardarPresupuesto(userId, p) {
   );
   if (error) throw error;
 }
+
+
+// ---------- Gastos fijos (se repiten todos los meses) ----------
+async function listarFijos(userId) {
+  const { data, error } = await sbClient.from("fijos").select("*").eq("user_id", userId).order("dia");
+  if (error) {
+    if (esTablaInexistente(error)) return { noDisponible: true };
+    throw error;
+  }
+  return data || [];
+}
+
+async function crearFijo(userId, f) {
+  const { error } = await sbClient.from("fijos").insert({ user_id: userId, ...f });
+  if (error) throw error;
+}
+
+async function borrarFijo(id) {
+  const { error } = await sbClient.from("fijos").delete().eq("id", id);
+  if (error) throw error;
+}
+
+// Reclama el mes para este fijo: solo gana quien lo marca primero (evita duplicados si hay dos dispositivos).
+async function reclamarFijoDelMes(id, mes) {
+  const { data, error } = await sbClient.from("fijos").update({ ultimo_mes: mes })
+    .eq("id", id).or("ultimo_mes.is.null,ultimo_mes.lt." + mes).select("id");
+  if (error) throw error;
+  return Array.isArray(data) && data.length > 0;
+}
+
+async function devolverFijoDelMes(id, mesAnterior) {
+  await sbClient.from("fijos").update({ ultimo_mes: mesAnterior || null }).eq("id", id);
+}
