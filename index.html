@@ -575,6 +575,15 @@ Al crear una cuenta aceptás nuestros
 <label><span data-i18n="labelDetalle">Detalle (opcional)</span>
 <input type="text" id="movDetalle" data-i18n-placeholder="placeholderDetalle" placeholder="Ej: Supermercado del sábado">
 </label>
+<div id="bloqueFoto" class="bloque-foto" hidden>
+<span class="foto-titulo" data-i18n="fotoTitulo">Foto del comprobante (opcional)</span>
+<div class="foto-fila">
+<label class="boton boton-secundario foto-btn"><span id="fotoBtnTxt"></span><input type="file" id="movFoto" accept="image/*" hidden></label>
+<img id="fotoMini" alt="" hidden>
+<button type="button" id="btnFotoQuitar" class="boton boton-secundario" hidden data-i18n="fotoQuitar">Quitar</button>
+</div>
+<div id="fotoError" class="aviso aviso-error" hidden></div>
+</div>
 <div class="bloque-diferido">
 <label class="fila-check"><input type="checkbox" id="movDiferido"><span id="labelDiferido">Lo voy a pagar después</span></label>
 <div id="filaDiferido" hidden>
@@ -605,6 +614,8 @@ Al crear una cuenta aceptás nuestros
 </form>
 </div>
 </div>
+
+<div id="visorFoto" class="visor-foto" hidden><img id="visorFotoImg" alt=""><button type="button" class="visor-cerrar" id="visorFotoCerrar" aria-label="Cerrar">✖</button></div>
 
 <div id="toast" class="toast" hidden></div>
 

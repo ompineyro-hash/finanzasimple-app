@@ -225,6 +225,7 @@ async function reiniciarDatosUsuario(userId) {
   const { error: e4 } = await sbClient.from("monedas").delete().eq("user_id", userId);
   if (e4) throw e4;
   // Estas tablas pueden no existir todavía: si falta alguna, se ignora.
+  await borrarTodosLosComprobantes(userId);
   for (const tabla of ["transferencias", "fijos", "presupuestos"]) {
     const { error } = await sbClient.from(tabla).delete().eq("user_id", userId);
     if (error && !esTablaInexistente(error)) throw error;
@@ -319,4 +320,40 @@ async function borrarTransferencia(id) {
 async function actualizarSaldoInicial(id, valor) {
   const { error } = await sbClient.from("cuentas").update({ saldo_inicial: valor }).eq("id", id);
   if (error) throw error;
+}
+
+
+// ---------- Fotos de comprobantes (Supabase Storage, bucket privado "comprobantes") ----------
+// Cada usuario solo ve su carpeta: comprobantes/<user_id>/<archivo>.jpg
+async function sondearComprobantes() {
+  try {
+    const { error } = await sbClient.from("movimientos").select("comprobante").limit(1);
+    return !error;
+  } catch { return false; }
+}
+
+async function subirComprobante(userId, blob) {
+  const id = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(16).slice(2);
+  const ruta = `${userId}/${id}.jpg`;
+  const { error } = await sbClient.storage.from("comprobantes").upload(ruta, blob, { contentType: "image/jpeg", upsert: false });
+  if (error) throw error;
+  return ruta;
+}
+
+async function urlComprobante(ruta) {
+  const { data, error } = await sbClient.storage.from("comprobantes").createSignedUrl(ruta, 3600);
+  if (error) throw error;
+  return data.signedUrl;
+}
+
+async function borrarComprobante(ruta) {
+  if (!ruta) return;
+  try { await sbClient.storage.from("comprobantes").remove([ruta]); } catch { /* si falla, queda huérfano pero no molesta */ }
+}
+
+async function borrarTodosLosComprobantes(userId) {
+  try {
+    const { data } = await sbClient.storage.from("comprobantes").list(userId, { limit: 1000 });
+    if (data && data.length) await sbClient.storage.from("comprobantes").remove(data.map((f) => `${userId}/${f.name}`));
+  } catch { /* el bucket puede no existir todavía */ }
 }

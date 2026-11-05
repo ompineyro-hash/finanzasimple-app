@@ -143,6 +143,11 @@ const TRADUCCIONES = {
     trToast: "Transferencia guardada.",
     trConfirmBorrar: "¿Borrar esta transferencia?",
     tengoNecesitaDos: "Necesitás al menos dos cuentas para transferir.",
+    fotoTitulo: "Foto del comprobante (opcional)",
+    fotoAdjuntar: "📎 Adjuntar foto",
+    fotoCambiar: "📎 Cambiar foto",
+    fotoQuitar: "Quitar",
+    fotoErr: "No se pudo usar la foto. Probá con otra.",
     tituloEvolucionMensual: "Evolución mensual",
     textoEvolucionMensual: "Ingresos y egresos totales de los últimos meses.",
     tituloDiaADia: "Ingresos y egresos del mes",
@@ -446,6 +451,11 @@ const TRADUCCIONES = {
     trToast: "Transferência salva.",
     trConfirmBorrar: "Apagar esta transferência?",
     tengoNecesitaDos: "Você precisa de pelo menos duas contas para transferir.",
+    fotoTitulo: "Foto do comprovante (opcional)",
+    fotoAdjuntar: "📎 Anexar foto",
+    fotoCambiar: "📎 Trocar foto",
+    fotoQuitar: "Remover",
+    fotoErr: "Não foi possível usar a foto. Tente outra.",
     tituloEvolucionMensual: "Evolução mensal",
     textoEvolucionMensual: "Receitas e despesas totais dos últimos meses.",
     tituloDiaADia: "Receitas e despesas do mês",
@@ -749,6 +759,11 @@ const TRADUCCIONES = {
     trToast: "Transfer saved.",
     trConfirmBorrar: "Delete this transfer?",
     tengoNecesitaDos: "You need at least two accounts to transfer.",
+    fotoTitulo: "Receipt photo (optional)",
+    fotoAdjuntar: "📎 Attach photo",
+    fotoCambiar: "📎 Change photo",
+    fotoQuitar: "Remove",
+    fotoErr: "Could not use the photo. Try another one.",
     tituloEvolucionMensual: "Monthly trend",
     textoEvolucionMensual: "Total income and expenses over the last few months.",
     tituloDiaADia: "Income and expenses this month",
@@ -1491,6 +1506,7 @@ async function arrancarApp(usuarioYaObtenido) {
   } catch {}
   await Promise.all([cargarCuentasYCategorias(), cargarMesActual()]);
   generarFijosDelMes().catch(() => {});
+  sondearComprobantes().then((ok) => { comprobantesDisponible = ok; fotoUI(); });
   suscribirActualizacionEnVivo();
   arrancarLatidoDeRespaldo();
 }
@@ -2151,7 +2167,7 @@ function renderMovimientos() {
       <div class="${clases}" data-id="${m.id}">
         <div class="mov-icono ${esGasto ? "gasto" : "ingreso"}" role="img" aria-label="${esGasto ? t("segGasto") : t("segIngreso")}">${esGasto ? "↓" : "↑"}</div>
         <div class="mov-info">
-          <div class="mov-categoria">${escapeHTML(m.categoria)}</div>
+          <div class="mov-categoria">${escapeHTML(m.categoria)}${m.comprobante ? " 📎" : ""}</div>
           <div class="mov-detalle">${escapeHTML(m.cuenta)}${m.detalle ? " · " + escapeHTML(m.detalle) : ""}</div>
           <div class="mov-fecha">${formatoFecha(m.fecha)}</div>
           ${badge ? `<div class="mov-badge ${badge.clase}">${escapeHTML(badge.texto)}</div>` : ""}
@@ -3153,11 +3169,84 @@ function actualizarFilaCotizacion(valorGuardado) {
 $("movCuenta").addEventListener("change", () => { $("movCotizacion").value = ""; actualizarFilaCotizacion(); });
 activarFormatoImporte($("movCotizacion"));
 
+
+// ============================================================
+// FOTO DEL COMPROBANTE
+// ============================================================
+let comprobantesDisponible = false;
+let foto = { actual: null, nueva: null, quitar: false, previa: null };
+
+function fotoReset(rutaActual) {
+  if (foto.previa) URL.revokeObjectURL(foto.previa);
+  foto = { actual: rutaActual, nueva: null, quitar: false, previa: null };
+  $("movFoto").value = "";
+  ocultarAviso($("fotoError"));
+  fotoUI();
+  if (rutaActual) {
+    urlComprobante(rutaActual).then((u) => {
+      if (foto.actual === rutaActual && !foto.nueva && !foto.quitar) { $("fotoMini").src = u; $("fotoMini").hidden = false; }
+    }).catch(() => {});
+  }
+}
+
+function fotoUI() {
+  $("bloqueFoto").hidden = !comprobantesDisponible || $("movCuotas").checked;
+  const hay = !!foto.nueva || (!!foto.actual && !foto.quitar);
+  $("fotoBtnTxt").textContent = t(hay ? "fotoCambiar" : "fotoAdjuntar");
+  $("btnFotoQuitar").hidden = !hay;
+  if (foto.nueva) { $("fotoMini").src = foto.previa; $("fotoMini").hidden = false; }
+  else if (!hay) { $("fotoMini").hidden = true; $("fotoMini").removeAttribute("src"); }
+}
+
+// Achica la foto (máx. 1280 px, JPG) para que ocupe poco: unos 150–300 KB.
+function comprimirImagen(archivo) {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(archivo);
+    const img = new Image();
+    img.onload = () => {
+      const k = Math.min(1, 1280 / Math.max(img.width, img.height));
+      const c = document.createElement("canvas");
+      c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
+      c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+      URL.revokeObjectURL(url);
+      c.toBlob((b) => (b ? resolve(b) : reject(new Error("blob"))), "image/jpeg", 0.72);
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error("img")); };
+    img.src = url;
+  });
+}
+
+$("movFoto").addEventListener("change", async () => {
+  const f = $("movFoto").files[0];
+  if (!f) return;
+  ocultarAviso($("fotoError"));
+  try {
+    const blob = await comprimirImagen(f);
+    if (foto.previa) URL.revokeObjectURL(foto.previa);
+    foto.nueva = blob; foto.quitar = false; foto.previa = URL.createObjectURL(blob);
+    fotoUI();
+  } catch { mostrarAviso($("fotoError"), t("fotoErr")); }
+  $("movFoto").value = "";
+});
+$("btnFotoQuitar").addEventListener("click", () => {
+  if (foto.previa) URL.revokeObjectURL(foto.previa);
+  foto.nueva = null; foto.previa = null; foto.quitar = true;
+  fotoUI();
+});
+$("movCuotas").addEventListener("change", fotoUI);
+$("fotoMini").addEventListener("click", () => {
+  const s = $("fotoMini").src;
+  if (!s) return;
+  $("visorFotoImg").src = s; $("visorFoto").hidden = false;
+});
+$("visorFoto").addEventListener("click", () => { $("visorFoto").hidden = true; $("visorFotoImg").removeAttribute("src"); });
+
 function abrirModalNuevo() {
   if (!cuentas.length || !categorias.length) {
     return mostrarToast("Primero agregá al menos una cuenta y una categoría en Config.");
   }
   $("formMovimiento").reset();
+  fotoReset(null);
   $("movId").value = "";
   $("modalTitulo").textContent = t("modalNuevoTitulo");
   $("btnBorrarMov").hidden = true;
@@ -3183,6 +3272,7 @@ function abrirModalEditar(id) {
   renderSelects();
   asegurarOpcionSelect("movCuenta", m.cuenta);
   asegurarOpcionSelect("movCategoria", m.categoria);
+  fotoReset(m.comprobante || null);
   $("movId").value = m.id;
   $("modalTitulo").textContent = t("modalEditarTitulo");
   $("btnBorrarMov").hidden = false;
@@ -3773,8 +3863,10 @@ $("btnBorrarMov").addEventListener("click", async () => {
   const id = $("movId").value;
   if (!id) return;
   if (!confirm("¿Borrar este movimiento? No se puede deshacer.")) return;
+  const mBorrar = movimientos.find((x) => x.id === id) || pendientes.find((x) => x.id === id);
   try {
     await borrarMovimiento(id);
+    if (mBorrar && mBorrar.comprobante) borrarComprobante(mBorrar.comprobante);
     cerrarModal();
     await cargarMesActual();
     mostrarToast("Movimiento borrado.");
@@ -3845,8 +3937,15 @@ $("formMovimiento").addEventListener("submit", async (e) => {
   const datos = { tipo, fecha, cuenta, categoria, detalle, monto, moneda: monedaMov, cotizacion, estado, fecha_pago: fechaPago };
 
   try {
+    if (comprobantesDisponible) {
+      if (foto.nueva) {
+        try { datos.comprobante = await subirComprobante(usuario.id, foto.nueva); }
+        catch { return mostrarAviso($("movError"), t("fotoErr")); }
+      } else if (foto.quitar) datos.comprobante = null;
+    }
     if (id) await actualizarMovimiento(id, datos);
     else await crearMovimiento(usuario.id, datos);
+    if (comprobantesDisponible && foto.actual && (foto.nueva || foto.quitar)) borrarComprobante(foto.actual);
     cerrarModal();
     await cargarMesActual();
     mostrarToast(id ? "Movimiento actualizado." : "Movimiento guardado.");
