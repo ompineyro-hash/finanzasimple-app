@@ -144,8 +144,9 @@ const TRADUCCIONES = {
     trConfirmBorrar: "¿Borrar esta transferencia?",
     tengoNecesitaDos: "Necesitás al menos dos cuentas para transferir.",
     fotoTitulo: "Foto del comprobante (opcional)",
-    fotoAdjuntar: "📎 Adjuntar foto",
-    fotoCambiar: "📎 Cambiar foto",
+    fotoAdjuntar: "🖼️ Elegir de la galería",
+    fotoSacar: "📷 Sacar foto",
+    fotoCambiar: "🖼️ Cambiar foto",
     fotoQuitar: "Quitar",
     fotoErr: "No se pudo usar la foto. Probá con otra.",
     tituloEvolucionMensual: "Evolución mensual",
@@ -452,8 +453,9 @@ const TRADUCCIONES = {
     trConfirmBorrar: "Apagar esta transferência?",
     tengoNecesitaDos: "Você precisa de pelo menos duas contas para transferir.",
     fotoTitulo: "Foto do comprovante (opcional)",
-    fotoAdjuntar: "📎 Anexar foto",
-    fotoCambiar: "📎 Trocar foto",
+    fotoAdjuntar: "🖼️ Escolher da galeria",
+    fotoSacar: "📷 Tirar foto",
+    fotoCambiar: "🖼️ Trocar foto",
     fotoQuitar: "Remover",
     fotoErr: "Não foi possível usar a foto. Tente outra.",
     tituloEvolucionMensual: "Evolução mensal",
@@ -760,8 +762,9 @@ const TRADUCCIONES = {
     trConfirmBorrar: "Delete this transfer?",
     tengoNecesitaDos: "You need at least two accounts to transfer.",
     fotoTitulo: "Receipt photo (optional)",
-    fotoAdjuntar: "📎 Attach photo",
-    fotoCambiar: "📎 Change photo",
+    fotoAdjuntar: "🖼️ Choose from gallery",
+    fotoSacar: "📷 Take photo",
+    fotoCambiar: "🖼️ Change photo",
     fotoQuitar: "Remove",
     fotoErr: "Could not use the photo. Try another one.",
     tituloEvolucionMensual: "Monthly trend",
@@ -3179,7 +3182,7 @@ let foto = { actual: null, nueva: null, quitar: false, previa: null };
 function fotoReset(rutaActual) {
   if (foto.previa) URL.revokeObjectURL(foto.previa);
   foto = { actual: rutaActual, nueva: null, quitar: false, previa: null };
-  $("movFoto").value = "";
+  $("movFoto").value = ""; $("movFotoCamara").value = "";
   ocultarAviso($("fotoError"));
   fotoUI();
   if (rutaActual) {
@@ -3216,8 +3219,8 @@ function comprimirImagen(archivo) {
   });
 }
 
-$("movFoto").addEventListener("change", async () => {
-  const f = $("movFoto").files[0];
+["movFoto", "movFotoCamara"].forEach((idInput) => $(idInput).addEventListener("change", async () => {
+  const f = $(idInput).files[0];
   if (!f) return;
   ocultarAviso($("fotoError"));
   try {
@@ -3226,8 +3229,8 @@ $("movFoto").addEventListener("change", async () => {
     foto.nueva = blob; foto.quitar = false; foto.previa = URL.createObjectURL(blob);
     fotoUI();
   } catch { mostrarAviso($("fotoError"), t("fotoErr")); }
-  $("movFoto").value = "";
-});
+  $(idInput).value = "";
+}));
 $("btnFotoQuitar").addEventListener("click", () => {
   if (foto.previa) URL.revokeObjectURL(foto.previa);
   foto.nueva = null; foto.previa = null; foto.quitar = true;
