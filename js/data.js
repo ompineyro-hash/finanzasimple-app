@@ -224,6 +224,11 @@ async function reiniciarDatosUsuario(userId) {
   if (e3) throw e3;
   const { error: e4 } = await sbClient.from("monedas").delete().eq("user_id", userId);
   if (e4) throw e4;
+  // Estas tablas pueden no existir todavía: si falta alguna, se ignora.
+  for (const tabla of ["transferencias", "fijos", "presupuestos"]) {
+    const { error } = await sbClient.from(tabla).delete().eq("user_id", userId);
+    if (error && !esTablaInexistente(error)) throw error;
+  }
 }
 
 function traducirErrorDatos(error) {
@@ -288,4 +293,30 @@ async function reclamarFijoDelMes(id, mes) {
 
 async function devolverFijoDelMes(id, mesAnterior) {
   await sbClient.from("fijos").update({ ultimo_mes: mesAnterior || null }).eq("id", id);
+}
+
+
+// ---------- Tengo: transferencias entre cuentas y saldo inicial ----------
+async function listarTransferencias(userId) {
+  const { data, error } = await sbClient.from("transferencias").select("*").eq("user_id", userId).order("fecha", { ascending: false });
+  if (error) {
+    if (esTablaInexistente(error)) return { noDisponible: true };
+    throw error;
+  }
+  return data || [];
+}
+
+async function crearTransferencia(userId, tr) {
+  const { error } = await sbClient.from("transferencias").insert({ user_id: userId, ...tr });
+  if (error) throw error;
+}
+
+async function borrarTransferencia(id) {
+  const { error } = await sbClient.from("transferencias").delete().eq("id", id);
+  if (error) throw error;
+}
+
+async function actualizarSaldoInicial(id, valor) {
+  const { error } = await sbClient.from("cuentas").update({ saldo_inicial: valor }).eq("id", id);
+  if (error) throw error;
 }

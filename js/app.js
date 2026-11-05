@@ -124,6 +124,25 @@ const TRADUCCIONES = {
     fijoNotaMoneda: "Solo se pueden elegir cuentas en {m}.",
     fijoConfirmarBorrar: "¿Borrar este gasto fijo? Lo que ya está en Pendientes no se borra.",
     fijoBorrar: "Borrar",
+    sitTengo: "Tengo",
+    tengoTotal: "Total en tus cuentas",
+    tengoSinCotiz: "No suma al total: falta la cotización de {m} (se guarda al cargar un movimiento en esa moneda).",
+    tengoAjustar: "Ajustar",
+    tengoAjustarPide: "¿Cuánto hay hoy en {c}?",
+    tengoTransferir: "⇄ Transferir entre cuentas",
+    tengoUltimas: "Últimas transferencias",
+    tengoNota: "El saldo se calcula con el saldo inicial de cada cuenta más lo que cargaste. Si no coincide con la realidad, tocá Ajustar.",
+    trTitulo: "Transferir entre cuentas",
+    trDesde: "Desde",
+    trHacia: "Hacia",
+    trMonto: "Monto que sale",
+    trMontoDestino: "Monto que llega ({m})",
+    trAviso: "No cuenta como gasto ni como ingreso: solo pasa plata de una cuenta a otra.",
+    trErrIguales: "Elegí dos cuentas distintas.",
+    trErrMonto: "Escribí un monto mayor a cero (y el que llega, si las monedas son distintas).",
+    trToast: "Transferencia guardada.",
+    trConfirmBorrar: "¿Borrar esta transferencia?",
+    tengoNecesitaDos: "Necesitás al menos dos cuentas para transferir.",
     tituloEvolucionMensual: "Evolución mensual",
     textoEvolucionMensual: "Ingresos y egresos totales de los últimos meses.",
     tituloDiaADia: "Ingresos y egresos del mes",
@@ -408,6 +427,25 @@ const TRADUCCIONES = {
     fijoNotaMoneda: "Só é possível escolher contas em {m}.",
     fijoConfirmarBorrar: "Apagar este gasto fixo? O que já está em Pendentes não é apagado.",
     fijoBorrar: "Apagar",
+    sitTengo: "Eu tenho",
+    tengoTotal: "Total nas suas contas",
+    tengoSinCotiz: "Não entra no total: falta a cotação de {m} (é guardada ao registrar um movimento nessa moeda).",
+    tengoAjustar: "Ajustar",
+    tengoAjustarPide: "Quanto há hoje em {c}?",
+    tengoTransferir: "⇄ Transferir entre contas",
+    tengoUltimas: "Últimas transferências",
+    tengoNota: "O saldo é calculado com o saldo inicial de cada conta mais o que você registrou. Se não bater com a realidade, toque em Ajustar.",
+    trTitulo: "Transferir entre contas",
+    trDesde: "De",
+    trHacia: "Para",
+    trMonto: "Valor que sai",
+    trMontoDestino: "Valor que chega ({m})",
+    trAviso: "Não conta como despesa nem receita: só passa dinheiro de uma conta para outra.",
+    trErrIguales: "Escolha duas contas diferentes.",
+    trErrMonto: "Digite um valor maior que zero (e o que chega, se as moedas forem diferentes).",
+    trToast: "Transferência salva.",
+    trConfirmBorrar: "Apagar esta transferência?",
+    tengoNecesitaDos: "Você precisa de pelo menos duas contas para transferir.",
     tituloEvolucionMensual: "Evolução mensal",
     textoEvolucionMensual: "Receitas e despesas totais dos últimos meses.",
     tituloDiaADia: "Receitas e despesas do mês",
@@ -692,6 +730,25 @@ const TRADUCCIONES = {
     fijoNotaMoneda: "Only accounts in {m} can be chosen.",
     fijoConfirmarBorrar: "Delete this fixed expense? What is already in Pending is not deleted.",
     fijoBorrar: "Delete",
+    sitTengo: "I have",
+    tengoTotal: "Total in your accounts",
+    tengoSinCotiz: "Not included in the total: the {m} rate is missing (it is saved when you add an entry in that currency).",
+    tengoAjustar: "Adjust",
+    tengoAjustarPide: "How much is there today in {c}?",
+    tengoTransferir: "⇄ Transfer between accounts",
+    tengoUltimas: "Latest transfers",
+    tengoNota: "The balance is each account's starting balance plus what you recorded. If it does not match reality, tap Adjust.",
+    trTitulo: "Transfer between accounts",
+    trDesde: "From",
+    trHacia: "To",
+    trMonto: "Amount sent",
+    trMontoDestino: "Amount received ({m})",
+    trAviso: "It does not count as an expense or income: it only moves money from one account to another.",
+    trErrIguales: "Choose two different accounts.",
+    trErrMonto: "Enter an amount above zero (and the amount received, if the currencies differ).",
+    trToast: "Transfer saved.",
+    trConfirmBorrar: "Delete this transfer?",
+    tengoNecesitaDos: "You need at least two accounts to transfer.",
     tituloEvolucionMensual: "Monthly trend",
     textoEvolucionMensual: "Total income and expenses over the last few months.",
     tituloDiaADia: "Income and expenses this month",
@@ -1530,6 +1587,7 @@ async function cargarMesActual() {
   renderMovimientos();
   await renderVistaAnalisis();
   if (subVistaAnalisis === "diaadia") renderDiaADia();
+  if (vistaActiva === "vistaSituacion") cargarTengo().then(tengoRefrescarVista);
 }
 
 $("btnMesAnterior").addEventListener("click", () => {
@@ -1602,7 +1660,7 @@ document.querySelectorAll(".navbar-item[data-vista]").forEach((btn) => {
     if (destino === vistaActiva) return;
     if (destino !== "vistaMovimientos" && vistaActiva === "vistaMovimientos") guardarPasoAtras("vista");
     else if (destino === "vistaMovimientos") volverUnPaso("vista");
-    if (destino === "vistaSituacion") sitReiniciar();
+    if (destino === "vistaSituacion") { sitReiniciar(); cargarTengo().then(tengoRefrescarVista); }
     irAVista(destino);
   });
 });
@@ -1773,6 +1831,9 @@ function renderSituacion() {
     h = sitCabecera(t("sitTitulo"), "");
     const avisoM = avisoMonedasHTML();
     if (avisoM) h += `<div class="aviso-monedas">${avisoM}</div>`;
+    if (tengoDisponible) {
+      h += sitTarjeta("tengo", "", t("sitTengo"), t("sitVerDetalle"), tengoCalculo ? formatoMonto(tengoCalculo.total) : "…", "", "sit-bien");
+    }
     if (!pendientes.length) {
       h += `<div class="sit-card sit-vacio-card">${escapeHTML(t("sitVacio"))}</div>`;
     } else {
@@ -1789,6 +1850,8 @@ function renderSituacion() {
         h += `<button type="button" class="sit-card" data-sit-ir="viene"><div class="sit-etq"><span>${escapeHTML(t("sitSeViene"))}</span><span class="sit-ver">${escapeHTML(t("sitVerMeses"))}</span></div><div class="sit-barras">${barras}</div></button>`;
       }
     }
+  } else if (s.v === "tengo") {
+    h = sitCabecera(t("sitTengo"), `${inicio} › ${t("sitTengo")}`) + tengoHTML();
   } else if (s.v === "debo") {
     h = sitCabecera(t("sitDebo"), `${inicio} › ${t("sitDebo")}`);
     h += `<div class="sit-card sit-resumen"><div class="sit-etq"><span>${escapeHTML(t("sitTotal"))}</span></div><div class="sit-grande">${escapeHTML(formatoMonto(sitSuma(deudas)))}</div></div>`;
@@ -1822,6 +1885,14 @@ function renderSituacion() {
 
 $("vistaSituacion").addEventListener("click", (e) => {
   if (e.target.closest("[data-sit-atras]")) return sitAtras();
+  const tAj = e.target.closest("[data-tengo-ajustar]");
+  if (tAj) { e.stopPropagation(); return tengoAjustar(tAj.dataset.tengoAjustar); }
+  if (e.target.closest("[data-tengo-transferir]")) return abrirTransferencia();
+  const tBor = e.target.closest("[data-tengo-borrar]");
+  if (tBor) {
+    if (!confirm(t("trConfirmBorrar"))) return;
+    return borrarTransferencia(tBor.dataset.tengoBorrar).then(cargarTengo).then(tengoRefrescarVista).catch((err) => mostrarToast(traducirErrorDatos(err)));
+  }
   const cerrar = e.target.closest(".pend-cerrar");
   if (cerrar) { e.stopPropagation(); return cerrarPendiente(cerrar.dataset.id); }
   const fila = e.target.closest(".pend-fila");
@@ -2415,6 +2486,130 @@ document.querySelectorAll("#segmentadoVistaAnalisis .segmentado-item").forEach((
 });
 
 
+
+
+// ============================================================
+// TENGO: saldo por cuenta y transferencias entre cuentas
+// ============================================================
+let transferencias = [];
+let tengoDisponible = null; // null = sin comprobar, false = faltan las tablas/columnas en Supabase
+let tengoCalculo = null;    // { filas: [{cuenta, moneda, saldo, id}], total, sinCotiz: [moneda] }
+let tengoUsuario = null;
+
+async function cargarTengo() {
+  if (!usuario) return;
+  if (tengoUsuario !== usuario.id) { tengoUsuario = usuario.id; tengoDisponible = null; tengoCalculo = null; }
+  try {
+    const tr = await listarTransferencias(usuario.id);
+    if (tr && tr.noDisponible) { tengoDisponible = false; tengoCalculo = null; return; }
+    if (cuentas.some((c) => c.saldo_inicial === undefined)) { tengoDisponible = false; tengoCalculo = null; return; }
+    transferencias = tr;
+    const todos = soloContables(await listarTodosLosMovimientos(usuario.id));
+    const saldos = {};
+    cuentas.forEach((c) => { saldos[c.nombre] = Number(c.saldo_inicial) || 0; });
+    todos.forEach((m) => { if (m.cuenta in saldos) saldos[m.cuenta] += (m.tipo === "Ingreso" ? 1 : -1) * Number(m.monto); });
+    transferencias.forEach((x) => {
+      if (x.cuenta_origen in saldos) saldos[x.cuenta_origen] -= Number(x.monto_origen);
+      if (x.cuenta_destino in saldos) saldos[x.cuenta_destino] += Number(x.monto_destino);
+    });
+    const base = monedaBase(), cot = leerCotiz();
+    let total = 0; const sinCotiz = [];
+    const filas = cuentas.map((c) => {
+      const moneda = c.moneda || base, saldo = Math.round(saldos[c.nombre] * 100) / 100;
+      if (moneda === base) total += saldo;
+      else if (Number(cot[moneda]) > 0) total += saldo * Number(cot[moneda]);
+      else if (saldo !== 0 && !sinCotiz.includes(moneda)) sinCotiz.push(moneda);
+      return { id: c.id, cuenta: c.nombre, moneda, saldo };
+    });
+    tengoCalculo = { filas, total, sinCotiz };
+    tengoDisponible = true;
+  } catch { tengoDisponible = false; tengoCalculo = null; }
+}
+
+function tengoRefrescarVista() {
+  if (vistaActiva === "vistaSituacion") renderSituacion();
+}
+
+function formatoMontoMoneda(n, moneda) {
+  const s = Number(n).toLocaleString("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  return (moneda === monedaBase() ? "" : moneda + " ") + (moneda === monedaBase() ? formatoMonto(n) : s);
+}
+
+function tengoHTML() {
+  if (!tengoCalculo) return `<div class="sit-vacio">…</div>`;
+  const { filas, total, sinCotiz } = tengoCalculo;
+  let h = `<div class="sit-card sit-resumen"><div class="sit-etq"><span>${escapeHTML(t("tengoTotal"))}</span></div><div class="sit-grande ${total < 0 ? "sit-mal" : "sit-bien"}">${escapeHTML(formatoMonto(total))}</div></div>`;
+  if (sinCotiz.length) h += `<p class="texto-ayuda">${escapeHTML(t("tengoSinCotiz").replace("{m}", sinCotiz.join(", ")))}</p>`;
+  h += `<div class="sit-lista">` + filas.map((f) => `<div class="pend-fila"><div class="pend-info"><div class="pend-cat">${escapeHTML(f.cuenta)}</div>
+      <div class="pend-sub">${escapeHTML(f.moneda)}</div></div>
+      <div class="pend-derecha"><div class="mov-monto ${f.saldo < 0 ? "gasto" : "ingreso"}">${escapeHTML(formatoMontoMoneda(f.saldo, f.moneda))}</div>
+      <button type="button" class="boton boton-secundario pend-cerrar" data-tengo-ajustar="${f.id}">${escapeHTML(t("tengoAjustar"))}</button></div></div>`).join("") + `</div>`;
+  h += `<button type="button" class="boton boton-primario boton-ancho" data-tengo-transferir style="margin-top:12px">${escapeHTML(t("tengoTransferir"))}</button>`;
+  h += `<p class="texto-ayuda">${escapeHTML(t("tengoNota"))}</p>`;
+  if (transferencias.length) {
+    h += `<h3 class="titulo-subseccion">${escapeHTML(t("tengoUltimas"))}</h3><div class="sit-lista">` + transferencias.slice(0, 8).map((x) => `<div class="pend-fila"><div class="pend-info">
+      <div class="pend-cat">${escapeHTML(x.cuenta_origen)} → ${escapeHTML(x.cuenta_destino)}</div><div class="pend-sub">${escapeHTML(formatoFecha(x.fecha))}</div></div>
+      <div class="pend-derecha"><div class="mov-monto">${escapeHTML(formatoMontoMoneda(Number(x.monto_origen), monedaDeCuentaNombre(x.cuenta_origen)))}</div>
+      <button type="button" class="icono-btn" data-tengo-borrar="${x.id}" aria-label="${escapeHTML(t("fijoBorrar"))}">🗑️</button></div></div>`).join("") + `</div>`;
+  }
+  return h;
+}
+
+async function tengoAjustar(id) {
+  const f = tengoCalculo?.filas.find((x) => x.id === id);
+  const c = cuentas.find((x) => x.id === id);
+  if (!f || !c) return;
+  const r = prompt(t("tengoAjustarPide").replace("{c}", f.cuenta), String(f.saldo).replace(".", ","));
+  if (r === null) return;
+  const nuevo = numeroDesdeTexto(r);
+  if (!Number.isFinite(nuevo)) return;
+  try {
+    await actualizarSaldoInicial(id, Math.round(((Number(c.saldo_inicial) || 0) + (nuevo - f.saldo)) * 100) / 100);
+    await cargarCuentasYCategorias();
+    await cargarTengo();
+    tengoRefrescarVista();
+  } catch (err) { mostrarToast(traducirErrorDatos(err)); }
+}
+
+function abrirTransferencia() {
+  if (cuentas.length < 2) return mostrarToast(t("tengoNecesitaDos"));
+  const op = cuentas.map((c) => `<option value="${escapeHTML(c.nombre)}">${escapeHTML(c.nombre)}${c.moneda && c.moneda !== monedaBase() ? " (" + escapeHTML(c.moneda) + ")" : ""}</option>`).join("");
+  $("trDesde").innerHTML = op; $("trHacia").innerHTML = op;
+  $("trHacia").selectedIndex = 1;
+  $("trMonto").value = ""; $("trMontoDestino").value = "";
+  $("trFecha").value = hoyISO();
+  $("trError").hidden = true;
+  trSincronizar();
+  $("modalTransfer").hidden = false;
+}
+function cerrarTransferencia() { $("modalTransfer").hidden = true; }
+
+function trSincronizar() {
+  const mo = monedaDeCuentaNombre($("trDesde").value), md = monedaDeCuentaNombre($("trHacia").value);
+  $("trFilaDestino").hidden = mo === md;
+  $("trLabelDestino").textContent = t("trMontoDestino").replace("{m}", md);
+}
+$("trDesde").addEventListener("change", trSincronizar);
+$("trHacia").addEventListener("change", trSincronizar);
+$("btnCerrarTransfer").addEventListener("click", cerrarTransferencia);
+$("modalTransfer").addEventListener("click", (e) => { if (e.target === $("modalTransfer")) cerrarTransferencia(); });
+
+$("formTransfer").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const desde = $("trDesde").value, hacia = $("trHacia").value;
+  if (desde === hacia) return mostrarAviso($("trError"), t("trErrIguales"));
+  const mo = numeroDesdeTexto($("trMonto").value);
+  const distinta = monedaDeCuentaNombre(desde) !== monedaDeCuentaNombre(hacia);
+  const md = distinta ? numeroDesdeTexto($("trMontoDestino").value) : mo;
+  if (!Number.isFinite(mo) || mo <= 0 || !Number.isFinite(md) || md <= 0) return mostrarAviso($("trError"), t("trErrMonto"));
+  try {
+    await crearTransferencia(usuario.id, { fecha: $("trFecha").value || hoyISO(), cuenta_origen: desde, cuenta_destino: hacia, monto_origen: mo, monto_destino: md });
+    cerrarTransferencia();
+    await cargarTengo();
+    tengoRefrescarVista();
+    mostrarToast(t("trToast"));
+  } catch (err) { mostrarAviso($("trError"), traducirErrorDatos(err)); }
+});
 
 // ============================================================
 // GASTOS FIJOS: se repiten todos los meses y aparecen solos en Pendientes

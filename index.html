@@ -516,6 +516,26 @@ Al crear una cuenta aceptás nuestros
 </div>
 </div>
 
+<!-- ===================== MODAL: TRANSFERIR ENTRE CUENTAS ===================== -->
+<div id="modalTransfer" class="modal-fondo" hidden>
+<div class="modal">
+<div class="modal-cabecera">
+<h3 data-i18n="trTitulo">Transferir entre cuentas</h3>
+<button id="btnCerrarTransfer" type="button" class="icono-btn" data-i18n-aria="ariaCerrarModal" aria-label="Cerrar">✖</button>
+</div>
+<form id="formTransfer" class="modal-cuerpo">
+<label><span data-i18n="trDesde">Desde</span><select id="trDesde"></select></label>
+<label><span data-i18n="trHacia">Hacia</span><select id="trHacia"></select></label>
+<label><span id="trLabelMonto" data-i18n="trMonto">Monto que sale</span><input type="text" inputmode="decimal" id="trMonto" placeholder="0,00"></label>
+<label id="trFilaDestino" hidden><span id="trLabelDestino"></span><input type="text" inputmode="decimal" id="trMontoDestino" placeholder="0,00"></label>
+<label><span data-i18n="labelFecha">Fecha</span><input type="date" id="trFecha"></label>
+<p class="texto-ayuda" data-i18n="trAviso">No cuenta como gasto ni como ingreso: solo pasa plata de una cuenta a otra.</p>
+<div id="trError" class="aviso aviso-error" hidden></div>
+<div class="modal-acciones"><button type="submit" class="boton boton-primario boton-ancho" data-i18n="btnGuardarMov">Guardar</button></div>
+</form>
+</div>
+</div>
+
 <!-- ===================== MODAL: NUEVO / EDITAR MOVIMIENTO ===================== -->
 <div id="modalFondo" class="modal-fondo" hidden>
 <div class="modal">
