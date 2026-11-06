@@ -254,6 +254,7 @@ const TRADUCCIONES = {
     toastMarcadoPagado: "Listo, marcado como pagado.",
     toastMarcadoCobrado: "Listo, marcado como cobrado.",
     ayudaCotizacion: "Esta cuenta está en {c}. Escribí a cuántos {b} equivale 1 {c}.",
+    cotizSugerida: "Usar el dólar de hoy: {v} (Banco Nación, venta)",
     errCotizacion: "Indicá la cotización (tiene que ser mayor a cero).",
     avisoSinCotiz: "⚠ {n} movimiento(s) en otra moneda no tienen cotización y no están sumados.",
     avisoDesfasados: "⚠ {n} movimiento(s) están en una cuenta de otra moneda pero figuran en {b}. Editalos para indicar la cotización.",
@@ -571,6 +572,7 @@ const TRADUCCIONES = {
     toastMarcadoPagado: "Pronto, marcado como pago.",
     toastMarcadoCobrado: "Pronto, marcado como recebido.",
     ayudaCotizacion: "Esta conta está em {c}. Escreva quantos {b} vale 1 {c}.",
+    cotizSugerida: "Usar o dólar de hoje: {v} (Banco Nación, venda)",
     errCotizacion: "Informe a cotação (tem que ser maior que zero).",
     avisoSinCotiz: "⚠ {n} lançamento(s) em outra moeda não têm cotação e não estão somados.",
     avisoDesfasados: "⚠ {n} lançamento(s) estão numa conta de outra moeda mas aparecem em {b}. Edite-os para informar a cotação.",
@@ -888,6 +890,7 @@ const TRADUCCIONES = {
     toastMarcadoPagado: "Done, marked as paid.",
     toastMarcadoCobrado: "Done, marked as received.",
     ayudaCotizacion: "This account is in {c}. Enter how many {b} 1 {c} is worth.",
+    cotizSugerida: "Use today's dollar: {v} (Banco Nación, selling)",
     errCotizacion: "Enter the exchange rate (it must be greater than zero).",
     avisoSinCotiz: "⚠ {n} entry(ies) in another currency have no exchange rate and are not included in the totals.",
     avisoDesfasados: "⚠ {n} entry(ies) belong to an account in another currency but are recorded in {b}. Edit them to enter the exchange rate.",
@@ -3195,7 +3198,25 @@ function actualizarFilaCotizacion(valorGuardado) {
   const inp = $("movCotizacion");
   if (valorGuardado > 0) inp.value = formatearImporteEscrito(String(valorGuardado).replace(".", ","));
   else if (!inp.value && leerCotiz()[cod] > 0) inp.value = formatearImporteEscrito(String(leerCotiz()[cod]).replace(".", ","));
+  mostrarDolarSugerido(cod, base);
 }
+
+// Botón "Usar el dólar de hoy": solo para dólares contra pesos argentinos.
+let dolarSugeridoActual = 0;
+async function mostrarDolarSugerido(cod, base) {
+  const btn = $("btnCotizSugerida");
+  btn.hidden = true;
+  if (cod !== "USD" || base !== "ARS") return;
+  const r = await obtenerDolarBNA();
+  if (!r || monedaDeCuentaNombre($("movCuenta").value) !== "USD") return;
+  dolarSugeridoActual = r.venta;
+  const v = r.venta.toLocaleString("es-AR", { maximumFractionDigits: 2 });
+  btn.textContent = t("cotizSugerida").replace("{v}", v);
+  btn.hidden = false;
+}
+$("btnCotizSugerida").addEventListener("click", () => {
+  if (dolarSugeridoActual > 0) $("movCotizacion").value = formatearImporteEscrito(String(dolarSugeridoActual).replace(".", ","));
+});
 $("movCuenta").addEventListener("change", () => { $("movCotizacion").value = ""; actualizarFilaCotizacion(); });
 activarFormatoImporte($("movCotizacion"));
 

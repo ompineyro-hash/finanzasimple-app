@@ -357,3 +357,26 @@ async function borrarTodosLosComprobantes(userId) {
     if (data && data.length) await sbClient.storage.from("comprobantes").remove(data.map((f) => `${userId}/${f.name}`));
   } catch { /* el bucket puede no existir todavía */ }
 }
+
+
+// ---------- Dólar sugerido: venta del Banco Nación (vía DolarApi.com) ----------
+// Es solo una sugerencia: la persona siempre puede escribir otro valor.
+async function obtenerDolarBNA() {
+  try {
+    const guardado = JSON.parse(localStorage.getItem("fs_dolar_bna") || "null");
+    if (guardado && Date.now() - guardado.t < 3600000) return guardado;
+  } catch { /* ignorar */ }
+  try {
+    const ctl = new AbortController();
+    const timer = setTimeout(() => ctl.abort(), 6000);
+    const r = await fetch("https://dolarapi.com/v1/dolares/oficial", { signal: ctl.signal, cache: "no-store" });
+    clearTimeout(timer);
+    if (!r.ok) return null;
+    const j = await r.json();
+    const venta = Number(j.venta);
+    if (!Number.isFinite(venta) || venta < 1 || venta > 100000) return null;
+    const res = { venta, fecha: j.fechaActualizacion || null, t: Date.now() };
+    try { localStorage.setItem("fs_dolar_bna", JSON.stringify(res)); } catch { /* ignorar */ }
+    return res;
+  } catch { return null; }
+}
