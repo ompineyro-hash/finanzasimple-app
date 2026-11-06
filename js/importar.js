@@ -155,6 +155,7 @@ function impAdivinarColumnas(cabeceras) {
 
 // ---------- pantalla (Ajustes → Importar movimientos) ----------
 const IMP_MAX = 2000;
+const IMP_SIN = "__sin__"; // "Sin clasificar": se crea al importar si no existe
 let imp = null; // { filas, cab, ini }
 
 function impMostrarError(msg) {
@@ -196,15 +197,11 @@ function impPrepararPantalla(filas) {
   $("impColCat").value = String(g.cat);
   const cs = impCuentasBase();
   $("impCuenta").innerHTML = cs.map((c) => `<option value="${escapeHTML(c.nombre)}">${escapeHTML(c.nombre)}</option>`).join("");
-  const opt = (tipo) => categorias.filter((c) => (c.tipo || "Gasto") === tipo)
-    .map((c) => `<option value="${escapeHTML(c.nombre)}">${escapeHTML(c.nombre)}</option>`).join("");
+  const opt = (tipo) => `<option value="${IMP_SIN}">${escapeHTML(t("impSinClasifNombre"))}</option>` +
+    categorias.filter((c) => (c.tipo || "Gasto") === tipo)
+      .map((c) => `<option value="${escapeHTML(c.nombre)}">${escapeHTML(c.nombre)}</option>`).join("");
   $("impCatGasto").innerHTML = opt("Gasto");
   $("impCatIngreso").innerHTML = opt("Ingreso");
-  // Por defecto, una categoría genérica ("Otros", "Varios"...) si existe.
-  ["impCatGasto", "impCatIngreso"].forEach((id) => {
-    const g = Array.from($(id).options).find((o) => /otro|vari|sin cl|general|outr|other/i.test(o.value));
-    if (g) $(id).value = g.value;
-  });
   // Reporte de Mercado Pago (se reconoce por sus columnas): se elige solo la cuenta "Mercado Pago" si existe.
   if (cab.some((h) => /^settlement_net_amount$/i.test(String(h).trim()))) {
     const mp = cs.find((c) => /mercado\s*pago|^mp$/i.test(c.nombre));
@@ -219,7 +216,10 @@ function impArmarLista() {
   const cc = +$("impColCuenta").value, ck = +$("impColCat").value;
   const ce = imp.g.estado, cp = imp.g.fpago;
   const inv = $("impInvertir").checked, cuentaDef = $("impCuenta").value;
-  const catG = $("impCatGasto").value, catI = $("impCatIngreso").value, base = monedaBase();
+  const sin = t("impSinClasifNombre");
+  const catG = $("impCatGasto").value === IMP_SIN ? sin : $("impCatGasto").value;
+  const catI = $("impCatIngreso").value === IMP_SIN ? sin : $("impCatIngreso").value;
+  const base = monedaBase();
   const bajo = (x) => String(x ?? "").trim().toLowerCase();
   const ctasBase = impCuentasBase();
   const datos = imp.filas.slice(imp.ini + 1, imp.ini + 1 + IMP_MAX);
@@ -326,6 +326,14 @@ async function impConfirmar() {
   const b = $("impConfirmar"); b.disabled = true;
   try {
     const todos = imp.nuevos.filter((_, i) => imp.sel.has(i));
+    const sin = t("impSinClasifNombre");
+    let creada = false;
+    for (const tipo of ["Gasto", "Ingreso"]) {
+      if (todos.some((m) => m.tipo === tipo && m.categoria === sin) && !categorias.some((c) => (c.tipo || "Gasto") === tipo && c.nombre === sin)) {
+        await crearCategoria(usuario.id, sin, tipo); creada = true;
+      }
+    }
+    if (creada) await cargarCuentasYCategorias();
     for (let i = 0; i < todos.length; i += 200) await crearMovimientos(usuario.id, todos.slice(i, i + 200));
     mostrarToast(t("impOk").replace("{n}", todos.length));
     $("impArchivo").value = ""; $("impPaso2").hidden = true; imp = null;
