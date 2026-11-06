@@ -120,6 +120,17 @@ const TRADUCCIONES = {
     presNotaManual: "Estás usando un valor propio.",
     presUsarReal: "Usar mis ingresos del mes",
     tituloFijos: "Gastos fijos",
+    tituloGuia: "Guía rápida",
+    guiaTitulo: "Ya sabés lo básico 🎉",
+    guiaSub: "Cuando quieras, probá esto:",
+    guiaVoz: "Cargar con la voz",
+    guiaVozSub: "Tocá Voz y hablá",
+    guiaSit: "Situación",
+    guiaSitSub: "Lo que debés y lo que se viene",
+    guiaAna: "Análisis",
+    guiaAnaSub: "En qué se va tu plata",
+    guiaIr: "Ir a mi Ingasto",
+    guiaRepetir: "Podés volver a ver esta guía en Ajustes.",
     fijosAyuda: "Cargá lo que pagás todos los meses. Cada mes, en el día elegido, te aparece en Pendientes para marcarlo como pagado.",
     fijosPorMes: "Fijos por mes",
     fijoPlaceholder: "Ej: Alquiler",
@@ -438,6 +449,17 @@ const TRADUCCIONES = {
     presNotaManual: "Você está usando um valor próprio.",
     presUsarReal: "Usar minhas receitas do mês",
     tituloFijos: "Gastos fixos",
+    tituloGuia: "Guia rápido",
+    guiaTitulo: "Você já sabe o básico 🎉",
+    guiaSub: "Quando quiser, experimente:",
+    guiaVoz: "Registrar com a voz",
+    guiaVozSub: "Toque em Voz e fale",
+    guiaSit: "Situação",
+    guiaSitSub: "O que você deve e o que vem por aí",
+    guiaAna: "Análise",
+    guiaAnaSub: "Para onde vai o seu dinheiro",
+    guiaIr: "Ir para o meu Ingasto",
+    guiaRepetir: "Você pode ver este guia de novo em Ajustes.",
     fijosAyuda: "Registre o que você paga todo mês. Todo mês, no dia escolhido, aparece em Pendentes para marcar como pago.",
     fijosPorMes: "Fixos por mês",
     fijoPlaceholder: "Ex: Aluguel",
@@ -756,6 +778,17 @@ const TRADUCCIONES = {
     presNotaManual: "You are using your own value.",
     presUsarReal: "Use my income for the month",
     tituloFijos: "Fixed expenses",
+    tituloGuia: "Quick guide",
+    guiaTitulo: "You know the basics 🎉",
+    guiaSub: "Whenever you like, try this:",
+    guiaVoz: "Add with your voice",
+    guiaVozSub: "Tap Voice and speak",
+    guiaSit: "Situation",
+    guiaSitSub: "What you owe and what is coming",
+    guiaAna: "Analysis",
+    guiaAnaSub: "Where your money goes",
+    guiaIr: "Go to my Ingasto",
+    guiaRepetir: "You can see this guide again in Settings.",
     fijosAyuda: "Add what you pay every month. Each month, on the chosen day, it shows up in Pending so you can mark it as paid.",
     fijosPorMes: "Fixed per month",
     fijoPlaceholder: "E.g. Rent",
@@ -3221,6 +3254,44 @@ $("movCuenta").addEventListener("change", () => { $("movCotizacion").value = "";
 activarFormatoImporte($("movCotizacion"));
 
 
+
+// ============================================================
+// QUÉ SIGUE: guía rápida (sale sola tras el primer gasto de alguien nuevo)
+// ============================================================
+function claveGuia() { return "fs_guia_vista_" + (usuario ? usuario.id : ""); }
+function guiaYaVista() { try { return localStorage.getItem(claveGuia()) === "1"; } catch { return true; } }
+function guiaMarcarVista() { try { localStorage.setItem(claveGuia(), "1"); } catch { /* ignorar */ } }
+function abrirGuia() { $("guiaPantalla").hidden = false; }
+function cerrarGuia() { $("guiaPantalla").hidden = true; guiaMarcarVista(); }
+
+$("btnGuiaCerrar").addEventListener("click", cerrarGuia);
+$("tarjetaGuia").addEventListener("click", abrirGuia);
+$("guiaPantalla").addEventListener("click", (e) => {
+  const b = e.target.closest("[data-guia-ir]");
+  if (!b) return;
+  const destino = b.dataset.guiaIr;
+  cerrarGuia();
+  if (destino === "voz") {
+    $("btnNuevo").click();
+    setTimeout(() => $("btnCargarVoz").click(), 350);
+  } else {
+    const nav = document.querySelector(`.navbar-item[data-vista="${destino}"]`);
+    if (nav) nav.click();
+  }
+});
+
+// Antes de guardar: ¿es alguien que todavía no cargó nada? Solo se consulta mientras la guía no se haya visto.
+async function guiaEraPrimerMovimiento() {
+  if (guiaYaVista()) return false;
+  try { return (await listarTodosLosMovimientos(usuario.id)).length === 0; }
+  catch { return false; }
+}
+function guiaDespuesDeGuardar(eraPrimero) {
+  if (guiaYaVista()) return;
+  if (eraPrimero) setTimeout(abrirGuia, 900);
+  else guiaMarcarVista(); // ya usaba la app: no corresponde mostrarle la guía
+}
+
 // ============================================================
 // FOTO DEL COMPROBANTE
 // ============================================================
@@ -3965,6 +4036,7 @@ $("formMovimiento").addEventListener("submit", async (e) => {
     const n = parseInt($("movCuotaN").value, 10);
     const primera = $("movCuotaFecha").value || fecha;
     if (!Number.isInteger(n) || n < 2 || n > 60) return mostrarAviso($("movError"), t("errCuotas"));
+    const eraPrimeroCuotas = await guiaEraPrimerMovimiento();
     const cuotas = [];
     for (let k = 0; k < n; k++) {
       const f = sumarMesesISO(primera, k);
@@ -3979,6 +4051,7 @@ $("formMovimiento").addEventListener("submit", async (e) => {
       cerrarModal();
       await cargarMesActual();
       mostrarToast(t("toastCuotas").replace("{n}", n));
+      guiaDespuesDeGuardar(eraPrimeroCuotas);
     } catch (err) {
       mostrarAviso($("movError"), traducirErrorDatos(err));
     }
@@ -3986,6 +4059,7 @@ $("formMovimiento").addEventListener("submit", async (e) => {
   }
 
   const datos = { tipo, fecha, cuenta, categoria, detalle, monto, moneda: monedaMov, cotizacion, estado, fecha_pago: fechaPago };
+  const eraPrimero = id ? false : await guiaEraPrimerMovimiento();
 
   try {
     if (comprobantesDisponible) {
@@ -4000,6 +4074,7 @@ $("formMovimiento").addEventListener("submit", async (e) => {
     cerrarModal();
     await cargarMesActual();
     mostrarToast(id ? "Movimiento actualizado." : "Movimiento guardado.");
+    if (!id) guiaDespuesDeGuardar(eraPrimero);
   } catch (err) {
     mostrarAviso($("movError"), traducirErrorDatos(err));
   }

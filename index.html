@@ -288,6 +288,10 @@ Al crear una cuenta aceptás nuestros
 <span class="config-tarjeta-icono">🏦</span>
 <span class="config-tarjeta-titulo" data-i18n="tituloCuentas">Cuentas</span>
 </button>
+<button type="button" class="config-tarjeta" id="tarjetaGuia">
+<span class="config-tarjeta-icono">🧭</span>
+<span class="config-tarjeta-titulo" data-i18n="tituloGuia">Guía rápida</span>
+</button>
 <button type="button" class="config-tarjeta" id="tarjetaFijos" data-config="configPanelFijos" hidden>
 <span class="config-tarjeta-icono">📌</span>
 <span class="config-tarjeta-titulo" data-i18n="tituloFijos">Gastos fijos</span>
@@ -495,6 +499,19 @@ Al crear una cuenta aceptás nuestros
 <span class="navbar-icono">⚙️</span><span data-i18n="navConfig">Ajustes</span>
 </button>
 </nav>
+</div>
+
+<!-- ===================== PANTALLA: QUÉ SIGUE (guía rápida) ===================== -->
+<div id="guiaPantalla" class="guia-pantalla" hidden role="dialog" aria-modal="true">
+<div class="guia-caja">
+<h2 data-i18n="guiaTitulo">Ya sabés lo básico 🎉</h2>
+<p data-i18n="guiaSub">Cuando quieras, probá esto:</p>
+<button type="button" class="guia-fila" data-guia-ir="voz"><span class="guia-ic">🎙️</span><span><b data-i18n="guiaVoz">Cargar con la voz</b><small data-i18n="guiaVozSub">Tocá Voz y hablá</small></span></button>
+<button type="button" class="guia-fila" data-guia-ir="vistaSituacion"><span class="guia-ic">🧭</span><span><b data-i18n="guiaSit">Situación</b><small data-i18n="guiaSitSub">Lo que debés y lo que se viene</small></span></button>
+<button type="button" class="guia-fila" data-guia-ir="vistaAnalisis"><span class="guia-ic">📊</span><span><b data-i18n="guiaAna">Análisis</b><small data-i18n="guiaAnaSub">En qué se va tu plata</small></span></button>
+<button type="button" id="btnGuiaCerrar" class="boton boton-primario boton-ancho" data-i18n="guiaIr">Ir a mi Ingasto</button>
+<p class="guia-nota" data-i18n="guiaRepetir">Podés volver a ver esta guía en Ajustes.</p>
+</div>
 </div>
 
 <!-- ===================== PANTALLA: CARGA POR VOZ ===================== -->
