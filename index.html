@@ -420,20 +420,25 @@ Al crear una cuenta aceptás nuestros
 <button type="button" class="config-volver" data-i18n="btnVolver">← Volver</button>
 <h2 class="titulo-seccion" data-i18n="tituloImportar">Importar movimientos</h2>
 <p class="texto-ayuda" data-i18n="textoImportar">Subí un archivo de Excel (.xlsx) o CSV, por ejemplo el reporte de Mercado Pago o el resumen de tu banco. Antes de guardar vas a ver cuántos movimientos entran.</p>
+<details class="imp-ayuda"><summary data-i18n="impAyudaTitulo">¿Cómo bajo el archivo de Mercado Pago?</summary>
+<p class="texto-ayuda" data-i18n="impAyudaPasos">En Mercado Pago: Reportes → Todas las transacciones → Nuevo reporte. Elegí el período, formato CSV, y tocá Generar. Cuando diga "Nuevo", tocá Descargar.</p></details>
 <div class="fila-config"><input type="file" id="impArchivo" accept=".csv,.txt,.xlsx,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"></div>
 <div id="impError" class="aviso aviso-error" hidden></div>
 <div id="impPaso2" hidden>
+<div class="fila-config"><label><span data-i18n="impCuenta">Cuenta por defecto (si el archivo no trae cuenta)</span><select id="impCuenta"></select></label></div>
+<div class="fila-config"><label><span data-i18n="impCatGasto">Categoría de los gastos</span><select id="impCatGasto"></select></label></div>
+<div class="fila-config"><label><span data-i18n="impCatIngreso">Categoría de los ingresos</span><select id="impCatIngreso"></select></label></div>
+<details class="imp-avanzado"><summary data-i18n="impAvanzado">Opciones avanzadas (si algo no se lee bien)</summary>
 <div class="fila-config"><label><span data-i18n="impColFecha">Columna de la fecha</span><select id="impColFecha"></select></label></div>
 <div class="fila-config"><label><span data-i18n="impColMonto">Columna del monto</span><select id="impColMonto"></select></label></div>
 <div class="fila-config"><label><span data-i18n="impColDetalle">Columna del detalle (opcional)</span><select id="impColDetalle"></select></label></div>
 <div class="fila-config"><label><span data-i18n="impColCuenta">Columna de la cuenta (opcional)</span><select id="impColCuenta"></select></label></div>
 <div class="fila-config"><label><span data-i18n="impColCat">Columna de la categoría (opcional)</span><select id="impColCat"></select></label></div>
-<div class="fila-config"><label><span data-i18n="impCuenta">Cuenta por defecto</span><select id="impCuenta"></select></label></div>
-<div class="fila-config"><label><span data-i18n="impCatGasto">Categoría de los gastos</span><select id="impCatGasto"></select></label></div>
-<div class="fila-config"><label><span data-i18n="impCatIngreso">Categoría de los ingresos</span><select id="impCatIngreso"></select></label></div>
 <div class="fila-config"><label><input type="checkbox" id="impInvertir"> <span data-i18n="impInvertir">Invertir: los montos positivos son gastos</span></label></div>
 <p class="texto-ayuda" data-i18n="impAyudaSigno">Normalmente los montos negativos son gastos y los positivos son ingresos.</p>
+</details>
 <p id="impResumen" class="texto-ayuda"></p>
+<p id="impTotales" class="imp-totales"></p>
 <div id="impMuestra" class="texto-ayuda"></div>
 <button type="button" class="btn-principal" id="impConfirmar">Importar</button>
 </div>

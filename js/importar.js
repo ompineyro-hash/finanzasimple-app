@@ -200,6 +200,11 @@ function impPrepararPantalla(filas) {
     .map((c) => `<option value="${escapeHTML(c.nombre)}">${escapeHTML(c.nombre)}</option>`).join("");
   $("impCatGasto").innerHTML = opt("Gasto");
   $("impCatIngreso").innerHTML = opt("Ingreso");
+  // Por defecto, una categoría genérica ("Otros", "Varios"...) si existe.
+  ["impCatGasto", "impCatIngreso"].forEach((id) => {
+    const g = Array.from($(id).options).find((o) => /otro|vari|sin cl|general|outr|other/i.test(o.value));
+    if (g) $(id).value = g.value;
+  });
   $("impInvertir").checked = false;
   $("impPaso2").hidden = false;
 }
@@ -285,6 +290,9 @@ function impPintarLista() {
 }
 
 function impActualizarBoton() {
+  let ing = 0, gas = 0;
+  imp.sel.forEach((i) => { const m = imp.nuevos[i]; if (m.tipo === "Gasto") gas += m.monto; else ing += m.monto; });
+  $("impTotales").textContent = t("impTotales").replace("{i}", formatoMonto(ing)).replace("{g}", formatoMonto(gas));
   const b = $("impConfirmar");
   b.textContent = t("impBoton").replace("{n}", imp.sel.size);
   b.disabled = !imp.sel.size;

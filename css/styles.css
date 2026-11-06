@@ -568,3 +568,6 @@ input,select{font-family:inherit;font-size:16px;}
 .imp-fila:last-child { border-bottom: 0; }
 .imp-fila input { margin-top: 3px; flex: none; }
 .imp-transf { color: #b26a00; font-style: normal; font-size: 0.82rem; }
+.imp-ayuda, .imp-avanzado { margin: 8px 0; }
+.imp-ayuda summary, .imp-avanzado summary { cursor: pointer; color: #2f6b57; font-weight: 600; }
+.imp-totales { font-weight: 700; margin: 4px 0 8px; }
