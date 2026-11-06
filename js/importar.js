@@ -142,7 +142,9 @@ function impParsearFecha(v) {
 function impAdivinarColumnas(cabeceras) {
   const buscar = (re) => cabeceras.findIndex((h) => re.test(String(h).toLowerCase()));
   const fecha = buscar(/fecha|date|data|creaci|created|release|dia|día/);
-  const monto = buscar(/monto|amount|importe|valor|neto|net|total|valor/);
+  // Si hay un monto neto (el que coincide con el saldo, como en Mercado Pago), se prefiere.
+  let monto = buscar(/settlement_net_amount|net_amount|monto neto|importe neto/);
+  if (monto < 0) monto = buscar(/monto|amount|importe|valor|neto|net|total/);
   const detalle = buscar(/descrip|detalle|concepto|motivo|description|reference|referencia|nombre|name|title|titulo/);
   const cuenta = buscar(/^\s*(cuenta|conta|account)\s*$/);
   const cat = buscar(/^\s*(categor[ií]a|category)\s*$/);
@@ -222,7 +224,10 @@ function impArmarLista() {
       if (!c) { ignoradas++; continue; } // cuenta que no existe o en otra moneda
       cuenta = c.nombre;
     }
-    const detalle = (cd >= 0 ? String(f[cd] ?? "").trim() : "").slice(0, 120);
+    let detalle = (cd >= 0 ? String(f[cd] ?? "").trim() : "");
+    if (/^money_transfer/i.test(detalle)) detalle = "Transferencia";
+    else if (/^[\w-]{20,}$/.test(detalle) || /^\d{6,}$/.test(detalle)) detalle = ""; // códigos sin significado
+    detalle = detalle.slice(0, 120);
     const tipo = monto < 0 ? "Gasto" : "Ingreso";
     let categoria = tipo === "Gasto" ? catG : catI;
     if (ck >= 0 && bajo(f[ck])) {
