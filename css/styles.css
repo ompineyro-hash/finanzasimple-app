@@ -527,3 +527,17 @@ input,select{font-family:inherit;font-size:16px;}
   .voz-pantalla > *{width:100%;max-width:560px;}
   .voz-pantalla .voz-q{font-size:19px;}
 }
+
+/* ---- Presupuesto: mismo diseño que el boceto ---- */
+.pres-total{background:var(--papel-alto);border:1px solid var(--borde);border-radius:12px;padding:12px;text-align:center;margin-bottom:12px}
+.pres-total small{display:block;font-size:13px;font-weight:600;color:var(--texto)}
+.pres-total b{display:block;font-size:26px;font-weight:800;color:var(--texto)}
+.pres-reparto-titulo{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0;color:var(--texto)}
+.pres-etq{background:#EFEAFB;color:#6B46C1;border-radius:10px;padding:2px 8px;font-size:12px;font-weight:700}
+.pres-reparto{display:flex;border-radius:8px;overflow:hidden;height:26px;margin-bottom:12px}
+.pres-reparto i{display:flex;align-items:center;justify-content:center;color:#fff;font-style:normal;font-size:12px;font-weight:800;min-width:0}
+.pres-fila-l{display:flex;justify-content:space-between;align-items:baseline;gap:4px 10px;flex-wrap:wrap;font-weight:700;font-size:14px;color:var(--texto);margin-bottom:6px}
+.pres-editar{margin:12px 0}
+.pres-editar > summary{list-style:none;cursor:pointer;text-align:center}
+.pres-editar > summary::-webkit-details-marker{display:none}
+.pres-editar[open] > summary{margin-bottom:10px}

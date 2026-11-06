@@ -247,6 +247,11 @@ Al crear una cuenta aceptás nuestros
 
 <div id="subVistaPresupuesto" hidden>
 <h2 class="titulo-seccion" data-i18n="tituloPresupuesto">Presupuesto del mes</h2>
+<div class="pres-total"><small data-i18n="presIngresoDelMes">Tu ingreso del mes</small><b id="presTotal">—</b></div>
+<div class="pres-reparto-titulo"><b data-i18n="presRepartoSugerido">Reparto sugerido</b><span class="pres-etq" data-i18n="presPodesCambiarlo">podés cambiarlo</span></div>
+<div id="presReparto" class="pres-reparto"></div>
+<div id="presGrupos" class="lista-analisis"></div>
+<details class="pres-editar"><summary class="boton boton-secundario" data-i18n="presCambiarPct">Cambiar porcentajes</summary>
 <p class="texto-ayuda" data-i18n="textoPresupuesto">Repartí tu ingreso entre gastos fijos, vida y salidas, y ahorro. Podés cambiar los porcentajes.</p>
 <label><span data-i18n="lblIngresoBase">Ingreso del mes para repartir</span>
 <input type="text" inputmode="decimal" id="presIngreso" data-i18n-placeholder="presUsaReal" placeholder="Vacío = lo que ingresó este mes">
@@ -258,9 +263,9 @@ Al crear una cuenta aceptás nuestros
 <label><span data-i18n="presVida">Vida y salidas (%)</span><input type="number" id="presPctVida" min="0" max="100" inputmode="numeric"></label>
 <div class="pres-ahorro-pct"><span data-i18n="presAhorro">Ahorro (%)</span><b id="presPctAhorro">20</b></div>
 </div>
-<div id="presGrupos" class="lista-analisis"></div>
 <details class="pres-cats"><summary data-i18n="presCambiarGrupos">Elegir qué categorías son fijas</summary><div id="presListaCats"></div></details>
 <button type="button" class="boton boton-texto" id="btnPresReset" data-i18n="presRestablecer">Volver a 50/30/20</button>
+</details>
 </div>
 
 

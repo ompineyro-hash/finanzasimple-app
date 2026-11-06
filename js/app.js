@@ -108,6 +108,14 @@ const TRADUCCIONES = {
     presOpcFijo: "Fijo",
     presOpcVida: "Vida y salidas",
     presRestablecer: "Volver a 50/30/20",
+    presIngresoDelMes: "Tu ingreso del mes",
+    presRepartoSugerido: "Reparto sugerido",
+    presPodesCambiarlo: "podés cambiarlo",
+    presCambiarPct: "Cambiar porcentajes",
+    presVasBien: "Vas bien",
+    presTuMeta: "(tu meta)",
+    presTeFaltan: "Te faltan {r}",
+    presMetaCumplida: "¡Meta cumplida!",
     presNotaAuto: "Tomado de tus ingresos de este mes. Podés cambiarlo.",
     presNotaManual: "Estás usando un valor propio.",
     presUsarReal: "Usar mis ingresos del mes",
@@ -417,6 +425,14 @@ const TRADUCCIONES = {
     presOpcFijo: "Fixo",
     presOpcVida: "Vida e lazer",
     presRestablecer: "Voltar para 50/30/20",
+    presIngresoDelMes: "Sua renda do mês",
+    presRepartoSugerido: "Divisão sugerida",
+    presPodesCambiarlo: "você pode mudar",
+    presCambiarPct: "Mudar porcentagens",
+    presVasBien: "Tudo certo",
+    presTuMeta: "(sua meta)",
+    presTeFaltan: "Faltam {r}",
+    presMetaCumplida: "Meta cumprida!",
     presNotaAuto: "Tirado das suas receitas deste mês. Você pode mudar.",
     presNotaManual: "Você está usando um valor próprio.",
     presUsarReal: "Usar minhas receitas do mês",
@@ -726,6 +742,14 @@ const TRADUCCIONES = {
     presOpcFijo: "Fixed",
     presOpcVida: "Living and fun",
     presRestablecer: "Reset to 50/30/20",
+    presIngresoDelMes: "Your income this month",
+    presRepartoSugerido: "Suggested split",
+    presPodesCambiarlo: "you can change it",
+    presCambiarPct: "Change percentages",
+    presVasBien: "You are doing fine",
+    presTuMeta: "(your goal)",
+    presTeFaltan: "{r} to go",
+    presMetaCumplida: "Goal reached!",
     presNotaAuto: "Taken from this month's income. You can change it.",
     presNotaManual: "You are using your own value.",
     presUsarReal: "Use my income for the month",
@@ -2774,12 +2798,12 @@ async function presGuardar() {
   } catch (err) { mostrarToast(traducirErrorDatos(err)); }
 }
 
-function presTarjeta(titulo, pct, color, linea1, linea2, clase) {
+// Una tarjeta del reparto: título con su %, "gastado / límite" a la derecha, barra y una línea de estado.
+function presTarjeta(titulo, derecha, pct, color, estado, clase) {
   return `<div class="analisis-item pres-tarjeta ${clase || ""}">
-    <div class="analisis-fila"><span>${escapeHTML(titulo)}</span><span>${Math.round(pct)}%</span></div>
+    <div class="pres-fila-l"><span>${escapeHTML(titulo)}</span><span>${escapeHTML(derecha)}</span></div>
     <div class="analisis-barra-fondo"><div class="analisis-barra" style="width:${Math.min(100, Math.max(0, pct))}%;background:${color}"></div></div>
-    <div class="pres-detalle">${escapeHTML(linea1)}</div>
-    <div class="pres-detalle pres-detalle-2">${escapeHTML(linea2)}</div>
+    <div class="pres-detalle pres-detalle-2">${escapeHTML(estado)}</div>
   </div>`;
 }
 
@@ -2807,6 +2831,10 @@ function renderPresupuesto() {
   if (document.activeElement !== $("presPctVida")) $("presPctVida").value = v;
   $("presPctAhorro").textContent = a;
 
+  $("presTotal").textContent = base > 0 ? formatoMonto(base) : "—";
+  $("presReparto").innerHTML = [[f, "#2F6F5E"], [v, "#6FAE9A"], [a, "#C98A1B"]]
+    .filter(([p]) => p > 0).map(([p, c]) => `<i style="width:${p}%;background:${c}">${p}%</i>`).join("");
+
   const cont = $("presGrupos");
   if (!(base > 0)) {
     cont.innerHTML = `<div class="vacio">${escapeHTML(t("presSinIngreso"))}</div>`;
@@ -2816,17 +2844,16 @@ function renderPresupuesto() {
       const limite = base * pctGrupo / 100;
       const p = limite > 0 ? gastado / limite * 100 : (gastado > 0 ? 101 : 0);
       const resto = limite - gastado;
-      return presTarjeta(t(clave), p, color(p),
-        t("presGastadoDe").replace("{g}", formatoMonto(gastado)).replace("{l}", formatoMonto(limite)),
-        resto >= 0 ? t("presQueda").replace("{r}", formatoMonto(resto)) : t("presPasaste").replace("{r}", formatoMonto(-resto)),
-        resto < 0 ? "pres-pasado" : "");
+      const estado = resto < 0 ? t("presPasaste").replace("{r}", formatoMonto(-resto))
+        : p < 85 ? t("presVasBien") : t("presQueda").replace("{r}", formatoMonto(resto));
+      return presTarjeta(`${t(clave)} · ${pctGrupo}%`, `${formatoMonto(gastado)} / ${formatoMonto(limite)}`, p, color(p), estado, resto < 0 ? "pres-pasado" : "");
     };
     const meta = base * a / 100;
     const ahorroPosible = Math.max(0, base - gF - gV);
     const pA = meta > 0 ? ahorroPosible / meta * 100 : 0;
+    const estadoA = ahorroPosible >= meta ? t("presMetaCumplida") : t("presTeFaltan").replace("{r}", formatoMonto(meta - ahorroPosible));
     cont.innerHTML = grupo("presGrupoFijos", f, gF) + grupo("presGrupoVida", v, gV) +
-      presTarjeta(t("presGrupoAhorro"), pA, pA >= 100 ? "#2F6F5E" : "#5B7FBF",
-        t("presAhorroPosible").replace("{a}", formatoMonto(ahorroPosible)).replace("{m}", formatoMonto(meta)), "", "pres-ahorro");
+      presTarjeta(`${t("presGrupoAhorro")} · ${a}%`, `${formatoMonto(ahorroPosible)} / ${formatoMonto(meta)}`, pA, pA >= 100 ? "#2F6F5E" : "#5B7FBF", estadoA, "pres-ahorro");
   }
 
   const cats = categorias.filter((c) => c.tipo === "Gasto");
