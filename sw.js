@@ -3,7 +3,7 @@
 // nunca ve información vieja. El "esqueleto" visual se guarda en caché
 // solo como respaldo para cuando no hay internet, pero SIEMPRE se intenta
 // primero traer la versión más nueva del servidor.
-const CACHE_NAME = "finanzasimple-v48";
+const CACHE_NAME = "finanzasimple-v49";
 const ARCHIVOS_ESQUELETO = [
   "./index.html",
   "./css/styles.css",
@@ -11,6 +11,7 @@ const ARCHIVOS_ESQUELETO = [
   "./js/auth.js",
   "./js/data.js",
   "./js/app.js",
+  "./js/importar.js",
   "./manifest.json"
 ];
 

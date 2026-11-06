@@ -300,6 +300,10 @@ Al crear una cuenta aceptás nuestros
 <span class="config-tarjeta-icono">🏷️</span>
 <span class="config-tarjeta-titulo" data-i18n="tituloCategorias">Categorías</span>
 </button>
+<button type="button" class="config-tarjeta" data-config="configPanelImportar">
+<span class="config-tarjeta-icono">📥</span>
+<span class="config-tarjeta-titulo" data-i18n="tituloImportar">Importar movimientos</span>
+</button>
 <button type="button" class="config-tarjeta" data-config="configPanelExportar">
 <span class="config-tarjeta-icono">📤</span>
 <span class="config-tarjeta-titulo" data-i18n="tituloExportar">Exportar mis datos</span>
@@ -412,6 +416,26 @@ Al crear una cuenta aceptás nuestros
 </div>
 
 <!-- Panel: Exportar -->
+<div id="configPanelImportar" class="config-panel" hidden>
+<button type="button" class="config-volver" data-i18n="btnVolver">← Volver</button>
+<h2 class="titulo-seccion" data-i18n="tituloImportar">Importar movimientos</h2>
+<p class="texto-ayuda" data-i18n="textoImportar">Subí un archivo de Excel (.xlsx) o CSV, por ejemplo el reporte de Mercado Pago o el resumen de tu banco. Antes de guardar vas a ver cuántos movimientos entran.</p>
+<div class="fila-config"><input type="file" id="impArchivo" accept=".csv,.txt,.xlsx,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"></div>
+<div id="impError" class="aviso aviso-error" hidden></div>
+<div id="impPaso2" hidden>
+<div class="fila-config"><label><span data-i18n="impColFecha">Columna de la fecha</span><select id="impColFecha"></select></label></div>
+<div class="fila-config"><label><span data-i18n="impColMonto">Columna del monto</span><select id="impColMonto"></select></label></div>
+<div class="fila-config"><label><span data-i18n="impColDetalle">Columna del detalle (opcional)</span><select id="impColDetalle"></select></label></div>
+<div class="fila-config"><label><span data-i18n="impCuenta">Cuenta donde se guardan</span><select id="impCuenta"></select></label></div>
+<div class="fila-config"><label><span data-i18n="impCatGasto">Categoría de los gastos</span><select id="impCatGasto"></select></label></div>
+<div class="fila-config"><label><span data-i18n="impCatIngreso">Categoría de los ingresos</span><select id="impCatIngreso"></select></label></div>
+<div class="fila-config"><label><input type="checkbox" id="impInvertir"> <span data-i18n="impInvertir">Invertir: los montos positivos son gastos</span></label></div>
+<p class="texto-ayuda" data-i18n="impAyudaSigno">Normalmente los montos negativos son gastos y los positivos son ingresos.</p>
+<p id="impResumen" class="texto-ayuda"></p>
+<div id="impMuestra" class="texto-ayuda"></div>
+<button type="button" class="btn-principal" id="impConfirmar">Importar</button>
+</div>
+</div>
 <div id="configPanelExportar" class="config-panel" hidden>
 <button type="button" class="config-volver" data-i18n="btnVolver">← Volver</button>
 <h2 class="titulo-seccion" data-i18n="tituloExportar">Exportar mis datos</h2>
@@ -648,5 +672,6 @@ Al crear una cuenta aceptás nuestros
 <script src="js/auth.js"></script>
 <script src="js/data.js"></script>
 <script src="js/app.js"></script>
+<script src="js/importar.js"></script>
 </body>
 </html>
