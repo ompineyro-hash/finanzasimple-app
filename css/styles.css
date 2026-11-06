@@ -541,3 +541,11 @@ input,select{font-family:inherit;font-size:16px;}
 .pres-editar > summary{list-style:none;cursor:pointer;text-align:center}
 .pres-editar > summary::-webkit-details-marker{display:none}
 .pres-editar[open] > summary{margin-bottom:10px}
+
+/* ---- Análisis en celular: las 4 solapas en 2 filas de 2, sin cortarse ---- */
+@media (max-width:480px){
+  #segmentadoVistaAnalisis{display:grid;grid-template-columns:1fr 1fr;gap:4px;}
+  #segmentadoVistaAnalisis .segmentado-item{padding:10px 4px;font-size:14px;white-space:normal;line-height:1.15;}
+  #segmentadoVistaAnalisis #btnVistaPresupuesto[hidden]{display:none;}
+  #segmentadoAnalisis .segmentado-item{padding:10px 4px;font-size:14px;line-height:1.15;}
+}
