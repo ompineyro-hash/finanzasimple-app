@@ -207,6 +207,11 @@ const TRADUCCIONES = {
     impCuenta: "Cuenta donde se guardan",
     impAvanzado: "Opciones avanzadas (si algo no se lee bien)",
     impSinClasifNombre: "Sin clasificar",
+    catSugTexto: "Todavía no tenés categorías. Podés empezar con una lista típica y después borrar o cambiar lo que no uses.",
+    catSugBoton: "Cargar categorías sugeridas",
+    catSugGasto: "Alimentos|Vivienda y alquiler|Servicios (luz, gas, agua, internet)|Transporte y combustible|Salud|Educación|Impuestos|Ropa|Salidas y ocio|Hogar|Mascotas|Regalos|Otros gastos",
+    catSugIngreso: "Sueldo|Ventas|Alquileres cobrados|Otros ingresos",
+    catSugOk: "Listo: se cargaron las categorías.",
     impAyudaTitulo: "¿Cómo bajo el archivo de Mercado Pago?",
     impAyudaPasos: "En Mercado Pago: Reportes → Todas las transacciones → Nuevo reporte. Elegí el período y el formato CSV, y tocá Generar. Cuando diga \"Nuevo\", tocá Descargar.",
     impTotales: "Ingresos {i} · Gastos {g}",
@@ -569,6 +574,11 @@ const TRADUCCIONES = {
     impCuenta: "Conta onde serão salvos",
     impAvanzado: "Opções avançadas (se algo não for lido bem)",
     impSinClasifNombre: "Sem classificação",
+    catSugTexto: "Você ainda não tem categorias. Pode começar com uma lista típica e depois apagar ou mudar o que não usar.",
+    catSugBoton: "Carregar categorias sugeridas",
+    catSugGasto: "Alimentação|Moradia e aluguel|Serviços (luz, gás, água, internet)|Transporte e combustível|Saúde|Educação|Impostos|Roupas|Lazer e saídas|Casa|Animais de estimação|Presentes|Outras despesas",
+    catSugIngreso: "Salário|Vendas|Aluguéis recebidos|Outras receitas",
+    catSugOk: "Pronto: categorias carregadas.",
     impAyudaTitulo: "Como baixo o arquivo do Mercado Pago?",
     impAyudaPasos: "No Mercado Pago: Relatórios → Todas as transações → Novo relatório. Escolha o período e o formato CSV, e toque em Gerar. Quando aparecer \"Novo\", toque em Baixar.",
     impTotales: "Receitas {i} · Despesas {g}",
@@ -931,6 +941,11 @@ const TRADUCCIONES = {
     impCuenta: "Account to save them in",
     impAvanzado: "Advanced options (if something isn't read well)",
     impSinClasifNombre: "Unclassified",
+    catSugTexto: "You don't have categories yet. You can start with a typical list and then delete or change what you don't use.",
+    catSugBoton: "Load suggested categories",
+    catSugGasto: "Food|Housing and rent|Utilities (power, gas, water, internet)|Transport and fuel|Health|Education|Taxes|Clothing|Going out and leisure|Home|Pets|Gifts|Other expenses",
+    catSugIngreso: "Salary|Sales|Rent received|Other income",
+    catSugOk: "Done: categories loaded.",
     impAyudaTitulo: "How do I download the Mercado Pago file?",
     impAyudaPasos: "In Mercado Pago: Reports → All transactions → New report. Pick the period and CSV format, then tap Generate. When it says \"New\", tap Download.",
     impTotales: "Income {i} · Expenses {g}",
@@ -3120,6 +3135,7 @@ if ($("btnAgregarMoneda")) {
 }
 
 function renderCategoriasConfig() {
+  $("bloqueCatSugeridas").hidden = categorias.length > 0;
   const gasto = categorias.filter((c) => (c.tipo || "Gasto") === "Gasto");
   const ingreso = categorias.filter((c) => c.tipo === "Ingreso");
   $("listaCategoriasGasto").innerHTML = gasto.length
@@ -4427,3 +4443,19 @@ const esLinkDeRecuperacion = /type=recovery/.test(location.hash);
     });
   }
 })();
+
+// Cargar una lista típica de categorías cuando el usuario no tiene ninguna.
+$("btnCatSugeridas").addEventListener("click", async () => {
+  const b = $("btnCatSugeridas"); b.disabled = true;
+  try {
+    const tengo = new Set(categorias.map((c) => (c.tipo || "Gasto") + "|" + c.nombre.toLowerCase()));
+    for (const [tipo, clave] of [["Gasto", "catSugGasto"], ["Ingreso", "catSugIngreso"]]) {
+      for (const nombre of t(clave).split("|")) {
+        if (!tengo.has(tipo + "|" + nombre.toLowerCase())) await crearCategoria(usuario.id, nombre, tipo);
+      }
+    }
+    await cargarCuentasYCategorias();
+    mostrarToast(t("catSugOk"));
+  } catch (err) { mostrarToast(traducirErrorDatos(err)); }
+  b.disabled = false;
+});
