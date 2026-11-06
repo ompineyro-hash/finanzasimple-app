@@ -121,7 +121,12 @@ const TRADUCCIONES = {
     presUsarReal: "Usar mis ingresos del mes",
     tituloFijos: "Gastos fijos",
     tituloGuia: "Guía rápida",
-    guiaTitulo: "Ya sabés lo básico 🎉",
+    guiaTitulo: "¡Bien hecho, ya empezaste! 🎉",
+    btnVolver: "← Volver",
+    pasarAIngreso: "↔️ Pasar a Ingreso",
+    pasarAGasto: "↔️ Pasar a Gasto",
+    cambiarAIngresoTit: "Cambiar a Ingreso",
+    cambiarAGastoTit: "Cambiar a Gasto",
     guiaSub: "Cuando quieras, probá esto:",
     guiaVoz: "Cargar con la voz",
     guiaVozSub: "Tocá Voz y hablá",
@@ -450,7 +455,12 @@ const TRADUCCIONES = {
     presUsarReal: "Usar minhas receitas do mês",
     tituloFijos: "Gastos fixos",
     tituloGuia: "Guia rápido",
-    guiaTitulo: "Você já sabe o básico 🎉",
+    guiaTitulo: "Muito bem, você já começou! 🎉",
+    btnVolver: "← Voltar",
+    pasarAIngreso: "↔️ Passar para Receita",
+    pasarAGasto: "↔️ Passar para Despesa",
+    cambiarAIngresoTit: "Mudar para Receita",
+    cambiarAGastoTit: "Mudar para Despesa",
     guiaSub: "Quando quiser, experimente:",
     guiaVoz: "Registrar com a voz",
     guiaVozSub: "Toque em Voz e fale",
@@ -779,7 +789,12 @@ const TRADUCCIONES = {
     presUsarReal: "Use my income for the month",
     tituloFijos: "Fixed expenses",
     tituloGuia: "Quick guide",
-    guiaTitulo: "You know the basics 🎉",
+    guiaTitulo: "Well done, you have started! 🎉",
+    btnVolver: "← Back",
+    pasarAIngreso: "↔️ Switch to Income",
+    pasarAGasto: "↔️ Switch to Expense",
+    cambiarAIngresoTit: "Change to Income",
+    cambiarAGastoTit: "Change to Expense",
     guiaSub: "Whenever you like, try this:",
     guiaVoz: "Add with your voice",
     guiaVozSub: "Tap Voice and speak",
@@ -3039,7 +3054,7 @@ function filaEditable(item, tipo) {
     : "";
   const tipoItem = item.tipo || "Gasto";
   const botonTipo = esCategoria
-    ? `<button data-accion="cambiar-tipo" data-tipo="${tipo}" title="Cambiar a ${tipoItem === "Gasto" ? "Ingreso" : "Gasto"}">${tipoItem === "Gasto" ? "↔️ Pasar a Ingreso" : "↔️ Pasar a Gasto"}</button>`
+    ? `<button data-accion="cambiar-tipo" data-tipo="${tipo}" title="${escapeHTML(t(tipoItem === "Gasto" ? "cambiarAIngresoTit" : "cambiarAGastoTit"))}">${escapeHTML(t(tipoItem === "Gasto" ? "pasarAIngreso" : "pasarAGasto"))}</button>`
     : "";
   return `
     <div class="editable-item" data-id="${item.id}">
