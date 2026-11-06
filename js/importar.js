@@ -205,6 +205,11 @@ function impPrepararPantalla(filas) {
     const g = Array.from($(id).options).find((o) => /otro|vari|sin cl|general|outr|other/i.test(o.value));
     if (g) $(id).value = g.value;
   });
+  // Reporte de Mercado Pago (se reconoce por sus columnas): se elige solo la cuenta "Mercado Pago" si existe.
+  if (cab.some((h) => /^settlement_net_amount$/i.test(String(h).trim()))) {
+    const mp = cs.find((c) => /mercado\s*pago|^mp$/i.test(c.nombre));
+    if (mp) $("impCuenta").value = mp.nombre;
+  }
   $("impInvertir").checked = false;
   $("impPaso2").hidden = false;
 }
