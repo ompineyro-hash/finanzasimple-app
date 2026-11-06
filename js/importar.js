@@ -144,7 +144,11 @@ function impAdivinarColumnas(cabeceras) {
   const fecha = buscar(/fecha|date|data|creaci|created|release|dia|día/);
   const monto = buscar(/monto|amount|importe|valor|neto|net|total|valor/);
   const detalle = buscar(/descrip|detalle|concepto|motivo|description|reference|referencia|nombre|name|title|titulo/);
-  return { fecha, monto, detalle };
+  const cuenta = buscar(/^\s*(cuenta|conta|account)\s*$/);
+  const cat = buscar(/^\s*(categor[ií]a|category)\s*$/);
+  const estado = buscar(/^\s*(estado|status)\s*$/);
+  const fpago = buscar(/fecha de pago|data de pagamento|payment date/);
+  return { fecha, monto, detalle, cuenta, cat, estado, fpago };
 }
 
 // ---------- pantalla (Ajustes → Importar movimientos) ----------
@@ -180,9 +184,14 @@ function impPrepararPantalla(filas) {
   $("impColFecha").innerHTML = impOpciones(cab, false);
   $("impColMonto").innerHTML = impOpciones(cab, false);
   $("impColDetalle").innerHTML = impOpciones(cab, true);
+  $("impColCuenta").innerHTML = impOpciones(cab, true);
+  $("impColCat").innerHTML = impOpciones(cab, true);
+  imp.g = g;
   $("impColFecha").value = String(g.fecha >= 0 ? g.fecha : 0);
   $("impColMonto").value = String(g.monto >= 0 ? g.monto : Math.min(1, cab.length - 1));
   $("impColDetalle").value = String(g.detalle);
+  $("impColCuenta").value = String(g.cuenta);
+  $("impColCat").value = String(g.cat);
   const cs = impCuentasBase();
   $("impCuenta").innerHTML = cs.map((c) => `<option value="${escapeHTML(c.nombre)}">${escapeHTML(c.nombre)}</option>`).join("");
   const opt = (tipo) => categorias.filter((c) => (c.tipo || "Gasto") === tipo)
@@ -195,18 +204,38 @@ function impPrepararPantalla(filas) {
 
 function impArmarLista() {
   const cf = +$("impColFecha").value, cm = +$("impColMonto").value, cd = +$("impColDetalle").value;
-  const inv = $("impInvertir").checked, cuenta = $("impCuenta").value;
+  const cc = +$("impColCuenta").value, ck = +$("impColCat").value;
+  const ce = imp.g.estado, cp = imp.g.fpago;
+  const inv = $("impInvertir").checked, cuentaDef = $("impCuenta").value;
   const catG = $("impCatGasto").value, catI = $("impCatIngreso").value, base = monedaBase();
+  const bajo = (x) => String(x ?? "").trim().toLowerCase();
+  const ctasBase = impCuentasBase();
   const datos = imp.filas.slice(imp.ini + 1, imp.ini + 1 + IMP_MAX);
   const lista = []; let ignoradas = 0;
   for (const f of datos) {
     const fecha = impParsearFecha(f[cf]); let monto = impParsearMonto(f[cm]);
     if (!fecha || !Number.isFinite(monto) || monto === 0) { ignoradas++; continue; }
     if (inv) monto = -monto;
+    let cuenta = cuentaDef;
+    if (cc >= 0 && bajo(f[cc])) {
+      const c = ctasBase.find((x) => bajo(x.nombre) === bajo(f[cc]));
+      if (!c) { ignoradas++; continue; } // cuenta que no existe o en otra moneda
+      cuenta = c.nombre;
+    }
     const detalle = (cd >= 0 ? String(f[cd] ?? "").trim() : "").slice(0, 120);
-    const esGasto = monto < 0;
-    lista.push({ tipo: esGasto ? "Gasto" : "Ingreso", fecha, cuenta, categoria: esGasto ? catG : catI,
-      detalle, monto: Math.round(Math.abs(monto) * 100) / 100, moneda: base, cotizacion: 1, estado: "pagado", fecha_pago: null });
+    const tipo = monto < 0 ? "Gasto" : "Ingreso";
+    let categoria = tipo === "Gasto" ? catG : catI;
+    if (ck >= 0 && bajo(f[ck])) {
+      const k = categorias.find((x) => (x.tipo || "Gasto") === tipo && bajo(x.nombre) === bajo(f[ck]));
+      if (k) categoria = k.nombre;
+    }
+    let estado = "pagado", fecha_pago = null;
+    if (ce >= 0 && /pendiente|pendente|pending/.test(bajo(f[ce]))) {
+      const fp = cp >= 0 ? impParsearFecha(f[cp]) : null;
+      if (fp) { estado = "pendiente"; fecha_pago = fp; }
+    }
+    lista.push({ tipo, fecha, cuenta, categoria, detalle, monto: Math.round(Math.abs(monto) * 100) / 100,
+      moneda: base, cotizacion: 1, estado, fecha_pago });
   }
   return { lista, ignoradas, recortado: imp.filas.length - imp.ini - 1 > IMP_MAX };
 }
@@ -216,14 +245,14 @@ const impClave = (m) => [String(m.fecha).slice(0, 10), Number(m.monto).toFixed(2
 async function impRecalcular() {
   if (!imp) return;
   const { lista, ignoradas, recortado } = impArmarLista();
-  const cuenta = $("impCuenta").value;
-  // Los que ya existen en esa cuenta se descuentan uno a uno (si hay dos iguales en el archivo y uno ya cargado, entra el otro).
+  // Los que ya existen en la misma cuenta se descuentan uno a uno.
+  const claveC = (m) => impClave(m) + "|" + String(m.cuenta || "");
   const existentes = new Map();
-  (await listarTodosLosMovimientos(usuario.id)).filter((m) => m.cuenta === cuenta)
-    .forEach((m) => existentes.set(impClave(m), (existentes.get(impClave(m)) || 0) + 1));
+  (await listarTodosLosMovimientos(usuario.id))
+    .forEach((m) => existentes.set(claveC(m), (existentes.get(claveC(m)) || 0) + 1));
   const nuevos = [];
   for (const m of lista) {
-    const k = impClave(m), n = existentes.get(k) || 0;
+    const k = claveC(m), n = existentes.get(k) || 0;
     if (n > 0) existentes.set(k, n - 1); else nuevos.push(m);
   }
   imp.nuevos = nuevos;
@@ -272,6 +301,6 @@ async function impConfirmar() {
 }
 
 $("impArchivo").addEventListener("change", impElegirArchivo);
-["impColFecha", "impColMonto", "impColDetalle", "impCuenta", "impCatGasto", "impCatIngreso", "impInvertir"]
+["impColFecha", "impColMonto", "impColDetalle", "impColCuenta", "impColCat", "impCuenta", "impCatGasto", "impCatIngreso", "impInvertir"]
   .forEach((id) => $(id).addEventListener("change", impRecalcular));
 $("impConfirmar").addEventListener("click", impConfirmar);
