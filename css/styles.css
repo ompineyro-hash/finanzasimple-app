@@ -520,3 +520,10 @@ input,select{font-family:inherit;font-size:16px;}
   .topbar .mes-selector .icono-btn{min-width:24px;padding:6px 2px;font-size:12px;}
   .topbar #btnSalir{margin-left:8px;}
 }
+
+/* ---- Carga por voz en pantallas anchas (compu): ancho limitado y centrada ---- */
+@media (min-width:700px){
+  .voz-pantalla{align-items:center;}
+  .voz-pantalla > *{width:100%;max-width:560px;}
+  .voz-pantalla .voz-q{font-size:19px;}
+}
