@@ -261,14 +261,33 @@ async function impRecalcular() {
     if (n > 0) existentes.set(k, n - 1); else nuevos.push(m);
   }
   imp.nuevos = nuevos;
+  // Posibles transferencias propias: mismo día, mismo monto, uno ingreso y otro gasto.
+  const par = new Set();
+  nuevos.forEach((m, i) => {
+    if (par.has(i)) return;
+    const k = nuevos.findIndex((o, n) => n > i && !par.has(n) && o.fecha === m.fecha && o.monto === m.monto && o.tipo !== m.tipo);
+    if (k >= 0) { par.add(i); par.add(k); }
+  });
+  imp.par = par;
+  imp.sel = new Set(nuevos.map((_, i) => i).filter((i) => !par.has(i)));
   const dup = lista.length - nuevos.length;
   $("impResumen").textContent = t("impResumen").replace("{n}", nuevos.length).replace("{d}", dup).replace("{x}", ignoradas)
     + (recortado ? " · " + t("impMuchas").replace(/\{max\}/g, IMP_MAX) : "");
-  $("impMuestra").innerHTML = nuevos.slice(0, 5).map((m) =>
-    `${escapeHTML(m.fecha)} · ${m.tipo === "Gasto" ? "−" : "+"}${escapeHTML(formatoMonto(m.monto))} · ${escapeHTML(m.detalle || m.categoria)}`).join("<br>");
+  impPintarLista();
+}
+
+function impPintarLista() {
+  $("impMuestra").innerHTML = '<div class="imp-lista">' + imp.nuevos.map((m, i) =>
+    `<label class="imp-fila"><input type="checkbox" data-i="${i}"${imp.sel.has(i) ? " checked" : ""}> ` +
+    `<span>${escapeHTML(m.fecha)} · ${m.tipo === "Gasto" ? "−" : "+"}${escapeHTML(formatoMonto(m.monto))} · ${escapeHTML(m.detalle || m.categoria)}` +
+    `${imp.par.has(i) ? ' <em class="imp-transf">↔ ' + escapeHTML(t("impTransf")) + "</em>" : ""}</span></label>`).join("") + "</div>";
+  impActualizarBoton();
+}
+
+function impActualizarBoton() {
   const b = $("impConfirmar");
-  b.textContent = t("impBoton").replace("{n}", nuevos.length);
-  b.disabled = !nuevos.length;
+  b.textContent = t("impBoton").replace("{n}", imp.sel.size);
+  b.disabled = !imp.sel.size;
 }
 
 async function impElegirArchivo(ev) {
@@ -283,7 +302,6 @@ async function impElegirArchivo(ev) {
     if (filas.length < 2) { impMostrarError(t("impErrSinFilas")); return; }
     impPrepararPantalla(filas);
     await impRecalcular();
-    if (!imp.nuevos.length && !$("impResumen").textContent.startsWith("0 ")) return;
   } catch (e) {
     console.error(e);
     impMostrarError(t("impErrArchivo"));
@@ -291,10 +309,10 @@ async function impElegirArchivo(ev) {
 }
 
 async function impConfirmar() {
-  if (!imp || !imp.nuevos || !imp.nuevos.length) return;
+  if (!imp || !imp.sel || !imp.sel.size) return;
   const b = $("impConfirmar"); b.disabled = true;
   try {
-    const todos = imp.nuevos;
+    const todos = imp.nuevos.filter((_, i) => imp.sel.has(i));
     for (let i = 0; i < todos.length; i += 200) await crearMovimientos(usuario.id, todos.slice(i, i + 200));
     mostrarToast(t("impOk").replace("{n}", todos.length));
     $("impArchivo").value = ""; $("impPaso2").hidden = true; imp = null;
@@ -308,4 +326,10 @@ async function impConfirmar() {
 $("impArchivo").addEventListener("change", impElegirArchivo);
 ["impColFecha", "impColMonto", "impColDetalle", "impColCuenta", "impColCat", "impCuenta", "impCatGasto", "impCatIngreso", "impInvertir"]
   .forEach((id) => $(id).addEventListener("change", impRecalcular));
+$("impMuestra").addEventListener("change", (e) => {
+  const i = e.target && e.target.dataset ? e.target.dataset.i : undefined;
+  if (i === undefined || !imp) return;
+  if (e.target.checked) imp.sel.add(+i); else imp.sel.delete(+i);
+  impActualizarBoton();
+});
 $("impConfirmar").addEventListener("click", impConfirmar);
