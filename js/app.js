@@ -158,6 +158,7 @@ const TRADUCCIONES = {
     tengoDolarRef: "Los dólares se valúan a {v} (dólar oficial Banco Nación, venta).",
     tengoDolarGuardado: "Los dólares se valúan a {v} (último valor guardado en este dispositivo; no se pudo consultar el Banco Nación).",
     tengoNota: "El saldo se calcula con el saldo inicial de cada cuenta más lo que cargaste. Si no coincide con la realidad, tocá Ajustar.",
+    tengoCartel: "Antes de empezar: decile a la app con cuánta plata arrancás en cada cuenta. Tocá Ajustar en cada una y escribí lo que hay hoy. Se hace una sola vez. Después la app suma y resta sola con lo que cargues.",
     trTitulo: "Transferir entre cuentas",
     trDesde: "Desde",
     trHacia: "Hacia",
@@ -529,6 +530,7 @@ const TRADUCCIONES = {
     tengoDolarRef: "Os dólares são avaliados a {v} (dólar oficial Banco Nación, venda).",
     tengoDolarGuardado: "Os dólares são avaliados a {v} (último valor salvo neste dispositivo; não foi possível consultar o Banco Nación).",
     tengoNota: "O saldo é calculado com o saldo inicial de cada conta mais o que você registrou. Se não bater com a realidade, toque em Ajustar.",
+    tengoCartel: "Antes de começar: diga ao app com quanto dinheiro você começa em cada conta. Toque em Ajustar em cada uma e digite o que há hoje. Só se faz uma vez. Depois o app soma e subtrai sozinho com o que você registrar.",
     trTitulo: "Transferir entre contas",
     trDesde: "De",
     trHacia: "Para",
@@ -900,6 +902,7 @@ const TRADUCCIONES = {
     tengoDolarRef: "Dollars are valued at {v} (official Banco Nación rate, selling).",
     tengoDolarGuardado: "Dollars are valued at {v} (last value saved on this device; Banco Nación could not be reached).",
     tengoNota: "The balance is each account's starting balance plus what you recorded. If it does not match reality, tap Adjust.",
+    tengoCartel: "Before you start: tell the app how much money you begin with in each account. Tap Adjust on each one and enter what is there today. You only do this once. After that the app adds and subtracts on its own with what you record.",
     trTitulo: "Transfer between accounts",
     trDesde: "From",
     trHacia: "To",
@@ -2749,7 +2752,8 @@ function formatoMontoMoneda(n, moneda) {
 function tengoHTML() {
   if (!tengoCalculo) return `<div class="sit-vacio">…</div>`;
   const { filas, total, sinCotiz } = tengoCalculo;
-  let h = `<div class="sit-card sit-resumen"><div class="sit-etq"><span>${escapeHTML(t("tengoTotal"))}</span></div><div class="sit-grande ${total < 0 ? "sit-mal" : "sit-bien"}">${escapeHTML(formatoMonto(total))}</div></div>`;
+  let h = cuentas.length && cuentas.every((c) => !Number(c.saldo_inicial)) ? `<div class="tengo-cartel">${escapeHTML(t("tengoCartel"))}</div>` : "";
+  h += `<div class="sit-card sit-resumen"><div class="sit-etq"><span>${escapeHTML(t("tengoTotal"))}</span></div><div class="sit-grande ${total < 0 ? "sit-mal" : "sit-bien"}">${escapeHTML(formatoMonto(total))}</div></div>`;
   if (sinCotiz.length) h += `<p class="texto-ayuda">${escapeHTML(t("tengoSinCotiz").replace("{m}", sinCotiz.join(", ")))}</p>`;
   if (tengoCalculo.refUSD) h += `<p class="texto-ayuda">${escapeHTML(t("tengoDolarRef").replace("{v}", formatoMonto(tengoCalculo.refUSD)))}</p>`;
   else if (filas.some((f) => f.moneda !== monedaBase()) && tengoCalculo.cotUsada.USD) h += `<p class="texto-ayuda">${escapeHTML(t("tengoDolarGuardado").replace("{v}", formatoMonto(Number(tengoCalculo.cotUsada.USD))))}</p>`;
