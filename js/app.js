@@ -155,6 +155,8 @@ const TRADUCCIONES = {
     tengoAjustarPide: "¿Cuánto hay hoy en {c}?",
     tengoTransferir: "⇄ Transferir entre cuentas",
     tengoUltimas: "Últimas transferencias",
+    tengoDolarRef: "Los dólares se valúan a {v} (dólar oficial Banco Nación, venta).",
+    tengoDolarGuardado: "Los dólares se valúan a {v} (último valor guardado en este dispositivo; no se pudo consultar el Banco Nación).",
     tengoNota: "El saldo se calcula con el saldo inicial de cada cuenta más lo que cargaste. Si no coincide con la realidad, tocá Ajustar.",
     trTitulo: "Transferir entre cuentas",
     trDesde: "Desde",
@@ -522,6 +524,8 @@ const TRADUCCIONES = {
     tengoAjustarPide: "Quanto há hoje em {c}?",
     tengoTransferir: "⇄ Transferir entre contas",
     tengoUltimas: "Últimas transferências",
+    tengoDolarRef: "Os dólares são avaliados a {v} (dólar oficial Banco Nación, venda).",
+    tengoDolarGuardado: "Os dólares são avaliados a {v} (último valor salvo neste dispositivo; não foi possível consultar o Banco Nación).",
     tengoNota: "O saldo é calculado com o saldo inicial de cada conta mais o que você registrou. Se não bater com a realidade, toque em Ajustar.",
     trTitulo: "Transferir entre contas",
     trDesde: "De",
@@ -889,6 +893,8 @@ const TRADUCCIONES = {
     tengoAjustarPide: "How much is there today in {c}?",
     tengoTransferir: "⇄ Transfer between accounts",
     tengoUltimas: "Latest transfers",
+    tengoDolarRef: "Dollars are valued at {v} (official Banco Nación rate, selling).",
+    tengoDolarGuardado: "Dollars are valued at {v} (last value saved on this device; Banco Nación could not be reached).",
     tengoNota: "The balance is each account's starting balance plus what you recorded. If it does not match reality, tap Adjust.",
     trTitulo: "Transfer between accounts",
     trDesde: "From",
@@ -2705,7 +2711,13 @@ async function cargarTengo() {
       if (x.cuenta_origen in saldos) saldos[x.cuenta_origen] -= Number(x.monto_origen);
       if (x.cuenta_destino in saldos) saldos[x.cuenta_destino] += Number(x.monto_destino);
     });
-    const base = monedaBase(), cot = leerCotiz();
+    const base = monedaBase(), cot = { ...leerCotiz() };
+    // Los dólares se valúan al dólar oficial del Banco Nación (venta); si no se puede consultar, se usa el último valor guardado.
+    let refUSD = null;
+    if (base === "ARS" && cuentas.some((c) => c.moneda === "USD")) {
+      const d = await obtenerDolarBNA();
+      if (d && d.venta > 0) { cot.USD = d.venta; refUSD = d.venta; }
+    }
     let total = 0; const sinCotiz = [];
     const filas = cuentas.map((c) => {
       const moneda = c.moneda || base, saldo = Math.round(saldos[c.nombre] * 100) / 100;
@@ -2714,7 +2726,7 @@ async function cargarTengo() {
       else if (saldo !== 0 && !sinCotiz.includes(moneda)) sinCotiz.push(moneda);
       return { id: c.id, cuenta: c.nombre, moneda, saldo };
     });
-    tengoCalculo = { filas, total, sinCotiz };
+    tengoCalculo = { filas, total, sinCotiz, refUSD, cotUsada: cot };
     tengoDisponible = true;
   } catch { tengoDisponible = false; tengoCalculo = null; }
 }
@@ -2733,6 +2745,8 @@ function tengoHTML() {
   const { filas, total, sinCotiz } = tengoCalculo;
   let h = `<div class="sit-card sit-resumen"><div class="sit-etq"><span>${escapeHTML(t("tengoTotal"))}</span></div><div class="sit-grande ${total < 0 ? "sit-mal" : "sit-bien"}">${escapeHTML(formatoMonto(total))}</div></div>`;
   if (sinCotiz.length) h += `<p class="texto-ayuda">${escapeHTML(t("tengoSinCotiz").replace("{m}", sinCotiz.join(", ")))}</p>`;
+  if (tengoCalculo.refUSD) h += `<p class="texto-ayuda">${escapeHTML(t("tengoDolarRef").replace("{v}", formatoMonto(tengoCalculo.refUSD)))}</p>`;
+  else if (filas.some((f) => f.moneda !== monedaBase()) && tengoCalculo.cotUsada.USD) h += `<p class="texto-ayuda">${escapeHTML(t("tengoDolarGuardado").replace("{v}", formatoMonto(Number(tengoCalculo.cotUsada.USD))))}</p>`;
   h += `<div class="sit-lista">` + filas.map((f) => `<div class="pend-fila"><div class="pend-info"><div class="pend-cat">${escapeHTML(f.cuenta)}</div>
       <div class="pend-sub">${escapeHTML(f.moneda)}</div></div>
       <div class="pend-derecha"><div class="mov-monto ${f.saldo < 0 ? "gasto" : "ingreso"}">${escapeHTML(formatoMontoMoneda(f.saldo, f.moneda))}</div>
