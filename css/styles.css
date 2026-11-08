@@ -563,7 +563,7 @@ input,select{font-family:inherit;font-size:16px;}
 .guia-nota{font-size:13px;text-align:center;color:var(--texto);opacity:.8;}
 
 /* Importar: lista con casillas */
-.imp-lista { max-height: 340px; overflow: auto; border: 1px solid #ddd; border-radius: 10px; padding: 6px 10px; background: #fff; }
+.imp-lista { max-height: 60vh; overflow: auto; border: 1px solid #ddd; border-radius: 10px; padding: 6px 10px; background: #fff; }
 .imp-fila { display: flex; gap: 8px; align-items: flex-start; padding: 5px 0; border-bottom: 1px solid #f0f0f0; font-size: 0.92rem; }
 .imp-fila:last-child { border-bottom: 0; }
 .imp-fila input { margin-top: 3px; flex: none; }

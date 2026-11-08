@@ -150,7 +150,8 @@ function impAdivinarColumnas(cabeceras) {
   const cat = buscar(/^\s*(categor[ií]a|category)\s*$/);
   const estado = buscar(/^\s*(estado|status)\s*$/);
   const fpago = buscar(/fecha de pago|data de pagamento|payment date/);
-  return { fecha, monto, detalle, cuenta, cat, estado, fpago };
+  const medio = buscar(/^\s*payment_method_type\s*$/);
+  return { fecha, monto, detalle, cuenta, cat, estado, fpago, medio };
 }
 
 // ---------- pantalla (Ajustes → Importar movimientos) ----------
@@ -249,8 +250,10 @@ function impArmarLista() {
       const fp = cp >= 0 ? impParsearFecha(f[cp]) : null;
       if (fp) { estado = "pendiente"; fecha_pago = fp; }
     }
+    // Mercado Pago: lo que entra por transferencia bancaria es plata propia puesta ahí, no un ingreso.
+    const banco = imp.g.medio >= 0 && /^bank_transfer$/i.test(String(f[imp.g.medio] || "").trim()) && tipo === "Ingreso";
     lista.push({ tipo, fecha, cuenta, categoria, detalle, monto: Math.round(Math.abs(monto) * 100) / 100,
-      moneda: base, cotizacion: 1, estado, fecha_pago });
+      moneda: base, cotizacion: 1, estado, fecha_pago, _banco: banco });
   }
   return { lista, ignoradas, recortado: imp.filas.length - imp.ini - 1 > IMP_MAX };
 }
@@ -279,7 +282,7 @@ async function impRecalcular() {
     if (k >= 0) { par.add(i); par.add(k); }
   });
   imp.par = par;
-  imp.sel = new Set(nuevos.map((_, i) => i).filter((i) => !par.has(i)));
+  imp.sel = new Set(nuevos.map((_, i) => i).filter((i) => !par.has(i) && !nuevos[i]._banco));
   const dup = lista.length - nuevos.length;
   $("impResumen").textContent = t("impResumen").replace("{n}", nuevos.length).replace("{d}", dup).replace("{x}", ignoradas)
     + (recortado ? " · " + t("impMuchas").replace(/\{max\}/g, IMP_MAX) : "");
@@ -290,7 +293,7 @@ function impPintarLista() {
   $("impMuestra").innerHTML = '<div class="imp-lista">' + imp.nuevos.map((m, i) =>
     `<label class="imp-fila"><input type="checkbox" data-i="${i}"${imp.sel.has(i) ? " checked" : ""}> ` +
     `<span>${escapeHTML(m.fecha)} · ${m.tipo === "Gasto" ? "−" : "+"}${escapeHTML(formatoMonto(m.monto))} · ${escapeHTML(m.detalle || m.categoria)}` +
-    `${imp.par.has(i) ? ' <em class="imp-transf">↔ ' + escapeHTML(t("impTransf")) + "</em>" : ""}</span></label>`).join("") + "</div>";
+    `${imp.par.has(i) ? ' <em class="imp-transf">↔ ' + escapeHTML(t("impTransf")) + "</em>" : (m._banco ? ' <em class="imp-transf">🏦 ' + escapeHTML(t("impBanco")) + "</em>" : "")}</span></label>`).join("") + "</div>";
   impActualizarBoton();
 }
 
@@ -325,7 +328,7 @@ async function impConfirmar() {
   if (!imp || !imp.sel || !imp.sel.size) return;
   const b = $("impConfirmar"); b.disabled = true;
   try {
-    const todos = imp.nuevos.filter((_, i) => imp.sel.has(i));
+    const todos = imp.nuevos.filter((_, i) => imp.sel.has(i)).map((m) => { const { _banco, ...resto } = m; return resto; });
     const sin = t("impSinClasifNombre");
     let creada = false;
     for (const tipo of ["Gasto", "Ingreso"]) {
