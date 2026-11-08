@@ -156,6 +156,8 @@ function impAdivinarColumnas(cabeceras) {
 
 // ---------- pantalla (Ajustes → Importar movimientos) ----------
 const IMP_MAX = 2000;
+// El nombre de una categoría no puede repetirse entre gastos e ingresos, por eso cada tipo tiene el suyo.
+function impNombreSin(tipo) { return t(tipo === "Gasto" ? "impSinClasifNombre" : "impSinClasifIngreso"); }
 const IMP_SIN = "__sin__"; // "Sin clasificar": se crea al importar si no existe
 let imp = null; // { filas, cab, ini }
 
@@ -198,7 +200,7 @@ function impPrepararPantalla(filas) {
   $("impColCat").value = String(g.cat);
   const cs = impCuentasBase();
   $("impCuenta").innerHTML = cs.map((c) => `<option value="${escapeHTML(c.nombre)}">${escapeHTML(c.nombre)}</option>`).join("");
-  const opt = (tipo) => `<option value="${IMP_SIN}">${escapeHTML(t("impSinClasifNombre"))}</option>` +
+  const opt = (tipo) => `<option value="${IMP_SIN}">${escapeHTML(impNombreSin(tipo))}</option>` +
     categorias.filter((c) => (c.tipo || "Gasto") === tipo)
       .map((c) => `<option value="${escapeHTML(c.nombre)}">${escapeHTML(c.nombre)}</option>`).join("");
   $("impCatGasto").innerHTML = opt("Gasto");
@@ -217,9 +219,8 @@ function impArmarLista() {
   const cc = +$("impColCuenta").value, ck = +$("impColCat").value;
   const ce = imp.g.estado, cp = imp.g.fpago;
   const inv = $("impInvertir").checked, cuentaDef = $("impCuenta").value;
-  const sin = t("impSinClasifNombre");
-  const catG = $("impCatGasto").value === IMP_SIN ? sin : $("impCatGasto").value;
-  const catI = $("impCatIngreso").value === IMP_SIN ? sin : $("impCatIngreso").value;
+  const catG = $("impCatGasto").value === IMP_SIN ? impNombreSin("Gasto") : $("impCatGasto").value;
+  const catI = $("impCatIngreso").value === IMP_SIN ? impNombreSin("Ingreso") : $("impCatIngreso").value;
   const base = monedaBase();
   const bajo = (x) => String(x ?? "").trim().toLowerCase();
   const ctasBase = impCuentasBase();
@@ -329,10 +330,10 @@ async function impConfirmar() {
   const b = $("impConfirmar"); b.disabled = true;
   try {
     const todos = imp.nuevos.filter((_, i) => imp.sel.has(i)).map((m) => { const { _banco, ...resto } = m; return resto; });
-    const sin = t("impSinClasifNombre");
     let creada = false;
     for (const tipo of ["Gasto", "Ingreso"]) {
-      if (todos.some((m) => m.tipo === tipo && m.categoria === sin) && !categorias.some((c) => (c.tipo || "Gasto") === tipo && c.nombre === sin)) {
+      const sin = impNombreSin(tipo);
+      if (todos.some((m) => m.tipo === tipo && m.categoria === sin) && !categorias.some((c) => c.nombre === sin)) {
         await crearCategoria(usuario.id, sin, tipo); creada = true;
       }
     }
