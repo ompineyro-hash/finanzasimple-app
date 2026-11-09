@@ -141,6 +141,8 @@ const TRADUCCIONES = {
     fijosPorMes: "Gastos fijos por mes",
     fijosIngPorMes: "Ingresos fijos por mes",
     fijoTipo: "Tipo",
+    fijoDetalleLabel: "Detalle",
+    fijoPideDetalle: "Nombre:",
     fijoEditar: "Editar",
     fijoPideDia: "Día del mes (1 a 31):",
     fijoPideMonto: "Monto:",
@@ -523,6 +525,8 @@ const TRADUCCIONES = {
     fijosPorMes: "Despesas fixas por mês",
     fijosIngPorMes: "Receitas fixas por mês",
     fijoTipo: "Tipo",
+    fijoDetalleLabel: "Detalhe",
+    fijoPideDetalle: "Nome:",
     fijoEditar: "Editar",
     fijoPideDia: "Dia do mês (1 a 31):",
     fijoPideMonto: "Valor:",
@@ -905,6 +909,8 @@ const TRADUCCIONES = {
     fijosPorMes: "Fixed expenses per month",
     fijosIngPorMes: "Fixed income per month",
     fijoTipo: "Type",
+    fijoDetalleLabel: "Detail",
+    fijoPideDetalle: "Name:",
     fijoEditar: "Edit",
     fijoPideDia: "Day of the month (1 to 31):",
     fijoPideMonto: "Amount:",
@@ -3019,9 +3025,11 @@ $("listaFijos").addEventListener("click", async (e) => {
     const dia = parseInt(rDia, 10);
     const rMonto = prompt(t("fijoPideMonto"), String(f.monto).replace(".", ","));
     if (rMonto === null) return;
-    const monto = numeroDesdeTexto(rMonto);
-    if (!Number.isInteger(dia) || dia < 1 || dia > 31 || !Number.isFinite(monto) || monto <= 0) return mostrarToast(t("fijoError"));
-    try { await actualizarFijo(f.id, { dia, monto }); await cargarFijos(); renderFijos(); mostrarToast(t("fijoToastAgregado")); }
+    const rNombre = prompt(t("fijoPideDetalle"), f.detalle || "");
+    if (rNombre === null) return;
+    const monto = numeroDesdeTexto(rMonto), detalle = rNombre.trim();
+    if (!detalle || !Number.isInteger(dia) || dia < 1 || dia > 31 || !Number.isFinite(monto) || monto <= 0) return mostrarToast(t("fijoError"));
+    try { await actualizarFijo(f.id, { dia, monto, detalle }); await cargarFijos(); renderFijos(); mostrarToast(t("fijoToastAgregado")); }
     catch (err) { mostrarToast(traducirErrorDatos(err)); }
     return;
   }
