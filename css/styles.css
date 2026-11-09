@@ -577,3 +577,5 @@ input,select{font-family:inherit;font-size:16px;}
 .mov-icono.interno{background:#e7ebf0;color:#44566a;font-weight:700;}
 .mov-interno{background:#f3f6f9;border:1px dashed #b7c3d0;cursor:pointer;}
 .mov-monto.interno{color:#44566a;}
+
+.fijo-monto.ingreso{color:var(--ingreso,#1f7a4d)}

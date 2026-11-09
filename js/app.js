@@ -120,7 +120,7 @@ const TRADUCCIONES = {
     presNotaAuto: "Tomado de tus ingresos de este mes. Podés cambiarlo.",
     presNotaManual: "Estás usando un valor propio.",
     presUsarReal: "Usar mis ingresos del mes",
-    tituloFijos: "Gastos fijos",
+    tituloFijos: "Gastos e ingresos fijos",
     tituloGuia: "Guía rápida",
     guiaTitulo: "¡Bien hecho, ya empezaste! 🎉",
     btnVolver: "← Volver",
@@ -137,13 +137,18 @@ const TRADUCCIONES = {
     guiaAnaSub: "En qué se va tu plata",
     guiaIr: "Ir a mi Ingasto",
     guiaRepetir: "Podés volver a ver esta guía en Ajustes.",
-    fijosAyuda: "Cargá lo que pagás todos los meses. Cada mes, en el día elegido, te aparece en Pendientes para marcarlo como pagado.",
-    fijosPorMes: "Fijos por mes",
+    fijosAyuda: "Cargá lo que pagás y lo que cobrás todos los meses. Cada mes, en el día elegido, te aparece en Pendientes para marcarlo como pagado o cobrado. Si un mes cambia la fecha, la modificás en ese movimiento.",
+    fijosPorMes: "Gastos fijos por mes",
+    fijosIngPorMes: "Ingresos fijos por mes",
+    fijoTipo: "Tipo",
+    fijoEditar: "Editar",
+    fijoPideDia: "Día del mes (1 a 31):",
+    fijoPideMonto: "Monto:",
     fijoPlaceholder: "Ej: Alquiler",
     fijoDia: "Día del mes",
     fijoDiaN: "Día {d}",
-    fijoSinFijos: "Todavía no cargaste gastos fijos.",
-    fijoToastAgregado: "Gasto fijo guardado.",
+    fijoSinFijos: "Todavía no cargaste gastos ni ingresos fijos.",
+    fijoToastAgregado: "Fijo guardado.",
     fijoToastGenerados: "Gastos fijos de este mes cargados en Pendientes: {n}.",
     fijoError: "Completá detalle, cuenta, categoría, un monto mayor a cero y un día entre 1 y 31.",
     fijoNotaMoneda: "Solo se pueden elegir cuentas en {m}.",
@@ -497,7 +502,7 @@ const TRADUCCIONES = {
     presNotaAuto: "Tirado das suas receitas deste mês. Você pode mudar.",
     presNotaManual: "Você está usando um valor próprio.",
     presUsarReal: "Usar minhas receitas do mês",
-    tituloFijos: "Gastos fixos",
+    tituloFijos: "Despesas e receitas fixas",
     tituloGuia: "Guia rápido",
     guiaTitulo: "Muito bem, você já começou! 🎉",
     btnVolver: "← Voltar",
@@ -514,13 +519,18 @@ const TRADUCCIONES = {
     guiaAnaSub: "Para onde vai o seu dinheiro",
     guiaIr: "Ir para o meu Ingasto",
     guiaRepetir: "Você pode ver este guia de novo em Ajustes.",
-    fijosAyuda: "Registre o que você paga todo mês. Todo mês, no dia escolhido, aparece em Pendentes para marcar como pago.",
-    fijosPorMes: "Fixos por mês",
+    fijosAyuda: "Registre o que você paga e o que recebe todo mês. Todo mês, no dia escolhido, aparece em Pendentes para marcar como pago ou recebido. Se num mês a data mudar, altere nesse movimento.",
+    fijosPorMes: "Despesas fixas por mês",
+    fijosIngPorMes: "Receitas fixas por mês",
+    fijoTipo: "Tipo",
+    fijoEditar: "Editar",
+    fijoPideDia: "Dia do mês (1 a 31):",
+    fijoPideMonto: "Valor:",
     fijoPlaceholder: "Ex: Aluguel",
     fijoDia: "Dia do mês",
     fijoDiaN: "Dia {d}",
-    fijoSinFijos: "Você ainda não registrou gastos fixos.",
-    fijoToastAgregado: "Gasto fixo salvo.",
+    fijoSinFijos: "Você ainda não registrou despesas nem receitas fixas.",
+    fijoToastAgregado: "Fixo salvo.",
     fijoToastGenerados: "Gastos fixos deste mês em Pendentes: {n}.",
     fijoError: "Preencha detalhe, conta, categoria, um valor maior que zero e um dia entre 1 e 31.",
     fijoNotaMoneda: "Só é possível escolher contas em {m}.",
@@ -874,7 +884,7 @@ const TRADUCCIONES = {
     presNotaAuto: "Taken from this month's income. You can change it.",
     presNotaManual: "You are using your own value.",
     presUsarReal: "Use my income for the month",
-    tituloFijos: "Fixed expenses",
+    tituloFijos: "Fixed expenses and income",
     tituloGuia: "Quick guide",
     guiaTitulo: "Well done, you have started! 🎉",
     btnVolver: "← Back",
@@ -891,8 +901,13 @@ const TRADUCCIONES = {
     guiaAnaSub: "Where your money goes",
     guiaIr: "Go to my Ingasto",
     guiaRepetir: "You can see this guide again in Settings.",
-    fijosAyuda: "Add what you pay every month. Each month, on the chosen day, it shows up in Pending so you can mark it as paid.",
-    fijosPorMes: "Fixed per month",
+    fijosAyuda: "Add what you pay and what you receive every month. Each month, on the chosen day, it shows up in Pending so you can mark it as paid or received. If the date changes one month, edit it on that movement.",
+    fijosPorMes: "Fixed expenses per month",
+    fijosIngPorMes: "Fixed income per month",
+    fijoTipo: "Type",
+    fijoEditar: "Edit",
+    fijoPideDia: "Day of the month (1 to 31):",
+    fijoPideMonto: "Amount:",
     fijoPlaceholder: "E.g. Rent",
     fijoDia: "Day of the month",
     fijoDiaN: "Day {d}",
@@ -2941,20 +2956,34 @@ function renderFijos() {
   if (!fijosDisponible) return;
   const base = monedaBase();
   const lista = $("listaFijos");
-  const total = fijos.filter((f) => f.activo !== false).reduce((s, f) => s + Number(f.monto), 0);
-  $("fijosTotal").textContent = formatoMonto(total);
+  const activos = fijos.filter((f) => f.activo !== false);
+  const totG = activos.filter((f) => f.tipo !== "Ingreso").reduce((s, f) => s + Number(f.monto), 0);
+  const totI = activos.filter((f) => f.tipo === "Ingreso").reduce((s, f) => s + Number(f.monto), 0);
+  $("fijosTotal").textContent = formatoMonto(totG);
+  $("fijosIngTotal").textContent = formatoMonto(totI);
+  $("fijosIngBloque").hidden = !activos.some((f) => f.tipo === "Ingreso");
   lista.innerHTML = fijos.length
-    ? fijos.map((f) => `<div class="editable-item"><div class="fijo-info"><b>${escapeHTML(f.detalle)}</b>
+    ? fijos.map((f) => `<div class="editable-item"><div class="fijo-info"><b>${f.tipo === "Ingreso" ? "↑ " : ""}${escapeHTML(f.detalle)}</b>
         <small>${escapeHTML(t("fijoDiaN").replace("{d}", f.dia))} · ${escapeHTML(f.cuenta)} · ${escapeHTML(f.categoria)}</small></div>
-        <span class="fijo-monto">${escapeHTML(formatoMonto(Number(f.monto)))}</span>
+        <span class="fijo-monto ${f.tipo === "Ingreso" ? "ingreso" : ""}">${escapeHTML(formatoMonto(Number(f.monto)))}</span>
+        <button type="button" class="icono-btn" data-editar-fijo="${f.id}" aria-label="${escapeHTML(t("fijoEditar"))}">✏️</button>
         <button type="button" class="icono-btn" data-borrar-fijo="${f.id}" aria-label="${escapeHTML(t("fijoBorrar"))}">🗑️</button></div>`).join("")
     : `<div class="vacio">${escapeHTML(t("fijoSinFijos"))}</div>`;
+  const selTipo = $("fijoTipo"), tipoActual = selTipo.value || "Gasto";
+  selTipo.innerHTML = `<option value="Gasto">${escapeHTML(t("segGasto"))}</option><option value="Ingreso">${escapeHTML(t("segIngreso"))}</option>`;
+  selTipo.value = tipoActual;
   const cu = cuentas.filter((c) => (c.moneda || base) === base);
   $("fijoCuenta").innerHTML = cu.map((c) => `<option value="${escapeHTML(c.nombre)}">${escapeHTML(c.nombre)}</option>`).join("");
-  $("fijoCategoria").innerHTML = categorias.filter((c) => c.tipo === "Gasto")
-    .map((c) => `<option value="${escapeHTML(c.nombre)}">${escapeHTML(c.nombre)}</option>`).join("");
+  renderFijoCategorias();
   $("fijoNotaMoneda").textContent = cuentas.length > cu.length ? t("fijoNotaMoneda").replace("{m}", base) : "";
 }
+
+function renderFijoCategorias() {
+  const tipo = $("fijoTipo").value || "Gasto";
+  $("fijoCategoria").innerHTML = categorias.filter((c) => c.tipo === tipo)
+    .map((c) => `<option value="${escapeHTML(c.nombre)}">${escapeHTML(c.nombre)}</option>`).join("");
+}
+$("fijoTipo").addEventListener("change", renderFijoCategorias);
 
 $("tarjetaFijos").addEventListener("click", () => { cargarFijos().then(renderFijos); });
 
@@ -2971,7 +3000,7 @@ $("btnAgregarFijo").addEventListener("click", async () => {
   // Si el día de este mes ya pasó, el primero se genera el mes que viene (no se carga hacia atrás).
   const ultimo_mes = diaDelMesISO(hoy.slice(0, 7), dia) < hoy ? hoy.slice(0, 7) : null;
   try {
-    await crearFijo(usuario.id, { tipo: "Gasto", detalle, cuenta, categoria, monto, dia, activo: true, ultimo_mes });
+    await crearFijo(usuario.id, { tipo: $("fijoTipo").value === "Ingreso" ? "Ingreso" : "Gasto", detalle, cuenta, categoria, monto, dia, activo: true, ultimo_mes });
     $("fijoDetalle").value = ""; $("fijoMonto").value = ""; $("fijoDia").value = "";
     await cargarFijos();
     renderFijos();
@@ -2981,6 +3010,21 @@ $("btnAgregarFijo").addEventListener("click", async () => {
 });
 
 $("listaFijos").addEventListener("click", async (e) => {
+  const ed = e.target.closest("[data-editar-fijo]");
+  if (ed) {
+    const f = fijos.find((x) => x.id === ed.dataset.editarFijo);
+    if (!f) return;
+    const rDia = prompt(t("fijoPideDia"), String(f.dia));
+    if (rDia === null) return;
+    const dia = parseInt(rDia, 10);
+    const rMonto = prompt(t("fijoPideMonto"), String(f.monto).replace(".", ","));
+    if (rMonto === null) return;
+    const monto = numeroDesdeTexto(rMonto);
+    if (!Number.isInteger(dia) || dia < 1 || dia > 31 || !Number.isFinite(monto) || monto <= 0) return mostrarToast(t("fijoError"));
+    try { await actualizarFijo(f.id, { dia, monto }); await cargarFijos(); renderFijos(); mostrarToast(t("fijoToastAgregado")); }
+    catch (err) { mostrarToast(traducirErrorDatos(err)); }
+    return;
+  }
   const b = e.target.closest("[data-borrar-fijo]");
   if (!b || !confirm(t("fijoConfirmarBorrar"))) return;
   try { await borrarFijo(b.dataset.borrarFijo); await cargarFijos(); renderFijos(); }

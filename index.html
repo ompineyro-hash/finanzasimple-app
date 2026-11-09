@@ -294,7 +294,7 @@ Al crear una cuenta aceptás nuestros
 </button>
 <button type="button" class="config-tarjeta" id="tarjetaFijos" data-config="configPanelFijos" hidden>
 <span class="config-tarjeta-icono">📌</span>
-<span class="config-tarjeta-titulo" data-i18n="tituloFijos">Gastos fijos</span>
+<span class="config-tarjeta-titulo" data-i18n="tituloFijos">Gastos e ingresos fijos</span>
 </button>
 <button type="button" class="config-tarjeta" data-config="configPanelCategorias">
 <span class="config-tarjeta-icono">🏷️</span>
@@ -374,11 +374,13 @@ Al crear una cuenta aceptás nuestros
 <!-- Panel: Gastos fijos -->
 <div id="configPanelFijos" class="config-panel" hidden>
 <button type="button" class="config-volver" data-i18n="btnVolver">← Volver</button>
-<h2 class="titulo-seccion" data-i18n="tituloFijos">Gastos fijos</h2>
+<h2 class="titulo-seccion" data-i18n="tituloFijos">Gastos e ingresos fijos</h2>
 <p class="texto-ayuda" data-i18n="fijosAyuda">Cargá lo que pagás todos los meses. Cada mes, en el día elegido, te aparece en Pendientes para marcarlo como pagado.</p>
-<div class="total fijos-total"><small data-i18n="fijosPorMes">Fijos por mes</small><b id="fijosTotal">—</b></div>
+<div class="total fijos-total"><small data-i18n="fijosPorMes">Gastos fijos por mes</small><b id="fijosTotal">—</b></div>
+<div class="total fijos-total" id="fijosIngBloque" hidden><small data-i18n="fijosIngPorMes">Ingresos fijos por mes</small><b id="fijosIngTotal">—</b></div>
 <div id="listaFijos" class="lista-editable"></div>
 <div class="fijos-form">
+<label><span data-i18n="fijoTipo">Tipo</span><select id="fijoTipo"></select></label>
 <label><span data-i18n="labelDetalle">Detalle</span><input type="text" id="fijoDetalle" data-i18n-placeholder="fijoPlaceholder" placeholder="Ej: Alquiler"></label>
 <label><span data-i18n="labelCuenta">Cuenta</span><select id="fijoCuenta"></select></label>
 <label><span data-i18n="labelCategoria">Categoría</span><select id="fijoCategoria"></select></label>

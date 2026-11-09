@@ -279,6 +279,11 @@ async function crearFijo(userId, f) {
   if (error) throw error;
 }
 
+async function actualizarFijo(id, campos) {
+  const { error } = await sbClient.from("fijos").update(campos).eq("id", id);
+  if (error) throw error;
+}
+
 async function borrarFijo(id) {
   const { error } = await sbClient.from("fijos").delete().eq("id", id);
   if (error) throw error;
