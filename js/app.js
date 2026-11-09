@@ -7,6 +7,7 @@ let perfil = null;
 let cuentas = [];
 let categorias = [];
 let movimientos = [];
+let transferenciasMes = [];
 let pendientes = [];
 let pendientesAbierto = false;
 let fechaVista = new Date();
@@ -158,6 +159,11 @@ const TRADUCCIONES = {
     tengoDolarRef: "Los dólares se valúan a {v} (dólar oficial Banco Nación, venta).",
     tengoDolarGuardado: "Los dólares se valúan a {v} (último valor guardado en este dispositivo; no se pudo consultar el Banco Nación).",
     tengoNota: "El saldo se calcula con el saldo inicial de cada cuenta más lo que cargaste. Si no coincide con la realidad, tocá Ajustar.",
+    btnMovInterno: "↔ Es un movimiento interno",
+    movInterno: "Movimiento interno",
+    movInternoBorrar: "¿Borrar este movimiento interno? Se deshace la transferencia y las cuentas vuelven a sus saldos anteriores.",
+    movInternoBorrada: "Movimiento interno borrado.",
+    trAvisoMov: "Este movimiento se va a reemplazar por la transferencia: ya no cuenta como gasto ni como ingreso.",
     tengoCartel: "Antes de empezar: decile a la app con cuánta plata arrancás en cada cuenta. Tocá Ajustar en cada una y escribí lo que hay hoy. Se hace una sola vez. Después la app suma y resta sola con lo que cargues.",
     trTitulo: "Transferir entre cuentas",
     trDesde: "Desde",
@@ -530,6 +536,11 @@ const TRADUCCIONES = {
     tengoDolarRef: "Os dólares são avaliados a {v} (dólar oficial Banco Nación, venda).",
     tengoDolarGuardado: "Os dólares são avaliados a {v} (último valor salvo neste dispositivo; não foi possível consultar o Banco Nación).",
     tengoNota: "O saldo é calculado com o saldo inicial de cada conta mais o que você registrou. Se não bater com a realidade, toque em Ajustar.",
+    btnMovInterno: "↔ É um movimento interno",
+    movInterno: "Movimento interno",
+    movInternoBorrar: "Apagar este movimento interno? A transferência é desfeita e as contas voltam aos saldos anteriores.",
+    movInternoBorrada: "Movimento interno apagado.",
+    trAvisoMov: "Este movimento será substituído pela transferência: deixa de contar como despesa ou receita.",
     tengoCartel: "Antes de começar: diga ao app com quanto dinheiro você começa em cada conta. Toque em Ajustar em cada uma e digite o que há hoje. Só se faz uma vez. Depois o app soma e subtrai sozinho com o que você registrar.",
     trTitulo: "Transferir entre contas",
     trDesde: "De",
@@ -902,6 +913,11 @@ const TRADUCCIONES = {
     tengoDolarRef: "Dollars are valued at {v} (official Banco Nación rate, selling).",
     tengoDolarGuardado: "Dollars are valued at {v} (last value saved on this device; Banco Nación could not be reached).",
     tengoNota: "The balance is each account's starting balance plus what you recorded. If it does not match reality, tap Adjust.",
+    btnMovInterno: "↔ This is an internal movement",
+    movInterno: "Internal movement",
+    movInternoBorrar: "Delete this internal movement? The transfer is undone and the accounts go back to their previous balances.",
+    movInternoBorrada: "Internal movement deleted.",
+    trAvisoMov: "This movement will be replaced by the transfer: it no longer counts as an expense or income.",
     tengoCartel: "Before you start: tell the app how much money you begin with in each account. Tap Adjust on each one and enter what is there today. You only do this once. After that the app adds and subtracts on its own with what you record.",
     trTitulo: "Transfer between accounts",
     trDesde: "From",
@@ -1784,11 +1800,14 @@ async function cargarCuentasYCategorias() {
 }
 
 async function cargarMesActual() {
-  const [delMes, losPendientes] = await Promise.all([
+  const [delMes, losPendientes, lasTransf] = await Promise.all([
     listarMovimientosDelMes(usuario.id, fechaVista.getFullYear(), fechaVista.getMonth()),
     listarPendientes(usuario.id),
+    listarTransferencias(usuario.id).catch(() => []),
   ]);
   movimientos = delMes;
+  const claveVista = claveMesVista();
+  transferenciasMes = Array.isArray(lasTransf) ? lasTransf.filter((x) => mesClave(x.fecha) === claveVista) : [];
   pendientes = losPendientes;
   renderResumen();
   renderPendientes();
@@ -2335,17 +2354,32 @@ function renderMovimientos() {
   $("etiquetaMes").textContent = nombreMes(fechaVista);
   const cont = $("listaMovimientos");
   const visibles = movimientos.filter(pasaBusqueda);
+  const hayBusqueda = !!($("textoBusqueda") && $("textoBusqueda").value.trim());
+  const trVisibles = tipoFiltroActivo === "todo" && !hayBusqueda ? transferenciasMes : [];
 
-  if (!movimientos.length) {
+  if (!movimientos.length && !transferenciasMes.length) {
     cont.innerHTML = `<div class="vacio">Todavía no cargaste movimientos este mes.<br>Tocá el botón <b>+</b> para agregar el primero.</div>`;
     return;
   }
-  if (!visibles.length) {
+  if (!visibles.length && !trVisibles.length) {
     cont.innerHTML = `<div class="vacio">No hay resultados para esa búsqueda.<br>Probá limpiarla o cambiar el filtro.</div>`;
     return;
   }
   const clave = claveMesVista();
+  const filaInterna = (x) => `
+      <div class="mov-item mov-interno" data-transf="${x.id}">
+        <div class="mov-icono interno" role="img" aria-label="${escapeHTML(t("movInterno"))}">↔</div>
+        <div class="mov-info">
+          <div class="mov-categoria">${escapeHTML(t("movInterno"))}</div>
+          <div class="mov-detalle">${escapeHTML(x.cuenta_origen)} → ${escapeHTML(x.cuenta_destino)}</div>
+          <div class="mov-fecha">${formatoFecha(x.fecha)}</div>
+        </div>
+        <div class="mov-derecha"><div class="mov-monto interno">${escapeHTML(formatoMontoMoneda(Number(x.monto_origen), monedaDeCuentaNombre(x.cuenta_origen)))}</div></div>
+      </div>`;
+  const pendTr = trVisibles.slice().sort((a, b) => String(b.fecha).localeCompare(String(a.fecha)));
   cont.innerHTML = visibles.map((m) => {
+    let antes = "";
+    while (pendTr.length && String(pendTr[0].fecha) >= String(m.fecha)) antes += filaInterna(pendTr.shift());
     const esGasto = m.tipo === "Gasto";
     const papel = papelEnMes(m, clave);
     const badge = badgeMovimiento(m, papel);
@@ -2355,7 +2389,7 @@ function renderMovimientos() {
     const botonCerrar = papel === "pago" && esPendiente(m)
       ? `<button type="button" class="boton boton-secundario pend-cerrar" data-id="${m.id}">${escapeHTML(t(esGasto ? "pendMarcarPagado" : "pendMarcarCobrado"))}</button>`
       : "";
-    return `
+    return antes + `
       <div class="${clases}" data-id="${m.id}">
         <div class="mov-icono ${esGasto ? "gasto" : "ingreso"}" role="img" aria-label="${esGasto ? t("segGasto") : t("segIngreso")}">${esGasto ? "↓" : "↑"}</div>
         <div class="mov-info">
@@ -2369,11 +2403,18 @@ function renderMovimientos() {
           ${botonCerrar}
         </div>
       </div>`;
-  }).join("");
+  }).join("") + pendTr.map(filaInterna).join("");
 
   ajustarAnchoCategorias();
-  cont.querySelectorAll(".mov-item").forEach((el) => {
+  cont.querySelectorAll(".mov-item:not(.mov-interno)").forEach((el) => {
     el.addEventListener("click", () => abrirModalEditar(el.dataset.id));
+  });
+  cont.querySelectorAll(".mov-interno").forEach((el) => {
+    el.addEventListener("click", async () => {
+      if (!confirm(t("movInternoBorrar"))) return;
+      try { await borrarTransferencia(el.dataset.transf); await cargarMesActual(); mostrarToast(t("movInternoBorrada")); }
+      catch (err) { mostrarToast(traducirErrorDatos(err)); }
+    });
   });
   cont.querySelectorAll(".pend-cerrar").forEach((btn) => {
     btn.addEventListener("click", (e) => {
@@ -2788,13 +2829,24 @@ async function tengoAjustar(id) {
   } catch (err) { mostrarToast(traducirErrorDatos(err)); }
 }
 
-function abrirTransferencia() {
+let trMovId = null; // movimiento que esta transferencia va a reemplazar (si viene de "Es un movimiento interno")
+function abrirTransferencia(pre) {
   if (cuentas.length < 2) return mostrarToast(t("tengoNecesitaDos"));
+  trMovId = pre && pre.movId ? pre.movId : null;
+  $("trAvisoMov").hidden = !trMovId;
   const op = cuentas.map((c) => `<option value="${escapeHTML(c.nombre)}">${escapeHTML(c.nombre)}${c.moneda && c.moneda !== monedaBase() ? " (" + escapeHTML(c.moneda) + ")" : ""}</option>`).join("");
   $("trDesde").innerHTML = op; $("trHacia").innerHTML = op;
   $("trHacia").selectedIndex = 1;
   $("trMonto").value = ""; $("trMontoDestino").value = "";
   $("trFecha").value = hoyISO();
+  if (pre) {
+    if (pre.desde) $("trDesde").value = pre.desde;
+    if (pre.hacia) $("trHacia").value = pre.hacia;
+    if (pre.desde && !pre.hacia) $("trHacia").value = (cuentas.find((c) => c.nombre !== pre.desde) || cuentas[0]).nombre;
+    if (pre.hacia && !pre.desde) $("trDesde").value = (cuentas.find((c) => c.nombre !== pre.hacia) || cuentas[0]).nombre;
+    if (pre.monto) $("trMonto").value = pre.monto;
+    if (pre.fecha) $("trFecha").value = pre.fecha;
+  }
   $("trError").hidden = true;
   trSincronizar();
   $("modalTransfer").hidden = false;
@@ -2821,7 +2873,14 @@ $("formTransfer").addEventListener("submit", async (e) => {
   if (!Number.isFinite(mo) || mo <= 0 || !Number.isFinite(md) || md <= 0) return mostrarAviso($("trError"), t("trErrMonto"));
   try {
     await crearTransferencia(usuario.id, { fecha: $("trFecha").value || hoyISO(), cuenta_origen: desde, cuenta_destino: hacia, monto_origen: mo, monto_destino: md });
+    if (trMovId) {
+      const reemplazado = movimientos.find((x) => x.id === trMovId) || pendientes.find((x) => x.id === trMovId);
+      await borrarMovimiento(trMovId);
+      if (reemplazado && reemplazado.comprobante) borrarComprobante(reemplazado.comprobante);
+      trMovId = null;
+    }
     cerrarTransferencia();
+    await cargarMesActual();
     await cargarTengo();
     tengoRefrescarVista();
     mostrarToast(t("trToast"));
@@ -3511,6 +3570,7 @@ function abrirModalNuevo() {
   $("movId").value = "";
   $("modalTitulo").textContent = t("modalNuevoTitulo");
   $("btnBorrarMov").hidden = true;
+  $("btnMovInterno").hidden = true;
   seleccionarTipo("Gasto");
   $("movFecha").value = hoyISO();
   $("movFechaPago").value = "";
@@ -3537,6 +3597,7 @@ function abrirModalEditar(id) {
   $("movId").value = m.id;
   $("modalTitulo").textContent = t("modalEditarTitulo");
   $("btnBorrarMov").hidden = false;
+  $("btnMovInterno").hidden = false;
   $("movFecha").value = m.fecha;
   $("movCuenta").value = m.cuenta;
   $("movCategoria").value = m.categoria;
@@ -4119,6 +4180,22 @@ function fsVoiceInterpretar(id, t) {
   return "";
 }
 
+
+$("btnMovInterno").addEventListener("click", () => {
+  const id = $("movId").value;
+  const m = movimientos.find((x) => x.id === id) || pendientes.find((x) => x.id === id);
+  if (!m) return;
+  if (cuentas.length < 2) return mostrarToast(t("tengoNecesitaDos"));
+  cerrarModal();
+  const esGasto = m.tipo === "Gasto";
+  abrirTransferencia({
+    desde: esGasto ? m.cuenta : null,
+    hacia: esGasto ? null : m.cuenta,
+    monto: formatearImporteEscrito(String(m.monto).replace(".", ",")),
+    fecha: m.fecha_pago || m.fecha,
+    movId: m.id,
+  });
+});
 
 $("btnBorrarMov").addEventListener("click", async () => {
   const id = $("movId").value;

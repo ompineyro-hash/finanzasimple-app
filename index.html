@@ -584,6 +584,7 @@ Al crear una cuenta aceptás nuestros
 <label id="trFilaDestino" hidden><span id="trLabelDestino"></span><input type="text" inputmode="decimal" id="trMontoDestino" placeholder="0,00"></label>
 <label><span data-i18n="labelFecha">Fecha</span><input type="date" id="trFecha"></label>
 <p class="texto-ayuda" data-i18n="trAviso">No cuenta como gasto ni como ingreso: solo pasa plata de una cuenta a otra.</p>
+<p id="trAvisoMov" class="texto-ayuda" data-i18n="trAvisoMov" hidden>Este movimiento se va a reemplazar por la transferencia.</p>
 <div id="trError" class="aviso aviso-error" hidden></div>
 <div class="modal-acciones"><button type="submit" class="boton boton-primario boton-ancho" data-i18n="btnGuardarMov">Guardar</button></div>
 </form>
@@ -663,6 +664,7 @@ Al crear una cuenta aceptás nuestros
 </div>
 </div>
 <div id="movError" class="aviso aviso-error" hidden></div>
+<button type="button" id="btnMovInterno" class="boton boton-secundario boton-ancho" hidden data-i18n="btnMovInterno">↔ Es un movimiento interno</button>
 <div class="modal-acciones">
 <button type="button" id="btnBorrarMov" class="boton boton-peligro" hidden data-i18n="btnBorrar">Borrar</button>
 <button type="submit" class="boton boton-primario boton-ancho" data-i18n="btnGuardarMov">Guardar</button>

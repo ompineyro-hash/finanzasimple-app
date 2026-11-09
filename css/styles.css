@@ -573,3 +573,7 @@ input,select{font-family:inherit;font-size:16px;}
 .imp-totales { font-weight: 700; margin: 4px 0 8px; }
 
 .tengo-cartel{background:#fff4d6;border:1px solid #e8c766;border-radius:12px;padding:12px 14px;margin:0 0 12px;font-size:14px;line-height:1.4;color:#5a4500}
+
+.mov-icono.interno{background:#e7ebf0;color:#44566a;font-weight:700;}
+.mov-interno{background:#f3f6f9;border:1px dashed #b7c3d0;cursor:pointer;}
+.mov-monto.interno{color:#44566a;}
