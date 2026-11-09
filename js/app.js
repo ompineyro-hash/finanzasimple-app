@@ -8,6 +8,8 @@ let cuentas = [];
 let categorias = [];
 let movimientos = [];
 let transferenciasMes = [];
+let modoClasificar = false;
+const clasifSel = new Set();
 let pendientes = [];
 let pendientesAbierto = false;
 let fechaVista = new Date();
@@ -166,6 +168,15 @@ const TRADUCCIONES = {
     tengoDolarRef: "Los dólares se valúan a {v} (dólar oficial Banco Nación, venta).",
     tengoDolarGuardado: "Los dólares se valúan a {v} (último valor guardado en este dispositivo; no se pudo consultar el Banco Nación).",
     tengoNota: "El saldo se calcula con el saldo inicial de cada cuenta más lo que cargaste. Si no coincide con la realidad, tocá Ajustar.",
+    btnClasificar: "✔ Clasificar varios",
+    clasifTerminar: "✔ Terminar",
+    clasifAyuda: "Tildá los movimientos y elegí la categoría que les corresponde.",
+    clasifSinClasif: "Tildar los que están sin clasificar",
+    clasifAplicar: "Aplicar categoría",
+    clasifN: "{n} elegidos",
+    clasifMezcla: "Elegí solo gastos o solo ingresos.",
+    clasifHecho: "{n} movimientos clasificados.",
+    clasifNada: "Tildá al menos un movimiento.",
     btnMovInterno: "↔ Es un movimiento interno",
     movInterno: "Movimiento interno",
     movInternoBorrar: "¿Borrar este movimiento interno? Se deshace la transferencia y las cuentas vuelven a sus saldos anteriores.",
@@ -550,6 +561,15 @@ const TRADUCCIONES = {
     tengoDolarRef: "Os dólares são avaliados a {v} (dólar oficial Banco Nación, venda).",
     tengoDolarGuardado: "Os dólares são avaliados a {v} (último valor salvo neste dispositivo; não foi possível consultar o Banco Nación).",
     tengoNota: "O saldo é calculado com o saldo inicial de cada conta mais o que você registrou. Se não bater com a realidade, toque em Ajustar.",
+    btnClasificar: "✔ Classificar vários",
+    clasifTerminar: "✔ Concluir",
+    clasifAyuda: "Marque os movimentos e escolha a categoria correspondente.",
+    clasifSinClasif: "Marcar os que estão sem classificar",
+    clasifAplicar: "Aplicar categoria",
+    clasifN: "{n} escolhidos",
+    clasifMezcla: "Escolha só despesas ou só receitas.",
+    clasifHecho: "{n} movimentos classificados.",
+    clasifNada: "Marque pelo menos um movimento.",
     btnMovInterno: "↔ É um movimento interno",
     movInterno: "Movimento interno",
     movInternoBorrar: "Apagar este movimento interno? A transferência é desfeita e as contas voltam aos saldos anteriores.",
@@ -934,6 +954,15 @@ const TRADUCCIONES = {
     tengoDolarRef: "Dollars are valued at {v} (official Banco Nación rate, selling).",
     tengoDolarGuardado: "Dollars are valued at {v} (last value saved on this device; Banco Nación could not be reached).",
     tengoNota: "The balance is each account's starting balance plus what you recorded. If it does not match reality, tap Adjust.",
+    btnClasificar: "✔ Categorize several",
+    clasifTerminar: "✔ Done",
+    clasifAyuda: "Tick the movements and pick the category they belong to.",
+    clasifSinClasif: "Tick the uncategorized ones",
+    clasifAplicar: "Apply category",
+    clasifN: "{n} selected",
+    clasifMezcla: "Pick only expenses or only income.",
+    clasifHecho: "{n} movements categorized.",
+    clasifNada: "Tick at least one movement.",
     btnMovInterno: "↔ This is an internal movement",
     movInterno: "Internal movement",
     movInternoBorrar: "Delete this internal movement? The transfer is undone and the accounts go back to their previous balances.",
@@ -2407,11 +2436,12 @@ function renderMovimientos() {
     const clases = "mov-item"
       + (papel === "origen" ? " mov-origen" : "")
       + (papel === "pago" && esPendiente(m) ? " mov-pendiente" : "");
-    const botonCerrar = papel === "pago" && esPendiente(m)
+    const botonCerrar = !modoClasificar && papel === "pago" && esPendiente(m)
       ? `<button type="button" class="boton boton-secundario pend-cerrar" data-id="${m.id}">${escapeHTML(t(esGasto ? "pendMarcarPagado" : "pendMarcarCobrado"))}</button>`
       : "";
+    const chk = modoClasificar ? `<input type="checkbox" class="clasif-chk" data-chk="${m.id}" ${clasifSel.has(m.id) ? "checked" : ""} aria-label="${escapeHTML(m.categoria)}">` : "";
     return antes + `
-      <div class="${clases}" data-id="${m.id}">
+      <div class="${clases}${modoClasificar && clasifSel.has(m.id) ? " clasif-marcado" : ""}" data-id="${m.id}">${chk}
         <div class="mov-icono ${esGasto ? "gasto" : "ingreso"}" role="img" aria-label="${esGasto ? t("segGasto") : t("segIngreso")}">${esGasto ? "↓" : "↑"}</div>
         <div class="mov-info">
           <div class="mov-categoria">${escapeHTML(m.categoria)}${m.comprobante ? " 📎" : ""}</div>
@@ -2428,10 +2458,14 @@ function renderMovimientos() {
 
   ajustarAnchoCategorias();
   cont.querySelectorAll(".mov-item:not(.mov-interno)").forEach((el) => {
-    el.addEventListener("click", () => abrirModalEditar(el.dataset.id));
+    el.addEventListener("click", () => {
+      if (modoClasificar) return clasifAlternar(el.dataset.id);
+      abrirModalEditar(el.dataset.id);
+    });
   });
   cont.querySelectorAll(".mov-interno").forEach((el) => {
     el.addEventListener("click", async () => {
+      if (modoClasificar) return;
       if (!confirm(t("movInternoBorrar"))) return;
       try { await borrarTransferencia(el.dataset.transf); await cargarMesActual(); mostrarToast(t("movInternoBorrada")); }
       catch (err) { mostrarToast(traducirErrorDatos(err)); }
@@ -4612,3 +4646,62 @@ $("btnCatSugeridas").addEventListener("click", async () => {
   } catch (err) { mostrarToast(traducirErrorDatos(err)); }
   b.disabled = false;
 });
+
+// ============================================================
+// CLASIFICAR VARIOS: tildar movimientos y ponerles categoría de una sola vez
+// ============================================================
+function clasifListaVisible() { return movimientos.filter(pasaBusqueda); }
+
+function clasifActualizarPanel() {
+  const elegidos = movimientos.filter((m) => clasifSel.has(m.id));
+  const tipos = new Set(elegidos.map((m) => m.tipo));
+  const mezcla = tipos.size > 1;
+  $("clasifCuenta").textContent = !elegidos.length ? t("clasifNada") : mezcla ? t("clasifMezcla") : t("clasifN").replace("{n}", elegidos.length);
+  const tipo = !elegidos.length || mezcla ? null : [...tipos][0];
+  const sel = $("clasifCategoria"), anterior = sel.value;
+  sel.innerHTML = tipo ? categorias.filter((c) => c.tipo === tipo).map((c) => `<option value="${escapeHTML(c.nombre)}">${escapeHTML(c.nombre)}</option>`).join("") : "";
+  if (anterior && [...sel.options].some((o) => o.value === anterior)) sel.value = anterior;
+  sel.disabled = !tipo;
+  $("clasifAplicar").disabled = !tipo || !sel.value;
+}
+
+function clasifAlternar(id) {
+  if (clasifSel.has(id)) clasifSel.delete(id); else clasifSel.add(id);
+  renderMovimientos();
+  clasifActualizarPanel();
+}
+
+function clasifActivar(si) {
+  modoClasificar = si;
+  clasifSel.clear();
+  $("clasifPanel").hidden = !si;
+  $("btnClasificar").textContent = si ? t("clasifTerminar") : t("btnClasificar");
+  renderMovimientos();
+  clasifActualizarPanel();
+}
+
+$("btnClasificar").addEventListener("click", () => clasifActivar(!modoClasificar));
+
+$("clasifSinClasif").addEventListener("click", () => {
+  clasifListaVisible().forEach((m) => { if (normalizarTexto(m.categoria).includes("sin clasificar")) clasifSel.add(m.id); });
+  renderMovimientos();
+  clasifActualizarPanel();
+});
+
+$("clasifCategoria").addEventListener("change", clasifActualizarPanel);
+
+$("clasifAplicar").addEventListener("click", async () => {
+  const cat = $("clasifCategoria").value;
+  const ids = movimientos.filter((m) => clasifSel.has(m.id)).map((m) => m.id);
+  if (!cat || !ids.length) return;
+  $("clasifAplicar").disabled = true;
+  try {
+    for (const id of ids) await actualizarMovimiento(id, { categoria: cat });
+    mostrarToast(t("clasifHecho").replace("{n}", ids.length));
+    clasifActivar(false);
+    await cargarMesActual();
+  } catch (err) { mostrarToast(traducirErrorDatos(err)); clasifActualizarPanel(); }
+});
+
+// Importes con puntos y comas mientras se escriben
+["fijoMonto", "trMonto", "trMontoDestino", "presIngreso"].forEach((id) => activarFormatoImporte($(id)));

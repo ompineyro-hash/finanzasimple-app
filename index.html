@@ -161,6 +161,14 @@ Al crear una cuenta aceptás nuestros
 <input type="text" id="textoBusqueda" data-i18n-placeholder="placeholderBuscar" placeholder="Buscar en este mes...">
 <button type="button" id="btnLimpiarBusqueda" class="boton boton-texto" data-i18n="btnLimpiar">Limpiar</button>
 </div>
+<button type="button" id="btnClasificar" class="boton boton-secundario boton-ancho clasif-btn" data-i18n="btnClasificar">✔ Clasificar varios</button>
+<div id="clasifPanel" class="clasif-panel" hidden>
+<p class="texto-ayuda" data-i18n="clasifAyuda">Tildá los movimientos y elegí la categoría que les corresponde.</p>
+<button type="button" id="clasifSinClasif" class="boton boton-secundario" data-i18n="clasifSinClasif">Tildar los que están sin clasificar</button>
+<p id="clasifCuenta" class="clasif-cuenta"></p>
+<label><span data-i18n="labelCategoria">Categoría</span><select id="clasifCategoria"></select></label>
+<div class="clasif-acciones"><button type="button" id="clasifAplicar" class="boton boton-primario" data-i18n="clasifAplicar" disabled>Aplicar categoría</button></div>
+</div>
 <div id="listaMovimientos" class="lista-movimientos"></div>
 </section>
 

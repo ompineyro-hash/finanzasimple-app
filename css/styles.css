@@ -579,3 +579,11 @@ input,select{font-family:inherit;font-size:16px;}
 .mov-monto.interno{color:#44566a;}
 
 .fijo-monto.ingreso{color:var(--ingreso,#1f7a4d)}
+
+.clasif-btn{margin:0 0 8px}
+.clasif-panel{background:var(--papel-alto);border:1px solid var(--borde,#e3dccd);border-radius:12px;padding:12px;margin:0 0 10px;display:flex;flex-direction:column;gap:8px}
+.clasif-cuenta{font-weight:700;margin:0}
+.clasif-acciones{display:flex;justify-content:flex-end}
+.clasif-chk{width:22px;height:22px;flex-shrink:0;accent-color:#2f6f5e}
+.mov-item.clasif-marcado{outline:2px solid #2f6f5e;background:#eef6f2}
+.clasif-panel label{display:flex;flex-direction:column;gap:4px}.clasif-panel select{width:100%;padding:10px;border-radius:10px;border:1px solid #d8d0bf;font-size:16px;background:#fff}
