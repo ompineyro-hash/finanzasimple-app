@@ -168,6 +168,19 @@ const TRADUCCIONES = {
     tengoDolarRef: "Los dólares se valúan a {v} (dólar oficial Banco Nación, venta).",
     tengoDolarGuardado: "Los dólares se valúan a {v} (último valor guardado en este dispositivo; no se pudo consultar el Banco Nación).",
     tengoNota: "El saldo se calcula con el saldo inicial de cada cuenta más lo que cargaste. Si no coincide con la realidad, tocá Ajustar.",
+    bienvSig: "Siguiente",
+    bienvAtras: "Atrás",
+    bienvEmpezar: "Empezar",
+    bienvYaSe: "Ya sé, ir a la app",
+    bienvVer: "¿Cómo empiezo? Ver la guía",
+    bienv1T: "¡Bienvenido a Ingasto!",
+    bienv1X: "Anotá tus gastos e ingresos y mirá en qué se va tu plata. En 4 pasos cortos te mostramos dónde está cada cosa.",
+    bienv2T: "Cargá tu primer movimiento",
+    bienv2X: "Tocá el botón + (abajo, en el centro). Elegí Gasto o Ingreso, la cuenta, la categoría y el monto. También podés hablar: tocá Voz.",
+    bienv3T: "Decile cuánto tenés",
+    bienv3X: "Entrá a Situación → Tengo y tocá Ajustar en cada cuenta para escribir lo que hay hoy. Se hace una sola vez y es opcional.",
+    bienv4T: "Mirá cómo vas",
+    bienv4X: "Situación te muestra lo que debés y lo que se viene. Análisis, en qué se va tu plata. En Ajustes están tus cuentas, categorías, gastos e ingresos fijos, e importar un archivo.",
     btnClasificar: "✔ Clasificar varios",
     clasifTerminar: "✔ Terminar",
     clasifAyuda: "Tildá los movimientos y elegí la categoría que les corresponde.",
@@ -561,6 +574,19 @@ const TRADUCCIONES = {
     tengoDolarRef: "Os dólares são avaliados a {v} (dólar oficial Banco Nación, venda).",
     tengoDolarGuardado: "Os dólares são avaliados a {v} (último valor salvo neste dispositivo; não foi possível consultar o Banco Nación).",
     tengoNota: "O saldo é calculado com o saldo inicial de cada conta mais o que você registrou. Se não bater com a realidade, toque em Ajustar.",
+    bienvSig: "Próximo",
+    bienvAtras: "Voltar",
+    bienvEmpezar: "Começar",
+    bienvYaSe: "Já sei, ir para o app",
+    bienvVer: "Como começo? Ver o guia",
+    bienv1T: "Bem-vindo ao Ingasto!",
+    bienv1X: "Anote seus gastos e receitas e veja para onde vai o seu dinheiro. Em 4 passos curtos mostramos onde fica cada coisa.",
+    bienv2T: "Registre seu primeiro movimento",
+    bienv2X: "Toque no botão + (embaixo, no centro). Escolha Despesa ou Receita, a conta, a categoria e o valor. Você também pode falar: toque em Voz.",
+    bienv3T: "Diga quanto você tem",
+    bienv3X: "Entre em Situação → Tenho e toque em Ajustar em cada conta para digitar o que há hoje. Faz-se uma só vez e é opcional.",
+    bienv4T: "Veja como você está",
+    bienv4X: "Situação mostra o que você deve e o que vem. Análise, para onde vai seu dinheiro. Em Ajustes ficam suas contas, categorias, gastos e receitas fixas, e importar um arquivo.",
     btnClasificar: "✔ Classificar vários",
     clasifTerminar: "✔ Concluir",
     clasifAyuda: "Marque os movimentos e escolha a categoria correspondente.",
@@ -954,6 +980,19 @@ const TRADUCCIONES = {
     tengoDolarRef: "Dollars are valued at {v} (official Banco Nación rate, selling).",
     tengoDolarGuardado: "Dollars are valued at {v} (last value saved on this device; Banco Nación could not be reached).",
     tengoNota: "The balance is each account's starting balance plus what you recorded. If it does not match reality, tap Adjust.",
+    bienvSig: "Next",
+    bienvAtras: "Back",
+    bienvEmpezar: "Get started",
+    bienvYaSe: "I know it, go to the app",
+    bienvVer: "How do I start? See the guide",
+    bienv1T: "Welcome to Ingasto!",
+    bienv1X: "Record your expenses and income and see where your money goes. In 4 short steps we show you where everything is.",
+    bienv2T: "Add your first movement",
+    bienv2X: "Tap the + button (bottom, center). Pick Expense or Income, the account, the category and the amount. You can also speak: tap Voice.",
+    bienv3T: "Tell it how much you have",
+    bienv3X: "Go to Situation → I have and tap Adjust on each account to enter what is there today. You only do it once and it is optional.",
+    bienv4T: "See how you are doing",
+    bienv4X: "Situation shows what you owe and what is coming. Analysis, where your money goes. In Settings you will find your accounts, categories, fixed expenses and income, and file import.",
     btnClasificar: "✔ Categorize several",
     clasifTerminar: "✔ Done",
     clasifAyuda: "Tick the movements and pick the category they belong to.",
@@ -1764,6 +1803,7 @@ async function arrancarApp(usuarioYaObtenido) {
   } catch {}
   await Promise.all([cargarCuentasYCategorias(), cargarMesActual()]);
   generarFijosDelMes().catch(() => {});
+  bienvenidaSiCorresponde();
   sondearComprobantes().then((ok) => { comprobantesDisponible = ok; fotoUI(); });
   suscribirActualizacionEnVivo();
   arrancarLatidoDeRespaldo();
@@ -2408,7 +2448,7 @@ function renderMovimientos() {
   const trVisibles = tipoFiltroActivo === "todo" && !hayBusqueda ? transferenciasMes : [];
 
   if (!movimientos.length && !transferenciasMes.length) {
-    cont.innerHTML = `<div class="vacio">Todavía no cargaste movimientos este mes.<br>Tocá el botón <b>+</b> para agregar el primero.</div>`;
+    cont.innerHTML = `<div class="vacio">Todavía no cargaste movimientos este mes.<br>Tocá el botón <b>+</b> para agregar el primero.<br><button type="button" class="boton boton-secundario bienv-ver" data-ver-bienvenida>${escapeHTML(t("bienvVer"))}</button></div>`;
     return;
   }
   if (!visibles.length && !trVisibles.length) {
@@ -3549,7 +3589,7 @@ function abrirGuia() { $("guiaPantalla").hidden = false; }
 function cerrarGuia() { $("guiaPantalla").hidden = true; guiaMarcarVista(); }
 
 $("btnGuiaCerrar").addEventListener("click", cerrarGuia);
-$("tarjetaGuia").addEventListener("click", abrirGuia);
+$("tarjetaGuia").addEventListener("click", () => abrirBienvenida());
 $("guiaPantalla").addEventListener("click", (e) => {
   const b = e.target.closest("[data-guia-ir]");
   if (!b) return;
@@ -4705,3 +4745,46 @@ $("clasifAplicar").addEventListener("click", async () => {
 
 // Importes con puntos y comas mientras se escriben
 ["fijoMonto", "trMonto", "trMontoDestino", "presIngreso"].forEach((id) => activarFormatoImporte($(id)));
+
+// ============================================================
+// BIENVENIDA: 4 pantallas para quien entra por primera vez (con botón "Ya sé")
+// ============================================================
+const BIENV_PASOS = [
+  { ic: "👋", t: "bienv1T", x: "bienv1X" },
+  { ic: "➕", t: "bienv2T", x: "bienv2X" },
+  { ic: "🧭", t: "bienv3T", x: "bienv3X" },
+  { ic: "📊", t: "bienv4T", x: "bienv4X" },
+];
+let bienvPaso = 0;
+function claveBienvenida() { return "fs_bienvenida_vista_" + (usuario ? usuario.id : ""); }
+function bienvenidaYaVista() { try { return localStorage.getItem(claveBienvenida()) === "1"; } catch { return true; } }
+function bienvenidaMarcarVista() { try { localStorage.setItem(claveBienvenida(), "1"); } catch { /* ignorar */ } }
+
+function bienvPintar() {
+  const p = BIENV_PASOS[bienvPaso];
+  $("bienvIc").textContent = p.ic;
+  $("bienvTitulo").textContent = t(p.t);
+  $("bienvTexto").textContent = t(p.x);
+  $("bienvPuntos").innerHTML = BIENV_PASOS.map((_, i) => `<span class="bienv-punto${i === bienvPaso ? " activo" : ""}"></span>`).join("");
+  $("bienvAtras").hidden = bienvPaso === 0;
+  $("bienvSig").textContent = bienvPaso === BIENV_PASOS.length - 1 ? t("bienvEmpezar") : t("bienvSig");
+}
+function abrirBienvenida() { bienvPaso = 0; bienvPintar(); $("bienvenidaPantalla").hidden = false; }
+function cerrarBienvenida() { $("bienvenidaPantalla").hidden = true; bienvenidaMarcarVista(); }
+
+$("bienvSig").addEventListener("click", () => {
+  if (bienvPaso >= BIENV_PASOS.length - 1) return cerrarBienvenida();
+  bienvPaso++; bienvPintar();
+});
+$("bienvAtras").addEventListener("click", () => { if (bienvPaso > 0) { bienvPaso--; bienvPintar(); } });
+$("bienvSaltar").addEventListener("click", cerrarBienvenida);
+$("listaMovimientos").addEventListener("click", (e) => { if (e.target.closest("[data-ver-bienvenida]")) abrirBienvenida(); });
+
+// Solo la ve quien todavía no cargó nada; a quien ya usa la app no se le muestra.
+async function bienvenidaSiCorresponde() {
+  if (!usuario || bienvenidaYaVista()) return;
+  try {
+    const todos = await listarTodosLosMovimientos(usuario.id);
+    if (todos.length === 0) abrirBienvenida(); else bienvenidaMarcarVista();
+  } catch { /* si falla la consulta, no molestamos */ }
+}

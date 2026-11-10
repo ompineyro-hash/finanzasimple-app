@@ -587,3 +587,16 @@ input,select{font-family:inherit;font-size:16px;}
 .clasif-chk{width:22px;height:22px;flex-shrink:0;accent-color:#2f6f5e}
 .mov-item.clasif-marcado{outline:2px solid #2f6f5e;background:#eef6f2}
 .clasif-panel label{display:flex;flex-direction:column;gap:4px}.clasif-panel select{width:100%;padding:10px;border-radius:10px;border:1px solid #d8d0bf;font-size:16px;background:#fff}
+
+#bienvenidaPantalla{z-index:310}
+.bienv-caja{align-items:center;text-align:center;gap:14px;min-height:70vh;justify-content:center}
+.bienv-saltar{align-self:flex-end;font-weight:700}
+.bienv-ic{width:96px;height:96px;border-radius:50%;background:#EFEAFB;display:flex;align-items:center;justify-content:center;font-size:46px}
+.bienv-caja h2{font-size:26px}
+.bienv-texto{font-size:17px;line-height:1.45;max-width:380px;margin:0}
+.bienv-puntos{display:flex;gap:8px;margin:6px 0}
+.bienv-punto{width:10px;height:10px;border-radius:50%;background:#d8d0bf}
+.bienv-punto.activo{background:#2f6f5e;width:24px;border-radius:6px}
+.bienv-botones{display:flex;gap:10px;width:100%;max-width:380px}
+.bienv-botones .boton{flex:1}
+.bienv-ver{margin-top:12px}
