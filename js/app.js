@@ -1444,6 +1444,8 @@ function formatearImporteEscrito(texto) {
   let s = String(texto || "");
   // Un punto escrito al final (teclado sin coma) se toma como coma decimal.
   if (/\.$/.test(s) && !s.includes(",")) s = s.slice(0, -1) + ",";
+  // 27.19 o 82.9 (un solo punto y 1 o 2 dígitos después): es decimal, no miles.
+  if (/^\s*\d+\.\d{1,2}\s*$/.test(s)) s = s.replace(".", ",");
   s = s.replace(/[^\d,]/g, "");
   const i = s.indexOf(",");
   let entero = i === -1 ? s : s.slice(0, i);
@@ -1461,7 +1463,10 @@ function activarFormatoImporte(input) {
 }
 
 function numeroDesdeTexto(txt) {
-  let t = String(txt || "").trim().replace(/\./g, "").replace(",", ".");
+  let t = String(txt || "").trim();
+  // 27.19 o 82.9 (un solo punto y 1 o 2 dígitos después, sin coma): es decimal, no miles.
+  if (/^\d+\.\d{1,2}$/.test(t)) return Number(t);
+  t = t.replace(/\./g, "").replace(",", ".");
   return Number(t);
 }
 
