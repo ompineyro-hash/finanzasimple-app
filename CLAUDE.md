@@ -8,7 +8,7 @@ Ingasto (ingasto.com) es una app web instalable (PWA) de finanzas personales: mo
 ## Cómo está armada
 - Sitio estático: HTML, CSS y JavaScript sin framework. Se publica con GitHub Pages desde la rama `main` (dominio en `CNAME`).
 - Base de datos, usuarios y funciones: Supabase (Postgres con RLS, Auth, Edge Functions). Plan gratuito.
-- Archivos que SÍ se usan: `index.html`, `css/styles.css`, `css/pendientes.css`, `js/supabaseClient.js`, `js/auth.js`, `js/data.js`, `js/app.js`, `sw.js`, `manifest.json`. Páginas aparte: `antesala.html` (entrada/login), `panel.html`, `terminos.html`, `privacidad.html`.
+- Archivos que SÍ se usan: `index.html`, `css/styles.css`, `css/pendientes.css`, `js/supabaseClient.js`, `js/auth.js`, `js/data.js`, `js/app.js`, `js/importar.js`, `sw.js`, `manifest.json`. Páginas aparte: `antesala.html` (entrada/login), `panel.html`, `terminos.html`, `privacidad.html`.
 - OJO: en la raíz hay un `app.js` y un `styles.css` viejos que NO se usan. Editar esos no cambia nada. Los correctos están en `js/` y `css/`.
 - Textos en tres idiomas (es, pt, en): objeto `TRADUCCIONES` en `js/app.js`, usando `t("clave")`. Todo texto nuevo va en los tres.
 - Edge Function en el repo: `supabase/functions/verificar-pago`. El `mp-webhook` (activa planes al recibir el aviso de Mercado Pago) todavía NO está en el repo; hay que copiarlo.
@@ -38,5 +38,21 @@ Ingasto (ingasto.com) es una app web instalable (PWA) de finanzas personales: mo
 2. Antes de trabajar: traer lo último (`git pull`).
 3. Cada commit con una nota clara de qué cambió; no mezclar temas.
 
-## Pendientes ya acordados (orden)
-Cotización sugerida del dólar (fuente: Banco Nación, precio de venta; mientras tanto se escribe a mano) → gastos fijos/recurrentes → "Tengo" (saldo por cuenta; requiere transferencia entre cuentas) → presupuesto simple → importar Excel/CSV. No: conexión con bancos.
+## Estado (nov 2026)
+Hecho y publicado: movimientos, cuentas, categorías (con ícono por nombre), pendientes/Situación, "Tengo" (saldos + Ajustar), transferencias entre cuentas, gastos e ingresos fijos, presupuesto, análisis, voz, foto de comprobante, importar Excel/CSV (incluye Mercado Pago, solo moneda base), clasificar varios, cotización sugerida del dólar (Banco Nación, venta), bienvenida de 5 pantallas, textos legales (Privacidad y Términos).
+- Cobro: Mercado Pago, suscripción mensual. Probado con renovación automática real (el panel muestra "Pago activo hasta…"). El usuario no debe avisar que pagó.
+- Contacto de soporte: solo ingastosoporte@gmail.com. NO poner WhatsApp personal de nadie en la app (el WhatsApp de ayuda queda para cuando haya un número propio).
+- `panel.html`: panel del dueño (usuarios, estado de plan). Solo cantidades y fechas, nunca el contenido de los movimientos.
+- Videos tutoriales: 5 videos en es/pt/en en un artifact "Videos de Ingasto" de Claude (compartido con Edu). Faltan: primeros pasos, voz, Tengo, transferir, fijos, Situación, importar, clasificar varios.
+- Seguridad: Supabase y GitHub con verificación en dos pasos (Marcelo hecho; Edu pendiente). No prometer en la app que "nadie puede ver los datos": se guardan en Supabase y quien administra podría verlos.
+
+## Pendientes (orden sugerido)
+1. Edu: activar verificación en dos pasos en Supabase y GitHub; copiar `mp-webhook` al repo (sin claves).
+2. Probar el primer pago de alguien que nunca pagó (la renovación ya anda).
+3. Revisión de un abogado de Privacidad y Términos.
+4. Verificación en dos pasos opcional para usuarios (en Ajustes).
+5. Cifrado de datos con clave del usuario (estudiar, p. ej. CipherStash con Supabase).
+6. Grupo familiar (invitar a otra persona, dividir movimientos): para más adelante.
+7. Aviso automático al dueño cuando entra un pago (en `mp-webhook`).
+8. Videos que faltan, WhatsApp de ayuda con número propio, modo oscuro.
+No: conexión con bancos.
