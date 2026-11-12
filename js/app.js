@@ -47,11 +47,11 @@ const TRADUCCIONES = {
     tituloPruebaVencida: "Tu prueba gratuita terminó",
     textoPruebaVencida: "Tus datos siguen guardados y a salvo. Activá tu cuenta para seguir usando Ingasto.",
     btnPagarPrueba: "Pagar $4.000 y activar",
-    textoAvisoWhatsapp: "Si después de verificar no se activa, avisanos por WhatsApp con el mail que usaste para registrarte.",
+    textoAvisoSoporte: "Si después de verificar no se activa, escribinos a ingastosoporte@gmail.com con el mail que usaste para registrarte.",
     btnVerificarPago: "Ya pagué, verificar",
     verificandoPago: "Verificando tu pago…",
     pagoNoEncontrado: "Todavía no encontramos tu pago. Puede demorar unos minutos: probá de nuevo en un rato.",
-    btnAvisarWhatsapp: "Avisar por WhatsApp",
+    btnAvisarSoporte: "Escribir a soporte",
     btnSalir2: "Salir",
     btnCrearCuentaSubmit: "Crear cuenta",
     btnYaTengoCuenta: "Ya tengo cuenta",
@@ -455,11 +455,11 @@ const TRADUCCIONES = {
     tituloPruebaVencida: "Seu período de teste terminou",
     textoPruebaVencida: "Seus dados continuam salvos e seguros. Ative sua conta para continuar usando o Ingasto.",
     btnPagarPrueba: "Pagar $4.000 e ativar",
-    textoAvisoWhatsapp: "Se depois de verificar não ativar, avise-nos pelo WhatsApp com o e-mail que você usou para se cadastrar.",
+    textoAvisoSoporte: "Se depois de verificar não ativar, escreva para ingastosoporte@gmail.com com o e-mail que você usou para se cadastrar.",
     btnVerificarPago: "Já paguei, verificar",
     verificandoPago: "Verificando seu pagamento…",
     pagoNoEncontrado: "Ainda não encontramos seu pagamento. Pode demorar alguns minutos: tente de novo daqui a pouco.",
-    btnAvisarWhatsapp: "Avisar pelo WhatsApp",
+    btnAvisarSoporte: "Escrever ao suporte",
     btnSalir2: "Sair",
     btnCrearCuentaSubmit: "Criar conta",
     btnYaTengoCuenta: "Já tenho conta",
@@ -863,11 +863,11 @@ const TRADUCCIONES = {
     tituloPruebaVencida: "Your free trial has ended",
     textoPruebaVencida: "Your data is still saved and safe. Activate your account to keep using Ingasto.",
     btnPagarPrueba: "Pay $4,000 and activate",
-    textoAvisoWhatsapp: "If it doesn't activate after checking, message us on WhatsApp with the email you used to sign up.",
+    textoAvisoSoporte: "If it doesn't activate after checking, write to ingastosoporte@gmail.com with the email you used to sign up.",
     btnVerificarPago: "I've paid, check now",
     verificandoPago: "Checking your payment…",
     pagoNoEncontrado: "We haven't found your payment yet. It can take a few minutes: please try again shortly.",
-    btnAvisarWhatsapp: "Message us on WhatsApp",
+    btnAvisarSoporte: "Contact support",
     btnSalir2: "Log out",
     btnCrearCuentaSubmit: "Create account",
     btnYaTengoCuenta: "I already have an account",
@@ -2493,7 +2493,7 @@ function renderMovimientos() {
     const chk = modoClasificar ? `<input type="checkbox" class="clasif-chk" data-chk="${m.id}" ${clasifSel.has(m.id) ? "checked" : ""} aria-label="${escapeHTML(m.categoria)}">` : "";
     return antes + `
       <div class="${clases}${modoClasificar && clasifSel.has(m.id) ? " clasif-marcado" : ""}" data-id="${m.id}">${chk}
-        <div class="mov-icono ${esGasto ? "gasto" : "ingreso"}" role="img" aria-label="${esGasto ? t("segGasto") : t("segIngreso")}">${esGasto ? "↓" : "↑"}</div>
+        <div class="mov-icono ${esGasto ? "gasto" : "ingreso"}" role="img" aria-label="${esGasto ? t("segGasto") : t("segIngreso")}">${iconoCategoria(m.categoria) || (esGasto ? "↓" : "↑")}</div>
         <div class="mov-info">
           <div class="mov-categoria">${escapeHTML(m.categoria)}${m.comprobante ? " 📎" : ""}</div>
           <div class="mov-detalle">${escapeHTML(m.cuenta)}${m.detalle ? " · " + escapeHTML(m.detalle) : ""}</div>
@@ -4624,6 +4624,30 @@ $("btnEliminarCuenta").addEventListener("click", async () => {
 // ============================================================
 // Utilidad de escape HTML
 // ============================================================
+// Ícono por nombre de categoría (es/pt/en). Si no hay coincidencia, devuelve "" y se usa la flecha.
+const ICONOS_CATEGORIA = [
+  ["💳", /\b(tarjeta|cartao|card)/],
+  ["🚌", /\b(transport|combustible|combustivel|nafta|fuel|colectivo|taxi|uber|peaje|pedagio|toll)/],
+  ["💡", /\b(servicio|servico|utilit|luz\b|agua\b|gas\b|internet|electric)/],
+  ["🛒", /\b(super|aliment|comida|food|almacen|verduler|grocer|feira)/],
+  ["🏠", /\b(viviend|alquiler|aluguel|moradia|housing|rent\b|hogar|casa\b|home\b|expensas|condominio)/],
+  ["🩺", /\b(salud|saude|health|medic|farmac|pharmac)/],
+  ["🎓", /\b(educ|escuela|colegio|curso|school|universidad|faculdade)/],
+  ["🧾", /\b(impuest|imposto|tax)/],
+  ["👕", /\b(ropa|roupa|cloth|calzado)/],
+  ["🎉", /\b(salida|saidas|ocio|lazer|leisure|going out|entreten|restaurant)/],
+  ["🐾", /\b(mascota|animais|animal|pet\b|pets\b|veterinar)/],
+  ["🎁", /\b(regalo|presente|gift)/],
+  ["💼", /\b(sueldo|salario|salary|honorario|trabajo|trabalho)/],
+  ["🏷️", /\b(venta|vendas|sales)/],
+  ["📦", /\b(otro|outra|outro|other)/],
+];
+function iconoCategoria(nombre) {
+  const n = String(nombre || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  for (const [emoji, re] of ICONOS_CATEGORIA) if (re.test(n)) return emoji;
+  return "";
+}
+
 function escapeHTML(txt) {
   return String(txt ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 }
