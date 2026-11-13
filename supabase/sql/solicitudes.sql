@@ -16,3 +16,7 @@ create policy "cualquiera puede pedir baja o arrepentimiento"
   with check (estado = 'pendiente');
 -- Sin esto, la carga desde la página falla:
 grant insert on public.solicitudes to anon, authenticated;
+-- Para que la función aviso-solicitud pueda leer el pedido (si no, da error 500):
+grant select, update on public.solicitudes to service_role;
+-- OJO: en este proyecto las tablas nuevas NO reciben permisos solas. Al crear una tabla nueva,
+-- darle los grants que necesite (anon/authenticated/service_role).
