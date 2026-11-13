@@ -63,6 +63,7 @@ try {
 <button class="boton boton-secundario boton-ancho" id="btnMostrarRegistro" data-i18n="btnCrearCuenta">Crear una cuenta nueva</button>
 <button class="boton boton-texto boton-ancho" id="btnOlvideClave" data-i18n="btnOlvideClave">Olvidé mi clave</button>
 <p class="legal-login"><a href="antesala.html" data-i18n="linkConocer">Conocé qué es Ingasto</a></p>
+<p class="legal-login legal-botones"><a href="solicitud.html?tipo=baja" data-i18n="linkBotonBaja">Botón de Baja</a> · <a href="solicitud.html?tipo=arrepentimiento" data-i18n="linkBotonArrep">Botón de Arrepentimiento</a></p>
 <p class="legal-login">
 Al crear una cuenta aceptás nuestros
 <a href="terminos.html">Términos de Uso</a> y nuestra
@@ -104,6 +105,7 @@ Al crear una cuenta aceptás nuestros
 <p class="texto-ayuda" data-i18n="textoAvisoSoporte">Si después de verificar no se activa, escribinos con el mail que usaste para registrarte.</p>
 <a href="mailto:ingastosoporte@gmail.com?subject=Ingasto%3A%20no%20se%20activ%C3%B3%20mi%20pago" class="boton boton-secundario boton-ancho" data-i18n="btnAvisarSoporte">Escribir a soporte</a>
 <button type="button" class="boton boton-texto boton-ancho" id="btnSalirPruebaVencida" data-i18n="btnSalir2">Salir</button>
+<p class="legal-login legal-botones"><a href="solicitud.html?tipo=baja" data-i18n="linkBotonBaja">Botón de Baja</a> · <a href="solicitud.html?tipo=arrepentimiento" data-i18n="linkBotonArrep">Botón de Arrepentimiento</a></p>
 </div>
 </div>
 
@@ -112,7 +114,7 @@ Al crear una cuenta aceptás nuestros
 <header class="topbar">
 <div class="topbar-fila">
 <select id="selectIdiomaTopbar" class="selector-idioma" style="border:none;border-radius:8px;padding:4px 6px;font-size:13px;">
-<option value="es">🇪🇸 ES</option>
+<option value="es">🇦🇷 ES</option>
 <option value="pt">🇧🇷 PT</option>
 <option value="en">🇺🇸 EN</option>
 </select>
@@ -320,6 +322,14 @@ Al crear una cuenta aceptás nuestros
 <span class="config-tarjeta-icono">🔒</span>
 <span class="config-tarjeta-titulo" data-i18n="tituloCambiarClave">Cambiar clave</span>
 </button>
+<a class="config-tarjeta" href="solicitud.html?tipo=baja">
+<span class="config-tarjeta-icono">🚪</span>
+<span class="config-tarjeta-titulo" data-i18n="tarjetaBaja">Baja del servicio</span>
+</a>
+<a class="config-tarjeta" href="solicitud.html?tipo=arrepentimiento">
+<span class="config-tarjeta-icono">↩️</span>
+<span class="config-tarjeta-titulo" data-i18n="tarjetaArrep">Arrepentimiento</span>
+</a>
 <button type="button" class="config-tarjeta config-tarjeta-peligro" data-config="configPanelZonaRiesgo">
 <span class="config-tarjeta-icono">🧹</span>
 <span class="config-tarjeta-titulo" data-i18n="tituloZonaRiesgo">Zona de riesgo</span>

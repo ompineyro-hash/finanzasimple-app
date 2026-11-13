@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#2F6F5E">
+<title>Baja o arrepentimiento — Ingasto</title>
+<link rel="icon" href="icons/icon-192.png">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --papel:#FAF7F2; --papel-alto:#FFFFFF; --borde:#E4DDD1; --texto:#22303C;
+    --texto-suave:#6B7580; --primario:#2F6F5E; --primario-oscuro:#215043; --error:#B3261E;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:'Figtree',system-ui,sans-serif;background:var(--papel);color:var(--texto);line-height:1.55;}
+  header{background:var(--primario);color:white;padding:28px 20px 34px;border-radius:0 0 22px 22px;}
+  header h1{margin:0 0 6px;font-size:24px;}
+  header p{margin:0;opacity:.9;font-size:15px;}
+  .volver{display:inline-block;margin-bottom:14px;color:white;text-decoration:none;font-weight:600;font-size:14px;}
+  main{max-width:560px;margin:0 auto;padding:24px 20px 60px;}
+  .tarjeta{background:var(--papel-alto);border:1px solid var(--borde);border-radius:14px;padding:20px;}
+  label{display:block;font-weight:600;font-size:16px;margin:18px 0 6px;}
+  .opciones{display:grid;gap:10px;}
+  .opcion{display:flex;gap:12px;align-items:flex-start;border:2px solid var(--borde);border-radius:12px;padding:14px;cursor:pointer;font-weight:400;margin:0;}
+  .opcion input{margin-top:4px;width:20px;height:20px;accent-color:var(--primario);}
+  .opcion strong{display:block;font-size:17px;}
+  .opcion span{font-size:14px;color:var(--texto-suave);}
+  .opcion:has(input:checked){border-color:var(--primario);background:#EEF5F2;}
+  input[type=email],textarea{width:100%;font:inherit;font-size:17px;padding:12px;border:1px solid var(--borde);border-radius:10px;background:white;}
+  textarea{min-height:80px;resize:vertical;}
+  .ayuda{font-size:14px;color:var(--texto-suave);margin:6px 0 0;}
+  button{width:100%;margin-top:22px;padding:15px;font:inherit;font-size:18px;font-weight:700;color:white;background:var(--primario);border:none;border-radius:12px;cursor:pointer;}
+  button:disabled{opacity:.6;cursor:default;}
+  .error{color:var(--error);font-size:15px;margin-top:12px;}
+  .codigo{font-size:28px;font-weight:800;letter-spacing:2px;text-align:center;color:var(--primario-oscuro);background:#EEF5F2;border-radius:12px;padding:16px;margin:16px 0;user-select:all;}
+  .ok h2{color:var(--primario-oscuro);margin:0 0 6px;}
+  a{color:var(--primario);}
+</style>
+</head>
+<body>
+<header>
+  <a href="antesala.html" class="volver" data-t="volver">← Volver a Ingasto</a>
+  <h1 data-t="titulo">Baja o arrepentimiento</h1>
+  <p data-t="subtitulo">No hace falta entrar con tu cuenta. Lleva menos de un minuto.</p>
+</header>
+<main>
+  <div class="tarjeta" id="formulario">
+    <form id="form">
+      <label data-t="queQueres">¿Qué querés hacer?</label>
+      <div class="opciones">
+        <label class="opcion">
+          <input type="radio" name="tipo" value="baja" checked>
+          <div><strong data-t="bajaTitulo">Dar de baja el servicio</strong>
+          <span data-t="bajaTexto">Cancelamos tu suscripción y no se te cobra más. Sin cargos por la baja.</span></div>
+        </label>
+        <label class="opcion">
+          <input type="radio" name="tipo" value="arrepentimiento">
+          <div><strong data-t="arrepTitulo">Arrepentirme de la compra</strong>
+          <span data-t="arrepTexto">Dentro de los 10 días corridos desde que pagaste. Te devolvemos todo el importe.</span></div>
+        </label>
+      </div>
+
+      <label for="email" data-t="emailLabel">Tu email de Ingasto</label>
+      <input type="email" id="email" required autocomplete="email" maxlength="200" placeholder="tu@email.com">
+      <p class="ayuda" data-t="emailAyuda">El mismo con el que entrás a la app. Ahí te vamos a confirmar.</p>
+
+      <label for="comentario" data-t="comentarioLabel">Comentario (opcional)</label>
+      <textarea id="comentario" maxlength="500"></textarea>
+
+      <button type="submit" id="btnEnviar" data-t="enviar">Enviar pedido</button>
+      <div class="error" id="error" hidden></div>
+    </form>
+  </div>
+
+  <div class="tarjeta ok" id="listo" hidden>
+    <h2 data-t="listoTitulo">Recibimos tu pedido</h2>
+    <p data-t="listoCodigo">Este es tu código de constancia. Guardalo o sacale una captura:</p>
+    <div class="codigo" id="codigo"></div>
+    <p id="listoTexto"></p>
+    <p class="ayuda"><span data-t="consultas">Consultas:</span> <a href="mailto:ingastosoporte@gmail.com">ingastosoporte@gmail.com</a></p>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabaseClient.js"></script>
+<script>
+const TXT = {
+  es: {
+    volver:"← Volver a Ingasto", titulo:"Baja o arrepentimiento",
+    subtitulo:"No hace falta entrar con tu cuenta. Lleva menos de un minuto.",
+    queQueres:"¿Qué querés hacer?",
+    bajaTitulo:"Dar de baja el servicio", bajaTexto:"Cancelamos tu suscripción y no se te cobra más. Sin cargos por la baja.",
+    arrepTitulo:"Arrepentirme de la compra", arrepTexto:"Dentro de los 10 días corridos desde que pagaste. Te devolvemos todo el importe.",
+    emailLabel:"Tu email de Ingasto", emailAyuda:"El mismo con el que entrás a la app. Ahí te vamos a confirmar.",
+    comentarioLabel:"Comentario (opcional)", enviar:"Enviar pedido", enviando:"Enviando…",
+    listoTitulo:"Recibimos tu pedido", listoCodigo:"Este es tu código de constancia. Guardalo o sacale una captura:",
+    listoBaja:"Dentro de las 24 horas cancelamos tu suscripción en Mercado Pago y te lo confirmamos por email con este código. No se te va a cobrar ningún cargo por la baja.",
+    listoArrep:"Dentro de las 24 horas cancelamos tu suscripción y te confirmamos por email, con este código, la devolución del importe completo por el mismo medio de pago.",
+    consultas:"Consultas:", errEmail:"Revisá el email: parece incompleto.",
+    errEnvio:"No pudimos enviar el pedido. Probá de nuevo o escribinos a ingastosoporte@gmail.com con el asunto \"Baja\" o \"Arrepentimiento\"."
+  },
+  pt: {
+    volver:"← Voltar ao Ingasto", titulo:"Cancelamento ou arrependimento",
+    subtitulo:"Não precisa entrar na sua conta. Leva menos de um minuto.",
+    queQueres:"O que você quer fazer?",
+    bajaTitulo:"Cancelar o serviço", bajaTexto:"Cancelamos sua assinatura e você não é mais cobrado. Sem taxa de cancelamento.",
+    arrepTitulo:"Desistir da compra", arrepTexto:"Em até 10 dias corridos após o pagamento. Devolvemos o valor total.",
+    emailLabel:"Seu email do Ingasto", emailAyuda:"O mesmo que você usa para entrar no app. Vamos confirmar por lá.",
+    comentarioLabel:"Comentário (opcional)", enviar:"Enviar pedido", enviando:"Enviando…",
+    listoTitulo:"Recebemos seu pedido", listoCodigo:"Este é o seu código de protocolo. Guarde ou tire um print:",
+    listoBaja:"Em até 24 horas cancelamos sua assinatura no Mercado Pago e confirmamos por email com este código. Não há nenhuma taxa de cancelamento.",
+    listoArrep:"Em até 24 horas cancelamos sua assinatura e confirmamos por email, com este código, a devolução do valor total pelo mesmo meio de pagamento.",
+    consultas:"Dúvidas:", errEmail:"Confira o email: parece incompleto.",
+    errEnvio:"Não conseguimos enviar o pedido. Tente de novo ou escreva para ingastosoporte@gmail.com com o assunto \"Cancelamento\" ou \"Arrependimento\"."
+  },
+  en: {
+    volver:"← Back to Ingasto", titulo:"Cancel or withdraw",
+    subtitulo:"You don't need to sign in. It takes less than a minute.",
+    queQueres:"What do you want to do?",
+    bajaTitulo:"Cancel the service", bajaTexto:"We cancel your subscription and you won't be charged again. No cancellation fee.",
+    arrepTitulo:"Withdraw from the purchase", arrepTexto:"Within 10 calendar days of your payment. We refund the full amount.",
+    emailLabel:"Your Ingasto email", emailAyuda:"The one you use to sign in to the app. We'll confirm there.",
+    comentarioLabel:"Comment (optional)", enviar:"Send request", enviando:"Sending…",
+    listoTitulo:"We received your request", listoCodigo:"This is your confirmation code. Save it or take a screenshot:",
+    listoBaja:"Within 24 hours we'll cancel your subscription in Mercado Pago and confirm by email with this code. There is no cancellation fee.",
+    listoArrep:"Within 24 hours we'll cancel your subscription and confirm by email, with this code, the full refund to the same payment method.",
+    consultas:"Questions:", errEmail:"Check the email: it looks incomplete.",
+    errEnvio:"We couldn't send your request. Try again or write to ingastosoporte@gmail.com with the subject \"Cancel\" or \"Withdraw\"."
+  }
+};
+let idioma = "es";
+try { idioma = localStorage.getItem("fs_idioma") || "es"; } catch {}
+const pIdioma = new URLSearchParams(location.search).get("lang");
+if (pIdioma) idioma = pIdioma;
+if (!TXT[idioma]) idioma = "es";
+const t = k => TXT[idioma][k];
+document.documentElement.lang = idioma;
+document.querySelectorAll("[data-t]").forEach(el => el.textContent = t(el.dataset.t));
+document.title = t("titulo") + " — Ingasto";
+
+// Si viene ?tipo=arrepentimiento, preseleccionarlo
+const pTipo = new URLSearchParams(location.search).get("tipo");
+if (pTipo === "arrepentimiento") document.querySelector('input[value="arrepentimiento"]').checked = true;
+
+function generarCodigo(tipo) {
+  const d = new Date();
+  const fecha = String(d.getFullYear()).slice(2) + String(d.getMonth()+1).padStart(2,"0") + String(d.getDate()).padStart(2,"0");
+  const letras = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  const al = crypto.getRandomValues(new Uint8Array(5));
+  let r = ""; al.forEach(n => r += letras[n % letras.length]);
+  return (tipo === "baja" ? "B" : "A") + "-" + fecha + "-" + r;
+}
+
+document.getElementById("form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const err = document.getElementById("error");
+  const btn = document.getElementById("btnEnviar");
+  err.hidden = true;
+  const tipo = document.querySelector('input[name="tipo"]:checked').value;
+  const email = document.getElementById("email").value.trim().toLowerCase();
+  const comentario = document.getElementById("comentario").value.trim() || null;
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { err.textContent = t("errEmail"); err.hidden = false; return; }
+  btn.disabled = true; btn.textContent = t("enviando");
+  const codigo = generarCodigo(tipo);
+  try {
+    const { error } = await sbClient.from("solicitudes").insert({ tipo, email, comentario, codigo });
+    if (error) throw error;
+    document.getElementById("codigo").textContent = codigo;
+    document.getElementById("listoTexto").textContent = t(tipo === "baja" ? "listoBaja" : "listoArrep");
+    document.getElementById("formulario").hidden = true;
+    document.getElementById("listo").hidden = false;
+    window.scrollTo(0, 0);
+  } catch (ex) {
+    console.error(ex);
+    err.textContent = t("errEnvio"); err.hidden = false;
+    btn.disabled = false; btn.textContent = t("enviar");
+  }
+});
+</script>
+</body>
+</html>
