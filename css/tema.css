@@ -162,3 +162,13 @@ html[data-tema="oscuro"] #segmentadoVistaAnalisis .segmentado-item.activo{color:
 .resumen-tarjetas-analisis .tarjeta-resumen-clara + .tarjeta-resumen-clara{border-top:1px solid var(--borde);}
 .resumen-tarjetas-analisis .tarjeta-resumen-label{font-size:15px;}
 .resumen-tarjetas-analisis .tarjeta-resumen-valor{font-size:18px;margin:0;}
+
+/* ===== Botón "Volver" de Ajustes: grande y bien visible ===== */
+.config-volver{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--papel-alto);color:var(--primario);
+  border:2px solid var(--primario);border-radius:12px;
+  padding:10px 18px;font-size:17px;font-weight:800;margin:4px 0 14px;
+  box-shadow:var(--sombra);cursor:pointer;
+}
+.config-volver:hover{background:var(--ingreso-fondo);}
