@@ -2687,8 +2687,8 @@ function renderCategoriasAnalisis(lista, tipo) {
     return;
   }
   const colores = esGasto
-    ? ["#C4562E", "#2F6F5E", "#D9A441", "#5B7FBF", "#8B5FBF", "#4FA3A0", "#C2707C", "#7A8B4F"]
-    : ["#2F6F5E", "#4FA3A0", "#5B7FBF", "#D9A441", "#8B5FBF", "#C4562E", "#7A8B4F", "#C2707C"];
+    ? ["#FF6B4A", "#1FB58F", "#F2B731", "#4C8DF6", "#A46BF5", "#FF5D8F", "#22B8CF", "#8BC34A"]
+    : ["#1FB58F", "#22B8CF", "#4C8DF6", "#F2B731", "#A46BF5", "#FF6B4A", "#8BC34A", "#FF5D8F"];
   let acumulado = 0;
   const segmentos = entradas.map(([, monto], i) => {
     const pct = (monto / total) * 100;
@@ -2833,8 +2833,8 @@ async function renderEvolucionMensual() {
       <div class="grafico-barras">${barras}</div>
     </div>
     <div class="grafico-leyenda">
-      <span class="grafico-leyenda-item"><span class="grafico-leyenda-swatch" style="background:#2F6F5E"></span>${t("lblIngresos")}</span>
-      <span class="grafico-leyenda-item"><span class="grafico-leyenda-swatch" style="background:#C4562E"></span>${t("lblGastos")}</span>
+      <span class="grafico-leyenda-item"><span class="grafico-leyenda-swatch" style="background:#1FB58F"></span>${t("lblIngresos")}</span>
+      <span class="grafico-leyenda-item"><span class="grafico-leyenda-swatch" style="background:#FF6B4A"></span>${t("lblGastos")}</span>
     </div>`;
 }
 
@@ -2917,24 +2917,24 @@ function renderDiaADia() {
     <svg viewBox="0 0 ${ancho} ${alto}">
       <defs>
         <linearGradient id="gradIngreso" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#2F6F5E" stop-opacity="0.35" />
-          <stop offset="100%" stop-color="#2F6F5E" stop-opacity="0" />
+          <stop offset="0%" stop-color="#1FB58F" stop-opacity="0.35" />
+          <stop offset="100%" stop-color="#1FB58F" stop-opacity="0" />
         </linearGradient>
         <linearGradient id="gradGasto" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#C4562E" stop-opacity="0.30" />
-          <stop offset="100%" stop-color="#C4562E" stop-opacity="0" />
+          <stop offset="0%" stop-color="#FF6B4A" stop-opacity="0.30" />
+          <stop offset="100%" stop-color="#FF6B4A" stop-opacity="0" />
         </linearGradient>
       </defs>
       ${gridY}
       <path d="${areaGas}" fill="url(#gradGasto)" stroke="none" />
       <path d="${areaIng}" fill="url(#gradIngreso)" stroke="none" />
-      <path d="${lineaGas}" fill="none" stroke="#C4562E" stroke-width="2.5" stroke-linecap="round" />
-      <path d="${lineaIng}" fill="none" stroke="#2F6F5E" stroke-width="2.5" stroke-linecap="round" />
+      <path class="linea-anim" d="${lineaGas}" fill="none" stroke="#FF6B4A" stroke-width="3.5" stroke-linecap="round" />
+      <path class="linea-anim" d="${lineaIng}" fill="none" stroke="#1FB58F" stroke-width="3.5" stroke-linecap="round" />
       ${ejeX}
     </svg>
     <div class="grafico-leyenda">
-      <span class="grafico-leyenda-item"><span class="grafico-leyenda-swatch" style="background:#2F6F5E"></span>${t("lblIngresos")} ${formatoMonto(accIng)}</span>
-      <span class="grafico-leyenda-item"><span class="grafico-leyenda-swatch" style="background:#C4562E"></span>${t("lblGastos")} ${formatoMonto(accGas)}</span>
+      <span class="grafico-leyenda-item"><span class="grafico-leyenda-swatch" style="background:#1FB58F"></span>${t("lblIngresos")} ${formatoMonto(accIng)}</span>
+      <span class="grafico-leyenda-item"><span class="grafico-leyenda-swatch" style="background:#FF6B4A"></span>${t("lblGastos")} ${formatoMonto(accGas)}</span>
     </div>`;
 }
 
