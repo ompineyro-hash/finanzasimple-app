@@ -60,3 +60,13 @@ Hecho y publicado: movimientos, cuentas, categorías (con ícono por nombre), pe
 7. Aviso automático al dueño cuando entra un pago (en `mp-webhook`).
 8. Videos que faltan, WhatsApp de ayuda con número propio, modo oscuro.
 No: conexión con bancos.
+
+## Rediseño propuesto por Edu (nov 2026, en estudio, NADA implementado)
+Mockups en un artifact de Edu ("Videos de Ingasto" → lienzo de rediseño, claro y oscuro). Ojo: varias pantallas se dibujaron sin ver la app real; lo que vale es lo de abajo.
+Orden sugerido (de menos a más trabajo), siempre en es/pt/en y probando también en PC:
+1. Retoques rápidos: mejor contraste de "Gastos" en el encabezado, montos sin ",00", movimientos agrupados por día (Hoy / Ayer / fecha), estados vacíos con guía, selector de idioma más prolijo.
+2. Íconos de línea propios en la barra inferior (en vez de emojis) y color/ícono por categoría.
+3. Carga rápida: monto primero con teclado numérico propio, cuenta y fecha ya elegidas, categorías más usadas como botones (objetivo: gasto en 3 toques). Es la mejora de más valor.
+4. Tarjeta principal "Resultado del mes" más destacada, color de acento cálido para el botón "+".
+5. Modo oscuro (ya estaba en pendientes).
+Para más adelante (cuestan plata o mucho trabajo): leer el ticket automáticamente (OCR), bloqueo con huella, tarjetas con fecha de cierre/vencimiento, avisos tipo "gastás 18% más que el mes pasado".
