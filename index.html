@@ -129,14 +129,18 @@ Al crear una cuenta aceptás nuestros
 <div class="tarjeta-resumen tarjeta-resumen-balance">
 <span class="tarjeta-resumen-label" data-i18n="lblResultadoMes">Resultado del mes</span>
 <span id="valorBalance" class="tarjeta-resumen-valor">—</span>
+<div id="barraGasto" class="consumo-mes" hidden>
+<div class="consumo-mes-fondo"><div id="barraGastoRelleno" class="consumo-mes-relleno"></div></div>
+<span id="barraGastoTexto" class="consumo-mes-texto"></span>
+</div>
 </div>
 <div class="resumen-tarjetas-fila">
 <div class="tarjeta-resumen">
-<span class="tarjeta-resumen-label" data-i18n="lblIngresos">Ingresos</span>
+<span class="tarjeta-resumen-label"><span class="flecha-resumen ingreso" aria-hidden="true">▲</span> <span data-i18n="lblIngresos">Ingresos</span></span>
 <span id="valorIngresos" class="tarjeta-resumen-valor color-ingreso">—</span>
 </div>
 <div class="tarjeta-resumen">
-<span class="tarjeta-resumen-label" data-i18n="lblGastos">Gastos</span>
+<span class="tarjeta-resumen-label"><span class="flecha-resumen gasto" aria-hidden="true">▼</span> <span data-i18n="lblGastos">Gastos</span></span>
 <span id="valorGastos" class="tarjeta-resumen-valor color-gasto">—</span>
 </div>
 </div>

@@ -602,3 +602,46 @@ a.config-tarjeta{text-decoration:none;}
 .bienv-botones{display:flex;gap:10px;width:100%;max-width:380px}
 .bienv-botones .boton{flex:1}
 .bienv-ver{margin-top:12px}
+
+/* ===== Rediseño 1 (nov 2026): encabezado con resultado grande y movimientos por día ===== */
+/* Resultado del mes protagonista; Ingresos y Gastos abajo, en dos tarjetas. */
+.topbar{padding:8px 14px 12px;}
+.topbar .resumen-tarjetas{flex-direction:column;gap:8px;margin-top:8px;}
+.topbar .resumen-tarjetas-fila{display:flex;gap:8px;}
+.topbar .tarjeta-resumen-balance{
+  text-align:left;padding:10px 14px 12px;border-radius:14px;
+  background:linear-gradient(135deg,rgba(255,255,255,.20),rgba(255,255,255,.08));
+}
+.topbar .tarjeta-resumen-balance .tarjeta-resumen-label{font-size:14px;font-weight:600;opacity:.95;}
+.topbar .tarjeta-resumen-balance .tarjeta-resumen-valor{font-size:32px;font-weight:800;line-height:1.15;margin-top:2px;letter-spacing:-.5px;}
+.topbar .tarjeta-resumen{padding:7px 10px;text-align:left;border-radius:12px;}
+.topbar .tarjeta-resumen-label{font-size:14px;font-weight:600;}
+.topbar .tarjeta-resumen-valor{font-size:18px;color:#fff;}
+.flecha-resumen{font-size:11px;vertical-align:1px;}
+.flecha-resumen.ingreso{color:#BFE8D6;}
+.flecha-resumen.gasto{color:#FFD2BE;}
+/* Barrita: cuánto de lo que entró ya se gastó */
+.consumo-mes{margin-top:8px;}
+.consumo-mes-fondo{height:8px;border-radius:99px;background:rgba(255,255,255,.22);overflow:hidden;}
+.consumo-mes-relleno{height:100%;border-radius:99px;background:#F2B33D;width:0;transition:width .6s ease;}
+.consumo-mes.pasado .consumo-mes-relleno{background:#FF8A6B;}
+.consumo-mes-texto{display:block;margin-top:5px;font-size:13.5px;font-weight:600;opacity:.95;}
+@media (max-width:420px){
+  .topbar .tarjeta-resumen-balance .tarjeta-resumen-valor{font-size:29px;}
+  .topbar .tarjeta-resumen-label{font-size:13.5px;}
+  .topbar .tarjeta-resumen-valor{font-size:17px;}
+}
+/* Título de cada día en la lista de movimientos */
+.dia-titulo{font-size:14.5px;font-weight:700;color:var(--texto-suave);margin:10px 4px -2px;}
+.dia-titulo:first-child{margin-top:0;}
+.lista-movimientos .mov-fecha{display:none;}
+/* En PC la fila ya no repite la fecha, así que la categoría arranca primero */
+@media (min-width:900px){
+  .dia-titulo{margin:12px 4px 2px;}
+  /* En PC: resultado, ingresos y gastos en una sola fila, centrada */
+  .topbar .resumen-tarjetas{flex-direction:row;align-items:stretch;max-width:1100px;margin-left:auto;margin-right:auto;width:100%;}
+  .topbar .tarjeta-resumen-balance{flex:2;}
+  .topbar .resumen-tarjetas-fila{flex:2;}
+  .topbar .resumen-tarjetas-fila .tarjeta-resumen{display:flex;flex-direction:column;justify-content:center;padding:10px 16px;}
+  .topbar .tarjeta-resumen-valor{font-size:22px;}
+}

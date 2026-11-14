@@ -65,6 +65,11 @@ const TRADUCCIONES = {
     confirmarSalir: "¿Querés cerrar tu sesión?",
     lblBalance: "Balance",
     lblResultadoMes: "Resultado del mes",
+    diaHoy: "Hoy",
+    diaAyer: "Ayer",
+    barraGastoPct: "Gastaste el {p}% de tus ingresos del mes",
+    barraGastoPasado: "Gastaste más de lo que ingresó este mes",
+    barraSinIngresos: "Todavía no hay ingresos este mes",
     lblIngresos: "Ingresos",
     lblGastos: "Gastos",
     searchTodo: "Todo",
@@ -477,6 +482,11 @@ const TRADUCCIONES = {
     confirmarSalir: "Quer encerrar a sessão?",
     lblBalance: "Saldo",
     lblResultadoMes: "Resultado do mês",
+    diaHoy: "Hoje",
+    diaAyer: "Ontem",
+    barraGastoPct: "Você gastou {p}% da sua renda do mês",
+    barraGastoPasado: "Você gastou mais do que entrou este mês",
+    barraSinIngresos: "Ainda não há receitas este mês",
     lblIngresos: "Receitas",
     lblGastos: "Despesas",
     searchTodo: "Tudo",
@@ -889,6 +899,11 @@ const TRADUCCIONES = {
     confirmarSalir: "Do you want to log out?",
     lblBalance: "Balance",
     lblResultadoMes: "Month result",
+    diaHoy: "Today",
+    diaAyer: "Yesterday",
+    barraGastoPct: "You've spent {p}% of this month's income",
+    barraGastoPasado: "You've spent more than came in this month",
+    barraSinIngresos: "No income yet this month",
     lblIngresos: "Income",
     lblGastos: "Expenses",
     searchTodo: "All",
@@ -1338,8 +1353,13 @@ function actualizarTextosDinamicosIdioma() {
 // ---------- Utilidades ----------
 function moneda() { return perfil?.moneda || "$"; }
 
+// Montos: sin ",00" cuando son redondos; con centavos solo si los tienen.
+function decimalesDe(n) {
+  return Math.round(Math.abs(Number(n)) * 100) % 100 === 0 ? 0 : 2;
+}
 function formatoMonto(n) {
-  return moneda() + " " + Number(n).toLocaleString("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const d = decimalesDe(n);
+  return moneda() + " " + Number(n).toLocaleString("es-AR", { minimumFractionDigits: d, maximumFractionDigits: d });
 }
 
 // ---------- Monedas ----------
@@ -1400,7 +1420,8 @@ function montoBase(m) {
   return c === null ? 0 : Number(m.monto) * c;
 }
 function formatoNum(n) {
-  return Number(n).toLocaleString("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const d = decimalesDe(n);
+  return Number(n).toLocaleString("es-AR", { minimumFractionDigits: d, maximumFractionDigits: d });
 }
 function formatoMontoMov(m) { return simboloDe(monedaDeMov(m)) + " " + formatoNum(m.monto); }
 function equivMovHTML(m) {
@@ -2352,11 +2373,32 @@ function ajustarMontosResumen() {
 }
 window.addEventListener("resize", ajustarMontosResumen);
 
+// Barrita debajo del resultado: qué parte de los ingresos del mes ya se gastó.
+function renderBarraGasto(ing, gas) {
+  const caja = $("barraGasto");
+  if (!caja) return;
+  if (ing <= 0 && gas <= 0) { caja.hidden = true; return; }
+  caja.hidden = false;
+  const relleno = $("barraGastoRelleno");
+  const texto = $("barraGastoTexto");
+  if (ing <= 0 || gas > ing) {
+    relleno.style.width = "100%";
+    caja.classList.add("pasado");
+    texto.textContent = ing <= 0 ? t("barraSinIngresos") : t("barraGastoPasado");
+    return;
+  }
+  const pct = Math.round((gas / ing) * 100);
+  caja.classList.toggle("pasado", false);
+  relleno.style.width = pct + "%";
+  texto.textContent = t("barraGastoPct").replace("{p}", pct);
+}
+
 function renderResumen() {
   const { ing, gas } = calcularResumenLista(contablesDelMes(movimientos, claveMesVista()));
   $("valorBalance").textContent = formatoMonto(ing - gas);
   $("valorIngresos").textContent = formatoMonto(ing);
   $("valorGastos").textContent = formatoMonto(gas);
+  renderBarraGasto(ing, gas);
   ajustarMontosResumen();
   renderPrevisto();
 }
@@ -2463,6 +2505,21 @@ window.addEventListener("resize", ajustarAnchoCategorias);
 // ============================================================
 // RENDER: Lista de movimientos
 // ============================================================
+// "Hoy", "Ayer" o "Jueves 13 de noviembre" (en el idioma elegido).
+function tituloDia(fechaStr) {
+  const [y, m, d] = String(fechaStr).split("-").map(Number);
+  if (!y || !m || !d) return String(fechaStr || "");
+  const f = new Date(y, m - 1, d);
+  const hoy = new Date(); hoy.setHours(0, 0, 0, 0);
+  const dif = Math.round((hoy - f) / 86400000);
+  if (dif === 0) return t("diaHoy");
+  if (dif === 1) return t("diaAyer");
+  const opciones = { weekday: "long", day: "numeric", month: "long" };
+  if (y !== hoy.getFullYear()) opciones.year = "numeric";
+  const texto = f.toLocaleDateString(LOCALES_POR_IDIOMA[idiomaActual] || "es-AR", opciones).replace(",", "");
+  return texto.charAt(0).toUpperCase() + texto.slice(1);
+}
+
 function renderMovimientos() {
   $("etiquetaMes").textContent = nombreMes(fechaVista);
   const cont = $("listaMovimientos");
@@ -2490,9 +2547,18 @@ function renderMovimientos() {
         <div class="mov-derecha"><div class="mov-monto interno">${escapeHTML(formatoMontoMoneda(Number(x.monto_origen), monedaDeCuentaNombre(x.cuenta_origen)))}</div></div>
       </div>`;
   const pendTr = trVisibles.slice().sort((a, b) => String(b.fecha).localeCompare(String(a.fecha)));
+  // Movimientos agrupados por día: un título "Hoy", "Ayer" o la fecha, en vez de repetirla en cada fila.
+  let diaActual = null;
+  const titDia = (f) => {
+    if (f === diaActual) return "";
+    diaActual = f;
+    return `<div class="dia-titulo">${escapeHTML(tituloDia(f))}</div>`;
+  };
+  const conTitulo = (x) => titDia(String(x.fecha)) + filaInterna(x);
   cont.innerHTML = visibles.map((m) => {
     let antes = "";
-    while (pendTr.length && String(pendTr[0].fecha) >= String(m.fecha)) antes += filaInterna(pendTr.shift());
+    while (pendTr.length && String(pendTr[0].fecha) >= String(m.fecha)) antes += conTitulo(pendTr.shift());
+    antes += titDia(String(m.fecha));
     const esGasto = m.tipo === "Gasto";
     const papel = papelEnMes(m, clave);
     const badge = badgeMovimiento(m, papel);
@@ -2517,7 +2583,7 @@ function renderMovimientos() {
           ${botonCerrar}
         </div>
       </div>`;
-  }).join("") + pendTr.map(filaInterna).join("");
+  }).join("") + pendTr.map(conTitulo).join("");
 
   ajustarAnchoCategorias();
   cont.querySelectorAll(".mov-item:not(.mov-interno)").forEach((el) => {
@@ -2904,7 +2970,8 @@ function tengoRefrescarVista() {
 }
 
 function formatoMontoMoneda(n, moneda) {
-  const s = Number(n).toLocaleString("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const d = decimalesDe(n);
+  const s = Number(n).toLocaleString("es-AR", { minimumFractionDigits: d, maximumFractionDigits: d });
   return (moneda === monedaBase() ? "" : moneda + " ") + (moneda === monedaBase() ? formatoMonto(n) : s);
 }
 
