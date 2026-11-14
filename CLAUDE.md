@@ -50,23 +50,26 @@ Hecho y publicado: movimientos, cuentas, categorías (con ícono por nombre), pe
 - Videos tutoriales: 5 videos en es/pt/en en un artifact "Videos de Ingasto" de Claude (compartido con Edu). Faltan: primeros pasos, voz, Tengo, transferir, fijos, Situación, importar, clasificar varios.
 - Seguridad: Supabase y GitHub con verificación en dos pasos (Marcelo hecho; Edu pendiente). No prometer en la app que "nadie puede ver los datos": se guardan en Supabase y quien administra podría verlos.
 
-## Pendientes (orden sugerido)
-1. Edu: activar verificación en dos pasos en Supabase y GitHub; copiar `mp-webhook` al repo (sin claves).
-2. Probar el primer pago de alguien que nunca pagó (la renovación ya anda).
-3. Revisión de un abogado de Privacidad y Términos.
-4. Verificación en dos pasos opcional para usuarios (en Ajustes).
-5. Cifrado de datos con clave del usuario (estudiar, p. ej. CipherStash con Supabase).
-6. Grupo familiar (invitar a otra persona, dividir movimientos): para más adelante.
-7. Aviso automático al dueño cuando entra un pago (en `mp-webhook`).
-8. Videos que faltan, WhatsApp de ayuda con número propio, modo oscuro.
-No: conexión con bancos.
+## Pendientes (orden sugerido, unificado 14/11/2026)
+Regla de diseño para todo: el público es mayormente de 55-60 años o más → letra grande (mínimo 16px en textos importantes), siempre palabra además del ícono, buen contraste (también en modo oscuro), botones grandes. Mantener la bandera 🇦🇷 en el selector de idioma.
 
-## Rediseño propuesto por Edu (nov 2026, en estudio, NADA implementado)
-Mockups en un artifact de Edu ("Videos de Ingasto" → lienzo de rediseño, claro y oscuro). Ojo: varias pantallas se dibujaron sin ver la app real; lo que vale es lo de abajo.
-Orden sugerido (de menos a más trabajo), siempre en es/pt/en y probando también en PC:
-1. Retoques rápidos: mejor contraste de "Gastos" en el encabezado, montos sin ",00", movimientos agrupados por día (Hoy / Ayer / fecha), estados vacíos con guía, selector de idioma más prolijo.
-2. Íconos de línea propios en la barra inferior (en vez de emojis) y color/ícono por categoría.
-3. Carga rápida: monto primero con teclado numérico propio, cuenta y fecha ya elegidas, categorías más usadas como botones (objetivo: gasto en 3 toques). Es la mejora de más valor.
-4. Tarjeta principal "Resultado del mes" más destacada, color de acento cálido para el botón "+".
-5. Modo oscuro (ya estaba en pendientes).
-Para más adelante (cuestan plata o mucho trabajo): leer el ticket automáticamente (OCR), bloqueo con huella, tarjetas con fecha de cierre/vencimiento, avisos tipo "gastás 18% más que el mes pasado".
+A. Para salir al mercado (lo más urgente)
+1. Probar el primer pago de alguien que nunca pagó (la renovación ya anda).
+2. Edu: delegación de Gmail para ver ingastosoporte desde su cuenta; acceso a Mercado Pago para atender bajas y devoluciones (decidir con Marcelo).
+3. Borrar las 2 filas de prueba en `solicitudes` (B-261113-36RZ6 y B-261113-C9ZQX).
+4. Nombre/razón social y CUIT en Términos y Privacidad (consultar contador); revisión de un abogado (incluye si el arrepentimiento aplica a renovaciones).
+5. Edu: verificación en dos pasos en Supabase y GitHub; copiar `mp-webhook` al repo (sin claves).
+
+B. Mejoras visuales (vienen del rediseño de Edu, aplicando la regla de diseño)
+6. Retoques rápidos en Movimientos: resultado del mes grande con barrita "Gastaste el X%", movimientos agrupados por día (Hoy / Ayer / fecha), montos sin ",00", mejor contraste de "Gastos". Mantener la palabra "Buscar".
+7. Modo oscuro: automático según el celular + opción Claro/Oscuro/Automático en Ajustes. Pasar los ~70 colores sueltos de css a variables.
+8. Cambio Gasto/Ingreso más claro (dos botones grandes de colores distintos), le costó a Marcelo.
+9. Carga rápida: monto primero, cuenta y fecha ya elegidas, categorías más usadas como botones.
+10. Íconos de la barra inferior: si se cambian, gruesos y con nombre legible.
+
+C. Más adelante
+11. Movimientos con fecha de pago futura (tarjeta que se paga el mes siguiente).
+12. Grupo familiar; aviso automático al dueño cuando entra un pago; videos que faltan; WhatsApp con número propio.
+13. Verificación en dos pasos para usuarios; cifrado de datos con clave del usuario.
+14. Ideas que cuestan plata o mucho trabajo: leer tickets automáticamente (OCR), bloqueo con huella, avisos tipo "gastás 18% más que el mes pasado".
+No: conexión con bancos.
