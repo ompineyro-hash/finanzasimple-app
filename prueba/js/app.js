@@ -2610,7 +2610,7 @@ function renderMovimientos() {
     const chk = modoClasificar ? `<input type="checkbox" class="clasif-chk" data-chk="${m.id}" ${clasifSel.has(m.id) ? "checked" : ""} aria-label="${escapeHTML(m.categoria)}">` : "";
     return antes + `
       <div class="${clases}${modoClasificar && clasifSel.has(m.id) ? " clasif-marcado" : ""}" data-id="${m.id}">${chk}
-        <div class="mov-icono ${esGasto ? "gasto" : "ingreso"}" role="img" aria-label="${esGasto ? t("segGasto") : t("segIngreso")}">${iconoCategoria(m.categoria) || (esGasto ? "↓" : "↑")}</div>
+        <div class="mov-icono ${esGasto ? "gasto" : "ingreso"}" style="--cat-h:${tonoCategoria(m.categoria)}" role="img" aria-label="${esGasto ? t("segGasto") : t("segIngreso")}">${iconoCategoria(m.categoria) || (esGasto ? "↓" : "↑")}</div>
         <div class="mov-info">
           <div class="mov-categoria">${escapeHTML(m.categoria)}${m.comprobante ? " 📎" : ""}</div>
           <div class="mov-detalle">${escapeHTML(m.cuenta)}${m.detalle ? " · " + escapeHTML(m.detalle) : ""}</div>
@@ -4760,6 +4760,14 @@ const ICONOS_CATEGORIA = [
   ["🏷️", /\b(venta|vendas|sales)/],
   ["📦", /\b(otro|outra|outro|other)/],
 ];
+// Cada categoría tiene siempre el mismo color (se calcula con su nombre).
+function tonoCategoria(nombre) {
+  const n = String(nombre || "").toLowerCase();
+  let h = 0;
+  for (let i = 0; i < n.length; i++) h = (h * 31 + n.charCodeAt(i)) % 360;
+  return h;
+}
+
 function iconoCategoria(nombre) {
   const n = String(nombre || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
   for (const [emoji, re] of ICONOS_CATEGORIA) if (re.test(n)) return emoji;
