@@ -220,3 +220,12 @@ html[data-tema="oscuro"] .topbar #valorGastos,html[data-tema="oscuro"] .flecha-r
 html[data-tema="oscuro"] .grafico-lineas line{stroke:#2A3B34;}
 html[data-tema="oscuro"] .grafico-dona{filter:drop-shadow(0 6px 18px rgba(0,0,0,.5));}
 @media (prefers-reduced-motion:reduce){.grafico-dona,.analisis-barra,.barra,.linea-anim{animation:none;stroke-dasharray:none;stroke-dashoffset:0;}}
+
+/* ===== Letra grande en el celular: que nada quede cortado ===== */
+/* Todo/Ingresos/Gastos y Buscar: si no entran juntos, Buscar baja abajo a lo ancho */
+#filaAccesosLista{flex-wrap:wrap !important;}
+#filaAccesosLista #segmentadoTipoLista{flex:1 1 230px !important;min-width:min(230px,100%);}
+#filaAccesosLista #btnBuscarSimple{flex:1 0 auto;}
+/* Barra de abajo: cada botón ocupa lo mismo y el nombre se achica si hace falta */
+.navbar-item,.navbar-agregar{flex:1 1 0;min-width:0;}
+.navbar-item span:last-child,.navbar-agregar span:last-child{max-width:100%;overflow:hidden;text-overflow:ellipsis;font-size:min(12.5px,3.2vw);}
