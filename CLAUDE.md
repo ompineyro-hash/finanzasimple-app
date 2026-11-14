@@ -73,3 +73,8 @@ C. Más adelante
 13. Verificación en dos pasos para usuarios; cifrado de datos con clave del usuario.
 14. Ideas que cuestan plata o mucho trabajo: leer tickets automáticamente (OCR), bloqueo con huella, avisos tipo "gastás 18% más que el mes pasado".
 No: conexión con bancos.
+## Rediseño (en curso, 14/11/2026)
+- Se trabaja en la rama `rediseno-1`. Una copia se ve en ingasto.com/prueba/ (carpeta `prueba/` en main, sin service worker, con etiqueta "PRUEBA"; usa la base real). La app normal NO cambió.
+- Hecho en la rama: resultado del mes grande con barrita, ingresos verde / gastos rojo, movimientos por día, montos sin ",00", modo oscuro (Ajustes → Modo oscuro: auto/claro/oscuro, `css/tema.css`), barra inferior con íconos de línea y + amarillo con latido, íconos de categoría en cuadraditos de color, Gasto/Ingreso grandes de color, Voz naranja, Ajustes y Análisis al estilo de Edu, gráficos animados, barra lateral en PC, ajustes para letra grande.
+- Para pasarlo a la app normal (con el "sí" de Edu): merge de `rediseno-1` a main, subir versión de sw.js, borrar la carpeta `prueba/`.
+- Faltan (funciones nuevas, decidir con Edu): carga rápida con teclado numérico, pantallas de Recurrentes y Cuotas, primer inicio en 3 pasos, escanear ticket gratis (QR → OCR en el navegador → manual).
