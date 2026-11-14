@@ -172,3 +172,14 @@ html[data-tema="oscuro"] #segmentadoVistaAnalisis .segmentado-item.activo{color:
   box-shadow:var(--sombra);cursor:pointer;
 }
 .config-volver:hover{background:var(--ingreso-fondo);}
+
+/* ===== Ingresos en verde, Gastos en rojo, Resultado en blanco ===== */
+.topbar .resumen-tarjetas-fila .tarjeta-resumen{background:var(--papel-alto);color:var(--texto);}
+.topbar .resumen-tarjetas-fila .tarjeta-resumen-label{color:var(--texto-suave);}
+.topbar #valorIngresos{color:#22795E;}
+.topbar #valorGastos{color:#C8321F;}
+.flecha-resumen.ingreso{color:#22795E;}
+.flecha-resumen.gasto{color:#C8321F;}
+html[data-tema="oscuro"] .topbar #valorIngresos,html[data-tema="oscuro"] .flecha-resumen.ingreso{color:#5FDDB0;}
+html[data-tema="oscuro"] .topbar #valorGastos,html[data-tema="oscuro"] .flecha-resumen.gasto{color:#FF6B5B;}
+.topbar #valorBalance{color:#fff;}
