@@ -130,3 +130,35 @@ html[data-tema="oscuro"] .linea-previsto{background:#15231E;}
 }
 
 html[data-tema="oscuro"] .mov-monto.interno{color:var(--texto-suave);}
+
+/* ===== Nuevo movimiento ===== */
+/* Gasto / Ingreso: dos botones grandes; el elegido se pinta de su color (naranja o verde) */
+#segmentadoTipo{background:none;padding:0;gap:10px;}
+#segmentadoTipo .segmentado-item{padding:14px 10px;font-size:18px;border:2px solid var(--borde);border-radius:14px;background:var(--papel-alto);color:var(--texto-suave);box-shadow:none;}
+#segmentadoTipo .segmentado-item[data-tipo="Gasto"]::before{content:"▼ ";font-size:13px;}
+#segmentadoTipo .segmentado-item[data-tipo="Ingreso"]::before{content:"▲ ";font-size:13px;}
+#segmentadoTipo .segmentado-item.activo[data-tipo="Gasto"]{background:#D9582B;border-color:#D9582B;color:#fff;}
+#segmentadoTipo .segmentado-item.activo[data-tipo="Ingreso"]{background:#2F8A6C;border-color:#2F8A6C;color:#fff;}
+.modal-cuerpo label{font-size:14.5px;}
+.modal-cuerpo input,.modal-cuerpo select{background:var(--papel-alto);font-size:17px;}
+/* Botón de voz naranja, bien visible */
+.boton-voz-chico,html[data-tema="oscuro"] .boton-voz-chico{background:#FF6A2B;color:#fff;padding:8px 16px;font-size:15px;border-radius:20px;}
+
+/* ===== Ajustes: tarjetas con el ícono en un círculo de color ===== */
+.config-tarjeta{background:var(--papel-alto);border:1px solid var(--borde);box-shadow:var(--sombra);padding:18px 10px;}
+.config-tarjeta-icono{display:flex;align-items:center;justify-content:center;width:52px;height:52px;border-radius:16px;background:var(--ingreso-fondo);font-size:28px;}
+.config-tarjeta-titulo{font-size:15.5px;font-weight:700;color:var(--texto);}
+.config-tarjeta-peligro{background:var(--gasto-fondo);border-color:transparent;}
+.config-tarjeta-peligro .config-tarjeta-icono{background:transparent;}
+.config-tarjeta-peligro .config-tarjeta-titulo{color:var(--peligro);}
+
+/* ===== Análisis: pestañas principales como "píldoras" verdes ===== */
+#segmentadoVistaAnalisis .segmentado-item{font-size:15px;}
+#segmentadoVistaAnalisis .segmentado-item.activo{background:var(--primario);color:#fff;}
+html[data-tema="oscuro"] #segmentadoVistaAnalisis .segmentado-item.activo{color:#0B1411;}
+/* Balance, Ingresos y Gastos en una sola tarjeta, más compacta */
+.resumen-tarjetas-analisis{gap:0;background:var(--papel-alto);border:1px solid var(--borde);border-radius:14px;box-shadow:var(--sombra);overflow:hidden;}
+.resumen-tarjetas-analisis .tarjeta-resumen-clara{border:none;border-radius:0;box-shadow:none;display:flex;justify-content:space-between;align-items:center;padding:10px 16px;text-align:left;}
+.resumen-tarjetas-analisis .tarjeta-resumen-clara + .tarjeta-resumen-clara{border-top:1px solid var(--borde);}
+.resumen-tarjetas-analisis .tarjeta-resumen-label{font-size:15px;}
+.resumen-tarjetas-analisis .tarjeta-resumen-valor{font-size:18px;margin:0;}
