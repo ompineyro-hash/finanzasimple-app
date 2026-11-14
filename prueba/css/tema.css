@@ -183,3 +183,40 @@ html[data-tema="oscuro"] #segmentadoVistaAnalisis .segmentado-item.activo{color:
 html[data-tema="oscuro"] .topbar #valorIngresos,html[data-tema="oscuro"] .flecha-resumen.ingreso{color:#5FDDB0;}
 html[data-tema="oscuro"] .topbar #valorGastos,html[data-tema="oscuro"] .flecha-resumen.gasto{color:#FF6B5B;}
 .topbar #valorBalance{color:#fff;}
+
+/* ===== Gráficos con más "onda" (pedido de Edu) ===== */
+/* Torta: más grande, aro más grueso, entra girando y con brillo suave */
+.grafico-dona{width:210px;height:210px;margin:8px auto 24px;animation:dona-entra .9s cubic-bezier(.2,.9,.3,1.2) both;filter:drop-shadow(0 6px 16px rgba(0,0,0,.18));}
+.grafico-dona::after{inset:34px;box-shadow:inset 0 2px 8px rgba(0,0,0,.12);}
+.grafico-dona-total{font-size:19px;}
+.grafico-dona-label{font-size:13px;}
+@keyframes dona-entra{from{transform:rotate(-120deg) scale(.6);opacity:0;}to{transform:none;opacity:1;}}
+/* Barritas de cada categoría: se llenan de izquierda a derecha */
+.analisis-barra-fondo{height:12px;border-radius:99px;}
+.analisis-barra{border-radius:99px;transform-origin:left;animation:barra-llena .9s ease-out both;background-image:linear-gradient(90deg,rgba(255,255,255,.0),rgba(255,255,255,.28));}
+.analisis-item:nth-child(3) .analisis-barra{animation-delay:.08s}
+.analisis-item:nth-child(4) .analisis-barra{animation-delay:.16s}
+.analisis-item:nth-child(5) .analisis-barra{animation-delay:.24s}
+.analisis-item:nth-child(n+6) .analisis-barra{animation-delay:.32s}
+@keyframes barra-llena{from{transform:scaleX(0);}to{transform:scaleX(1);}}
+.analisis-swatch{width:12px;height:12px;border-radius:4px;}
+.analisis-fila{font-size:15px;}
+/* Barras por mes: más anchas, redondeadas, con degradé, y crecen desde abajo */
+.barra-par{height:140px;gap:5px;}
+.grafico-eje-y{height:140px;font-size:11px;}
+.barra{width:20px;border-radius:8px 8px 3px 3px;transform-origin:bottom;animation:barra-crece .8s cubic-bezier(.2,.9,.3,1.1) both;}
+.barra-ingreso{background:linear-gradient(180deg,#5BE0BC,#1FB58F);box-shadow:0 4px 10px rgba(31,181,143,.3);}
+.barra-gasto{background:linear-gradient(180deg,#FF9A7E,#FF6B4A);box-shadow:0 4px 10px rgba(255,107,74,.3);animation-delay:.12s;}
+.barra-mes:nth-child(2) .barra{animation-delay:.1s}.barra-mes:nth-child(3) .barra{animation-delay:.2s}
+.barra-mes:nth-child(4) .barra{animation-delay:.3s}.barra-mes:nth-child(n+5) .barra{animation-delay:.4s}
+@keyframes barra-crece{from{transform:scaleY(0);}to{transform:scaleY(1);}}
+.barra-mes-label{font-size:12.5px;font-weight:700;}
+.barra-mes-neto{font-size:12px;}
+.grafico-leyenda{font-size:14px;font-weight:700;color:var(--texto);}
+.grafico-leyenda-swatch{width:12px;height:12px;border-radius:4px;}
+/* Línea día a día: se dibuja de izquierda a derecha */
+.linea-anim{stroke-dasharray:3000;stroke-dashoffset:3000;animation:linea-dibuja 1.4s ease-out forwards;}
+@keyframes linea-dibuja{to{stroke-dashoffset:0;}}
+html[data-tema="oscuro"] .grafico-lineas line{stroke:#2A3B34;}
+html[data-tema="oscuro"] .grafico-dona{filter:drop-shadow(0 6px 18px rgba(0,0,0,.5));}
+@media (prefers-reduced-motion:reduce){.grafico-dona,.analisis-barra,.barra,.linea-anim{animation:none;stroke-dasharray:none;stroke-dashoffset:0;}}
