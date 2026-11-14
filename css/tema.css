@@ -90,3 +90,43 @@ html[data-tema="oscuro"] .navbar-agregar-signo{border-color:#111D19;}
   100%{box-shadow:0 4px 14px rgba(242,194,48,.45),0 0 0 0 rgba(242,194,48,0);}
 }
 @media (max-width:380px){.navbar-item,.navbar-agregar{font-size:11.5px;}}
+
+/* ===== Movimientos: ícono de cada categoría en un cuadradito de su color ===== */
+.lista-movimientos .mov-icono{border-radius:12px;width:44px;height:44px;font-size:21px;background:hsl(var(--cat-h,150) 70% 92%);}
+html[data-tema="oscuro"] .lista-movimientos .mov-icono{background:hsl(var(--cat-h,150) 40% 22%);}
+.lista-movimientos .mov-icono.interno{background:#e7ebf0;}
+html[data-tema="oscuro"] .lista-movimientos .mov-icono.interno{background:#22312C;}
+.mov-categoria{font-size:16.5px;}
+.mov-detalle{font-size:14px;}
+.mov-monto{font-size:16.5px;}
+/* Pendientes en modo oscuro: cartel naranja */
+html[data-tema="oscuro"] .banner-pendientes{background:#2B1B0F;border-color:#7A4A22;color:#FFC08F;}
+html[data-tema="oscuro"] .banner-pendientes.tiene-vencidos{background:#3A1A14;border-color:#A8432F;}
+html[data-tema="oscuro"] .pend-fila{background:var(--papel-alto);}
+html[data-tema="oscuro"] .linea-previsto{background:#15231E;}
+/* Buscar al lado de Todo / Ingresos / Gastos también en el celular (con su palabra) */
+@media (max-width:420px){
+  #filaAccesosLista{flex-wrap:nowrap !important;}
+  #filaAccesosLista #segmentadoTipoLista{flex:1 1 auto !important;min-width:0;}
+  #filaAccesosLista #btnBuscarSimple{flex:0 0 auto;padding:8px 10px;}
+}
+
+/* ===== PC: barra lateral a la izquierda (como el diseño de Edu) ===== */
+@media (min-width:900px){
+  .app{display:grid;grid-template-columns:230px 1fr;grid-template-rows:auto 1fr;}
+  .app > *{grid-column:2;}
+  .app > .navbar{
+    grid-column:1;grid-row:1 / -1;flex-direction:column;justify-content:flex-start;align-items:stretch;
+    gap:4px;padding:18px 14px;border-top:none;border-right:1px solid var(--borde);
+  }
+  .app > .navbar::before{content:"Ingasto";font-size:24px;font-weight:800;color:var(--primario);padding:0 10px 14px;order:-2;}
+  .navbar .navbar-item,.navbar .navbar-agregar{flex:0 0 auto;flex-direction:row;justify-content:flex-start;gap:12px;padding:10px 12px;border-radius:12px;font-size:16px;}
+  .navbar .navbar-item.activo{background:var(--ingreso-fondo);}
+  .navbar .navbar-item.activo .navbar-icono{background:none;}
+  .navbar .navbar-icono{width:26px;height:26px;}
+  .navbar .navbar-agregar{order:-1;margin-bottom:14px;justify-content:center;background:#F2C230;color:#1E2A24;font-weight:800;padding:13px 12px;box-shadow:0 4px 14px rgba(242,194,48,.35);}
+  .navbar .navbar-agregar-signo{width:auto;height:auto;margin:0;border:none;background:none;box-shadow:none;font-size:22px;animation:none;color:inherit;}
+  .topbar{border-radius:0;}
+}
+
+html[data-tema="oscuro"] .mov-monto.interno{color:var(--texto-suave);}
