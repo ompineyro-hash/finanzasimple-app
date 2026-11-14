@@ -229,6 +229,13 @@ const TRADUCCIONES = {
     tituloDiaADia: "Ingresos y egresos del mes",
     textoDiaADia: "Acumulado de ingresos y egresos, día a día, del mes que estás viendo.",
     analisisSinDatos: "Todavía no hay movimientos cargados.",
+    tituloTema: "Modo oscuro",
+    temaAuto: "Automático",
+    temaAutoDet: "Igual que tu celular",
+    temaClaro: "Claro",
+    temaClaroDet: "Fondo claro, como siempre",
+    temaOscuro: "Oscuro",
+    temaOscuroDet: "Fondo oscuro, descansa la vista de noche",
     tituloIdioma: "Idioma",
     tituloMoneda: "Moneda",
     tituloMonedaBase: "Mi moneda",
@@ -646,6 +653,13 @@ const TRADUCCIONES = {
     tituloDiaADia: "Receitas e despesas do mês",
     textoDiaADia: "Acumulado de receitas e despesas, dia a dia, do mês que você está vendo.",
     analisisSinDatos: "Ainda não há movimentos cadastrados.",
+    tituloTema: "Modo escuro",
+    temaAuto: "Automático",
+    temaAutoDet: "Igual ao seu celular",
+    temaClaro: "Claro",
+    temaClaroDet: "Fundo claro, como sempre",
+    temaOscuro: "Escuro",
+    temaOscuroDet: "Fundo escuro, descansa a vista à noite",
     tituloIdioma: "Idioma",
     tituloMoneda: "Moeda",
     tituloMonedaBase: "Minha moeda",
@@ -1063,6 +1077,13 @@ const TRADUCCIONES = {
     tituloDiaADia: "Income and expenses this month",
     textoDiaADia: "Cumulative income and expenses, day by day, for the month you're viewing.",
     analisisSinDatos: "No transactions logged yet.",
+    tituloTema: "Dark mode",
+    temaAuto: "Automatic",
+    temaAutoDet: "Same as your phone",
+    temaClaro: "Light",
+    temaClaroDet: "Light background, as always",
+    temaOscuro: "Dark",
+    temaOscuroDet: "Dark background, easier on the eyes at night",
     tituloIdioma: "Language",
     tituloMoneda: "Currency",
     tituloMonedaBase: "My currency",
@@ -2519,6 +2540,24 @@ function tituloDia(fechaStr) {
   const texto = f.toLocaleDateString(LOCALES_POR_IDIOMA[idiomaActual] || "es-AR", opciones).replace(",", "");
   return texto.charAt(0).toUpperCase() + texto.slice(1);
 }
+
+// ---------- Tema claro / oscuro ----------
+function temaGuardado() { try { return localStorage.getItem("fs_tema") || "auto"; } catch { return "auto"; } }
+function aplicarTema(t) {
+  try { localStorage.setItem("fs_tema", t); } catch {}
+  const oscuro = t === "oscuro" || (t === "auto" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+  document.documentElement.setAttribute("data-tema", oscuro ? "oscuro" : "claro");
+  document.querySelectorAll("[data-tema-opcion]").forEach((b) => b.classList.toggle("activo", b.dataset.temaOpcion === t));
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute("content", oscuro ? "#0B1411" : "#2F6F5E");
+}
+document.querySelectorAll("[data-tema-opcion]").forEach((b) => b.addEventListener("click", () => aplicarTema(b.dataset.temaOpcion)));
+if (window.matchMedia) {
+  const mq = window.matchMedia("(prefers-color-scheme: dark)");
+  const alCambiar = () => { if (temaGuardado() === "auto") aplicarTema("auto"); };
+  if (mq.addEventListener) mq.addEventListener("change", alCambiar);
+}
+aplicarTema(temaGuardado());
 
 function renderMovimientos() {
   $("etiquetaMes").textContent = nombreMes(fechaVista);

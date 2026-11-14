@@ -1,0 +1,92 @@
+/* ============================================================
+   Modo oscuro (colores del rediseño de Edu, nov 2026)
+   Se activa con <html data-tema="oscuro">. El tema "auto" sigue
+   la configuración del celular (ver script en index.html).
+   ============================================================ */
+html[data-tema="oscuro"]{
+  color-scheme:dark;
+  --papel:#0B1411;
+  --papel-alto:#15231E;
+  --borde:#2A3B34;
+  --texto:#EEF4F1;
+  --texto-suave:#AEBDB6;
+  --primario:#6FD3B6;
+  --primario-oscuro:#56C2A3;
+  --ingreso:#6FD3B6;
+  --gasto:#FF8552;
+  --gasto-fondo:#3A2017;
+  --ingreso-fondo:#163A30;
+  --peligro:#FF6B5B;
+  --sombra:0 2px 12px rgba(0,0,0,.35);
+}
+html[data-tema="oscuro"] input,
+html[data-tema="oscuro"] select,
+html[data-tema="oscuro"] textarea{background:var(--papel-alto);color:var(--texto);border-color:var(--borde);}
+/* Botón principal: verde agua con letra oscura (como en el diseño de Edu) */
+html[data-tema="oscuro"] .boton-primario{color:#0B1411;}
+html[data-tema="oscuro"] .boton-primario:hover{background:var(--primario-oscuro);}
+html[data-tema="oscuro"] .boton-secundario{background:transparent;}
+/* Encabezado: fondo oscuro, tarjeta del resultado en verde */
+html[data-tema="oscuro"] .topbar{background:var(--papel);border-bottom:none;}
+html[data-tema="oscuro"] .topbar .tarjeta-resumen{background:rgba(255,255,255,.07);}
+html[data-tema="oscuro"] .topbar .resumen-tarjetas-fila .tarjeta-resumen{background:#15231E;}
+html[data-tema="oscuro"] .topbar .resumen-tarjetas .tarjeta-resumen-balance{background:linear-gradient(135deg,#1F6E54,#123F33);}
+html[data-tema="oscuro"] .topbar .icono-btn:hover{background:rgba(255,255,255,.08);}
+/* Ventanas (Nuevo movimiento, etc.) */
+html[data-tema="oscuro"] .modal-fondo{background:rgba(0,0,0,.65);}
+html[data-tema="oscuro"] .navbar{background:#111D19;border-top-color:var(--borde);}
+/* Colores sueltos que había en la app */
+html[data-tema="oscuro"] .voz-item,
+html[data-tema="oscuro"] .voz-tarjeta,
+html[data-tema="oscuro"] .voz-chip,
+html[data-tema="oscuro"] .imp-lista,
+html[data-tema="oscuro"] #subVistaPresupuesto input,
+html[data-tema="oscuro"] .pres-cat-fila select,
+html[data-tema="oscuro"] .fijos-form input,
+html[data-tema="oscuro"] .fijos-form select,
+html[data-tema="oscuro"] .clasif-panel select{background:var(--papel-alto);border-color:var(--borde);color:var(--texto);}
+html[data-tema="oscuro"] .voz-chip{color:var(--primario);border-color:var(--primario);}
+html[data-tema="oscuro"] .pend-grupo-titulo{border-bottom-color:var(--borde);}
+html[data-tema="oscuro"] .pend-venc{color:#F2C230;}
+html[data-tema="oscuro"] .tengo-cartel{background:#2E2610;border-color:#6B5714;color:#F5DD8A;}
+html[data-tema="oscuro"] .mov-icono.interno{background:#22312C;color:#C9D6D0;}
+html[data-tema="oscuro"] .mov-interno{background:#111D19;border-color:#3A4E46;}
+html[data-tema="oscuro"] .mov-item.clasif-marcado{outline-color:var(--primario);background:#183129;}
+html[data-tema="oscuro"] .boton-voz,
+html[data-tema="oscuro"] .boton-voz-chico,
+html[data-tema="oscuro"] .pres-etq,
+html[data-tema="oscuro"] .guia-ic,
+html[data-tema="oscuro"] .bienv-ic{background:#2A2142;color:#C9B6FF;}
+html[data-tema="oscuro"] .bienv-punto{background:#3A4E46;}
+html[data-tema="oscuro"] .visor-cerrar{background:var(--papel-alto);color:var(--texto);}
+html[data-tema="oscuro"] .segmentado-item.activo{background:#3A5148;color:var(--texto);}
+
+/* Elegir tema en Ajustes */
+.tema-opciones{display:flex;flex-direction:column;gap:10px;}
+.tema-opcion{display:flex;align-items:center;gap:12px;padding:14px 16px;border:2px solid var(--borde);border-radius:14px;background:var(--papel-alto);color:var(--texto);font-size:17px;font-weight:700;text-align:left;}
+.tema-opcion.activo{border-color:var(--primario);}
+.tema-opcion small{display:block;font-size:13.5px;font-weight:500;color:var(--texto-suave);}
+.tema-opcion-ic{font-size:24px;width:32px;text-align:center;}
+
+/* ===== Barra de abajo: íconos de línea gruesos, con nombre, y botón + amarillo ===== */
+.ic-linea{width:25px;height:25px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;display:block;}
+.navbar{padding:4px 6px max(6px, env(safe-area-inset-bottom));}
+.navbar-item{font-size:12.5px;font-weight:700;gap:3px;}
+.navbar-item.activo{color:var(--primario);}
+.navbar-item.activo .navbar-icono{background:var(--ingreso-fondo);border-radius:12px;}
+.navbar-icono{display:flex;align-items:center;justify-content:center;width:44px;height:30px;}
+.navbar-agregar{font-size:12.5px;color:var(--texto);position:relative;}
+.navbar-agregar-signo{
+  width:52px;height:52px;margin-top:-22px;font-size:32px;font-weight:600;
+  background:#F2C230;color:#1E2A24;border:4px solid var(--papel-alto);
+  box-shadow:0 4px 14px rgba(242,194,48,.45);
+}
+html[data-tema="oscuro"] .navbar-agregar-signo{border-color:#111D19;}
+@keyframes latido-agregar{
+  0%{box-shadow:0 4px 14px rgba(242,194,48,.45),0 0 0 0 rgba(242,194,48,.55);transform:scale(1);}
+  12%{transform:scale(1.08);}
+  24%{transform:scale(1);}
+  60%{box-shadow:0 4px 14px rgba(242,194,48,.45),0 0 0 14px rgba(242,194,48,0);}
+  100%{box-shadow:0 4px 14px rgba(242,194,48,.45),0 0 0 0 rgba(242,194,48,0);}
+}
+@media (max-width:380px){.navbar-item,.navbar-agregar{font-size:11.5px;}}
