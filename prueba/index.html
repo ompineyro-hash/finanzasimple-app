@@ -8,6 +8,15 @@
 <meta name="robots" content="noindex">
 <title>Ingasto</title>
 <script>
+// Tema (claro / oscuro / automático): se aplica antes de dibujar para que no "parpadee".
+(function () {
+  var t = "auto";
+  try { t = localStorage.getItem("fs_tema") || "auto"; } catch (e) {}
+  var oscuro = t === "oscuro" || (t === "auto" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+  document.documentElement.setAttribute("data-tema", oscuro ? "oscuro" : "claro");
+})();
+</script>
+<script>
 // Entrada sin sesion: se pasa primero por la antesala (cada vez, para que siempre vea
 // precio y novedades). No aplica con sesion iniciada, en la app instalada, con links de
 // mail (#...) ni cuando viene de los botones de la antesala (?entrar=1).
@@ -31,6 +40,7 @@ try {
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/styles.css">
 <link rel="stylesheet" href="css/pendientes.css">
+<link rel="stylesheet" href="css/tema.css">
 </head>
 <body>
 <!-- ===================== PANTALLA DE INGRESO ===================== -->
@@ -296,6 +306,10 @@ Al crear una cuenta aceptás nuestros
 <span class="config-tarjeta-icono">🌐</span>
 <span class="config-tarjeta-titulo" data-i18n="tituloIdioma">Idioma</span>
 </button>
+<button type="button" class="config-tarjeta" data-config="configPanelTema">
+<span class="config-tarjeta-icono">🌙</span>
+<span class="config-tarjeta-titulo" data-i18n="tituloTema">Modo oscuro</span>
+</button>
 <button type="button" class="config-tarjeta" data-config="configPanelMoneda">
 <span class="config-tarjeta-icono">💱</span>
 <span class="config-tarjeta-titulo" data-i18n="tituloMoneda">Moneda</span>
@@ -352,6 +366,17 @@ Al crear una cuenta aceptás nuestros
 <option value="pt">Português</option>
 <option value="en">English</option>
 </select>
+</div>
+</div>
+
+<!-- Panel: Tema (claro / oscuro) -->
+<div id="configPanelTema" class="config-panel" hidden>
+<button type="button" class="config-volver" data-i18n="btnVolver">← Volver</button>
+<h2 class="titulo-seccion" data-i18n="tituloTema">Modo oscuro</h2>
+<div class="tema-opciones">
+<button type="button" class="tema-opcion" data-tema-opcion="auto"><span class="tema-opcion-ic">📱</span><span><span data-i18n="temaAuto">Automático</span><small data-i18n="temaAutoDet">Igual que tu celular</small></span></button>
+<button type="button" class="tema-opcion" data-tema-opcion="claro"><span class="tema-opcion-ic">☀️</span><span><span data-i18n="temaClaro">Claro</span><small data-i18n="temaClaroDet">Fondo claro, como siempre</small></span></button>
+<button type="button" class="tema-opcion" data-tema-opcion="oscuro"><span class="tema-opcion-ic">🌙</span><span><span data-i18n="temaOscuro">Oscuro</span><small data-i18n="temaOscuroDet">Fondo oscuro, descansa la vista de noche</small></span></button>
 </div>
 </div>
 
@@ -542,19 +567,19 @@ Al crear una cuenta aceptás nuestros
 
 <nav class="navbar">
 <button class="navbar-item activo" data-vista="vistaMovimientos">
-<span class="navbar-icono">📋</span><span data-i18n="navMovimientos">Movimientos</span>
+<span class="navbar-icono"><svg class="ic-linea" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h12M8 12h12M8 18h12"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/></svg></span><span data-i18n="navMovimientos">Movimientos</span>
 </button>
 <button class="navbar-item" data-vista="vistaSituacion">
-<span class="navbar-icono">🧭</span><span data-i18n="navSituacion">Situación</span>
+<span class="navbar-icono"><svg class="ic-linea" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></svg></span><span data-i18n="navSituacion">Situación</span>
 </button>
 <button id="btnNuevo" type="button" class="navbar-agregar" data-i18n-aria="ariaNuevoMov" aria-label="Nuevo movimiento">
 <span class="navbar-agregar-signo">+</span><span data-i18n="btnAgregar">Agregar</span>
 </button>
 <button class="navbar-item" data-vista="vistaAnalisis">
-<span class="navbar-icono">📊</span><span data-i18n="navAnalisis">Análisis</span>
+<span class="navbar-icono"><svg class="ic-linea" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16"/><path d="M7 16v-5M12 16V6M17 16v-8"/></svg></span><span data-i18n="navAnalisis">Análisis</span>
 </button>
 <button class="navbar-item" data-vista="vistaConfig">
-<span class="navbar-icono">⚙️</span><span data-i18n="navConfig">Ajustes</span>
+<span class="navbar-icono"><svg class="ic-linea" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></svg></span><span data-i18n="navConfig">Ajustes</span>
 </button>
 </nav>
 </div>
