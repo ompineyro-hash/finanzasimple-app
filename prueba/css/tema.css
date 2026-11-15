@@ -271,8 +271,9 @@ html[data-tema="oscuro"] .cuota-fila .mov-icono{background:hsl(var(--cat-h,150) 
 #formMovimiento.modo-rapido .rapido-opciones{order:7;}
 #formMovimiento.modo-rapido label:has(#movDetalle){order:9;}
 #formMovimiento.modo-rapido #movError{order:10;}
-#formMovimiento.modo-rapido .rapido-guardar{order:11;}
-#formMovimiento.modo-rapido .rapido-teclado{order:12;}
+#formMovimiento.modo-rapido .rapido-barra{order:11;}
+#formMovimiento.modo-rapido .rapido-barra .rapido-guardar{order:1;}
+#formMovimiento.modo-rapido .rapido-barra .rapido-teclado{order:2;}
 #formMovimiento.modo-rapido .rapido-mas-opciones{order:13;}
 /* Lo que ya resuelve la carga rápida queda oculto (se muestra si se toca) */
 #formMovimiento.modo-rapido label:has(#movFecha),
@@ -305,9 +306,10 @@ html[data-tema="oscuro"] .cuota-fila .mov-icono{background:hsl(var(--cat-h,150) 
 .rapido-cat.activo{background:var(--primario);border-color:var(--primario);color:#fff;}
 html[data-tema="oscuro"] .rapido-cat.activo{color:#0B1411;}
 .rapido-cat-mas{color:var(--texto-suave);}
-.rapido-guardar{font-size:19px;padding:15px;}
+.rapido-guardar{font-size:19px;padding:13px;}
 .rapido-teclado{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
-.rapido-teclado button{background:var(--papel-alto);border:1px solid var(--borde);border-radius:14px;padding:14px 0;font-size:26px;font-weight:700;color:var(--texto);cursor:pointer;box-shadow:var(--sombra);}
+.rapido-barra{position:sticky;bottom:0;z-index:2;display:flex;flex-direction:column;gap:8px;background:var(--papel);padding:8px 0 4px;border-top:1px solid var(--borde);}
+.rapido-teclado button{background:var(--papel-alto);border:1px solid var(--borde);border-radius:14px;padding:9px 0;font-size:24px;font-weight:700;color:var(--texto);cursor:pointer;box-shadow:var(--sombra);}
 .rapido-teclado button:active{transform:scale(.95);background:var(--ingreso-fondo);}
 .rapido-mas-opciones{background:none;border:none;color:var(--primario);font-weight:700;font-size:15px;padding:8px;cursor:pointer;}
 @media (min-width:900px){.rapido-teclado button{padding:10px 0;font-size:22px;}}
