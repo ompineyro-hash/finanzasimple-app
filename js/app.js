@@ -156,6 +156,22 @@ const TRADUCCIONES = {
     fijoDia: "Día del mes",
     fijoDiaN: "Día {d}",
     fijoSinFijos: "Todavía no cargaste gastos ni ingresos fijos.",
+    movVacioMes: "Todavía no cargaste movimientos este mes.<br>Tocá el botón <b>+</b> para agregar el primero.",
+    movSinResultados: "No hay resultados para esa búsqueda.<br>Probá limpiarla o cambiar el filtro.",
+    sinCuentas: "Todavía no agregaste ninguna cuenta.",
+    sinCatGasto: "Todavía no agregaste ninguna categoría de gasto.",
+    sinCatIngreso: "Todavía no agregaste ninguna categoría de ingreso.",
+    toastNadaExportar: "Todavía no tenés movimientos para exportar.",
+    loginEmailPrimero: "Escribí tu email arriba primero.",
+    confBorrarCat: "¿Borrar \"{n}\"? Si tiene movimientos asociados, no se va a poder borrar.",
+    confBorrarMov: "¿Borrar este movimiento? No se puede deshacer.",
+    errElegirCuenta: "Elegí una cuenta.",
+    errElegirCategoria: "Elegí una categoría.",
+    reiniciarConf1: "Vas a borrar TODOS tus movimientos, cuentas y categorías.\n\nTu usuario y tu clave no se ven afectados.\n\nEsta acción no se puede deshacer. ¿Continuar?",
+    reiniciarConf2: "Confirmación final: se van a borrar todos tus datos de trabajo ahora mismo.\n\n¿Reiniciar todo?",
+    reiniciarOk: "Tus datos fueron reiniciados.",
+    eliminarConf1: "Vas a ELIMINAR TU CUENTA por completo: tu usuario, tu clave y todos tus datos (movimientos, cuentas, categorías).\n\nEsta acción no se puede deshacer.\n\n¿Continuar?",
+    eliminarConf2: "Última confirmación: tu cuenta se va a borrar ahora mismo y no vas a poder recuperarla.\n\n¿Eliminar mi cuenta para siempre?",
     fijoToastAgregado: "Fijo guardado.",
     fijoToastGenerados: "Gastos fijos de este mes cargados en Pendientes: {n}.",
     fijoError: "Completá detalle, cuenta, categoría, un monto mayor a cero y un día entre 1 y 31.",
@@ -568,6 +584,22 @@ const TRADUCCIONES = {
     fijoDia: "Dia do mês",
     fijoDiaN: "Dia {d}",
     fijoSinFijos: "Você ainda não registrou despesas nem receitas fixas.",
+    movVacioMes: "Você ainda não registrou movimentos neste mês.<br>Toque no botão <b>+</b> para adicionar o primeiro.",
+    movSinResultados: "Nenhum resultado para essa busca.<br>Tente limpá-la ou mudar o filtro.",
+    sinCuentas: "Você ainda não adicionou nenhuma conta.",
+    sinCatGasto: "Você ainda não adicionou nenhuma categoria de despesa.",
+    sinCatIngreso: "Você ainda não adicionou nenhuma categoria de receita.",
+    toastNadaExportar: "Você ainda não tem movimentos para exportar.",
+    loginEmailPrimero: "Escreva seu e-mail acima primeiro.",
+    confBorrarCat: "Excluir \"{n}\"? Se tiver movimentos associados, não será possível excluir.",
+    confBorrarMov: "Excluir este movimento? Não é possível desfazer.",
+    errElegirCuenta: "Escolha uma conta.",
+    errElegirCategoria: "Escolha uma categoria.",
+    reiniciarConf1: "Você vai apagar TODOS os seus movimentos, contas e categorias.\n\nSeu usuário e sua senha não são afetados.\n\nEsta ação não pode ser desfeita. Continuar?",
+    reiniciarConf2: "Confirmação final: todos os seus dados de trabalho serão apagados agora.\n\nReiniciar tudo?",
+    reiniciarOk: "Seus dados foram reiniciados.",
+    eliminarConf1: "Você vai EXCLUIR SUA CONTA por completo: seu usuário, sua senha e todos os seus dados (movimentos, contas, categorias).\n\nEsta ação não pode ser desfeita.\n\nContinuar?",
+    eliminarConf2: "Última confirmação: sua conta será excluída agora e não poderá ser recuperada.\n\nExcluir minha conta para sempre?",
     fijoToastAgregado: "Fixo salvo.",
     fijoToastGenerados: "Gastos fixos deste mês em Pendentes: {n}.",
     fijoError: "Preencha detalhe, conta, categoria, um valor maior que zero e um dia entre 1 e 31.",
@@ -980,6 +1012,22 @@ const TRADUCCIONES = {
     fijoDia: "Day of the month",
     fijoDiaN: "Day {d}",
     fijoSinFijos: "You have not added fixed expenses yet.",
+    movVacioMes: "You haven't added any transactions this month.<br>Tap the <b>+</b> button to add the first one.",
+    movSinResultados: "No results for that search.<br>Try clearing it or changing the filter.",
+    sinCuentas: "You haven't added any accounts yet.",
+    sinCatGasto: "You haven't added any expense categories yet.",
+    sinCatIngreso: "You haven't added any income categories yet.",
+    toastNadaExportar: "You have no transactions to export yet.",
+    loginEmailPrimero: "Enter your email above first.",
+    confBorrarCat: "Delete \"{n}\"? If it has linked transactions, it can't be deleted.",
+    confBorrarMov: "Delete this transaction? This can't be undone.",
+    errElegirCuenta: "Choose an account.",
+    errElegirCategoria: "Choose a category.",
+    reiniciarConf1: "You are about to delete ALL your transactions, accounts and categories.\n\nYour user and password are not affected.\n\nThis can't be undone. Continue?",
+    reiniciarConf2: "Final confirmation: all your working data will be deleted right now.\n\nReset everything?",
+    reiniciarOk: "Your data has been reset.",
+    eliminarConf1: "You are about to DELETE YOUR ACCOUNT completely: your user, your password and all your data (transactions, accounts, categories).\n\nThis can't be undone.\n\nContinue?",
+    eliminarConf2: "Last confirmation: your account will be deleted right now and can't be recovered.\n\nDelete my account forever?",
     fijoToastAgregado: "Fixed expense saved.",
     fijoToastGenerados: "Fixed expenses for this month added to Pending: {n}.",
     fijoError: "Fill in detail, account, category, an amount above zero and a day between 1 and 31.",
@@ -1638,7 +1686,7 @@ $("btnReenviarConfirmacion").addEventListener("click", async () => {
 $("btnOlvideClave").addEventListener("click", async () => {
   const email = $("inputEmail").value.trim();
   $("btnReenviarConfirmacion").hidden = true;
-  if (!email) return mostrarAviso($("loginError"), "Escribí tu email arriba primero.");
+  if (!email) return mostrarAviso($("loginError"), t("loginEmailPrimero"));
   const espera = segundosParaPedirMail(email);
   if (espera) return avisarEsperaMail(email, espera);
   try {
@@ -2471,11 +2519,11 @@ function renderMovimientos() {
   const trVisibles = tipoFiltroActivo === "todo" && !hayBusqueda ? transferenciasMes : [];
 
   if (!movimientos.length && !transferenciasMes.length) {
-    cont.innerHTML = `<div class="vacio">Todavía no cargaste movimientos este mes.<br>Tocá el botón <b>+</b> para agregar el primero.<br><button type="button" class="boton boton-secundario bienv-ver" data-ver-bienvenida>${escapeHTML(t("bienvVer"))}</button></div>`;
+    cont.innerHTML = `<div class="vacio">${t("movVacioMes")}<br><button type="button" class="boton boton-secundario bienv-ver" data-ver-bienvenida>${escapeHTML(t("bienvVer"))}</button></div>`;
     return;
   }
   if (!visibles.length && !trVisibles.length) {
-    cont.innerHTML = `<div class="vacio">No hay resultados para esa búsqueda.<br>Probá limpiarla o cambiar el filtro.</div>`;
+    cont.innerHTML = `<div class="vacio">${t("movSinResultados")}</div>`;
     return;
   }
   const clave = claveMesVista();
@@ -2681,7 +2729,7 @@ async function renderEvolucionMensual() {
   const cont = $("graficoEvolucion");
   const todos = soloContables(await listarTodosLosMovimientos(usuario.id));
   if (!todos.length) {
-    cont.innerHTML = `<div class="vacio" data-i18n="analisisSinDatos">Todavía no hay movimientos cargados.</div>`;
+    cont.innerHTML = `<div class="vacio" data-i18n="analisisSinDatos">${escapeHTML(t("analisisSinDatos"))}</div>`;
     $("evolBalance").textContent = "—";
     $("evolIngresos").textContent = "—";
     $("evolGastos").textContent = "—";
@@ -2757,7 +2805,7 @@ function renderDiaADia() {
   $("diaGastos").textContent = formatoMonto(totGas);
 
   if (!delMes.length) {
-    cont.innerHTML = `<div class="vacio" data-i18n="analisisSinDatos">Todavía no hay movimientos cargados.</div>`;
+    cont.innerHTML = `<div class="vacio" data-i18n="analisisSinDatos">${escapeHTML(t("analisisSinDatos"))}</div>`;
     return;
   }
   const anio = fechaVista.getFullYear();
@@ -3299,7 +3347,7 @@ function renderCuentasConfig() {
   const cont = $("listaCuentas");
   cont.innerHTML = cuentas.length
     ? cuentas.map((c) => filaEditable(c, "cuenta")).join("")
-    : `<div class="vacio">Todavía no agregaste ninguna cuenta.</div>`;
+    : `<div class="vacio">${escapeHTML(t("sinCuentas"))}</div>`;
   enlazarAccionesEditables("cuenta");
   cont.querySelectorAll(".sel-moneda-cuenta").forEach((sel) => {
     sel.addEventListener("change", async () => {
@@ -3372,10 +3420,10 @@ function renderCategoriasConfig() {
   const ingreso = categorias.filter((c) => c.tipo === "Ingreso");
   $("listaCategoriasGasto").innerHTML = gasto.length
     ? gasto.map((c) => filaEditable(c, "categoria")).join("")
-    : `<div class="vacio">Todavía no agregaste ninguna categoría de gasto.</div>`;
+    : `<div class="vacio">${escapeHTML(t("sinCatGasto"))}</div>`;
   $("listaCategoriasIngreso").innerHTML = ingreso.length
     ? ingreso.map((c) => filaEditable(c, "categoria")).join("")
-    : `<div class="vacio">Todavía no agregaste ninguna categoría de ingreso.</div>`;
+    : `<div class="vacio">${escapeHTML(t("sinCatIngreso"))}</div>`;
   enlazarAccionesEditables("categoria");
 }
 
@@ -3424,7 +3472,7 @@ function enlazarAccionesEditables(tipo) {
       }
 
       if (accion === "borrar") {
-        if (!confirm(`¿Borrar "${actual.nombre}"? Si tiene movimientos asociados, no se va a poder borrar.`)) return;
+        if (!confirm(t("confBorrarCat").replace("{n}", actual.nombre))) return;
         try {
           if (tipo === "cuenta") await borrarCuenta(id);
           else await borrarCategoria(id);
@@ -4349,7 +4397,7 @@ $("btnMovInterno").addEventListener("click", () => {
 $("btnBorrarMov").addEventListener("click", async () => {
   const id = $("movId").value;
   if (!id) return;
-  if (!confirm("¿Borrar este movimiento? No se puede deshacer.")) return;
+  if (!confirm(t("confBorrarMov"))) return;
   const mBorrar = movimientos.find((x) => x.id === id) || pendientes.find((x) => x.id === id);
   try {
     await borrarMovimiento(id);
@@ -4373,8 +4421,8 @@ $("formMovimiento").addEventListener("submit", async (e) => {
   const detalle = $("movDetalle").value.trim();
 
   if (!fecha) return mostrarAviso($("movError"), "Falta la fecha.");
-  if (!cuenta) return mostrarAviso($("movError"), "Elegí una cuenta.");
-  if (!categoria) return mostrarAviso($("movError"), "Elegí una categoría.");
+  if (!cuenta) return mostrarAviso($("movError"), t("errElegirCuenta"));
+  if (!categoria) return mostrarAviso($("movError"), t("errElegirCategoria"));
   if (!Number.isFinite(monto) || monto <= 0) return mostrarAviso($("movError"), "El monto tiene que ser mayor a cero.");
 
   // Moneda y cotización: la moneda es la de la cuenta; si no es la base, hace falta la cotización.
@@ -4477,7 +4525,7 @@ async function movimientosParaExportar() {
   mostrarToast("Preparando archivo...");
   const todos = await listarTodosLosMovimientos(usuario.id);
   if (!todos.length) {
-    mostrarToast("Todavía no tenés movimientos para exportar.");
+    mostrarToast(t("toastNadaExportar"));
     return null;
   }
   const elegidos = todos.filter((m) => {
@@ -4601,16 +4649,16 @@ $("btnExportarCSV").addEventListener("click", async () => {
 // REINICIAR DATOS
 // ============================================================
 $("btnReiniciarDatos").addEventListener("click", async () => {
-  const paso1 = confirm("Vas a borrar TODOS tus movimientos, cuentas y categorías.\n\nTu usuario y tu clave no se ven afectados.\n\nEsta acción no se puede deshacer. ¿Continuar?");
+  const paso1 = confirm(t("reiniciarConf1"));
   if (!paso1) return;
-  const paso2 = confirm("Confirmación final: se van a borrar todos tus datos de trabajo ahora mismo.\n\n¿Reiniciar todo?");
+  const paso2 = confirm(t("reiniciarConf2"));
   if (!paso2) return;
 
   try {
     await reiniciarDatosUsuario(usuario.id);
     await cargarCuentasYCategorias();
     await cargarMesActual();
-    mostrarToast("Tus datos fueron reiniciados.");
+    mostrarToast(t("reiniciarOk"));
   } catch (err) {
     mostrarToast(traducirErrorDatos(err));
   }
@@ -4620,9 +4668,9 @@ $("btnReiniciarDatos").addEventListener("click", async () => {
 // ELIMINAR CUENTA
 // ============================================================
 $("btnEliminarCuenta").addEventListener("click", async () => {
-  const paso1 = confirm("Vas a ELIMINAR TU CUENTA por completo: tu usuario, tu clave y todos tus datos (movimientos, cuentas, categorías).\n\nEsta acción no se puede deshacer.\n\n¿Continuar?");
+  const paso1 = confirm(t("eliminarConf1"));
   if (!paso1) return;
-  const paso2 = confirm("Última confirmación: tu cuenta se va a borrar ahora mismo y no vas a poder recuperarla.\n\n¿Eliminar mi cuenta para siempre?");
+  const paso2 = confirm(t("eliminarConf2"));
   if (!paso2) return;
 
   try {
