@@ -238,6 +238,13 @@ const TRADUCCIONES = {
     cuotaXdeN: "Cuota {k} de {n}",
     cuotasRestan: "Restan",
     cuotasVacio: "No tenés compras en cuotas pendientes. Se cargan desde Agregar, tildando “Pagar en cuotas”.",
+    rapCategorias: "Elegí la categoría",
+    rapMas: "Otra…",
+    rapBorrarAria: "Borrar último número",
+    rapMasOpciones: "Más opciones (foto del comprobante) ▾",
+    rapGuardarGasto: "Guardar gasto",
+    rapGuardarIngreso: "Guardar ingreso",
+    rapElegiCategoria: "Tocá una categoría antes de guardar.",
     tituloTema: "Modo oscuro",
     temaAuto: "Automático",
     temaAutoDet: "Igual que tu celular",
@@ -671,6 +678,13 @@ const TRADUCCIONES = {
     cuotaXdeN: "Parcela {k} de {n}",
     cuotasRestan: "Faltam",
     cuotasVacio: "Você não tem compras parceladas pendentes. Elas são registradas em Adicionar, marcando “Pagar em parcelas”.",
+    rapCategorias: "Escolha a categoria",
+    rapMas: "Outra…",
+    rapBorrarAria: "Apagar último número",
+    rapMasOpciones: "Mais opções (foto do comprovante) ▾",
+    rapGuardarGasto: "Salvar despesa",
+    rapGuardarIngreso: "Salvar receita",
+    rapElegiCategoria: "Toque em uma categoria antes de salvar.",
     tituloTema: "Modo escuro",
     temaAuto: "Automático",
     temaAutoDet: "Igual ao seu celular",
@@ -1104,6 +1118,13 @@ const TRADUCCIONES = {
     cuotaXdeN: "Installment {k} of {n}",
     cuotasRestan: "Remaining",
     cuotasVacio: "You have no pending installment purchases. Add them from Add, ticking “Pay in installments”.",
+    rapCategorias: "Choose the category",
+    rapMas: "Other…",
+    rapBorrarAria: "Delete last digit",
+    rapMasOpciones: "More options (receipt photo) ▾",
+    rapGuardarGasto: "Save expense",
+    rapGuardarIngreso: "Save income",
+    rapElegiCategoria: "Tap a category before saving.",
     tituloTema: "Dark mode",
     temaAuto: "Automatic",
     temaAutoDet: "Same as your phone",
@@ -2568,6 +2589,100 @@ function tituloDia(fechaStr) {
   return texto.charAt(0).toUpperCase() + texto.slice(1);
 }
 
+// ---------- Carga rápida: importe con el teclado de la app, categoría de un toque y guardar ----------
+function rapidoActivo() { return !$("rapido").hidden; }
+function rapidoActivar(si) {
+  $("rapido").hidden = !si;
+  const f = $("formMovimiento");
+  f.classList.toggle("modo-rapido", si);
+  f.classList.remove("rapido-ver-cuenta", "rapido-ver-fecha", "rapido-ver-cat", "rapido-ver-mas");
+  if (si) rapidoRefrescar();
+}
+function rapidoUsos() { try { return JSON.parse(localStorage.getItem("fs_cat_uso") || "{}"); } catch { return {}; } }
+function rapidoRefrescar() {
+  if (!rapidoActivo()) return;
+  const tipo = tipoDelFormulario();
+  // Categorías más usadas (este mes + lo que se fue cargando en este equipo), las 5 primeras
+  const usos = rapidoUsos();
+  const cuenta = {};
+  for (const m of movimientos) if (m.tipo === tipo) cuenta[m.categoria] = (cuenta[m.categoria] || 0) + 1;
+  const lista = categorias.filter((c) => (c.tipo || "Gasto") === tipo).map((c) => c.nombre);
+  lista.sort((a, b) => ((cuenta[b] || 0) + 2 * (usos[b] || 0)) - ((cuenta[a] || 0) + 2 * (usos[a] || 0)));
+  const elegida = $("movCategoria").value;
+  const top = lista.slice(0, 5);
+  if (elegida && !top.includes(elegida) && $("formMovimiento").dataset.rapCatElegida) top.unshift(elegida);
+  $("rapCats").innerHTML = top.map((n) => `<button type="button" class="rapido-cat${$("formMovimiento").dataset.rapCatElegida === n ? " activo" : ""}" data-cat="${escapeHTML(n)}" style="--cat-h:${tonoCategoria(n)}"><span aria-hidden="true">${iconoCategoria(n) || "•"}</span> ${escapeHTML(n)}</button>`).join("")
+    + `<button type="button" class="rapido-cat rapido-cat-mas" data-cat-mas>${escapeHTML(t("rapMas"))}</button>`;
+  $("rapCuenta").textContent = "🏦 " + ($("movCuenta").value || "—");
+  const f = $("movFecha").value;
+  $("rapFecha").textContent = "📅 " + (f === hoyISO() ? t("diaHoy") : tituloDia(f));
+  $("rapGuardar").textContent = t(tipo === "Gasto" ? "rapGuardarGasto" : "rapGuardarIngreso");
+  $("rapDiferido").textContent = $("labelDiferido").textContent;
+  document.querySelectorAll("[data-rap-toggle]").forEach((b) => b.classList.toggle("activo", $(b.dataset.rapToggle).checked));
+  const f2 = $("formMovimiento");
+  f2.classList.toggle("rapido-ver-cuotas", $("movCuotas").checked);
+  f2.classList.toggle("rapido-ver-diferido", $("movDiferido").checked);
+  $("rapido").classList.toggle("es-ingreso", tipo === "Ingreso");
+  rapidoMostrarMonto();
+}
+function rapidoMostrarMonto() {
+  $("rapMonto").textContent = $("movMonto").value || "0";
+  $("rapSigno").textContent = (() => { const c = cuentas.find((x) => x.nombre === $("movCuenta").value); return c && c.moneda && c.moneda !== monedaBase() ? simboloDe(c.moneda) : moneda(); })();
+}
+function rapidoTecla(k) {
+  const inp = $("movMonto");
+  let v = inp.value.replace(/\./g, "");
+  if (k === "borrar") v = v.slice(0, -1);
+  else if (k === ",") { if (!v.includes(",")) v = (v || "0") + ","; }
+  else { if (/,\d\d$/.test(v)) return; if (v.replace(/\D/g, "").length >= 12) return; v += k; }
+  inp.value = formatearImporteEscrito(v);
+  inp.dispatchEvent(new Event("input", { bubbles: true }));
+}
+$("rapTeclado").addEventListener("click", (e) => { const b = e.target.closest("[data-k]"); if (b) rapidoTecla(b.dataset.k); });
+$("movMonto").addEventListener("input", () => { if (rapidoActivo()) rapidoMostrarMonto(); });
+$("rapCats").addEventListener("click", (e) => {
+  if (e.target.closest("[data-cat-mas]")) { $("formMovimiento").classList.add("rapido-ver-cat"); $("movCategoria").focus(); return; }
+  const b = e.target.closest("[data-cat]");
+  if (!b) return;
+  $("movCategoria").value = b.dataset.cat;
+  $("formMovimiento").dataset.rapCatElegida = b.dataset.cat;
+  document.querySelectorAll("#rapCats .rapido-cat").forEach((x) => x.classList.toggle("activo", x === b));
+});
+$("movCategoria").addEventListener("change", () => { if (rapidoActivo()) { $("formMovimiento").dataset.rapCatElegida = $("movCategoria").value; rapidoRefrescar(); } });
+$("rapCuenta").addEventListener("click", () => { $("formMovimiento").classList.add("rapido-ver-cuenta"); $("movCuenta").focus(); });
+$("rapFecha").addEventListener("click", () => { $("formMovimiento").classList.add("rapido-ver-fecha"); $("movFecha").focus(); });
+$("movCuenta").addEventListener("change", () => { if (rapidoActivo()) rapidoRefrescar(); });
+$("movFecha").addEventListener("change", () => { if (rapidoActivo()) rapidoRefrescar(); });
+document.querySelectorAll("[data-rap-toggle]").forEach((b) => b.addEventListener("click", () => {
+  const chk = $(b.dataset.rapToggle);
+  chk.checked = !chk.checked;
+  chk.dispatchEvent(new Event("change", { bubbles: true }));
+  rapidoRefrescar();
+}));
+$("rapMasOpciones").addEventListener("click", () => { $("formMovimiento").classList.toggle("rapido-ver-mas"); });
+// En la compu se puede escribir el importe con el teclado aunque no haya un casillero elegido
+document.addEventListener("keydown", (e) => {
+  if (!rapidoActivo() || $("modalFondo").hidden) return;
+  const el = document.activeElement;
+  if (el && /^(INPUT|SELECT|TEXTAREA)$/.test(el.tagName)) return;
+  if (/^[0-9]$/.test(e.key)) { rapidoTecla(e.key); e.preventDefault(); }
+  else if (e.key === "," || e.key === ".") { rapidoTecla(","); e.preventDefault(); }
+  else if (e.key === "Backspace") { rapidoTecla("borrar"); e.preventDefault(); }
+});
+// Antes de guardar en modo rápido: tiene que haber una categoría elegida a propósito
+$("formMovimiento").addEventListener("submit", (e) => {
+  if (!rapidoActivo()) return;
+  const f = $("formMovimiento");
+  if (!f.dataset.rapCatElegida && !f.classList.contains("rapido-ver-cat")) {
+    e.preventDefault(); e.stopImmediatePropagation();
+    mostrarAviso($("movError"), t("rapElegiCategoria"));
+    return;
+  }
+  const usos = rapidoUsos(); const c = $("movCategoria").value;
+  usos[c] = (usos[c] || 0) + 1;
+  try { localStorage.setItem("fs_cat_uso", JSON.stringify(usos)); } catch {}
+}, true);
+
 // ---------- Compras en cuotas (pantalla en Ajustes) ----------
 // Las cuotas se guardan como movimientos con "Cuota 3/12" en el detalle; acá se agrupan por compra.
 const RE_CUOTA = /^(.*?)(?:\s·\s)?(?:Cuota|Parcela|Installment)\s(\d+)\/(\d+)$/;
@@ -3913,6 +4028,7 @@ function abrirModalNuevo() {
     return mostrarToast("Primero agregá al menos una cuenta y una categoría en Config.");
   }
   $("formMovimiento").reset();
+  delete $("formMovimiento").dataset.rapCatElegida;
   fotoReset(null);
   $("movId").value = "";
   $("modalTitulo").textContent = t("modalNuevoTitulo");
@@ -3929,6 +4045,7 @@ function abrirModalNuevo() {
   $("movCotizacion").value = "";
   actualizarFilaCotizacion();
   ocultarAviso($("movError"));
+  rapidoActivar(true);
   abrirVentanaMovimiento();
   fsVozPrepararNuevo();
 }
@@ -3936,6 +4053,7 @@ function abrirModalNuevo() {
 function abrirModalEditar(id) {
   const m = movimientos.find((x) => x.id === id) || pendientes.find((x) => x.id === id);
   if (!m) return;
+  rapidoActivar(false);
   seleccionarTipo(m.tipo);
   renderSelects();
   asegurarOpcionSelect("movCuenta", m.cuenta);
@@ -4072,6 +4190,7 @@ document.querySelectorAll("#segmentadoTipo .segmentado-item").forEach((b) => {
   b.addEventListener("click", () => {
     seleccionarTipo(b.dataset.tipo);
     renderSelectCategorias(b.dataset.tipo);
+    rapidoRefrescar();
   });
 });
 
@@ -4306,7 +4425,7 @@ function fsVozCerrar() {
   if (fsVoiceRec) { try { fsVoiceRec.abort(); } catch {} }
   const p = $("vozPantalla");
   if (p) p.hidden = true;
-  document.body.classList.remove("voz-abierta");
+  document.body.classList.remove("voz-abierta");  if (typeof rapidoActivo === "function" && rapidoActivo()) rapidoRefrescar();
 }
 
 function fsVozPrepararNuevo() {
