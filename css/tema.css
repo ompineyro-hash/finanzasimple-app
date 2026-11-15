@@ -229,3 +229,31 @@ html[data-tema="oscuro"] .grafico-dona{filter:drop-shadow(0 6px 18px rgba(0,0,0,
 /* Barra de abajo: cada botón ocupa lo mismo y el nombre se achica si hace falta */
 .navbar-item,.navbar-agregar{flex:1 1 0;min-width:0;}
 .navbar-item span:last-child,.navbar-agregar span:last-child{max-width:100%;overflow:hidden;text-overflow:ellipsis;font-size:min(12.5px,3.2vw);}
+
+/* ===== Pantalla vacía de Movimientos ===== */
+.vacio-lindo{text-align:center;padding:28px 16px 20px;display:flex;flex-direction:column;align-items:center;gap:10px;}
+.vacio-lindo-ic{width:96px;height:96px;border-radius:50%;background:var(--ingreso-fondo);color:var(--primario);display:flex;align-items:center;justify-content:center;}
+.vacio-lindo-ic .ic-linea{width:46px;height:46px;stroke-width:1.9;}
+.vacio-lindo h3{margin:6px 0 0;font-size:21px;color:var(--texto);}
+.vacio-lindo p{margin:0 0 6px;font-size:16px;color:var(--texto-suave);max-width:320px;}
+.vacio-btn-voz{background:#F2C230;color:#1E2A24;border:none;border-radius:99px;padding:14px 28px;font-size:18px;font-weight:800;box-shadow:0 4px 14px rgba(242,194,48,.35);cursor:pointer;}
+.vacio-btn-mano{background:none;border:none;color:var(--primario);font-size:17px;font-weight:800;padding:8px;cursor:pointer;}
+.vacio-btn-guia{background:none;border:none;color:var(--texto-suave);font-size:14.5px;text-decoration:underline;cursor:pointer;}
+
+/* ===== Compras en cuotas ===== */
+.cuotas-resumen{display:flex;flex-direction:column;gap:2px;margin:4px 0 16px;}
+.cuotas-resumen span{font-size:15px;color:var(--texto-suave);font-weight:600;}
+.cuotas-resumen b{font-size:34px;font-weight:800;color:var(--gasto);}
+.lista-cuotas{display:flex;flex-direction:column;gap:12px;}
+.cuota-tarjeta{background:var(--papel-alto);border:1px solid var(--borde);border-radius:16px;padding:14px 16px;box-shadow:var(--sombra);}
+.cuota-fila{display:flex;align-items:center;gap:12px;}
+.cuota-fila .mov-icono{width:46px;height:46px;border-radius:12px;font-size:22px;background:hsl(var(--cat-h,150) 70% 92%);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+html[data-tema="oscuro"] .cuota-fila .mov-icono{background:hsl(var(--cat-h,150) 40% 22%);}
+.cuota-txt{flex:1;min-width:0;display:flex;flex-direction:column;}
+.cuota-txt b{font-size:17px;color:var(--texto);}
+.cuota-txt span{font-size:14.5px;color:var(--texto-suave);}
+.cuota-monto{font-size:17px;font-weight:800;color:var(--gasto);white-space:nowrap;}
+.cuota-barra{height:10px;border-radius:99px;background:var(--borde);margin:12px 0 8px;overflow:hidden;}
+.cuota-barra div{height:100%;border-radius:99px;background:linear-gradient(90deg,#1FB58F,#5BE0BC);transform-origin:left;animation:barra-llena .9s ease-out both;}
+.cuota-restan{font-size:15px;color:var(--texto-suave);}
+.cuota-restan b{color:var(--texto);}

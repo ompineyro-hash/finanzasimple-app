@@ -304,6 +304,10 @@ Al crear una cuenta aceptás nuestros
 <span class="config-tarjeta-icono">🌐</span>
 <span class="config-tarjeta-titulo" data-i18n="tituloIdioma">Idioma</span>
 </button>
+<button type="button" class="config-tarjeta" data-config="configPanelCuotas">
+<span class="config-tarjeta-icono">💳</span>
+<span class="config-tarjeta-titulo" data-i18n="tituloCuotas">Compras en cuotas</span>
+</button>
 <button type="button" class="config-tarjeta" data-config="configPanelTema">
 <span class="config-tarjeta-icono">🌙</span>
 <span class="config-tarjeta-titulo" data-i18n="tituloTema">Modo oscuro</span>
@@ -365,6 +369,14 @@ Al crear una cuenta aceptás nuestros
 <option value="en">English</option>
 </select>
 </div>
+</div>
+
+<!-- Panel: Compras en cuotas -->
+<div id="configPanelCuotas" class="config-panel" hidden>
+<button type="button" class="config-volver" data-i18n="btnVolver">← Volver</button>
+<h2 class="titulo-seccion" data-i18n="tituloCuotas">Compras en cuotas</h2>
+<div class="cuotas-resumen"><span data-i18n="cuotasEsteMes">Este mes pagás en cuotas</span><b id="cuotasTotalMes">—</b></div>
+<div id="listaCuotas" class="lista-cuotas"></div>
 </div>
 
 <!-- Panel: Tema (claro / oscuro) -->

@@ -229,6 +229,15 @@ const TRADUCCIONES = {
     tituloDiaADia: "Ingresos y egresos del mes",
     textoDiaADia: "Acumulado de ingresos y egresos, día a día, del mes que estás viendo.",
     analisisSinDatos: "Todavía no hay movimientos cargados.",
+    vacioTitulo: "Todavía no cargaste movimientos",
+    vacioTexto: "Cargá el primero hablando o a mano y empezá a ver tu mes.",
+    vacioVoz: "Cargar con voz",
+    vacioMano: "Cargar a mano",
+    tituloCuotas: "Compras en cuotas",
+    cuotasEsteMes: "Este mes pagás en cuotas",
+    cuotaXdeN: "Cuota {k} de {n}",
+    cuotasRestan: "Restan",
+    cuotasVacio: "No tenés compras en cuotas pendientes. Se cargan desde Agregar, tildando “Pagar en cuotas”.",
     tituloTema: "Modo oscuro",
     temaAuto: "Automático",
     temaAutoDet: "Igual que tu celular",
@@ -653,6 +662,15 @@ const TRADUCCIONES = {
     tituloDiaADia: "Receitas e despesas do mês",
     textoDiaADia: "Acumulado de receitas e despesas, dia a dia, do mês que você está vendo.",
     analisisSinDatos: "Ainda não há movimentos cadastrados.",
+    vacioTitulo: "Você ainda não registrou movimentos",
+    vacioTexto: "Registre o primeiro falando ou à mão e comece a ver o seu mês.",
+    vacioVoz: "Registrar por voz",
+    vacioMano: "Registrar à mão",
+    tituloCuotas: "Compras parceladas",
+    cuotasEsteMes: "Este mês você paga em parcelas",
+    cuotaXdeN: "Parcela {k} de {n}",
+    cuotasRestan: "Faltam",
+    cuotasVacio: "Você não tem compras parceladas pendentes. Elas são registradas em Adicionar, marcando “Pagar em parcelas”.",
     tituloTema: "Modo escuro",
     temaAuto: "Automático",
     temaAutoDet: "Igual ao seu celular",
@@ -1077,6 +1095,15 @@ const TRADUCCIONES = {
     tituloDiaADia: "Income and expenses this month",
     textoDiaADia: "Cumulative income and expenses, day by day, for the month you're viewing.",
     analisisSinDatos: "No transactions logged yet.",
+    vacioTitulo: "You haven't added any entries yet",
+    vacioTexto: "Add the first one by voice or by hand and start seeing your month.",
+    vacioVoz: "Add by voice",
+    vacioMano: "Add by hand",
+    tituloCuotas: "Installment purchases",
+    cuotasEsteMes: "This month you pay in installments",
+    cuotaXdeN: "Installment {k} of {n}",
+    cuotasRestan: "Remaining",
+    cuotasVacio: "You have no pending installment purchases. Add them from Add, ticking “Pay in installments”.",
     tituloTema: "Dark mode",
     temaAuto: "Automatic",
     temaAutoDet: "Same as your phone",
@@ -2541,6 +2568,57 @@ function tituloDia(fechaStr) {
   return texto.charAt(0).toUpperCase() + texto.slice(1);
 }
 
+// ---------- Compras en cuotas (pantalla en Ajustes) ----------
+// Las cuotas se guardan como movimientos con "Cuota 3/12" en el detalle; acá se agrupan por compra.
+const RE_CUOTA = /^(.*?)(?:\s·\s)?(?:Cuota|Parcela|Installment)\s(\d+)\/(\d+)$/;
+async function renderCuotas() {
+  const cont = $("listaCuotas");
+  cont.innerHTML = `<div class="vacio">…</div>`;
+  let todos;
+  try { todos = await listarTodosLosMovimientos(usuario.id); }
+  catch (err) { cont.innerHTML = `<div class="vacio">${escapeHTML(traducirErrorDatos(err))}</div>`; return; }
+  const grupos = new Map();
+  for (const m of todos) {
+    const r = RE_CUOTA.exec(String(m.detalle || ""));
+    if (!r) continue;
+    const base = r[1].trim(), k = +r[2], n = +r[3];
+    const clave = [base, m.categoria, m.cuenta, n, m.monto, m.moneda || ""].join("|");
+    if (!grupos.has(clave)) grupos.set(clave, { base, categoria: m.categoria, cuenta: m.cuenta, n, cuotas: [] });
+    grupos.get(clave).cuotas.push({ k, fecha: String(m.fecha), estado: m.estado || "pagado", m });
+  }
+  const prefijo = `${fechaVista.getFullYear()}-${String(fechaVista.getMonth() + 1).padStart(2, "0")}`;
+  let totalMes = 0;
+  const filas = [];
+  for (const g of grupos.values()) {
+    g.cuotas.sort((a, b) => a.k - b.k);
+    const pendientes = g.cuotas.filter((c) => c.estado === "pendiente");
+    if (!pendientes.length) continue;
+    const delMes = g.cuotas.find((c) => c.fecha.startsWith(prefijo));
+    const actual = delMes || pendientes[0];
+    if (delMes) totalMes += montoBase(delMes.m);
+    const restan = pendientes.reduce((acc, c) => acc + montoBase(c.m), 0);
+    const pagadas = g.n - pendientes.length;
+    filas.push({ g, actual, restan, pct: Math.round((pagadas / g.n) * 100) });
+  }
+  $("cuotasTotalMes").textContent = formatoMonto(totalMes);
+  if (!filas.length) { cont.innerHTML = `<div class="vacio">${escapeHTML(t("cuotasVacio"))}</div>`; return; }
+  filas.sort((a, b) => a.actual.fecha.localeCompare(b.actual.fecha));
+  cont.innerHTML = filas.map(({ g, actual, restan, pct }) => `
+    <div class="cuota-tarjeta">
+      <div class="cuota-fila">
+        <div class="mov-icono gasto" style="--cat-h:${tonoCategoria(g.categoria)}" aria-hidden="true">${iconoCategoria(g.categoria) || "💳"}</div>
+        <div class="cuota-txt">
+          <b>${escapeHTML(g.base || g.categoria)}</b>
+          <span>${escapeHTML(t("cuotaXdeN").replace("{k}", actual.k).replace("{n}", g.n))} · ${escapeHTML(g.cuenta || "")}</span>
+        </div>
+        <div class="cuota-monto">-${escapeHTML(formatoMonto(montoBase(actual.m)))}</div>
+      </div>
+      <div class="cuota-barra"><div style="width:${pct}%"></div></div>
+      <div class="cuota-restan">${escapeHTML(t("cuotasRestan"))} <b>${escapeHTML(formatoMonto(restan))}</b></div>
+    </div>`).join("");
+}
+document.querySelectorAll('[data-config="configPanelCuotas"]').forEach((b) => b.addEventListener("click", renderCuotas));
+
 // ---------- Tema claro / oscuro ----------
 function temaGuardado() { try { return localStorage.getItem("fs_tema") || "auto"; } catch { return "auto"; } }
 function aplicarTema(t) {
@@ -2567,7 +2645,14 @@ function renderMovimientos() {
   const trVisibles = tipoFiltroActivo === "todo" && !hayBusqueda ? transferenciasMes : [];
 
   if (!movimientos.length && !transferenciasMes.length) {
-    cont.innerHTML = `<div class="vacio">Todavía no cargaste movimientos este mes.<br>Tocá el botón <b>+</b> para agregar el primero.<br><button type="button" class="boton boton-secundario bienv-ver" data-ver-bienvenida>${escapeHTML(t("bienvVer"))}</button></div>`;
+    cont.innerHTML = `<div class="vacio-lindo">
+      <div class="vacio-lindo-ic" aria-hidden="true"><svg class="ic-linea" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="3"/><path d="M3 10h18M16 14.5h2"/><path d="M6 6V5a2 2 0 0 1 2-2h9"/></svg></div>
+      <h3>${escapeHTML(t("vacioTitulo"))}</h3>
+      <p>${escapeHTML(t("vacioTexto"))}</p>
+      <button type="button" class="vacio-btn-voz" data-vacio="voz">🎙️ ${escapeHTML(t("vacioVoz"))}</button>
+      <button type="button" class="vacio-btn-mano" data-vacio="mano">${escapeHTML(t("vacioMano"))}</button>
+      <button type="button" class="vacio-btn-guia" data-ver-bienvenida>${escapeHTML(t("bienvVer"))}</button>
+    </div>`;
     return;
   }
   if (!visibles.length && !trVisibles.length) {
@@ -3718,6 +3803,13 @@ function abrirGuia() { $("guiaPantalla").hidden = false; }
 function cerrarGuia() { $("guiaPantalla").hidden = true; guiaMarcarVista(); }
 
 $("btnGuiaCerrar").addEventListener("click", cerrarGuia);
+// Pantalla vacía de Movimientos: cargar con voz o a mano
+$("listaMovimientos").addEventListener("click", (e) => {
+  const b = e.target.closest("[data-vacio]");
+  if (!b) return;
+  $("btnNuevo").click();
+  if (b.dataset.vacio === "voz") setTimeout(() => $("btnCargarVoz").click(), 350);
+});
 $("tarjetaGuia").addEventListener("click", () => abrirBienvenida());
 $("guiaPantalla").addEventListener("click", (e) => {
   const b = e.target.closest("[data-guia-ir]");
