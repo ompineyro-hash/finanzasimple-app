@@ -257,3 +257,57 @@ html[data-tema="oscuro"] .cuota-fila .mov-icono{background:hsl(var(--cat-h,150) 
 .cuota-barra div{height:100%;border-radius:99px;background:linear-gradient(90deg,#1FB58F,#5BE0BC);transform-origin:left;animation:barra-llena .9s ease-out both;}
 .cuota-restan{font-size:15px;color:var(--texto-suave);}
 .cuota-restan b{color:var(--texto);}
+
+/* ===== Carga rápida (Nuevo movimiento) ===== */
+#formMovimiento.modo-rapido{display:flex;flex-direction:column;}
+#formMovimiento.modo-rapido > *{order:20;}
+#formMovimiento.modo-rapido #rapido{display:contents;}
+#formMovimiento.modo-rapido #segmentadoTipo{order:1;}
+#formMovimiento.modo-rapido .aviso-tipo-movimiento{display:none;}
+#formMovimiento.modo-rapido .rapido-monto{order:3;}
+#formMovimiento.modo-rapido .rapido-chips-chicos{order:4;}
+#formMovimiento.modo-rapido .rapido-titulo{order:5;}
+#formMovimiento.modo-rapido .rapido-cats{order:6;}
+#formMovimiento.modo-rapido .rapido-opciones{order:7;}
+#formMovimiento.modo-rapido label:has(#movDetalle){order:9;}
+#formMovimiento.modo-rapido #movError{order:10;}
+#formMovimiento.modo-rapido .rapido-guardar{order:11;}
+#formMovimiento.modo-rapido .rapido-teclado{order:12;}
+#formMovimiento.modo-rapido .rapido-mas-opciones{order:13;}
+/* Lo que ya resuelve la carga rápida queda oculto (se muestra si se toca) */
+#formMovimiento.modo-rapido label:has(#movFecha),
+#formMovimiento.modo-rapido label:has(#movCuenta),
+#formMovimiento.modo-rapido label:has(#movCategoria),
+#formMovimiento.modo-rapido label:has(#movMonto),
+#formMovimiento.modo-rapido .bloque-diferido,
+#formMovimiento.modo-rapido #bloqueFoto,
+#formMovimiento.modo-rapido .modal-acciones{display:none;}
+#formMovimiento.modo-rapido.rapido-ver-fecha label:has(#movFecha),
+#formMovimiento.modo-rapido.rapido-ver-cuenta label:has(#movCuenta),
+#formMovimiento.modo-rapido.rapido-ver-cat label:has(#movCategoria){display:block;order:8;}
+#formMovimiento.modo-rapido.rapido-ver-mas #bloqueFoto{display:block;order:9;}
+#formMovimiento.modo-rapido.rapido-ver-mas .bloque-diferido:not(#bloqueCuotas),
+#formMovimiento.modo-rapido.rapido-ver-diferido .bloque-diferido:not(#bloqueCuotas),
+#formMovimiento.modo-rapido.rapido-ver-mas #bloqueCuotas,
+#formMovimiento.modo-rapido.rapido-ver-cuotas #bloqueCuotas{display:block;order:8;}
+.rapido-monto{text-align:center;font-size:52px;font-weight:800;color:var(--gasto);line-height:1.1;margin:6px 0 2px;letter-spacing:-1px;display:flex;justify-content:center;align-items:baseline;gap:4px;}
+.rapido.es-ingreso .rapido-monto{color:var(--ingreso);}
+.rapido-signo{font-size:26px;}
+.rapido-cursor{width:3px;height:44px;background:var(--primario);align-self:center;animation:parpadeo 1s steps(1) infinite;}
+@keyframes parpadeo{50%{opacity:0;}}
+.rapido-chips-chicos{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;}
+.rapido-chip-chico{background:var(--papel-alto);border:1.5px solid var(--borde);color:var(--texto);border-radius:99px;padding:8px 14px;font-size:15.5px;font-weight:700;cursor:pointer;}
+.rapido-chip-chico.activo{background:var(--ingreso-fondo);border-color:var(--primario);color:var(--primario);}
+.rapido-opciones{justify-content:flex-start;}
+.rapido-titulo{font-size:14px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--texto-suave);margin-top:6px;}
+.rapido-cats{display:flex;flex-wrap:wrap;gap:8px;}
+.rapido-cat{background:var(--papel-alto);border:1.5px solid var(--borde);color:var(--texto);border-radius:99px;padding:10px 16px;font-size:16.5px;font-weight:700;cursor:pointer;}
+.rapido-cat.activo{background:var(--primario);border-color:var(--primario);color:#fff;}
+html[data-tema="oscuro"] .rapido-cat.activo{color:#0B1411;}
+.rapido-cat-mas{color:var(--texto-suave);}
+.rapido-guardar{font-size:19px;padding:15px;}
+.rapido-teclado{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.rapido-teclado button{background:var(--papel-alto);border:1px solid var(--borde);border-radius:14px;padding:14px 0;font-size:26px;font-weight:700;color:var(--texto);cursor:pointer;box-shadow:var(--sombra);}
+.rapido-teclado button:active{transform:scale(.95);background:var(--ingreso-fondo);}
+.rapido-mas-opciones{background:none;border:none;color:var(--primario);font-weight:700;font-size:15px;padding:8px;cursor:pointer;}
+@media (min-width:900px){.rapido-teclado button{padding:10px 0;font-size:22px;}}

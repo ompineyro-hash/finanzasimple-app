@@ -38,9 +38,9 @@ try {
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/styles.css?v=1794782391">
-<link rel="stylesheet" href="css/pendientes.css?v=1794782391">
-<link rel="stylesheet" href="css/tema.css?v=1794782391">
+<link rel="stylesheet" href="css/styles.css?v=1794783663">
+<link rel="stylesheet" href="css/pendientes.css?v=1794783663">
+<link rel="stylesheet" href="css/tema.css?v=1794783663">
 </head>
 <body>
 <!-- ===================== PANTALLA DE INGRESO ===================== -->
@@ -679,6 +679,28 @@ Al crear una cuenta aceptás nuestros
 <button type="button" class="segmentado-item" data-tipo="Ingreso" data-i18n="segIngreso">Ingreso</button>
 </div>
 <p class="aviso-tipo-movimiento aviso-tipo-gasto" id="avisoTipoMovimiento"></p>
+<!-- ===== Carga rápida (solo al cargar uno nuevo): importe con teclado, categoría de un toque, guardar ===== -->
+<div id="rapido" class="rapido" hidden>
+<div class="rapido-monto" aria-live="polite"><span class="rapido-signo" id="rapSigno">$</span><span id="rapMonto">0</span><span class="rapido-cursor"></span></div>
+<div class="rapido-chips-chicos">
+<button type="button" class="rapido-chip-chico" id="rapCuenta"></button>
+<button type="button" class="rapido-chip-chico" id="rapFecha"></button>
+</div>
+<div class="rapido-titulo" data-i18n="rapCategorias">Categoría</div>
+<div class="rapido-cats" id="rapCats"></div>
+<div class="rapido-chips-chicos rapido-opciones">
+<button type="button" class="rapido-chip-chico" data-rap-toggle="movCuotas" data-i18n="labelCuotas">Pagar en cuotas</button>
+<button type="button" class="rapido-chip-chico" data-rap-toggle="movDiferido" id="rapDiferido"></button>
+</div>
+<div class="rapido-teclado" id="rapTeclado">
+<button type="button" data-k="1">1</button><button type="button" data-k="2">2</button><button type="button" data-k="3">3</button>
+<button type="button" data-k="4">4</button><button type="button" data-k="5">5</button><button type="button" data-k="6">6</button>
+<button type="button" data-k="7">7</button><button type="button" data-k="8">8</button><button type="button" data-k="9">9</button>
+<button type="button" data-k=",">,</button><button type="button" data-k="0">0</button><button type="button" data-k="borrar" data-i18n-aria="rapBorrarAria" aria-label="Borrar">⌫</button>
+</div>
+<button type="submit" class="boton boton-primario boton-ancho rapido-guardar" id="rapGuardar"></button>
+<button type="button" class="rapido-mas-opciones" id="rapMasOpciones" data-i18n="rapMasOpciones">Más opciones (foto del comprobante) ▾</button>
+</div>
 <label><span data-i18n="labelFecha">Fecha</span>
 <input type="date" id="movFecha" required>
 </label>
@@ -751,10 +773,10 @@ Al crear una cuenta aceptás nuestros
 <div id="toast" class="toast" hidden></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="js/supabaseClient.js?v=1794782391"></script>
-<script src="js/auth.js?v=1794782391"></script>
-<script src="js/data.js?v=1794782391"></script>
-<script src="js/app.js?v=1794782391"></script>
-<script src="js/importar.js?v=1794782391"></script>
+<script src="js/supabaseClient.js?v=1794783663"></script>
+<script src="js/auth.js?v=1794783663"></script>
+<script src="js/data.js?v=1794783663"></script>
+<script src="js/app.js?v=1794783663"></script>
+<script src="js/importar.js?v=1794783663"></script>
 </body>
 </html>
