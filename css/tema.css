@@ -329,3 +329,29 @@ html[data-tema="oscuro"] .rapido-cat.activo{color:#0B1411;}
 .qr-caja video{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:14px;background:#000;}
 .qr-estado{margin:0;font-size:16.5px;text-align:center;}
 .qr-galeria{cursor:pointer;text-align:center;}
+
+/* Celulares: cabecera y filtros más compactos para que se vea la lista de movimientos */
+@media (max-width:640px){
+  .topbar{padding:6px 12px 8px;}
+  .topbar .resumen-tarjetas{gap:6px;margin-top:6px;}
+  .topbar .resumen-tarjetas-fila{gap:6px;}
+  .topbar .tarjeta-resumen-balance{padding:6px 12px 8px;}
+  .topbar .tarjeta-resumen-balance .tarjeta-resumen-label{font-size:13.5px;}
+  .topbar .tarjeta-resumen-balance .tarjeta-resumen-valor{font-size:26px;margin-top:0;line-height:1.1;}
+  .topbar .consumo-mes{margin-top:5px;}
+  .topbar .consumo-mes-fondo{height:6px;}
+  .topbar .consumo-mes-texto{margin-top:3px;font-size:13px;line-height:1.2;}
+  .topbar .tarjeta-resumen{padding:5px 10px;}
+  .topbar .tarjeta-resumen-label{font-size:13.5px;}
+  .topbar .tarjeta-resumen-valor{font-size:17px;}
+  #filaAccesosLista{margin-bottom:6px !important;gap:6px !important;}
+  #segmentadoTipoLista .segmentado-item{padding:7px 2px;font-size:16px;}
+  #filaAccesosLista #btnBuscarSimple{padding:6px 12px !important;font-size:16px;border-width:1.5px;}
+  #btnClasificar{padding:6px 4px;font-size:15px;white-space:nowrap;margin:0;border-width:1.5px;}
+  /* Buscar y Clasificar varios, uno al lado del otro */
+  #vistaMovimientos:not([hidden]){display:flex;flex-wrap:wrap;gap:6px;align-items:stretch;}
+  #vistaMovimientos > *{flex:1 1 100%;min-width:0;}
+  #filaAccesosLista{display:contents !important;}
+  #segmentadoTipoLista{flex:1 1 100% !important;}
+  #vistaMovimientos #btnBuscarSimple,#vistaMovimientos #btnClasificar{flex:1 1 calc(50% - 6px) !important;width:auto;}
+}

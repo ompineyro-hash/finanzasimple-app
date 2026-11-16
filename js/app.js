@@ -266,8 +266,9 @@ const TRADUCCIONES = {
     qrSinCamara: "No se pudo abrir la cámara. Probá con una foto de la galería.",
     qrNoLeyo: "No encontré un código QR en la foto. Probá de nuevo o cargalo a mano.",
     qrNoFactura: "Ese QR no es de una factura electrónica. Cargalo a mano.",
-    qrOk: "Listo: cargué el importe y la fecha. Elegí la categoría y guardá.",
-    qrOtraMoneda: "La factura está en otra moneda: cargué la fecha, escribí el importe a mano.",
+    qrOk: "Listo: importe y fecha cargados. Elegí la categoría.",
+    qrOtraMoneda: "Factura en {m} ({i}). Cargué la fecha; poné el importe a mano.",
+    qrFoto: "Sacar foto del QR",
     rapBorrarAria: "Borrar último número",
     rapMasOpciones: "Más opciones (foto del comprobante) ▾",
     rapGuardarGasto: "Guardar gasto",
@@ -735,8 +736,9 @@ const TRADUCCIONES = {
     qrSinCamara: "Não foi possível abrir a câmera. Tente com uma foto da galeria.",
     qrNoLeyo: "Não encontrei um código QR na foto. Tente de novo ou preencha manualmente.",
     qrNoFactura: "Esse QR não é de uma fatura eletrônica. Preencha manualmente.",
-    qrOk: "Pronto: preenchi o valor e a data. Escolha a categoria e salve.",
-    qrOtraMoneda: "A fatura está em outra moeda: preenchi a data, digite o valor manualmente.",
+    qrOk: "Pronto: valor e data preenchidos. Escolha a categoria.",
+    qrOtraMoneda: "Fatura em {m} ({i}). Preenchi a data; digite o valor.",
+    qrFoto: "Tirar foto do QR",
     rapBorrarAria: "Apagar último número",
     rapMasOpciones: "Mais opções (foto do comprovante) ▾",
     rapGuardarGasto: "Salvar despesa",
@@ -1204,8 +1206,9 @@ const TRADUCCIONES = {
     qrSinCamara: "Couldn't open the camera. Try a photo from the gallery.",
     qrNoLeyo: "I couldn't find a QR code in the photo. Try again or enter it by hand.",
     qrNoFactura: "That QR isn't from an electronic invoice. Enter it by hand.",
-    qrOk: "Done: I filled in the amount and date. Choose the category and save.",
-    qrOtraMoneda: "The invoice is in another currency: I filled in the date, enter the amount by hand.",
+    qrOk: "Done: amount and date filled in. Choose the category.",
+    qrOtraMoneda: "Invoice in {m} ({i}). I filled in the date; enter the amount by hand.",
+    qrFoto: "Take a photo of the QR",
     rapBorrarAria: "Delete last digit",
     rapMasOpciones: "More options (receipt photo) ▾",
     rapGuardarGasto: "Save expense",
@@ -1670,7 +1673,7 @@ function mostrarToast(msg, ms) {
   t.textContent = msg;
   t.hidden = false;
   clearTimeout(window._toastTimer);
-  window._toastTimer = setTimeout(() => { t.hidden = true; }, ms || 3000);
+  window._toastTimer = setTimeout(() => { t.hidden = true; }, ms || 2600);
 }
 
 function mostrarAviso(el, msg) {
@@ -2803,19 +2806,34 @@ $("formMovimiento").addEventListener("submit", (e) => {
 let qrStream = null, qrTimer = null, qrDetector = null, qrJsQR = null;
 function qrLeerFactura(texto) {
   try {
-    const url = new URL(String(texto).trim());
-    const p = url.searchParams.get("p");
-    if (!p) return null;
-    let b64 = decodeURIComponent(p).replace(/-/g, "+").replace(/_/g, "/");
-    while (b64.length % 4) b64 += "=";
-    const d = JSON.parse(decodeURIComponent(escape(atob(b64))));
-    const importe = Number(d.importe);
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(String(d.fecha || "")) || !Number.isFinite(importe) || importe <= 0) return null;
-    return { fecha: d.fecha, importe, moneda: String(d.moneda || "PES"), ptoVta: d.ptoVta, nroCmp: d.nroCmp };
+    const txt = String(texto).trim();
+    // Se toma el valor de p= tal cual (URLSearchParams cambiaría los "+" del base64 por espacios y rompería los datos).
+    const m = txt.match(/[?&]p=([^&#\s]*)/);
+    let d = null;
+    try {
+      let b64 = m ? m[1] : txt;
+      try { b64 = decodeURIComponent(b64); } catch {}
+      b64 = b64.replace(/ /g, "+").replace(/-/g, "+").replace(/_/g, "/");
+      while (b64.length % 4) b64 += "=";
+      d = JSON.parse(decodeURIComponent(escape(atob(b64))));
+    } catch { d = JSON.parse(txt); }
+    if (!d || typeof d !== "object") return null;
+    let imp = d.importe;
+    if (typeof imp === "string") {
+      imp = imp.replace(/\s/g, "");
+      if (imp.includes(",") && imp.includes(".")) imp = imp.replace(/\./g, "").replace(",", ".");
+      else imp = imp.replace(",", ".");
+    }
+    const importe = Number(imp);
+    let fecha = String(d.fecha || "").trim();
+    const dm = fecha.match(/^(\d{2})\/(\d{2})\/(\d{4})/);
+    fecha = dm ? dm[3] + "-" + dm[2] + "-" + dm[1] : fecha.slice(0, 10);
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(fecha) || !Number.isFinite(importe) || importe <= 0) return null;
+    return { fecha, importe, moneda: String(d.moneda == null ? "" : d.moneda).trim(), ptoVta: d.ptoVta, nroCmp: d.nroCmp };
   } catch { return null; }
 }
 function qrAplicar(f) {
-  const enPesos = f.moneda === "PES";
+  const enPesos = !f.moneda || /^(PES|ARS|\$|PESOS)$/i.test(f.moneda);
   if (enPesos) {
     const txt = Number.isInteger(f.importe) ? String(f.importe) : f.importe.toFixed(2).replace(".", ",");
     $("movMonto").value = formatearImporteEscrito(txt);
@@ -2824,7 +2842,7 @@ function qrAplicar(f) {
   if (/^\d{4}-\d{2}-\d{2}$/.test(f.fecha)) { $("movFecha").value = f.fecha; $("movFecha").dispatchEvent(new Event("change", { bubbles: true })); }
   if (!$("movDetalle").value && f.ptoVta && f.nroCmp) $("movDetalle").value = "Factura " + String(f.ptoVta).padStart(4, "0") + "-" + String(f.nroCmp).padStart(8, "0");
   rapidoRefrescar();
-  mostrarToast(t(enPesos ? "qrOk" : "qrOtraMoneda"), 5000);
+  mostrarToast(enPesos ? t("qrOk") : t("qrOtraMoneda").replace("{m}", f.moneda).replace("{i}", f.importe), 5500);
 }
 function qrCerrar() {
   clearTimeout(qrTimer); qrTimer = null;
@@ -2866,7 +2884,7 @@ async function qrDecodificar(fuente, ancho, alto) {
 }
 function qrResultado(texto) {
   const f = qrLeerFactura(texto);
-  if (!f) { $("qrEstado").textContent = t("qrNoFactura"); return false; }
+  if (!f) { $("qrEstado").textContent = t("qrNoFactura") + " (" + String(texto).slice(0, 70) + (String(texto).length > 70 ? "…" : "") + ")"; return false; }
   qrCerrar();
   qrAplicar(f);
   return true;
@@ -2887,16 +2905,17 @@ $("rapQR").addEventListener("click", async () => {
   $("qrEscaner").hidden = false;
   try { await qrPrepararDetector(); } catch { $("qrEstado").textContent = t("qrSinCamara"); return; }
   try {
-    qrStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: "environment" } }, audio: false });
+    qrStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: "environment" }, width: { ideal: 1920 }, height: { ideal: 1080 } }, audio: false });
     const v = $("qrVideo");
     v.srcObject = qrStream;
+    try { await qrStream.getVideoTracks()[0].applyConstraints({ advanced: [{ focusMode: "continuous" }] }); } catch {}
     await v.play();
     $("qrEstado").textContent = t("qrAyuda");
     qrBucle();
   } catch { $("qrEstado").textContent = t("qrSinCamara"); }
 });
 $("qrCerrar").addEventListener("click", qrCerrar);
-$("qrArchivo").addEventListener("change", async (e) => {
+async function qrDesdeArchivo(e) {
   const file = e.target.files && e.target.files[0];
   e.target.value = "";
   if (!file) return;
@@ -2907,7 +2926,9 @@ $("qrArchivo").addEventListener("change", async (e) => {
     if (!txt) { $("qrEstado").textContent = t("qrNoLeyo"); return; }
     qrResultado(txt);
   } catch { $("qrEstado").textContent = t("qrNoLeyo"); }
-});
+}
+$("qrArchivo").addEventListener("change", qrDesdeArchivo);
+$("qrFotoCam").addEventListener("change", qrDesdeArchivo);
 
 // ---------- Compras en cuotas (pantalla en Ajustes) ----------
 // Las cuotas se guardan como movimientos con "Cuota 3/12" en el detalle; acá se agrupan por compra.
