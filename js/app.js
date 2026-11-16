@@ -257,6 +257,17 @@ const TRADUCCIONES = {
     cuotasVacioMes: "No tenés cuotas para pagar en este mes.",
     rapCategorias: "Elegí la categoría",
     rapMas: "Otra…",
+    qrBtn: "📷 Escanear QR",
+    qrTitulo: "Escanear factura",
+    qrAyuda: "Apuntá la cámara al código QR de la factura.",
+    qrGaleria: "Elegir foto de la galería",
+    qrCancelar: "Cancelar",
+    qrPreparando: "Preparando el lector…",
+    qrSinCamara: "No se pudo abrir la cámara. Probá con una foto de la galería.",
+    qrNoLeyo: "No encontré un código QR en la foto. Probá de nuevo o cargalo a mano.",
+    qrNoFactura: "Ese QR no es de una factura electrónica. Cargalo a mano.",
+    qrOk: "Listo: cargué el importe y la fecha. Elegí la categoría y guardá.",
+    qrOtraMoneda: "La factura está en otra moneda: cargué la fecha, escribí el importe a mano.",
     rapBorrarAria: "Borrar último número",
     rapMasOpciones: "Más opciones (foto del comprobante) ▾",
     rapGuardarGasto: "Guardar gasto",
@@ -715,6 +726,17 @@ const TRADUCCIONES = {
     cuotasVacioMes: "Você não tem parcelas para pagar neste mês.",
     rapCategorias: "Escolha a categoria",
     rapMas: "Outra…",
+    qrBtn: "📷 Escanear QR",
+    qrTitulo: "Escanear fatura",
+    qrAyuda: "Aponte a câmera para o código QR da fatura.",
+    qrGaleria: "Escolher foto da galeria",
+    qrCancelar: "Cancelar",
+    qrPreparando: "Preparando o leitor…",
+    qrSinCamara: "Não foi possível abrir a câmera. Tente com uma foto da galeria.",
+    qrNoLeyo: "Não encontrei um código QR na foto. Tente de novo ou preencha manualmente.",
+    qrNoFactura: "Esse QR não é de uma fatura eletrônica. Preencha manualmente.",
+    qrOk: "Pronto: preenchi o valor e a data. Escolha a categoria e salve.",
+    qrOtraMoneda: "A fatura está em outra moeda: preenchi a data, digite o valor manualmente.",
     rapBorrarAria: "Apagar último número",
     rapMasOpciones: "Mais opções (foto do comprovante) ▾",
     rapGuardarGasto: "Salvar despesa",
@@ -1173,6 +1195,17 @@ const TRADUCCIONES = {
     cuotasVacioMes: "You have no installments to pay this month.",
     rapCategorias: "Choose the category",
     rapMas: "Other…",
+    qrBtn: "📷 Scan QR",
+    qrTitulo: "Scan invoice",
+    qrAyuda: "Point the camera at the invoice QR code.",
+    qrGaleria: "Choose a photo from the gallery",
+    qrCancelar: "Cancel",
+    qrPreparando: "Getting the reader ready…",
+    qrSinCamara: "Couldn't open the camera. Try a photo from the gallery.",
+    qrNoLeyo: "I couldn't find a QR code in the photo. Try again or enter it by hand.",
+    qrNoFactura: "That QR isn't from an electronic invoice. Enter it by hand.",
+    qrOk: "Done: I filled in the amount and date. Choose the category and save.",
+    qrOtraMoneda: "The invoice is in another currency: I filled in the date, enter the amount by hand.",
     rapBorrarAria: "Delete last digit",
     rapMasOpciones: "More options (receipt photo) ▾",
     rapGuardarGasto: "Save expense",
@@ -2680,6 +2713,7 @@ function rapidoRefrescar() {
   f2.classList.toggle("rapido-ver-cuotas", $("movCuotas").checked);
   f2.classList.toggle("rapido-ver-diferido", $("movDiferido").checked);
   $("rapido").classList.toggle("es-ingreso", tipo === "Ingreso");
+  $("rapQR").hidden = tipo !== "Gasto";
   rapidoMostrarMonto();
 }
 function rapidoMostrarMonto() {
@@ -2761,6 +2795,119 @@ $("formMovimiento").addEventListener("submit", (e) => {
   usos[c] = (usos[c] || 0) + 1;
   try { localStorage.setItem("fs_cat_uso", JSON.stringify(usos)); } catch {}
 }, true);
+
+
+// ---------- Escanear el QR de una factura electrónica (ARCA/AFIP) ----------
+// El QR trae un link con los datos de la factura en base64 (fecha, importe, moneda, punto de venta, número).
+// Todo se lee en el celular: la imagen de la cámara no se envía a ningún lado.
+let qrStream = null, qrTimer = null, qrDetector = null, qrJsQR = null;
+function qrLeerFactura(texto) {
+  try {
+    const url = new URL(String(texto).trim());
+    const p = url.searchParams.get("p");
+    if (!p) return null;
+    let b64 = decodeURIComponent(p).replace(/-/g, "+").replace(/_/g, "/");
+    while (b64.length % 4) b64 += "=";
+    const d = JSON.parse(decodeURIComponent(escape(atob(b64))));
+    const importe = Number(d.importe);
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(String(d.fecha || "")) || !Number.isFinite(importe) || importe <= 0) return null;
+    return { fecha: d.fecha, importe, moneda: String(d.moneda || "PES"), ptoVta: d.ptoVta, nroCmp: d.nroCmp };
+  } catch { return null; }
+}
+function qrAplicar(f) {
+  const enPesos = f.moneda === "PES";
+  if (enPesos) {
+    const txt = Number.isInteger(f.importe) ? String(f.importe) : f.importe.toFixed(2).replace(".", ",");
+    $("movMonto").value = formatearImporteEscrito(txt);
+    $("movMonto").dispatchEvent(new Event("input", { bubbles: true }));
+  }
+  if (/^\d{4}-\d{2}-\d{2}$/.test(f.fecha)) { $("movFecha").value = f.fecha; $("movFecha").dispatchEvent(new Event("change", { bubbles: true })); }
+  if (!$("movDetalle").value && f.ptoVta && f.nroCmp) $("movDetalle").value = "Factura " + String(f.ptoVta).padStart(4, "0") + "-" + String(f.nroCmp).padStart(8, "0");
+  rapidoRefrescar();
+  mostrarToast(t(enPesos ? "qrOk" : "qrOtraMoneda"), 5000);
+}
+function qrCerrar() {
+  clearTimeout(qrTimer); qrTimer = null;
+  if (qrStream) { qrStream.getTracks().forEach((x) => x.stop()); qrStream = null; }
+  $("qrVideo").srcObject = null;
+  $("qrEscaner").hidden = true;
+}
+async function qrPrepararDetector() {
+  if (qrDetector) return qrDetector;
+  if ("BarcodeDetector" in window) {
+    try { qrDetector = { nativo: new BarcodeDetector({ formats: ["qr_code"] }) }; return qrDetector; } catch {}
+  }
+  // Respaldo para navegadores sin lector propio (iPhone, Firefox): librería jsQR, se baja solo la primera vez.
+  if (!qrJsQR) {
+    await new Promise((ok, mal) => {
+      const sc = document.createElement("script");
+      sc.src = "https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js";
+      sc.onload = ok; sc.onerror = mal; document.head.appendChild(sc);
+    });
+    qrJsQR = window.jsQR;
+  }
+  qrDetector = { js: qrJsQR };
+  return qrDetector;
+}
+async function qrDecodificar(fuente, ancho, alto) {
+  const det = await qrPrepararDetector();
+  if (det.nativo) {
+    const r = await det.nativo.detect(fuente);
+    return r && r[0] ? r[0].rawValue : null;
+  }
+  const max = 1200, k = Math.min(1, max / Math.max(ancho, alto));
+  const c = document.createElement("canvas");
+  c.width = Math.round(ancho * k); c.height = Math.round(alto * k);
+  const cx = c.getContext("2d", { willReadFrequently: true });
+  cx.drawImage(fuente, 0, 0, c.width, c.height);
+  const im = cx.getImageData(0, 0, c.width, c.height);
+  const r = det.js(im.data, im.width, im.height, { inversionAttempts: "attemptBoth" });
+  return r ? r.data : null;
+}
+function qrResultado(texto) {
+  const f = qrLeerFactura(texto);
+  if (!f) { $("qrEstado").textContent = t("qrNoFactura"); return false; }
+  qrCerrar();
+  qrAplicar(f);
+  return true;
+}
+async function qrBucle() {
+  const v = $("qrVideo");
+  if ($("qrEscaner").hidden || !qrStream) return;
+  try {
+    if (v.videoWidth) {
+      const txt = await qrDecodificar(v, v.videoWidth, v.videoHeight);
+      if (txt && qrResultado(txt)) return;
+    }
+  } catch {}
+  qrTimer = setTimeout(qrBucle, 300);
+}
+$("rapQR").addEventListener("click", async () => {
+  $("qrEstado").textContent = t("qrPreparando");
+  $("qrEscaner").hidden = false;
+  try { await qrPrepararDetector(); } catch { $("qrEstado").textContent = t("qrSinCamara"); return; }
+  try {
+    qrStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: "environment" } }, audio: false });
+    const v = $("qrVideo");
+    v.srcObject = qrStream;
+    await v.play();
+    $("qrEstado").textContent = t("qrAyuda");
+    qrBucle();
+  } catch { $("qrEstado").textContent = t("qrSinCamara"); }
+});
+$("qrCerrar").addEventListener("click", qrCerrar);
+$("qrArchivo").addEventListener("change", async (e) => {
+  const file = e.target.files && e.target.files[0];
+  e.target.value = "";
+  if (!file) return;
+  $("qrEstado").textContent = t("qrPreparando");
+  try {
+    const bmp = await createImageBitmap(file);
+    const txt = await qrDecodificar(bmp, bmp.width, bmp.height);
+    if (!txt) { $("qrEstado").textContent = t("qrNoLeyo"); return; }
+    qrResultado(txt);
+  } catch { $("qrEstado").textContent = t("qrNoLeyo"); }
+});
 
 // ---------- Compras en cuotas (pantalla en Ajustes) ----------
 // Las cuotas se guardan como movimientos con "Cuota 3/12" en el detalle; acá se agrupan por compra.

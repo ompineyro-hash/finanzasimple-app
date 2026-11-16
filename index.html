@@ -681,6 +681,7 @@ Al crear una cuenta aceptás nuestros
 <div id="rapido" class="rapido" hidden>
 <div class="rapido-monto" aria-live="polite"><span class="rapido-signo" id="rapSigno">$</span><span id="rapMonto">0</span><span class="rapido-cursor"></span></div>
 <div class="rapido-chips-chicos">
+<button type="button" class="rapido-chip-chico" id="rapQR" data-i18n="qrBtn">📷 Escanear QR</button>
 <button type="button" class="rapido-chip-chico" id="rapCuenta"></button>
 <button type="button" class="rapido-chip-chico" id="rapFecha"></button>
 </div>
@@ -769,6 +770,15 @@ Al crear una cuenta aceptás nuestros
 </div>
 </div>
 
+<div id="qrEscaner" class="qr-escaner" hidden>
+<div class="qr-caja">
+<h3 data-i18n="qrTitulo">Escanear factura</h3>
+<video id="qrVideo" playsinline muted></video>
+<p id="qrEstado" class="qr-estado" data-i18n="qrAyuda">Apuntá la cámara al código QR de la factura.</p>
+<label class="boton boton-secundario boton-ancho qr-galeria"><span data-i18n="qrGaleria">Elegir foto de la galería</span><input type="file" id="qrArchivo" accept="image/*" hidden></label>
+<button type="button" id="qrCerrar" class="boton boton-ancho" data-i18n="qrCancelar">Cancelar</button>
+</div>
+</div>
 <div id="visorFoto" class="visor-foto" hidden><img id="visorFotoImg" alt=""><button type="button" class="visor-cerrar" id="visorFotoCerrar" aria-label="Cerrar">✖</button></div>
 
 <div id="toast" class="toast" hidden></div>

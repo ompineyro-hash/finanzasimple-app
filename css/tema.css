@@ -320,3 +320,12 @@ html[data-tema="oscuro"] .rapido-cat.activo{color:#0B1411;}
 .rapido-cuentas[hidden]{display:none;}
 .rapido-cuentas button{background:var(--papel-alto);border:1.5px solid var(--borde);color:var(--texto);border-radius:99px;padding:10px 16px;font-size:16.5px;font-weight:700;cursor:pointer;}
 .rapido-cuentas button.activo{background:var(--ingreso-fondo);border-color:var(--primario);color:var(--primario);}
+
+/* Escáner de QR de factura */
+.qr-escaner{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.82);display:flex;align-items:center;justify-content:center;padding:14px;}
+.qr-escaner[hidden]{display:none;}
+.qr-caja{background:var(--papel);color:var(--texto);border-radius:20px;padding:16px;width:100%;max-width:420px;display:flex;flex-direction:column;gap:12px;max-height:96vh;overflow:auto;}
+.qr-caja h3{margin:0;font-size:20px;}
+.qr-caja video{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:14px;background:#000;}
+.qr-estado{margin:0;font-size:16.5px;text-align:center;}
+.qr-galeria{cursor:pointer;text-align:center;}
