@@ -313,3 +313,10 @@ html[data-tema="oscuro"] .rapido-cat.activo{color:#0B1411;}
 .rapido-teclado button:active{transform:scale(.95);background:var(--ingreso-fondo);}
 .rapido-mas-opciones{background:none;border:none;color:var(--primario);font-weight:700;font-size:15px;padding:8px;cursor:pointer;}
 @media (min-width:900px){.rapido-teclado button{padding:10px 0;font-size:22px;}}
+
+/* Elegir cuenta en la carga rápida: botones grandes */
+#formMovimiento.modo-rapido .rapido-cuentas{order:4;}
+.rapido-cuentas{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;}
+.rapido-cuentas[hidden]{display:none;}
+.rapido-cuentas button{background:var(--papel-alto);border:1.5px solid var(--borde);color:var(--texto);border-radius:99px;padding:10px 16px;font-size:16.5px;font-weight:700;cursor:pointer;}
+.rapido-cuentas button.activo{background:var(--ingreso-fondo);border-color:var(--primario);color:var(--primario);}

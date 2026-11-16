@@ -254,6 +254,7 @@ const TRADUCCIONES = {
     cuotaXdeN: "Cuota {k} de {n}",
     cuotasRestan: "Restan",
     cuotasVacio: "No tenés compras en cuotas pendientes. Se cargan desde Agregar, tildando “Pagar en cuotas”.",
+    cuotasVacioMes: "No tenés cuotas para pagar en este mes.",
     rapCategorias: "Elegí la categoría",
     rapMas: "Otra…",
     rapBorrarAria: "Borrar último número",
@@ -371,9 +372,10 @@ const TRADUCCIONES = {
     labelCuotas: "Pagar en cuotas",
     labelCantCuotas: "Cantidad de cuotas",
     labelPrimeraCuota: "Fecha de la primera cuota",
-    ayudaCuotas: "El monto es el valor de cada cuota. Se crea una por mes y quedan como pendientes hasta que las marques como pagadas.",
-    labelMontoCuota: "Valor de cada cuota",
+    ayudaCuotas: "Cargá el total de la compra: la app lo divide en partes iguales. Se crea una cuota por mes y quedan como pendientes hasta que las marques como pagadas.",
+    labelMontoCuota: "Total de la compra",
     vistaCuotas: "{n} cuotas de {c} = {t} en total · primera {p}, última {u}",
+    vistaCuotaUlt: "La última cuota es de {l} (ajusta los centavos).",
     textoCuota: "Cuota",
     toastCuotas: "Se crearon {n} cuotas.",
     errCuotas: "Las cuotas tienen que ser entre 2 y 60.",
@@ -710,6 +712,7 @@ const TRADUCCIONES = {
     cuotaXdeN: "Parcela {k} de {n}",
     cuotasRestan: "Faltam",
     cuotasVacio: "Você não tem compras parceladas pendentes. Elas são registradas em Adicionar, marcando “Pagar em parcelas”.",
+    cuotasVacioMes: "Você não tem parcelas para pagar neste mês.",
     rapCategorias: "Escolha a categoria",
     rapMas: "Outra…",
     rapBorrarAria: "Apagar último número",
@@ -827,9 +830,10 @@ const TRADUCCIONES = {
     labelCuotas: "Pagar em parcelas",
     labelCantCuotas: "Número de parcelas",
     labelPrimeraCuota: "Data da primeira parcela",
-    ayudaCuotas: "O valor é o de cada parcela. Cria-se uma por mês e ficam pendentes até você marcá-las como pagas.",
-    labelMontoCuota: "Valor de cada parcela",
+    ayudaCuotas: "Informe o total da compra: o app divide em partes iguais. Cria-se uma parcela por mês e ficam pendentes até você marcá-las como pagas.",
+    labelMontoCuota: "Total da compra",
     vistaCuotas: "{n} parcelas de {c} = {t} no total · primeira {p}, última {u}",
+    vistaCuotaUlt: "A última parcela é de {l} (ajusta os centavos).",
     textoCuota: "Parcela",
     toastCuotas: "{n} parcelas criadas.",
     errCuotas: "As parcelas devem ser entre 2 e 60.",
@@ -1166,6 +1170,7 @@ const TRADUCCIONES = {
     cuotaXdeN: "Installment {k} of {n}",
     cuotasRestan: "Remaining",
     cuotasVacio: "You have no pending installment purchases. Add them from Add, ticking “Pay in installments”.",
+    cuotasVacioMes: "You have no installments to pay this month.",
     rapCategorias: "Choose the category",
     rapMas: "Other…",
     rapBorrarAria: "Delete last digit",
@@ -1283,9 +1288,10 @@ const TRADUCCIONES = {
     labelCuotas: "Pay in installments",
     labelCantCuotas: "Number of installments",
     labelPrimeraCuota: "Date of the first installment",
-    ayudaCuotas: "The amount is the value of each installment. One is created per month and they stay pending until you mark them as paid.",
-    labelMontoCuota: "Value of each installment",
+    ayudaCuotas: "Enter the total of the purchase: the app splits it into equal parts. One installment is created per month and they stay pending until you mark them as paid.",
+    labelMontoCuota: "Purchase total",
     vistaCuotas: "{n} installments of {c} = {t} total · first {p}, last {u}",
+    vistaCuotaUlt: "The last installment is {l} (adjusts the cents).",
     textoCuota: "Installment",
     toastCuotas: "{n} installments created.",
     errCuotas: "Installments must be between 2 and 60.",
@@ -2066,6 +2072,8 @@ async function cargarMesActual() {
   await renderVistaAnalisis();
   if (subVistaAnalisis === "diaadia") renderDiaADia();
   if (vistaActiva === "vistaSituacion") cargarTengo().then(tengoRefrescarVista);
+  // Si está abierta la pantalla "Compras en cuotas", que siga el mes que se está mirando
+  if ($("configPanelCuotas") && !$("configPanelCuotas").hidden) renderCuotas();
 }
 
 $("btnMesAnterior").addEventListener("click", () => {
@@ -2644,6 +2652,7 @@ function rapidoActivar(si) {
   const f = $("formMovimiento");
   f.classList.toggle("modo-rapido", si);
   f.classList.remove("rapido-ver-cuenta", "rapido-ver-fecha", "rapido-ver-cat", "rapido-ver-mas");
+  $("rapCuentas").hidden = true;
   if (si) rapidoRefrescar();
 }
 function rapidoUsos() { try { return JSON.parse(localStorage.getItem("fs_cat_uso") || "{}"); } catch { return {}; } }
@@ -2697,8 +2706,30 @@ $("rapCats").addEventListener("click", (e) => {
   document.querySelectorAll("#rapCats .rapido-cat").forEach((x) => x.classList.toggle("activo", x === b));
 });
 $("movCategoria").addEventListener("change", () => { if (rapidoActivo()) { $("formMovimiento").dataset.rapCatElegida = $("movCategoria").value; rapidoRefrescar(); } });
-$("rapCuenta").addEventListener("click", () => { $("formMovimiento").classList.add("rapido-ver-cuenta"); $("movCuenta").focus(); });
-$("rapFecha").addEventListener("click", () => { $("formMovimiento").classList.add("rapido-ver-fecha"); $("movFecha").focus(); });
+function rapidoCuentasDibujar() {
+  const box = $("rapCuentas");
+  const actual = $("movCuenta").value;
+  box.innerHTML = cuentas.map((c) => `<button type="button" class="${c.nombre === actual ? "activo" : ""}" data-cuenta="${escapeHTML(c.nombre)}">🏦 ${escapeHTML(c.nombre)}</button>`).join("");
+}
+$("rapCuenta").addEventListener("click", () => {
+  const box = $("rapCuentas");
+  if (box.hidden) rapidoCuentasDibujar();
+  box.hidden = !box.hidden;
+});
+$("rapCuentas").addEventListener("click", (e) => {
+  const b = e.target.closest("[data-cuenta]");
+  if (!b) return;
+  $("movCuenta").value = b.dataset.cuenta;
+  $("movCuenta").dispatchEvent(new Event("change", { bubbles: true }));
+  $("rapCuentas").hidden = true;
+  rapidoRefrescar();
+});
+$("rapFecha").addEventListener("click", () => {
+  $("formMovimiento").classList.add("rapido-ver-fecha");
+  const d = $("movFecha");
+  d.scrollIntoView({ block: "center", behavior: "smooth" });
+  try { d.showPicker(); } catch (_) { d.focus(); }
+});
 $("movCuenta").addEventListener("change", () => { if (rapidoActivo()) rapidoRefrescar(); });
 $("movFecha").addEventListener("change", () => { if (rapidoActivo()) rapidoRefrescar(); });
 document.querySelectorAll("[data-rap-toggle]").forEach((b) => b.addEventListener("click", () => {
@@ -2754,17 +2785,16 @@ async function renderCuotas() {
   const filas = [];
   for (const g of grupos.values()) {
     g.cuotas.sort((a, b) => a.k - b.k);
-    const pendientes = g.cuotas.filter((c) => c.estado === "pendiente");
-    if (!pendientes.length) continue;
+    // Solo las compras que tienen una cuota en el mes que se está mirando
     const delMes = g.cuotas.find((c) => c.fecha.startsWith(prefijo));
-    const actual = delMes || pendientes[0];
-    if (delMes) totalMes += montoBase(delMes.m);
-    const restan = pendientes.reduce((acc, c) => acc + montoBase(c.m), 0);
-    const pagadas = g.n - pendientes.length;
-    filas.push({ g, actual, restan, pct: Math.round((pagadas / g.n) * 100) });
+    if (!delMes) continue;
+    const actual = delMes;
+    totalMes += montoBase(delMes.m);
+    const restan = g.cuotas.filter((c) => c.k > actual.k && c.estado === "pendiente").reduce((acc, c) => acc + montoBase(c.m), 0);
+    filas.push({ g, actual, restan, pct: Math.round((actual.k / g.n) * 100) });
   }
   $("cuotasTotalMes").textContent = formatoMonto(totalMes);
-  if (!filas.length) { cont.innerHTML = `<div class="vacio">${escapeHTML(t("cuotasVacio"))}</div>`; return; }
+  if (!filas.length) { cont.innerHTML = `<div class="vacio">${escapeHTML(t(grupos.size ? "cuotasVacioMes" : "cuotasVacio"))}</div>`; return; }
   filas.sort((a, b) => a.actual.fecha.localeCompare(b.actual.fecha));
   cont.innerHTML = filas.map(({ g, actual, restan, pct }) => `
     <div class="cuota-tarjeta">
@@ -4175,6 +4205,11 @@ function sincronizarCuotasUI() {
 }
 
 // Cartel con el total de la compra en cuotas y las fechas de la primera y la última.
+function repartirCuotas(total, n) {
+  const base = Math.floor((total * 100) / n) / 100;
+  const ultima = Math.round((total - base * (n - 1)) * 100) / 100;
+  return { base, ultima };
+}
 function actualizarVistaCuotas() {
   const cuotas = !$("filaCuotas").hidden;
   $("labelMontoTexto").textContent = t(cuotas ? "labelMontoCuota" : "labelMonto");
@@ -4186,12 +4221,14 @@ function actualizarVistaCuotas() {
     vista.hidden = true;
     return;
   }
+  const rp = repartirCuotas(monto, n);
   vista.textContent = t("vistaCuotas")
     .replace("{n}", n)
-    .replace("{c}", formatoMonto(monto))
-    .replace("{t}", formatoMonto(Math.round(monto * n * 100) / 100))
+    .replace("{c}", formatoMonto(rp.base))
+    .replace("{t}", formatoMonto(monto))
     .replace("{p}", formatoFecha(primera))
-    .replace("{u}", formatoFecha(sumarMesesISO(primera, n - 1)));
+    .replace("{u}", formatoFecha(sumarMesesISO(primera, n - 1)))
+    + (rp.ultima !== rp.base ? " " + t("vistaCuotaUlt").replace("{l}", formatoMonto(rp.ultima)) : "");
   vista.hidden = false;
 }
 ["movMonto", "movCuotaN", "movCuotaFecha"].forEach((id) => $(id).addEventListener("input", actualizarVistaCuotas));
@@ -4767,11 +4804,13 @@ $("formMovimiento").addEventListener("submit", async (e) => {
     const primera = $("movCuotaFecha").value || fecha;
     if (!Number.isInteger(n) || n < 2 || n > 60) return mostrarAviso($("movError"), t("errCuotas"));
     const eraPrimeroCuotas = await guiaEraPrimerMovimiento();
+    const rp = repartirCuotas(monto, n);
+    if (!(rp.base > 0)) return mostrarAviso($("movError"), t("errCuotas"));
     const cuotas = [];
     for (let k = 0; k < n; k++) {
       const f = sumarMesesISO(primera, k);
       cuotas.push({
-        tipo, fecha: f, cuenta, categoria, monto, moneda: monedaMov, cotizacion,
+        tipo, fecha: f, cuenta, categoria, monto: k === n - 1 ? rp.ultima : rp.base, moneda: monedaMov, cotizacion,
         detalle: (detalle ? detalle + " · " : "") + t("textoCuota") + " " + (k + 1) + "/" + n,
         estado: "pendiente", fecha_pago: f,
       });
