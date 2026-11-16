@@ -65,6 +65,11 @@ const TRADUCCIONES = {
     confirmarSalir: "¿Querés cerrar tu sesión?",
     lblBalance: "Balance",
     lblResultadoMes: "Resultado del mes",
+    diaHoy: "Hoy",
+    diaAyer: "Ayer",
+    barraGastoPct: "Gastaste el {p}% de tus ingresos del mes",
+    barraGastoPasado: "Gastaste más de lo que ingresó este mes",
+    barraSinIngresos: "Todavía no hay ingresos este mes",
     lblIngresos: "Ingresos",
     lblGastos: "Gastos",
     searchTodo: "Todo",
@@ -240,6 +245,29 @@ const TRADUCCIONES = {
     tituloDiaADia: "Ingresos y egresos del mes",
     textoDiaADia: "Acumulado de ingresos y egresos, día a día, del mes que estás viendo.",
     analisisSinDatos: "Todavía no hay movimientos cargados.",
+    vacioTitulo: "Todavía no cargaste movimientos",
+    vacioTexto: "Cargá el primero hablando o a mano y empezá a ver tu mes.",
+    vacioVoz: "Cargar con voz",
+    vacioMano: "Cargar a mano",
+    tituloCuotas: "Compras en cuotas",
+    cuotasEsteMes: "Este mes pagás en cuotas",
+    cuotaXdeN: "Cuota {k} de {n}",
+    cuotasRestan: "Restan",
+    cuotasVacio: "No tenés compras en cuotas pendientes. Se cargan desde Agregar, tildando “Pagar en cuotas”.",
+    rapCategorias: "Elegí la categoría",
+    rapMas: "Otra…",
+    rapBorrarAria: "Borrar último número",
+    rapMasOpciones: "Más opciones (foto del comprobante) ▾",
+    rapGuardarGasto: "Guardar gasto",
+    rapGuardarIngreso: "Guardar ingreso",
+    rapElegiCategoria: "Tocá una categoría antes de guardar.",
+    tituloTema: "Modo oscuro",
+    temaAuto: "Automático",
+    temaAutoDet: "Igual que tu celular",
+    temaClaro: "Claro",
+    temaClaroDet: "Fondo claro, como siempre",
+    temaOscuro: "Oscuro",
+    temaOscuroDet: "Fondo oscuro, descansa la vista de noche",
     tituloIdioma: "Idioma",
     tituloMoneda: "Moneda",
     tituloMonedaBase: "Mi moneda",
@@ -493,6 +521,11 @@ const TRADUCCIONES = {
     confirmarSalir: "Quer encerrar a sessão?",
     lblBalance: "Saldo",
     lblResultadoMes: "Resultado do mês",
+    diaHoy: "Hoje",
+    diaAyer: "Ontem",
+    barraGastoPct: "Você gastou {p}% da sua renda do mês",
+    barraGastoPasado: "Você gastou mais do que entrou este mês",
+    barraSinIngresos: "Ainda não há receitas este mês",
     lblIngresos: "Receitas",
     lblGastos: "Despesas",
     searchTodo: "Tudo",
@@ -668,6 +701,29 @@ const TRADUCCIONES = {
     tituloDiaADia: "Receitas e despesas do mês",
     textoDiaADia: "Acumulado de receitas e despesas, dia a dia, do mês que você está vendo.",
     analisisSinDatos: "Ainda não há movimentos cadastrados.",
+    vacioTitulo: "Você ainda não registrou movimentos",
+    vacioTexto: "Registre o primeiro falando ou à mão e comece a ver o seu mês.",
+    vacioVoz: "Registrar por voz",
+    vacioMano: "Registrar à mão",
+    tituloCuotas: "Compras parceladas",
+    cuotasEsteMes: "Este mês você paga em parcelas",
+    cuotaXdeN: "Parcela {k} de {n}",
+    cuotasRestan: "Faltam",
+    cuotasVacio: "Você não tem compras parceladas pendentes. Elas são registradas em Adicionar, marcando “Pagar em parcelas”.",
+    rapCategorias: "Escolha a categoria",
+    rapMas: "Outra…",
+    rapBorrarAria: "Apagar último número",
+    rapMasOpciones: "Mais opções (foto do comprovante) ▾",
+    rapGuardarGasto: "Salvar despesa",
+    rapGuardarIngreso: "Salvar receita",
+    rapElegiCategoria: "Toque em uma categoria antes de salvar.",
+    tituloTema: "Modo escuro",
+    temaAuto: "Automático",
+    temaAutoDet: "Igual ao seu celular",
+    temaClaro: "Claro",
+    temaClaroDet: "Fundo claro, como sempre",
+    temaOscuro: "Escuro",
+    temaOscuroDet: "Fundo escuro, descansa a vista à noite",
     tituloIdioma: "Idioma",
     tituloMoneda: "Moeda",
     tituloMonedaBase: "Minha moeda",
@@ -921,6 +977,11 @@ const TRADUCCIONES = {
     confirmarSalir: "Do you want to log out?",
     lblBalance: "Balance",
     lblResultadoMes: "Month result",
+    diaHoy: "Today",
+    diaAyer: "Yesterday",
+    barraGastoPct: "You've spent {p}% of this month's income",
+    barraGastoPasado: "You've spent more than came in this month",
+    barraSinIngresos: "No income yet this month",
     lblIngresos: "Income",
     lblGastos: "Expenses",
     searchTodo: "All",
@@ -1096,6 +1157,29 @@ const TRADUCCIONES = {
     tituloDiaADia: "Income and expenses this month",
     textoDiaADia: "Cumulative income and expenses, day by day, for the month you're viewing.",
     analisisSinDatos: "No transactions logged yet.",
+    vacioTitulo: "You haven't added any entries yet",
+    vacioTexto: "Add the first one by voice or by hand and start seeing your month.",
+    vacioVoz: "Add by voice",
+    vacioMano: "Add by hand",
+    tituloCuotas: "Installment purchases",
+    cuotasEsteMes: "This month you pay in installments",
+    cuotaXdeN: "Installment {k} of {n}",
+    cuotasRestan: "Remaining",
+    cuotasVacio: "You have no pending installment purchases. Add them from Add, ticking “Pay in installments”.",
+    rapCategorias: "Choose the category",
+    rapMas: "Other…",
+    rapBorrarAria: "Delete last digit",
+    rapMasOpciones: "More options (receipt photo) ▾",
+    rapGuardarGasto: "Save expense",
+    rapGuardarIngreso: "Save income",
+    rapElegiCategoria: "Tap a category before saving.",
+    tituloTema: "Dark mode",
+    temaAuto: "Automatic",
+    temaAutoDet: "Same as your phone",
+    temaClaro: "Light",
+    temaClaroDet: "Light background, as always",
+    temaOscuro: "Dark",
+    temaOscuroDet: "Dark background, easier on the eyes at night",
     tituloIdioma: "Language",
     tituloMoneda: "Currency",
     tituloMonedaBase: "My currency",
@@ -1386,8 +1470,13 @@ function actualizarTextosDinamicosIdioma() {
 // ---------- Utilidades ----------
 function moneda() { return perfil?.moneda || "$"; }
 
+// Montos: sin ",00" cuando son redondos; con centavos solo si los tienen.
+function decimalesDe(n) {
+  return Math.round(Math.abs(Number(n)) * 100) % 100 === 0 ? 0 : 2;
+}
 function formatoMonto(n) {
-  return moneda() + " " + Number(n).toLocaleString("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const d = decimalesDe(n);
+  return moneda() + " " + Number(n).toLocaleString("es-AR", { minimumFractionDigits: d, maximumFractionDigits: d });
 }
 
 // ---------- Monedas ----------
@@ -1448,7 +1537,8 @@ function montoBase(m) {
   return c === null ? 0 : Number(m.monto) * c;
 }
 function formatoNum(n) {
-  return Number(n).toLocaleString("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const d = decimalesDe(n);
+  return Number(n).toLocaleString("es-AR", { minimumFractionDigits: d, maximumFractionDigits: d });
 }
 function formatoMontoMov(m) { return simboloDe(monedaDeMov(m)) + " " + formatoNum(m.monto); }
 function equivMovHTML(m) {
@@ -2400,11 +2490,32 @@ function ajustarMontosResumen() {
 }
 window.addEventListener("resize", ajustarMontosResumen);
 
+// Barrita debajo del resultado: qué parte de los ingresos del mes ya se gastó.
+function renderBarraGasto(ing, gas) {
+  const caja = $("barraGasto");
+  if (!caja) return;
+  if (ing <= 0 && gas <= 0) { caja.hidden = true; return; }
+  caja.hidden = false;
+  const relleno = $("barraGastoRelleno");
+  const texto = $("barraGastoTexto");
+  if (ing <= 0 || gas > ing) {
+    relleno.style.width = "100%";
+    caja.classList.add("pasado");
+    texto.textContent = ing <= 0 ? t("barraSinIngresos") : t("barraGastoPasado");
+    return;
+  }
+  const pct = Math.round((gas / ing) * 100);
+  caja.classList.toggle("pasado", false);
+  relleno.style.width = pct + "%";
+  texto.textContent = t("barraGastoPct").replace("{p}", pct);
+}
+
 function renderResumen() {
   const { ing, gas } = calcularResumenLista(contablesDelMes(movimientos, claveMesVista()));
   $("valorBalance").textContent = formatoMonto(ing - gas);
   $("valorIngresos").textContent = formatoMonto(ing);
   $("valorGastos").textContent = formatoMonto(gas);
+  renderBarraGasto(ing, gas);
   ajustarMontosResumen();
   renderPrevisto();
 }
@@ -2511,6 +2622,184 @@ window.addEventListener("resize", ajustarAnchoCategorias);
 // ============================================================
 // RENDER: Lista de movimientos
 // ============================================================
+// "Hoy", "Ayer" o "Jueves 13 de noviembre" (en el idioma elegido).
+function tituloDia(fechaStr) {
+  const [y, m, d] = String(fechaStr).split("-").map(Number);
+  if (!y || !m || !d) return String(fechaStr || "");
+  const f = new Date(y, m - 1, d);
+  const hoy = new Date(); hoy.setHours(0, 0, 0, 0);
+  const dif = Math.round((hoy - f) / 86400000);
+  if (dif === 0) return t("diaHoy");
+  if (dif === 1) return t("diaAyer");
+  const opciones = { weekday: "long", day: "numeric", month: "long" };
+  if (y !== hoy.getFullYear()) opciones.year = "numeric";
+  const texto = f.toLocaleDateString(LOCALES_POR_IDIOMA[idiomaActual] || "es-AR", opciones).replace(",", "");
+  return texto.charAt(0).toUpperCase() + texto.slice(1);
+}
+
+// ---------- Carga rápida: importe con el teclado de la app, categoría de un toque y guardar ----------
+function rapidoActivo() { return !$("rapido").hidden; }
+function rapidoActivar(si) {
+  $("rapido").hidden = !si;
+  const f = $("formMovimiento");
+  f.classList.toggle("modo-rapido", si);
+  f.classList.remove("rapido-ver-cuenta", "rapido-ver-fecha", "rapido-ver-cat", "rapido-ver-mas");
+  if (si) rapidoRefrescar();
+}
+function rapidoUsos() { try { return JSON.parse(localStorage.getItem("fs_cat_uso") || "{}"); } catch { return {}; } }
+function rapidoRefrescar() {
+  if (!rapidoActivo()) return;
+  const tipo = tipoDelFormulario();
+  // Categorías más usadas (este mes + lo que se fue cargando en este equipo), las 5 primeras
+  const usos = rapidoUsos();
+  const cuenta = {};
+  for (const m of movimientos) if (m.tipo === tipo) cuenta[m.categoria] = (cuenta[m.categoria] || 0) + 1;
+  const lista = categorias.filter((c) => (c.tipo || "Gasto") === tipo).map((c) => c.nombre);
+  lista.sort((a, b) => ((cuenta[b] || 0) + 2 * (usos[b] || 0)) - ((cuenta[a] || 0) + 2 * (usos[a] || 0)));
+  const elegida = $("movCategoria").value;
+  const top = lista.slice(0, 5);
+  if (elegida && !top.includes(elegida) && $("formMovimiento").dataset.rapCatElegida) top.unshift(elegida);
+  $("rapCats").innerHTML = top.map((n) => `<button type="button" class="rapido-cat${$("formMovimiento").dataset.rapCatElegida === n ? " activo" : ""}" data-cat="${escapeHTML(n)}" style="--cat-h:${tonoCategoria(n)}"><span aria-hidden="true">${iconoCategoria(n) || "•"}</span> ${escapeHTML(n)}</button>`).join("")
+    + `<button type="button" class="rapido-cat rapido-cat-mas" data-cat-mas>${escapeHTML(t("rapMas"))}</button>`;
+  $("rapCuenta").textContent = "🏦 " + ($("movCuenta").value || "—");
+  const f = $("movFecha").value;
+  $("rapFecha").textContent = "📅 " + (f === hoyISO() ? t("diaHoy") : tituloDia(f));
+  $("rapGuardar").textContent = t(tipo === "Gasto" ? "rapGuardarGasto" : "rapGuardarIngreso");
+  $("rapDiferido").textContent = $("labelDiferido").textContent;
+  document.querySelectorAll("[data-rap-toggle]").forEach((b) => b.classList.toggle("activo", $(b.dataset.rapToggle).checked));
+  const f2 = $("formMovimiento");
+  f2.classList.toggle("rapido-ver-cuotas", $("movCuotas").checked);
+  f2.classList.toggle("rapido-ver-diferido", $("movDiferido").checked);
+  $("rapido").classList.toggle("es-ingreso", tipo === "Ingreso");
+  rapidoMostrarMonto();
+}
+function rapidoMostrarMonto() {
+  $("rapMonto").textContent = $("movMonto").value || "0";
+  $("rapSigno").textContent = (() => { const c = cuentas.find((x) => x.nombre === $("movCuenta").value); return c && c.moneda && c.moneda !== monedaBase() ? simboloDe(c.moneda) : moneda(); })();
+}
+function rapidoTecla(k) {
+  const inp = $("movMonto");
+  let v = inp.value.replace(/\./g, "");
+  if (k === "borrar") v = v.slice(0, -1);
+  else if (k === ",") { if (!v.includes(",")) v = (v || "0") + ","; }
+  else { if (/,\d\d$/.test(v)) return; if (v.replace(/\D/g, "").length >= 12) return; v += k; }
+  inp.value = formatearImporteEscrito(v);
+  inp.dispatchEvent(new Event("input", { bubbles: true }));
+}
+$("rapTeclado").addEventListener("click", (e) => { const b = e.target.closest("[data-k]"); if (b) rapidoTecla(b.dataset.k); });
+$("movMonto").addEventListener("input", () => { if (rapidoActivo()) rapidoMostrarMonto(); });
+$("rapCats").addEventListener("click", (e) => {
+  if (e.target.closest("[data-cat-mas]")) { $("formMovimiento").classList.add("rapido-ver-cat"); $("movCategoria").focus(); return; }
+  const b = e.target.closest("[data-cat]");
+  if (!b) return;
+  $("movCategoria").value = b.dataset.cat;
+  $("formMovimiento").dataset.rapCatElegida = b.dataset.cat;
+  document.querySelectorAll("#rapCats .rapido-cat").forEach((x) => x.classList.toggle("activo", x === b));
+});
+$("movCategoria").addEventListener("change", () => { if (rapidoActivo()) { $("formMovimiento").dataset.rapCatElegida = $("movCategoria").value; rapidoRefrescar(); } });
+$("rapCuenta").addEventListener("click", () => { $("formMovimiento").classList.add("rapido-ver-cuenta"); $("movCuenta").focus(); });
+$("rapFecha").addEventListener("click", () => { $("formMovimiento").classList.add("rapido-ver-fecha"); $("movFecha").focus(); });
+$("movCuenta").addEventListener("change", () => { if (rapidoActivo()) rapidoRefrescar(); });
+$("movFecha").addEventListener("change", () => { if (rapidoActivo()) rapidoRefrescar(); });
+document.querySelectorAll("[data-rap-toggle]").forEach((b) => b.addEventListener("click", () => {
+  const chk = $(b.dataset.rapToggle);
+  chk.checked = !chk.checked;
+  chk.dispatchEvent(new Event("change", { bubbles: true }));
+  rapidoRefrescar();
+}));
+$("rapMasOpciones").addEventListener("click", () => { $("formMovimiento").classList.toggle("rapido-ver-mas"); });
+// En la compu se puede escribir el importe con el teclado aunque no haya un casillero elegido
+document.addEventListener("keydown", (e) => {
+  if (!rapidoActivo() || $("modalFondo").hidden) return;
+  const el = document.activeElement;
+  if (el && /^(INPUT|SELECT|TEXTAREA)$/.test(el.tagName)) return;
+  if (/^[0-9]$/.test(e.key)) { rapidoTecla(e.key); e.preventDefault(); }
+  else if (e.key === "," || e.key === ".") { rapidoTecla(","); e.preventDefault(); }
+  else if (e.key === "Backspace") { rapidoTecla("borrar"); e.preventDefault(); }
+});
+// Antes de guardar en modo rápido: tiene que haber una categoría elegida a propósito
+$("formMovimiento").addEventListener("submit", (e) => {
+  if (!rapidoActivo()) return;
+  const f = $("formMovimiento");
+  if (!f.dataset.rapCatElegida && !f.classList.contains("rapido-ver-cat")) {
+    e.preventDefault(); e.stopImmediatePropagation();
+    mostrarAviso($("movError"), t("rapElegiCategoria"));
+    return;
+  }
+  const usos = rapidoUsos(); const c = $("movCategoria").value;
+  usos[c] = (usos[c] || 0) + 1;
+  try { localStorage.setItem("fs_cat_uso", JSON.stringify(usos)); } catch {}
+}, true);
+
+// ---------- Compras en cuotas (pantalla en Ajustes) ----------
+// Las cuotas se guardan como movimientos con "Cuota 3/12" en el detalle; acá se agrupan por compra.
+const RE_CUOTA = /^(.*?)(?:\s·\s)?(?:Cuota|Parcela|Installment)\s(\d+)\/(\d+)$/;
+async function renderCuotas() {
+  const cont = $("listaCuotas");
+  cont.innerHTML = `<div class="vacio">…</div>`;
+  let todos;
+  try { todos = await listarTodosLosMovimientos(usuario.id); }
+  catch (err) { cont.innerHTML = `<div class="vacio">${escapeHTML(traducirErrorDatos(err))}</div>`; return; }
+  const grupos = new Map();
+  for (const m of todos) {
+    const r = RE_CUOTA.exec(String(m.detalle || ""));
+    if (!r) continue;
+    const base = r[1].trim(), k = +r[2], n = +r[3];
+    const clave = [base, m.categoria, m.cuenta, n, m.monto, m.moneda || ""].join("|");
+    if (!grupos.has(clave)) grupos.set(clave, { base, categoria: m.categoria, cuenta: m.cuenta, n, cuotas: [] });
+    grupos.get(clave).cuotas.push({ k, fecha: String(m.fecha), estado: m.estado || "pagado", m });
+  }
+  const prefijo = `${fechaVista.getFullYear()}-${String(fechaVista.getMonth() + 1).padStart(2, "0")}`;
+  let totalMes = 0;
+  const filas = [];
+  for (const g of grupos.values()) {
+    g.cuotas.sort((a, b) => a.k - b.k);
+    const pendientes = g.cuotas.filter((c) => c.estado === "pendiente");
+    if (!pendientes.length) continue;
+    const delMes = g.cuotas.find((c) => c.fecha.startsWith(prefijo));
+    const actual = delMes || pendientes[0];
+    if (delMes) totalMes += montoBase(delMes.m);
+    const restan = pendientes.reduce((acc, c) => acc + montoBase(c.m), 0);
+    const pagadas = g.n - pendientes.length;
+    filas.push({ g, actual, restan, pct: Math.round((pagadas / g.n) * 100) });
+  }
+  $("cuotasTotalMes").textContent = formatoMonto(totalMes);
+  if (!filas.length) { cont.innerHTML = `<div class="vacio">${escapeHTML(t("cuotasVacio"))}</div>`; return; }
+  filas.sort((a, b) => a.actual.fecha.localeCompare(b.actual.fecha));
+  cont.innerHTML = filas.map(({ g, actual, restan, pct }) => `
+    <div class="cuota-tarjeta">
+      <div class="cuota-fila">
+        <div class="mov-icono gasto" style="--cat-h:${tonoCategoria(g.categoria)}" aria-hidden="true">${iconoCategoria(g.categoria) || "💳"}</div>
+        <div class="cuota-txt">
+          <b>${escapeHTML(g.base || g.categoria)}</b>
+          <span>${escapeHTML(t("cuotaXdeN").replace("{k}", actual.k).replace("{n}", g.n))} · ${escapeHTML(g.cuenta || "")}</span>
+        </div>
+        <div class="cuota-monto">-${escapeHTML(formatoMonto(montoBase(actual.m)))}</div>
+      </div>
+      <div class="cuota-barra"><div style="width:${pct}%"></div></div>
+      <div class="cuota-restan">${escapeHTML(t("cuotasRestan"))} <b>${escapeHTML(formatoMonto(restan))}</b></div>
+    </div>`).join("");
+}
+document.querySelectorAll('[data-config="configPanelCuotas"]').forEach((b) => b.addEventListener("click", renderCuotas));
+
+// ---------- Tema claro / oscuro ----------
+function temaGuardado() { try { return localStorage.getItem("fs_tema") || "auto"; } catch { return "auto"; } }
+function aplicarTema(t) {
+  try { localStorage.setItem("fs_tema", t); } catch {}
+  const oscuro = t === "oscuro" || (t === "auto" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+  document.documentElement.setAttribute("data-tema", oscuro ? "oscuro" : "claro");
+  document.querySelectorAll("[data-tema-opcion]").forEach((b) => b.classList.toggle("activo", b.dataset.temaOpcion === t));
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute("content", oscuro ? "#0B1411" : "#2F6F5E");
+}
+document.querySelectorAll("[data-tema-opcion]").forEach((b) => b.addEventListener("click", () => aplicarTema(b.dataset.temaOpcion)));
+if (window.matchMedia) {
+  const mq = window.matchMedia("(prefers-color-scheme: dark)");
+  const alCambiar = () => { if (temaGuardado() === "auto") aplicarTema("auto"); };
+  if (mq.addEventListener) mq.addEventListener("change", alCambiar);
+}
+aplicarTema(temaGuardado());
+
 function renderMovimientos() {
   $("etiquetaMes").textContent = nombreMes(fechaVista);
   const cont = $("listaMovimientos");
@@ -2519,7 +2808,14 @@ function renderMovimientos() {
   const trVisibles = tipoFiltroActivo === "todo" && !hayBusqueda ? transferenciasMes : [];
 
   if (!movimientos.length && !transferenciasMes.length) {
-    cont.innerHTML = `<div class="vacio">${t("movVacioMes")}<br><button type="button" class="boton boton-secundario bienv-ver" data-ver-bienvenida>${escapeHTML(t("bienvVer"))}</button></div>`;
+    cont.innerHTML = `<div class="vacio-lindo">
+      <div class="vacio-lindo-ic" aria-hidden="true"><svg class="ic-linea" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="3"/><path d="M3 10h18M16 14.5h2"/><path d="M6 6V5a2 2 0 0 1 2-2h9"/></svg></div>
+      <h3>${escapeHTML(t("vacioTitulo"))}</h3>
+      <p>${escapeHTML(t("vacioTexto"))}</p>
+      <button type="button" class="vacio-btn-voz" data-vacio="voz">🎙️ ${escapeHTML(t("vacioVoz"))}</button>
+      <button type="button" class="vacio-btn-mano" data-vacio="mano">${escapeHTML(t("vacioMano"))}</button>
+      <button type="button" class="vacio-btn-guia" data-ver-bienvenida>${escapeHTML(t("bienvVer"))}</button>
+    </div>`;
     return;
   }
   if (!visibles.length && !trVisibles.length) {
@@ -2538,9 +2834,18 @@ function renderMovimientos() {
         <div class="mov-derecha"><div class="mov-monto interno">${escapeHTML(formatoMontoMoneda(Number(x.monto_origen), monedaDeCuentaNombre(x.cuenta_origen)))}</div></div>
       </div>`;
   const pendTr = trVisibles.slice().sort((a, b) => String(b.fecha).localeCompare(String(a.fecha)));
+  // Movimientos agrupados por día: un título "Hoy", "Ayer" o la fecha, en vez de repetirla en cada fila.
+  let diaActual = null;
+  const titDia = (f) => {
+    if (f === diaActual) return "";
+    diaActual = f;
+    return `<div class="dia-titulo">${escapeHTML(tituloDia(f))}</div>`;
+  };
+  const conTitulo = (x) => titDia(String(x.fecha)) + filaInterna(x);
   cont.innerHTML = visibles.map((m) => {
     let antes = "";
-    while (pendTr.length && String(pendTr[0].fecha) >= String(m.fecha)) antes += filaInterna(pendTr.shift());
+    while (pendTr.length && String(pendTr[0].fecha) >= String(m.fecha)) antes += conTitulo(pendTr.shift());
+    antes += titDia(String(m.fecha));
     const esGasto = m.tipo === "Gasto";
     const papel = papelEnMes(m, clave);
     const badge = badgeMovimiento(m, papel);
@@ -2553,7 +2858,7 @@ function renderMovimientos() {
     const chk = modoClasificar ? `<input type="checkbox" class="clasif-chk" data-chk="${m.id}" ${clasifSel.has(m.id) ? "checked" : ""} aria-label="${escapeHTML(m.categoria)}">` : "";
     return antes + `
       <div class="${clases}${modoClasificar && clasifSel.has(m.id) ? " clasif-marcado" : ""}" data-id="${m.id}">${chk}
-        <div class="mov-icono ${esGasto ? "gasto" : "ingreso"}" role="img" aria-label="${esGasto ? t("segGasto") : t("segIngreso")}">${iconoCategoria(m.categoria) || (esGasto ? "↓" : "↑")}</div>
+        <div class="mov-icono ${esGasto ? "gasto" : "ingreso"}" style="--cat-h:${tonoCategoria(m.categoria)}" role="img" aria-label="${esGasto ? t("segGasto") : t("segIngreso")}">${iconoCategoria(m.categoria) || (esGasto ? "↓" : "↑")}</div>
         <div class="mov-info">
           <div class="mov-categoria">${escapeHTML(m.categoria)}${m.comprobante ? " 📎" : ""}</div>
           <div class="mov-detalle">${escapeHTML(m.cuenta)}${m.detalle ? " · " + escapeHTML(m.detalle) : ""}</div>
@@ -2565,7 +2870,7 @@ function renderMovimientos() {
           ${botonCerrar}
         </div>
       </div>`;
-  }).join("") + pendTr.map(filaInterna).join("");
+  }).join("") + pendTr.map(conTitulo).join("");
 
   ajustarAnchoCategorias();
   cont.querySelectorAll(".mov-item:not(.mov-interno)").forEach((el) => {
@@ -2630,8 +2935,8 @@ function renderCategoriasAnalisis(lista, tipo) {
     return;
   }
   const colores = esGasto
-    ? ["#C4562E", "#2F6F5E", "#D9A441", "#5B7FBF", "#8B5FBF", "#4FA3A0", "#C2707C", "#7A8B4F"]
-    : ["#2F6F5E", "#4FA3A0", "#5B7FBF", "#D9A441", "#8B5FBF", "#C4562E", "#7A8B4F", "#C2707C"];
+    ? ["#FF6B4A", "#1FB58F", "#F2B731", "#4C8DF6", "#A46BF5", "#FF5D8F", "#22B8CF", "#8BC34A"]
+    : ["#1FB58F", "#22B8CF", "#4C8DF6", "#F2B731", "#A46BF5", "#FF6B4A", "#8BC34A", "#FF5D8F"];
   let acumulado = 0;
   const segmentos = entradas.map(([, monto], i) => {
     const pct = (monto / total) * 100;
@@ -2776,8 +3081,8 @@ async function renderEvolucionMensual() {
       <div class="grafico-barras">${barras}</div>
     </div>
     <div class="grafico-leyenda">
-      <span class="grafico-leyenda-item"><span class="grafico-leyenda-swatch" style="background:#2F6F5E"></span>${t("lblIngresos")}</span>
-      <span class="grafico-leyenda-item"><span class="grafico-leyenda-swatch" style="background:#C4562E"></span>${t("lblGastos")}</span>
+      <span class="grafico-leyenda-item"><span class="grafico-leyenda-swatch" style="background:#1FB58F"></span>${t("lblIngresos")}</span>
+      <span class="grafico-leyenda-item"><span class="grafico-leyenda-swatch" style="background:#FF6B4A"></span>${t("lblGastos")}</span>
     </div>`;
 }
 
@@ -2860,24 +3165,24 @@ function renderDiaADia() {
     <svg viewBox="0 0 ${ancho} ${alto}">
       <defs>
         <linearGradient id="gradIngreso" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#2F6F5E" stop-opacity="0.35" />
-          <stop offset="100%" stop-color="#2F6F5E" stop-opacity="0" />
+          <stop offset="0%" stop-color="#1FB58F" stop-opacity="0.35" />
+          <stop offset="100%" stop-color="#1FB58F" stop-opacity="0" />
         </linearGradient>
         <linearGradient id="gradGasto" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#C4562E" stop-opacity="0.30" />
-          <stop offset="100%" stop-color="#C4562E" stop-opacity="0" />
+          <stop offset="0%" stop-color="#FF6B4A" stop-opacity="0.30" />
+          <stop offset="100%" stop-color="#FF6B4A" stop-opacity="0" />
         </linearGradient>
       </defs>
       ${gridY}
       <path d="${areaGas}" fill="url(#gradGasto)" stroke="none" />
       <path d="${areaIng}" fill="url(#gradIngreso)" stroke="none" />
-      <path d="${lineaGas}" fill="none" stroke="#C4562E" stroke-width="2.5" stroke-linecap="round" />
-      <path d="${lineaIng}" fill="none" stroke="#2F6F5E" stroke-width="2.5" stroke-linecap="round" />
+      <path class="linea-anim" d="${lineaGas}" fill="none" stroke="#FF6B4A" stroke-width="3.5" stroke-linecap="round" />
+      <path class="linea-anim" d="${lineaIng}" fill="none" stroke="#1FB58F" stroke-width="3.5" stroke-linecap="round" />
       ${ejeX}
     </svg>
     <div class="grafico-leyenda">
-      <span class="grafico-leyenda-item"><span class="grafico-leyenda-swatch" style="background:#2F6F5E"></span>${t("lblIngresos")} ${formatoMonto(accIng)}</span>
-      <span class="grafico-leyenda-item"><span class="grafico-leyenda-swatch" style="background:#C4562E"></span>${t("lblGastos")} ${formatoMonto(accGas)}</span>
+      <span class="grafico-leyenda-item"><span class="grafico-leyenda-swatch" style="background:#1FB58F"></span>${t("lblIngresos")} ${formatoMonto(accIng)}</span>
+      <span class="grafico-leyenda-item"><span class="grafico-leyenda-swatch" style="background:#FF6B4A"></span>${t("lblGastos")} ${formatoMonto(accGas)}</span>
     </div>`;
 }
 
@@ -2952,7 +3257,8 @@ function tengoRefrescarVista() {
 }
 
 function formatoMontoMoneda(n, moneda) {
-  const s = Number(n).toLocaleString("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const d = decimalesDe(n);
+  const s = Number(n).toLocaleString("es-AR", { minimumFractionDigits: d, maximumFractionDigits: d });
   return (moneda === monedaBase() ? "" : moneda + " ") + (moneda === monedaBase() ? formatoMonto(n) : s);
 }
 
@@ -3660,6 +3966,13 @@ function abrirGuia() { $("guiaPantalla").hidden = false; }
 function cerrarGuia() { $("guiaPantalla").hidden = true; guiaMarcarVista(); }
 
 $("btnGuiaCerrar").addEventListener("click", cerrarGuia);
+// Pantalla vacía de Movimientos: cargar con voz o a mano
+$("listaMovimientos").addEventListener("click", (e) => {
+  const b = e.target.closest("[data-vacio]");
+  if (!b) return;
+  $("btnNuevo").click();
+  if (b.dataset.vacio === "voz") setTimeout(() => $("btnCargarVoz").click(), 350);
+});
 $("tarjetaGuia").addEventListener("click", () => abrirBienvenida());
 $("guiaPantalla").addEventListener("click", (e) => {
   const b = e.target.closest("[data-guia-ir]");
@@ -3763,6 +4076,7 @@ function abrirModalNuevo() {
     return mostrarToast("Primero agregá al menos una cuenta y una categoría en Config.");
   }
   $("formMovimiento").reset();
+  delete $("formMovimiento").dataset.rapCatElegida;
   fotoReset(null);
   $("movId").value = "";
   $("modalTitulo").textContent = t("modalNuevoTitulo");
@@ -3779,6 +4093,7 @@ function abrirModalNuevo() {
   $("movCotizacion").value = "";
   actualizarFilaCotizacion();
   ocultarAviso($("movError"));
+  rapidoActivar(true);
   abrirVentanaMovimiento();
   fsVozPrepararNuevo();
 }
@@ -3786,6 +4101,7 @@ function abrirModalNuevo() {
 function abrirModalEditar(id) {
   const m = movimientos.find((x) => x.id === id) || pendientes.find((x) => x.id === id);
   if (!m) return;
+  rapidoActivar(false);
   seleccionarTipo(m.tipo);
   renderSelects();
   asegurarOpcionSelect("movCuenta", m.cuenta);
@@ -3922,6 +4238,7 @@ document.querySelectorAll("#segmentadoTipo .segmentado-item").forEach((b) => {
   b.addEventListener("click", () => {
     seleccionarTipo(b.dataset.tipo);
     renderSelectCategorias(b.dataset.tipo);
+    rapidoRefrescar();
   });
 });
 
@@ -4156,7 +4473,7 @@ function fsVozCerrar() {
   if (fsVoiceRec) { try { fsVoiceRec.abort(); } catch {} }
   const p = $("vozPantalla");
   if (p) p.hidden = true;
-  document.body.classList.remove("voz-abierta");
+  document.body.classList.remove("voz-abierta");  if (typeof rapidoActivo === "function" && rapidoActivo()) rapidoRefrescar();
 }
 
 function fsVozPrepararNuevo() {
@@ -4702,6 +5019,14 @@ const ICONOS_CATEGORIA = [
   ["🏷️", /\b(venta|vendas|sales)/],
   ["📦", /\b(otro|outra|outro|other)/],
 ];
+// Cada categoría tiene siempre el mismo color (se calcula con su nombre).
+function tonoCategoria(nombre) {
+  const n = String(nombre || "").toLowerCase();
+  let h = 0;
+  for (let i = 0; i < n.length; i++) h = (h * 31 + n.charCodeAt(i)) % 360;
+  return h;
+}
+
 function iconoCategoria(nombre) {
   const n = String(nombre || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
   for (const [emoji, re] of ICONOS_CATEGORIA) if (re.test(n)) return emoji;
