@@ -2930,6 +2930,22 @@ async function qrDesdeArchivo(e) {
 $("qrArchivo").addEventListener("change", qrDesdeArchivo);
 $("qrFotoCam").addEventListener("change", qrDesdeArchivo);
 
+// En celulares, al bajar por la lista de Movimientos se esconde el resumen de arriba (vuelve al subir al principio).
+(function resumenCompacto() {
+  const cont = document.querySelector("main.contenido");
+  const top = document.querySelector(".topbar");
+  if (!cont || !top) return;
+  cont.addEventListener("scroll", () => {
+    const angosto = window.matchMedia("(max-width:640px)").matches;
+    const enMov = !$("vistaMovimientos").hidden;
+    const compacta = top.classList.contains("topbar-compacta");
+    if (!angosto || !enMov) { if (compacta) top.classList.remove("topbar-compacta"); return; }
+    if (!compacta && cont.scrollTop > 80 && cont.scrollHeight - cont.clientHeight > 260) top.classList.add("topbar-compacta");
+    else if (compacta && cont.scrollTop < 5) top.classList.remove("topbar-compacta");
+  }, { passive: true });
+  document.querySelectorAll(".navbar-item").forEach((b) => b.addEventListener("click", () => top.classList.remove("topbar-compacta")));
+})();
+
 // ---------- Compras en cuotas (pantalla en Ajustes) ----------
 // Las cuotas se guardan como movimientos con "Cuota 3/12" en el detalle; acá se agrupan por compra.
 const RE_CUOTA = /^(.*?)(?:\s·\s)?(?:Cuota|Parcela|Installment)\s(\d+)\/(\d+)$/;

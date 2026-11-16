@@ -347,7 +347,11 @@ html[data-tema="oscuro"] .rapido-cat.activo{color:#0B1411;}
   #filaAccesosLista{margin-bottom:6px !important;gap:6px !important;}
   #segmentadoTipoLista .segmentado-item{padding:7px 2px;font-size:16px;}
   #filaAccesosLista #btnBuscarSimple{padding:6px 12px !important;font-size:16px;border-width:1.5px;}
-  #btnClasificar{padding:6px 4px;font-size:15px;white-space:nowrap;margin:0;border-width:1.5px;}
+  #btnClasificar{padding:6px 2px;font-size:clamp(12px,3.7vw,15px);white-space:nowrap;overflow:hidden;margin:0;border-width:1.5px;}
+  #filaAccesosLista #btnBuscarSimple{font-size:clamp(13px,4vw,16px);}
+  .contenido{padding-top:8px;}
+  /* Al bajar por la lista de movimientos, se esconde el resumen para ganar lugar */
+  .topbar.topbar-compacta .resumen-tarjetas,.topbar.topbar-compacta #lineaPrevisto,.topbar.topbar-compacta #cotizacionesTopbar{display:none;}
   /* Buscar y Clasificar varios, uno al lado del otro */
   #vistaMovimientos:not([hidden]){display:flex;flex-wrap:wrap;gap:6px;align-items:stretch;}
   #vistaMovimientos > *{flex:1 1 100%;min-width:0;}
