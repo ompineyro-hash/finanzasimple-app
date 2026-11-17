@@ -1948,7 +1948,7 @@ if ($("btnSalirPruebaVencida")) {
 // ARRANQUE DE LA APP (después de login)
 // ============================================================
 // Cuántos días de prueba gratis tiene cada usuario nuevo.
-const DIAS_DE_PRUEBA = 15;
+const DIAS_DE_PRUEBA = 25;
 
 // Plan pago vigente: activo y, si tiene fecha de vencimiento, que no haya pasado.
 // Sin fecha (plan_vence vacío) = sin vencimiento (cuentas activadas a mano).
