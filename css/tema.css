@@ -359,3 +359,7 @@ html[data-tema="oscuro"] .rapido-cat.activo{color:#0B1411;}
   #segmentadoTipoLista{flex:1 1 100% !important;}
   #vistaMovimientos #btnBuscarSimple,#vistaMovimientos #btnClasificar{flex:1 1 calc(50% - 6px) !important;width:auto;}
 }
+
+/* Captcha (Cloudflare Turnstile): solo se ve si hace falta un desafío */
+.captcha-box{display:flex;justify-content:center;margin:8px 0}
+.captcha-box[hidden]{display:none}
