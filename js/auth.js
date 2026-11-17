@@ -25,31 +25,63 @@ function cargarTurnstile() {
   return turnstileScriptPromesa;
 }
 
-// Devuelve el token del captcha (o undefined si está apagado). Cada token sirve una sola vez.
+// El captcha se empieza a resolver ANTES de apretar el botón (apenas se toca el formulario),
+// así el token ya está listo. Cada token sirve una sola vez y vence a los 5 minutos.
+let capPromesa = null;
+let capHora = 0;
+
+function iniciarCaptcha() {
+  if (!TURNSTILE_SITE_KEY) return null;
+  if (capPromesa && Date.now() - capHora < 240000) return capPromesa;
+  capHora = Date.now();
+  capPromesa = (async () => {
+    const caja = document.getElementById("captchaBox");
+    if (!caja) return undefined;
+    // Si Cloudflare no carga (sin red, bloqueado), seguimos sin token: si Supabase lo exige,
+    // el servidor responde con error de captcha y se le avisa a la persona.
+    try { await cargarTurnstile(); } catch (_) { return undefined; }
+    return new Promise((resolve) => {
+      let listo = false;
+      const fin = (v) => { if (listo) return; listo = true; clearTimeout(reloj); resolve(v); };
+      const reloj = setTimeout(() => fin(undefined), 25000);
+      if (turnstileWidgetId !== null) {
+        try { window.turnstile.remove(turnstileWidgetId); } catch (_) {}
+        turnstileWidgetId = null;
+      }
+      caja.hidden = false;
+      turnstileWidgetId = window.turnstile.render(caja, {
+        sitekey: TURNSTILE_SITE_KEY,
+        appearance: "interaction-only",
+        callback: (token) => fin(token),
+        "error-callback": () => fin(undefined),
+        "timeout-callback": () => fin(undefined)
+      });
+    });
+  })();
+  return capPromesa;
+}
+
+// Devuelve el token del captcha (o undefined si está apagado o falló dos veces).
 async function obtenerCaptcha() {
   if (!TURNSTILE_SITE_KEY) return undefined;
-  const caja = document.getElementById("captchaBox");
-  if (!caja) return undefined;
-  // Si Cloudflare no carga (sin red, bloqueado), seguimos sin token: si Supabase lo exige,
-  // el servidor responde con error de captcha y se le avisa a la persona.
-  try { await cargarTurnstile(); } catch (_) { return undefined; }
-  return new Promise((resolve) => {
-    let listo = false;
-    const fin = (fn, v) => { if (listo) return; listo = true; clearTimeout(reloj); caja.hidden = true; fn(v); };
-    const reloj = setTimeout(() => fin(resolve, undefined), 15000);
-    const opciones = {
-      sitekey: TURNSTILE_SITE_KEY,
-      appearance: "interaction-only",
-      callback: (token) => fin(resolve, token),
-      "error-callback": () => fin(resolve, undefined),
-      "expired-callback": () => {}
-    };
-    caja.hidden = false;
-    if (turnstileWidgetId !== null) {
-      try { window.turnstile.remove(turnstileWidgetId); } catch (_) {}
-    }
-    turnstileWidgetId = window.turnstile.render(caja, opciones);
+  let token = await iniciarCaptcha();
+  capPromesa = null;
+  if (!token) {            // un reintento solo, sin avisarle a la persona
+    token = await iniciarCaptcha();
+    capPromesa = null;
+  }
+  setTimeout(iniciarCaptcha, 0);   // deja listo el token del próximo intento
+  return token;
+}
+
+if (TURNSTILE_SITE_KEY) {
+  document.addEventListener("focusin", (e) => {
+    if (e.target && e.target.closest && e.target.closest("#formLogin")) iniciarCaptcha();
   });
+  setTimeout(() => {
+    const pl = document.getElementById("pantallaLogin");
+    if (pl && !pl.hidden && pl.offsetParent !== null) iniciarCaptcha();
+  }, 1500);
 }
 
 async function registrarUsuario(email, clave) {
