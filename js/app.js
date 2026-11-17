@@ -269,6 +269,7 @@ const TRADUCCIONES = {
     qrOk: "Listo: importe y fecha cargados. Elegí la categoría.",
     qrOtraMoneda: "Factura en {m} ({i}). Cargué la fecha; poné el importe a mano.",
     qrFoto: "Sacar foto del QR",
+    qrYaCargada: "Ojo: esta factura ya la cargaste.",
     rapBorrarAria: "Borrar último número",
     rapMasOpciones: "Más opciones (foto del comprobante) ▾",
     rapGuardarGasto: "Guardar gasto",
@@ -739,6 +740,7 @@ const TRADUCCIONES = {
     qrOk: "Pronto: valor e data preenchidos. Escolha a categoria.",
     qrOtraMoneda: "Fatura em {m} ({i}). Preenchi a data; digite o valor.",
     qrFoto: "Tirar foto do QR",
+    qrYaCargada: "Atenção: você já registrou esta fatura.",
     rapBorrarAria: "Apagar último número",
     rapMasOpciones: "Mais opções (foto do comprovante) ▾",
     rapGuardarGasto: "Salvar despesa",
@@ -1209,6 +1211,7 @@ const TRADUCCIONES = {
     qrOk: "Done: amount and date filled in. Choose the category.",
     qrOtraMoneda: "Invoice in {m} ({i}). I filled in the date; enter the amount by hand.",
     qrFoto: "Take a photo of the QR",
+    qrYaCargada: "Heads up: you already added this invoice.",
     rapBorrarAria: "Delete last digit",
     rapMasOpciones: "More options (receipt photo) ▾",
     rapGuardarGasto: "Save expense",
@@ -2842,7 +2845,16 @@ function qrAplicar(f) {
   if (/^\d{4}-\d{2}-\d{2}$/.test(f.fecha)) { $("movFecha").value = f.fecha; $("movFecha").dispatchEvent(new Event("change", { bubbles: true })); }
   if (!$("movDetalle").value && f.ptoVta && f.nroCmp) $("movDetalle").value = "Factura " + String(f.ptoVta).padStart(4, "0") + "-" + String(f.nroCmp).padStart(8, "0");
   rapidoRefrescar();
+  qrAvisarSiYaCargada(f);
   mostrarToast(enPesos ? t("qrOk") : t("qrOtraMoneda").replace("{m}", f.moneda).replace("{i}", f.importe), 5500);
+}
+async function qrAvisarSiYaCargada(f) {
+  if (!f.ptoVta || !f.nroCmp) return;
+  try {
+    const detalle = "Factura " + String(f.ptoVta).padStart(4, "0") + "-" + String(f.nroCmp).padStart(8, "0");
+    const { data } = await sbClient.from("movimientos").select("id").eq("user_id", usuario.id).eq("fecha", f.fecha).eq("detalle", detalle).limit(1);
+    if (data && data.length) setTimeout(() => mostrarToast(t("qrYaCargada"), 6000), 300);
+  } catch {}
 }
 function qrCerrar() {
   clearTimeout(qrTimer); qrTimer = null;
@@ -4946,7 +4958,7 @@ $("btnBorrarMov").addEventListener("click", async () => {
   } catch (err) { mostrarToast(traducirErrorDatos(err)); }
 });
 
-$("formMovimiento").addEventListener("submit", async (e) => {
+async function guardarMovimientoSubmit(e) {
   e.preventDefault();
   ocultarAviso($("movError"));
 
@@ -5031,6 +5043,17 @@ $("formMovimiento").addEventListener("submit", async (e) => {
   } catch (err) {
     mostrarAviso($("movError"), traducirErrorDatos(err));
   }
+}
+// Un solo guardado a la vez: si se toca Guardar dos veces seguidas (o la conexión es lenta), no se duplica el movimiento.
+let guardandoMov = false;
+$("formMovimiento").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  if (guardandoMov) return;
+  guardandoMov = true;
+  const botones = document.querySelectorAll('#formMovimiento button[type="submit"]');
+  botones.forEach((b) => { b.disabled = true; });
+  try { await guardarMovimientoSubmit(e); }
+  finally { guardandoMov = false; botones.forEach((b) => { b.disabled = false; }); }
 });
 
 // ============================================================
