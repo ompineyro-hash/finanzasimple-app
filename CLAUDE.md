@@ -11,7 +11,7 @@ Ingasto (ingasto.com) es una app web instalable (PWA) de finanzas personales: mo
 - Archivos que SÍ se usan: `index.html`, `css/styles.css`, `css/pendientes.css`, `js/supabaseClient.js`, `js/auth.js`, `js/data.js`, `js/app.js`, `js/importar.js`, `sw.js`, `manifest.json`. Páginas aparte: `antesala.html` (entrada/login), `panel.html`, `terminos.html`, `privacidad.html`.
 - OJO: en la raíz hay un `app.js` y un `styles.css` viejos que NO se usan. Editar esos no cambia nada. Los correctos están en `js/` y `css/`.
 - Textos en tres idiomas (es, pt, en): objeto `TRADUCCIONES` en `js/app.js`, usando `t("clave")`. Todo texto nuevo va en los tres.
-- Edge Function en el repo: `supabase/functions/verificar-pago`. El `mp-webhook` (activa planes al recibir el aviso de Mercado Pago) todavía NO está en el repo; hay que copiarlo.
+- Edge Function en el repo: `supabase/functions/verificar-pago`. `supabase/functions/mp-webhook` (activa planes al recibir el aviso de Mercado Pago) ya está en el repo (17/11, sin claves; las lee con `Deno.env.get`). Mejora futura: verificar la firma del aviso.
 
 ## Datos importantes
 - Tablas principales: `movimientos`, `cuentas`, `categorias`, `monedas`, `profiles`.
@@ -48,7 +48,7 @@ Hecho y publicado: movimientos, cuentas, categorías (con ícono por nombre), pe
 - OJO: "Eliminar mi cuenta" NO cancela la suscripción en Mercado Pago (aclarado en Términos).
 - `panel.html`: panel del dueño (usuarios, estado de plan). Solo cantidades y fechas, nunca el contenido de los movimientos.
 - Videos tutoriales: 5 videos en es/pt/en en un artifact "Videos de Ingasto" de Claude (compartido con Edu). Faltan: primeros pasos, voz, Tengo, transferir, fijos, Situación, importar, clasificar varios.
-- Seguridad: Supabase y GitHub con verificación en dos pasos (Marcelo hecho; Edu pendiente). No prometer en la app que "nadie puede ver los datos": se guardan en Supabase y quien administra podría verlos.
+- Seguridad: Supabase y GitHub con verificación en dos pasos (Marcelo y Edu, hecho 17/11). No prometer en la app que "nadie puede ver los datos": se guardan en Supabase y quien administra podría verlos.
 
 ## Captcha (17/11/2026)
 - Cloudflare Turnstile en registro, ingreso, reenvío de confirmación y recuperar clave (`js/auth.js`, Site Key pública en `TURNSTILE_SITE_KEY`; la Secret Key solo está en Supabase → Authentication → Attack Protection). Si falla, el cartel rojo muestra un código entre paréntesis (diagnóstico). La cajita flota (`position:fixed`) para no mover el botón Entrar. Si hay que apagarlo: desactivarlo en Supabase (la app sigue andando sin token).
@@ -58,7 +58,7 @@ Hecho y publicado: movimientos, cuentas, categorías (con ícono por nombre), pe
 - Arreglado: en `profiles` los usuarios podían editar `plan_activo`/`plan_vence`. Ahora solo `moneda`, `idioma`, `moneda_base` (SQL en `supabase/sql/profiles-permisos.sql`). Si se agrega una columna editable por el usuario a `profiles`, hay que darle `grant update (columna)`.
 - Usuarios "Waiting for verification" (ej. amy_drees@rezult.org, defne_vandervelden12@bocah.team): registros sin confirmar mail, no pudieron entrar. Parecen bots. Se ven en Supabase → Authentication → Users.
 - Rate limits de Auth revisados: se dejaron como están (muchos usuarios comparten IP de celular; bajarlos puede bloquear gente real). Mails: 30/h.
-- **ANTES DE HACER PUBLICIDAD (pendiente de Edu):** (1) captcha en el registro (Supabase → Authentication → Attack Protection + cambio en la pantalla de registro de la app); (2) revisar reglas de Storage (fotos de comprobantes: que cada usuario vea solo las suyas y nadie anónimo suba); (3) pensar un freno para pedidos falsos en `solicitud.html` (no pide login); (4) borrar a mano las cuentas falsas sin confirmar.
+- **ANTES DE HACER PUBLICIDAD (pendiente de Edu):** (1) captcha: ya activo (17/11); falta confirmar que ande bien en varios celulares; (2) revisar reglas de Storage (fotos de comprobantes: que cada usuario vea solo las suyas y nadie anónimo suba); (3) pensar un freno para pedidos falsos en `solicitud.html` (no pide login); (4) borrar a mano las cuentas falsas sin confirmar.
 
 ## Pendientes (orden sugerido, unificado 14/11/2026)
 Regla de diseño para todo: el público es mayormente de 55-60 años o más → letra grande (mínimo 16px en textos importantes), siempre palabra además del ícono, buen contraste (también en modo oscuro), botones grandes. Mantener la bandera 🇦🇷 en el selector de idioma.
@@ -68,7 +68,7 @@ A. Para salir al mercado (lo más urgente)
 2. Delegación de Gmail de ingastosoporte: concedida a ompineyro@gmail.com (aceptada) y a edusosa84@gmail.com (15/11, falta que Edu acepte el mail). Se usa desde la compu. Falta decidir el acceso de Edu a Mercado Pago para atender bajas y devoluciones.
 3. (Hecho 15/11) Filas de prueba borradas de `solicitudes`.
 4. Nombre/razón social y CUIT en Términos y Privacidad (consultar contador); revisión de un abogado (incluye si el arrepentimiento aplica a renovaciones).
-5. Edu: verificación en dos pasos en Supabase y GitHub; copiar `mp-webhook` al repo (sin claves).
+5. (Hecho 17/11) Edu: verificación en dos pasos en Supabase y GitHub; `mp-webhook` copiado al repo.
 
 B. Mejoras visuales (vienen del rediseño de Edu, aplicando la regla de diseño)
 6. Retoques rápidos en Movimientos: resultado del mes grande con barrita "Gastaste el X%", movimientos agrupados por día (Hoy / Ayer / fecha), montos sin ",00", mejor contraste de "Gastos". Mantener la palabra "Buscar".
