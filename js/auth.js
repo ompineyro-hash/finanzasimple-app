@@ -5,7 +5,7 @@
 // Captcha (Cloudflare Turnstile). Pegar acá la Site Key (la pública, NUNCA la secreta).
 // Vacío = captcha apagado: la app anda como siempre. Activarlo en Supabase
 // (Authentication → Attack Protection) SOLO después de publicar la app con la Site Key cargada.
-const TURNSTILE_SITE_KEY = "";
+const TURNSTILE_SITE_KEY = "0x4AAAAAAGFZVcjwCWidG-nA";
 
 let turnstileScriptPromesa = null;
 let turnstileWidgetId = null;
@@ -29,17 +29,19 @@ function cargarTurnstile() {
 async function obtenerCaptcha() {
   if (!TURNSTILE_SITE_KEY) return undefined;
   const caja = document.getElementById("captchaBox");
-  if (!caja) throw new Error("captcha caja");
-  await cargarTurnstile();
-  return new Promise((resolve, reject) => {
+  if (!caja) return undefined;
+  // Si Cloudflare no carga (sin red, bloqueado), seguimos sin token: si Supabase lo exige,
+  // el servidor responde con error de captcha y se le avisa a la persona.
+  try { await cargarTurnstile(); } catch (_) { return undefined; }
+  return new Promise((resolve) => {
     let listo = false;
     const fin = (fn, v) => { if (listo) return; listo = true; clearTimeout(reloj); caja.hidden = true; fn(v); };
-    const reloj = setTimeout(() => fin(reject, new Error("captcha timeout")), 30000);
+    const reloj = setTimeout(() => fin(resolve, undefined), 15000);
     const opciones = {
       sitekey: TURNSTILE_SITE_KEY,
       appearance: "interaction-only",
       callback: (token) => fin(resolve, token),
-      "error-callback": () => fin(reject, new Error("captcha error")),
+      "error-callback": () => fin(resolve, undefined),
       "expired-callback": () => {}
     };
     caja.hidden = false;
