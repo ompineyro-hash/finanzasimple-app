@@ -362,6 +362,6 @@ html[data-tema="oscuro"] .rapido-cat.activo{color:#0B1411;}
 }
 
 /* Captcha (Cloudflare Turnstile): solo se ve si hace falta un desafío */
-.captcha-box{display:flex;justify-content:center;margin:8px 0}
-.captcha-box:empty{margin:0}
+.captcha-box{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:60;margin:0;max-width:94vw}
+.captcha-box:empty{display:none}
 .captcha-box[hidden]{display:none}
