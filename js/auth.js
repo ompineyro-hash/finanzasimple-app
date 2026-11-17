@@ -29,6 +29,7 @@ function cargarTurnstile() {
 // así el token ya está listo. Cada token sirve una sola vez y vence a los 5 minutos.
 let capPromesa = null;
 let capHora = 0;
+let capUltimoError = "";   // código que informa Cloudflare si falla (sirve para diagnosticar)
 
 function iniciarCaptcha() {
   if (!TURNSTILE_SITE_KEY) return null;
@@ -39,11 +40,11 @@ function iniciarCaptcha() {
     if (!caja) return undefined;
     // Si Cloudflare no carga (sin red, bloqueado), seguimos sin token: si Supabase lo exige,
     // el servidor responde con error de captcha y se le avisa a la persona.
-    try { await cargarTurnstile(); } catch (_) { return undefined; }
+    try { await cargarTurnstile(); } catch (_) { capUltimoError = "script"; return undefined; }
     return new Promise((resolve) => {
       let listo = false;
       const fin = (v) => { if (listo) return; listo = true; clearTimeout(reloj); resolve(v); };
-      const reloj = setTimeout(() => fin(undefined), 25000);
+      const reloj = setTimeout(() => { capUltimoError = capUltimoError || "espera"; fin(undefined); }, 25000);
       if (turnstileWidgetId !== null) {
         try { window.turnstile.remove(turnstileWidgetId); } catch (_) {}
         turnstileWidgetId = null;
@@ -53,8 +54,8 @@ function iniciarCaptcha() {
         sitekey: TURNSTILE_SITE_KEY,
         appearance: "interaction-only",
         callback: (token) => fin(token),
-        "error-callback": () => fin(undefined),
-        "timeout-callback": () => fin(undefined)
+        "error-callback": (codigo) => { capUltimoError = String(codigo || "error"); fin(undefined); return true; },
+        "timeout-callback": () => { capUltimoError = "timeout"; fin(undefined); }
       });
     });
   })();
@@ -64,6 +65,7 @@ function iniciarCaptcha() {
 // Devuelve el token del captcha (o undefined si está apagado o falló dos veces).
 async function obtenerCaptcha() {
   if (!TURNSTILE_SITE_KEY) return undefined;
+  capUltimoError = "";
   let token = await iniciarCaptcha();
   capPromesa = null;
   if (!token) {            // un reintento solo, sin avisarle a la persona
@@ -127,7 +129,7 @@ async function eliminarCuenta() {
 
 function traducirErrorAuth(error) {
   const msg = String(error?.message || "").toLowerCase();
-  if (msg.includes("captcha")) return t("captchaFallo");
+  if (msg.includes("captcha")) return t("captchaFallo") + (capUltimoError ? " (" + capUltimoError + ")" : "");
   if (msg.includes("invalid login credentials")) return "Email o clave incorrectos.";
   if (msg.includes("already registered") || msg.includes("already exists")) return "Ese email ya tiene una cuenta. Probá iniciar sesión.";
   if (msg.includes("password") && msg.includes("least")) return "La clave debe tener al menos 6 caracteres.";
