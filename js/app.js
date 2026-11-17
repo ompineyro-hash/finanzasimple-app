@@ -2946,30 +2946,25 @@ $("qrArchivo").addEventListener("change", qrDesdeArchivo);
 $("qrFotoCam").addEventListener("change", qrDesdeArchivo);
 
 // En celulares, al bajar por la lista de Movimientos se esconde el resumen de arriba (vuelve al subir al principio).
-(function resumenCompacto() {
+(function resumenQueSeVa() {
+  // En el celular la cabecera se pasa adentro de la lista (main.contenido): queda pegada arriba solo
+  // la fila del mes y el resumen se va con el scroll, sin saltos. En pantallas grandes vuelve a su lugar.
   const cont = document.querySelector("main.contenido");
-  const top = document.querySelector(".topbar");
+  const top = document.querySelector("header.topbar");
   if (!cont || !top) return;
-  let bloqueoHasta = 0;   // después de cambiar, se ignoran los scrolls un ratito (evita el "salto" de ida y vuelta)
-  const cambiar = (compacta) => { top.classList.toggle("topbar-compacta", compacta); bloqueoHasta = Date.now() + 500; };
-  // Alto que se libera al esconder el resumen (se mide con el resumen visible)
-  const altoLiberado = () => {
-    let h = 0;
-    top.querySelectorAll(".resumen-tarjetas, #lineaPrevisto, #cotizacionesTopbar").forEach((el) => { h += el.offsetHeight; });
-    return h;
-  };
-  cont.addEventListener("scroll", () => {
-    const angosto = window.matchMedia("(max-width:640px)").matches;
-    const enMov = !$("vistaMovimientos").hidden;
-    const compacta = top.classList.contains("topbar-compacta");
-    if (!angosto || !enMov) { if (compacta) top.classList.remove("topbar-compacta"); return; }
-    if (Date.now() < bloqueoHasta) return;
-    const recorrido = cont.scrollHeight - cont.clientHeight;
-    // Solo se esconde si, ya escondido, todavía queda lugar para seguir bajando (si no, el contenido "salta")
-    if (!compacta && cont.scrollTop > 80 && recorrido > altoLiberado() + 160) cambiar(true);
-    else if (compacta && cont.scrollTop < 5) cambiar(false);
-  }, { passive: true });
-  document.querySelectorAll(".navbar-item").forEach((b) => b.addEventListener("click", () => top.classList.remove("topbar-compacta")));
+  const app = top.parentNode;
+  const mq = window.matchMedia("(max-width:640px)");
+  function ubicar() {
+    if (mq.matches) {
+      if (top.parentNode !== cont) cont.insertBefore(top, cont.firstChild);
+      top.classList.add("topbar-scroll");
+    } else {
+      if (top.parentNode === cont) app.insertBefore(top, cont);
+      top.classList.remove("topbar-scroll");
+    }
+  }
+  ubicar();
+  if (mq.addEventListener) mq.addEventListener("change", ubicar); else mq.addListener(ubicar);
 })();
 
 // ---------- Compras en cuotas (pantalla en Ajustes) ----------
