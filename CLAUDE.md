@@ -50,6 +50,13 @@ Hecho y publicado: movimientos, cuentas, categorías (con ícono por nombre), pe
 - Videos tutoriales: 5 videos en es/pt/en en un artifact "Videos de Ingasto" de Claude (compartido con Edu). Faltan: primeros pasos, voz, Tengo, transferir, fijos, Situación, importar, clasificar varios.
 - Seguridad: Supabase y GitHub con verificación en dos pasos (Marcelo hecho; Edu pendiente). No prometer en la app que "nadie puede ver los datos": se guardan en Supabase y quien administra podría verlos.
 
+## Seguridad (auditoría 17/11/2026)
+- Revisado en Supabase: las 9 tablas tienen RLS y reglas `auth.uid() = user_id` (o `= id`); escrituras exigen `trial_vigente()`. `solicitudes` solo permite cargar.
+- Arreglado: en `profiles` los usuarios podían editar `plan_activo`/`plan_vence`. Ahora solo `moneda`, `idioma`, `moneda_base` (SQL en `supabase/sql/profiles-permisos.sql`). Si se agrega una columna editable por el usuario a `profiles`, hay que darle `grant update (columna)`.
+- Usuarios "Waiting for verification" (ej. amy_drees@rezult.org, defne_vandervelden12@bocah.team): registros sin confirmar mail, no pudieron entrar. Parecen bots. Se ven en Supabase → Authentication → Users.
+- Rate limits de Auth revisados: se dejaron como están (muchos usuarios comparten IP de celular; bajarlos puede bloquear gente real). Mails: 30/h.
+- **ANTES DE HACER PUBLICIDAD (pendiente de Edu):** (1) captcha en el registro (Supabase → Authentication → Attack Protection + cambio en la pantalla de registro de la app); (2) revisar reglas de Storage (fotos de comprobantes: que cada usuario vea solo las suyas y nadie anónimo suba); (3) pensar un freno para pedidos falsos en `solicitud.html` (no pide login); (4) borrar a mano las cuentas falsas sin confirmar.
+
 ## Pendientes (orden sugerido, unificado 14/11/2026)
 Regla de diseño para todo: el público es mayormente de 55-60 años o más → letra grande (mínimo 16px en textos importantes), siempre palabra además del ícono, buen contraste (también en modo oscuro), botones grandes. Mantener la bandera 🇦🇷 en el selector de idioma.
 
@@ -76,6 +83,6 @@ No: conexión con bancos.
 ## Rediseño (publicado 15/11/2026, sw.js v74)
 - El rediseño de Edu ya está en la app normal (`css/tema.css` nuevo; la carpeta `prueba/` se borró). Incluye modo oscuro (Ajustes → Modo oscuro), Movimientos nuevo, carga rápida con teclado propio (teclado y Guardar fijos abajo), Compras en cuotas, gráficos animados.
 - Los videos tutoriales grabados antes del rediseño muestran la pantalla vieja de Nuevo movimiento: rehacer los que la muestran.
-- Escanear QR de factura (publicado 16/11, sw.js v79): en Agregar → Gasto, botón "Escanear QR". Lector nativo del navegador (BarcodeDetector) y jsQR de respaldo (se baja de jsdelivr al usarlo, no probado en iPhone). Botón "Sacar foto del QR" (el que mejor anda en Android; la cámara en vivo a veces no lee). Lee importe, fecha y número de factura del QR de ARCA/AFIP (`?p=` en base64; ojo con el "+": no usar URLSearchParams). Si no hay QR, carga manual. Avisa si la factura ya está cargada. Pendiente: sumar a Privacidad una línea sobre el uso de la cámara (texto legal: avisar a Marcelo).
+- Escanear QR de factura (publicado 16/11, sw.js v79): en Agregar → Gasto, botón "Escanear QR". Lector nativo del navegador (BarcodeDetector) y jsQR de respaldo (se baja de jsdelivr al usarlo, no probado en iPhone). Botón "Sacar foto del QR" (el que mejor anda en Android; la cámara en vivo a veces no lee). Lee importe, fecha y número de factura del QR de ARCA/AFIP (`?p=` en base64; ojo con el "+": no usar URLSearchParams). Si no hay QR, carga manual. Avisa si la factura ya está cargada. La línea de cámara/QR en Privacidad ya está publicada (16/11).
 - Otros cambios 16/11: cuenta elegible con botones en Nuevo movimiento, cuotas con el total de la compra (la app divide, la última ajusta centavos), Compras en cuotas sigue el mes, avisos (toast) arriba, resumen de Movimientos que se esconde al bajar (celular), un solo guardado a la vez.
 - Faltan (funciones nuevas, decidir con Edu): primer inicio en 3 pasos, leer el texto del ticket cuando no hay QR (OCR, falla con papel térmico).
