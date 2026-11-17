@@ -2950,13 +2950,24 @@ $("qrFotoCam").addEventListener("change", qrDesdeArchivo);
   const cont = document.querySelector("main.contenido");
   const top = document.querySelector(".topbar");
   if (!cont || !top) return;
+  let bloqueoHasta = 0;   // después de cambiar, se ignoran los scrolls un ratito (evita el "salto" de ida y vuelta)
+  const cambiar = (compacta) => { top.classList.toggle("topbar-compacta", compacta); bloqueoHasta = Date.now() + 500; };
+  // Alto que se libera al esconder el resumen (se mide con el resumen visible)
+  const altoLiberado = () => {
+    let h = 0;
+    top.querySelectorAll(".resumen-tarjetas, #lineaPrevisto, #cotizacionesTopbar").forEach((el) => { h += el.offsetHeight; });
+    return h;
+  };
   cont.addEventListener("scroll", () => {
     const angosto = window.matchMedia("(max-width:640px)").matches;
     const enMov = !$("vistaMovimientos").hidden;
     const compacta = top.classList.contains("topbar-compacta");
     if (!angosto || !enMov) { if (compacta) top.classList.remove("topbar-compacta"); return; }
-    if (!compacta && cont.scrollTop > 80 && cont.scrollHeight - cont.clientHeight > 260) top.classList.add("topbar-compacta");
-    else if (compacta && cont.scrollTop < 5) top.classList.remove("topbar-compacta");
+    if (Date.now() < bloqueoHasta) return;
+    const recorrido = cont.scrollHeight - cont.clientHeight;
+    // Solo se esconde si, ya escondido, todavía queda lugar para seguir bajando (si no, el contenido "salta")
+    if (!compacta && cont.scrollTop > 80 && recorrido > altoLiberado() + 160) cambiar(true);
+    else if (compacta && cont.scrollTop < 5) cambiar(false);
   }, { passive: true });
   document.querySelectorAll(".navbar-item").forEach((b) => b.addEventListener("click", () => top.classList.remove("topbar-compacta")));
 })();

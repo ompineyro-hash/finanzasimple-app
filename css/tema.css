@@ -351,7 +351,8 @@ html[data-tema="oscuro"] .rapido-cat.activo{color:#0B1411;}
   #filaAccesosLista #btnBuscarSimple{font-size:clamp(13px,4vw,16px);}
   .contenido{padding-top:8px;}
   /* Al bajar por la lista de movimientos, se esconde el resumen para ganar lugar */
-  .topbar.topbar-compacta .resumen-tarjetas,.topbar.topbar-compacta #lineaPrevisto,.topbar.topbar-compacta #cotizacionesTopbar{display:none;}
+  .topbar .resumen-tarjetas,.topbar #lineaPrevisto,.topbar #cotizacionesTopbar{max-height:420px;overflow:hidden;transition:max-height .28s ease,opacity .2s ease,margin .28s ease;}
+  .topbar.topbar-compacta .resumen-tarjetas,.topbar.topbar-compacta #lineaPrevisto,.topbar.topbar-compacta #cotizacionesTopbar{max-height:0;opacity:0;margin-top:0;margin-bottom:0;padding-top:0;padding-bottom:0;pointer-events:none;}
   /* Buscar y Clasificar varios, uno al lado del otro */
   #vistaMovimientos:not([hidden]){display:flex;flex-wrap:wrap;gap:6px;align-items:stretch;}
   #vistaMovimientos > *{flex:1 1 100%;min-width:0;}
