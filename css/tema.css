@@ -368,3 +368,9 @@ html[data-tema="oscuro"] .rapido-cat.activo{color:#0B1411;}
 .captcha-box{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:60;margin:0;max-width:94vw}
 .captcha-box:empty{display:none}
 .captcha-box[hidden]{display:none}
+
+/* Casilla "Mantener sesión iniciada" */
+.recordar-sesion{display:flex;align-items:center;gap:12px;font-size:16.5px;font-weight:600;margin:6px 0 4px;cursor:pointer;color:var(--texto);}
+.recordar-sesion input{width:24px;height:24px;flex:0 0 24px;accent-color:var(--primario);}
+.form-login .recordar-sesion{flex-direction:row;align-items:center;gap:12px;font-size:16.5px;font-weight:600;color:var(--texto);}
+.form-login .recordar-sesion input{width:24px;height:24px;min-height:0;padding:0;margin:0;flex:0 0 24px;}

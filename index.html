@@ -67,6 +67,7 @@ try {
 <button type="button" class="btn-ojito" data-target="inputClaveConfirmar" data-i18n-aria="ariaMostrarClave" aria-label="Mostrar clave">👁️</button>
 </div>
 </label>
+<label class="recordar-sesion"><input type="checkbox" id="chkRecordar" checked><span data-i18n="recordarSesion">Mantener sesión iniciada en este aparato</span></label>
 <div id="captchaBox" class="captcha-box" hidden></div>
 <button type="submit" class="boton boton-primario boton-ancho" id="btnIngresar" data-i18n="btnEntrar">Entrar</button>
 </form>
@@ -315,6 +316,10 @@ Al crear una cuenta aceptás nuestros
 <span class="config-tarjeta-icono">🌙</span>
 <span class="config-tarjeta-titulo" data-i18n="tituloTema">Modo oscuro</span>
 </button>
+<button type="button" class="config-tarjeta" data-config="configPanelSeguridad">
+<span class="config-tarjeta-icono">🔒</span>
+<span class="config-tarjeta-titulo" data-i18n="tituloSeguridad">Seguridad</span>
+</button>
 <button type="button" class="config-tarjeta" data-config="configPanelMoneda">
 <span class="config-tarjeta-icono">💱</span>
 <span class="config-tarjeta-titulo" data-i18n="tituloMoneda">Moneda</span>
@@ -390,6 +395,19 @@ Al crear una cuenta aceptás nuestros
 <button type="button" class="tema-opcion" data-tema-opcion="auto"><span class="tema-opcion-ic">📱</span><span><span data-i18n="temaAuto">Automático</span><small data-i18n="temaAutoDet">Igual que tu celular</small></span></button>
 <button type="button" class="tema-opcion" data-tema-opcion="claro"><span class="tema-opcion-ic">☀️</span><span><span data-i18n="temaClaro">Claro</span><small data-i18n="temaClaroDet">Fondo claro, como siempre</small></span></button>
 <button type="button" class="tema-opcion" data-tema-opcion="oscuro"><span class="tema-opcion-ic">🌙</span><span><span data-i18n="temaOscuro">Oscuro</span><small data-i18n="temaOscuroDet">Fondo oscuro, descansa la vista de noche</small></span></button>
+</div>
+</div>
+
+<!-- Panel: Seguridad (cerrar la sesión sola) -->
+<div id="configPanelSeguridad" class="config-panel" hidden>
+<button type="button" class="config-volver" data-i18n="btnVolver">← Volver</button>
+<h2 class="titulo-seccion" data-i18n="tituloSeguridad">Seguridad</h2>
+<p class="texto-ayuda" data-i18n="segAyuda">Si no usás la app durante este tiempo, te vamos a pedir la clave de nuevo. Sirve si dejás la app abierta en un aparato que no es tuyo.</p>
+<div class="tema-opciones">
+<button type="button" class="tema-opcion" data-inact="0"><span class="tema-opcion-ic">♾️</span><span><span data-i18n="segNunca">Nunca</span><small data-i18n="segNuncaDet">Como hasta ahora</small></span></button>
+<button type="button" class="tema-opcion" data-inact="1"><span class="tema-opcion-ic">⏱️</span><span><span data-i18n="seg1h">1 hora sin usar</span></span></button>
+<button type="button" class="tema-opcion" data-inact="24"><span class="tema-opcion-ic">🌓</span><span><span data-i18n="seg1d">1 día sin usar</span></span></button>
+<button type="button" class="tema-opcion" data-inact="168"><span class="tema-opcion-ic">📅</span><span><span data-i18n="seg7d">1 semana sin usar</span></span></button>
 </div>
 </div>
 

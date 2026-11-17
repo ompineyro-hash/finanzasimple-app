@@ -101,6 +101,7 @@ async function iniciarSesion(email, clave) {
 }
 
 async function cerrarSesion() {
+  try { localStorage.removeItem("ingasto_ultima_actividad"); } catch (_) {}
   await sbClient.auth.signOut();
 }
 

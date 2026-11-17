@@ -169,6 +169,15 @@ const TRADUCCIONES = {
     toastNadaExportar: "Todavía no tenés movimientos para exportar.",
     loginEmailPrimero: "Escribí tu email arriba primero.",
     captchaFallo: "No pudimos comprobar que sos una persona. Revisá tu conexión y probá de nuevo.",
+    recordarSesion: "Mantener sesión iniciada en este aparato",
+    tituloSeguridad: "Seguridad",
+    segAyuda: "Si no usás la app durante este tiempo, te vamos a pedir la clave de nuevo. Sirve si dejás la app abierta en un aparato que no es tuyo.",
+    segNunca: "Nunca",
+    segNuncaDet: "Como hasta ahora",
+    seg1h: "1 hora sin usar",
+    seg1d: "1 día sin usar",
+    seg7d: "1 semana sin usar",
+    avisoInactividad: "Cerramos tu sesión porque estuvo mucho tiempo sin usarse. Entrá de nuevo con tu clave.",
     confBorrarCat: "¿Borrar \"{n}\"? Si tiene movimientos asociados, no se va a poder borrar.",
     confBorrarMov: "¿Borrar este movimiento? No se puede deshacer.",
     errElegirCuenta: "Elegí una cuenta.",
@@ -641,6 +650,15 @@ const TRADUCCIONES = {
     toastNadaExportar: "Você ainda não tem movimentos para exportar.",
     loginEmailPrimero: "Escreva seu e-mail acima primeiro.",
     captchaFallo: "Não conseguimos confirmar que você é uma pessoa. Verifique sua conexão e tente de novo.",
+    recordarSesion: "Manter sessão iniciada neste aparelho",
+    tituloSeguridad: "Segurança",
+    segAyuda: "Se você não usar o app durante esse tempo, vamos pedir sua senha de novo. Serve caso deixe o app aberto em um aparelho que não é seu.",
+    segNunca: "Nunca",
+    segNuncaDet: "Como até agora",
+    seg1h: "1 hora sem usar",
+    seg1d: "1 dia sem usar",
+    seg7d: "1 semana sem usar",
+    avisoInactividad: "Encerramos sua sessão porque ficou muito tempo sem uso. Entre de novo com sua senha.",
     confBorrarCat: "Excluir \"{n}\"? Se tiver movimentos associados, não será possível excluir.",
     confBorrarMov: "Excluir este movimento? Não é possível desfazer.",
     errElegirCuenta: "Escolha uma conta.",
@@ -1113,6 +1131,15 @@ const TRADUCCIONES = {
     toastNadaExportar: "You have no transactions to export yet.",
     loginEmailPrimero: "Enter your email above first.",
     captchaFallo: "We couldn't confirm you're a person. Check your connection and try again.",
+    recordarSesion: "Keep me signed in on this device",
+    tituloSeguridad: "Security",
+    segAyuda: "If you don't use the app for this long, we'll ask for your password again. Useful if you leave the app open on a device that isn't yours.",
+    segNunca: "Never",
+    segNuncaDet: "Same as before",
+    seg1h: "1 hour of no use",
+    seg1d: "1 day of no use",
+    seg7d: "1 week of no use",
+    avisoInactividad: "We signed you out because the app wasn't used for a long time. Sign in again with your password.",
     confBorrarCat: "Delete \"{n}\"? If it has linked transactions, it can't be deleted.",
     confBorrarMov: "Delete this transaction? This can't be undone.",
     errElegirCuenta: "Choose an account.",
@@ -1746,6 +1773,8 @@ $("formLogin").addEventListener("submit", async (e) => {
   const clave = $("inputClave").value;
   const btn = $("btnIngresar");
   btn.disabled = true;
+  // Se decide dónde guardar la sesión ANTES de entrar (ver almacenSesion en supabaseClient.js)
+  try { localStorage.setItem(CLAVE_RECORDAR_SESION, $("chkRecordar").checked ? "1" : "0"); } catch (_) {}
 
   try {
     if (modoRegistro) {
@@ -1785,6 +1814,7 @@ $("formLogin").addEventListener("submit", async (e) => {
       actualizarTextosDinamicosIdioma();
     } else {
       const resultadoLogin = await iniciarSesion(email, clave);
+      try { localStorage.setItem("ingasto_ultima_actividad", String(Date.now())); } catch (_) {}
       await arrancarApp(resultadoLogin?.user);
     }
   } catch (err) {
@@ -1977,6 +2007,8 @@ if ($("btnVerificarPago")) {
 async function arrancarApp(usuarioYaObtenido) {
   usuario = usuarioYaObtenido || (await usuarioActual());
   if (!usuario) return;
+  if (revisarInactividad()) return;   // pasó mucho tiempo sin usar la app: se pide la clave de nuevo
+  anotarActividad(true);
 
   try {
     perfil = await obtenerPerfil(usuario.id);
@@ -5293,6 +5325,61 @@ function escapeHTML(txt) {
 }
 
 // ============================================================
+// SEGURIDAD: cerrar la sesión sola si la app estuvo mucho tiempo sin usarse (Ajustes → Seguridad)
+// ============================================================
+const CLAVE_ULT_ACTIVIDAD = "ingasto_ultima_actividad";
+const CLAVE_INACTIVIDAD = "ingasto_inactividad_horas";
+let ultimoAnotado = 0;
+let cerrandoPorInactividad = false;
+
+function horasInactividad() {
+  try { return localStorage.getItem(CLAVE_INACTIVIDAD) || "0"; } catch (_) { return "0"; }
+}
+function limiteInactividadMs() {
+  const h = parseInt(horasInactividad(), 10);
+  return h > 0 ? h * 3600000 : 0;
+}
+function anotarActividad(forzar) {
+  const ahora = Date.now();
+  if (!forzar && ahora - ultimoAnotado < 20000) return;
+  ultimoAnotado = ahora;
+  try { localStorage.setItem(CLAVE_ULT_ACTIVIDAD, String(ahora)); } catch (_) {}
+}
+function revisarInactividad() {
+  const lim = limiteInactividadMs();
+  if (!lim || !usuario) return false;
+  let ult = 0;
+  try { ult = parseInt(localStorage.getItem(CLAVE_ULT_ACTIVIDAD) || "0", 10); } catch (_) {}
+  if (ult && Date.now() - ult > lim) { cerrarPorInactividad(); return true; }
+  return false;
+}
+async function cerrarPorInactividad() {
+  if (cerrandoPorInactividad) return;
+  cerrandoPorInactividad = true;
+  try { sessionStorage.setItem("ingasto_aviso_inact", "1"); } catch (_) {}
+  try { await cerrarSesion(); } catch (_) {}
+  location.reload();
+}
+["pointerdown", "keydown", "touchstart", "scroll"].forEach((ev) =>
+  document.addEventListener(ev, () => { if (usuario) anotarActividad(false); }, { passive: true, capture: true }));
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible" && usuario && !revisarInactividad()) anotarActividad(true);
+});
+setInterval(revisarInactividad, 60000);
+
+function pintarSeguridad() {
+  const h = horasInactividad();
+  document.querySelectorAll("[data-inact]").forEach((b) => b.classList.toggle("activo", b.dataset.inact === h));
+}
+document.querySelectorAll("[data-inact]").forEach((b) => b.addEventListener("click", () => {
+  try { localStorage.setItem(CLAVE_INACTIVIDAD, b.dataset.inact); } catch (_) {}
+  anotarActividad(true);
+  pintarSeguridad();
+}));
+pintarSeguridad();
+if ($("chkRecordar")) $("chkRecordar").checked = recordarSesion();
+
+// ============================================================
 // INICIO
 // ============================================================
 // Si el link del mail de "olvidé mi clave" nos trae acá, no arrancamos
@@ -5304,6 +5391,12 @@ const esLinkDeRecuperacion = /type=recovery/.test(location.hash);
     const u = await usuarioActual();
     if (u) await arrancarApp(u);
   }
+  try {
+    if (sessionStorage.getItem("ingasto_aviso_inact")) {
+      sessionStorage.removeItem("ingasto_aviso_inact");
+      if (!usuario) mostrarAviso($("loginOk"), t("avisoInactividad"));
+    }
+  } catch (_) {}
 
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("sw.js").then((registro) => {
