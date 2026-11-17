@@ -3,7 +3,7 @@
 Este archivo lo lee Claude al empezar cada sesión. Si lo cambiás, que quede claro y corto.
 
 ## Qué es
-Ingasto (ingasto.com) es una app web instalable (PWA) de finanzas personales: movimientos, cuentas, categorías, pendientes ("Situación"), análisis y carga por voz. Cuesta $4.000 ARS por mes (Mercado Pago) y tiene 15 días de prueba. Edu lidera la app y toma las decisiones. Marcelo es el dueño de las cuentas (a su nombre), participa y puede ver y opinar cuando quiera.
+Ingasto (ingasto.com) es una app web instalable (PWA) de finanzas personales: movimientos, cuentas, categorías, pendientes ("Situación"), análisis y carga por voz. Cuesta $4.000 ARS por mes (Mercado Pago) y tiene 25 días de prueba (cambiado el 17/11/2026: app, panel, Términos y `trial_vigente()` en Supabase). Edu lidera la app y toma las decisiones. Marcelo es el dueño de las cuentas (a su nombre), participa y puede ver y opinar cuando quiera.
 
 ## Cómo está armada
 - Sitio estático: HTML, CSS y JavaScript sin framework. Se publica con GitHub Pages desde la rama `main` (dominio en `CNAME`).
@@ -56,9 +56,9 @@ Hecho y publicado: movimientos, cuentas, categorías (con ícono por nombre), pe
 ## Seguridad (auditoría 17/11/2026)
 - Revisado en Supabase: las 9 tablas tienen RLS y reglas `auth.uid() = user_id` (o `= id`); escrituras exigen `trial_vigente()`. `solicitudes` solo permite cargar.
 - Arreglado: en `profiles` los usuarios podían editar `plan_activo`/`plan_vence`. Ahora solo `moneda`, `idioma`, `moneda_base` (SQL en `supabase/sql/profiles-permisos.sql`). Si se agrega una columna editable por el usuario a `profiles`, hay que darle `grant update (columna)`.
-- Usuarios "Waiting for verification" (ej. amy_drees@rezult.org, defne_vandervelden12@bocah.team): registros sin confirmar mail, no pudieron entrar. Parecen bots. Se ven en Supabase → Authentication → Users.
+- Usuarios "Waiting for verification" (ej. amy_drees@rezult.org, defne_vandervelden12@bocah.team): registros sin confirmar mail, no pudieron entrar. Parecen bots. Se ven en Supabase → Authentication → Users. (Borradas el 17/11/2026.)
 - Rate limits de Auth revisados: se dejaron como están (muchos usuarios comparten IP de celular; bajarlos puede bloquear gente real). Mails: 30/h.
-- **ANTES DE HACER PUBLICIDAD (pendiente de Edu):** (1) captcha: ya activo (17/11); falta confirmar que ande bien en varios celulares; (2) revisar reglas de Storage (fotos de comprobantes: que cada usuario vea solo las suyas y nadie anónimo suba); (3) pensar un freno para pedidos falsos en `solicitud.html` (no pide login); (4) borrar a mano las cuentas falsas sin confirmar.
+- **ANTES DE HACER PUBLICIDAD (pendiente de Edu):** (1) captcha: ya activo (17/11); falta confirmar que ande bien en varios celulares; (2) revisar reglas de Storage (fotos de comprobantes: que cada usuario vea solo las suyas y nadie anónimo suba); (3) pensar un freno para pedidos falsos en `solicitud.html` (no pide login); (4) cuentas falsas: borradas 17/11.
 
 ## Pendientes (orden sugerido, unificado 14/11/2026)
 Regla de diseño para todo: el público es mayormente de 55-60 años o más → letra grande (mínimo 16px en textos importantes), siempre palabra además del ícono, buen contraste (también en modo oscuro), botones grandes. Mantener la bandera 🇦🇷 en el selector de idioma.
