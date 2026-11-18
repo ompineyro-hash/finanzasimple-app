@@ -118,6 +118,7 @@
 <script src="js/supabaseClient.js"></script>
 <script>
   var DIAS_DE_PRUEBA = 25;
+  var REINICIO_PRUEBA = new Date("2026-11-18T03:00:00Z").getTime(); // igual que en la app y en Supabase
   var DIA_MS = 24 * 60 * 60 * 1000;
   var TZ = "America/Argentina/Buenos_Aires";
   var filasActuales = [];
@@ -161,7 +162,7 @@
     if (pagoVigente) {
       return { tipo: "pago", texto: f.plan_vence ? "Pago activo hasta " + fechaCorta(f.plan_vence) : "Activa (sin vencimiento)", dias: null };
     }
-    var finPrueba = new Date(f.se_registro).getTime() + DIAS_DE_PRUEBA * DIA_MS;
+    var finPrueba = Math.max(new Date(f.se_registro).getTime(), REINICIO_PRUEBA) + DIAS_DE_PRUEBA * DIA_MS;
     var quedan = Math.ceil((finPrueba - ahora) / DIA_MS);
     if (quedan > 0) return { tipo: "prueba", texto: "Prueba: quedan " + quedan + (quedan === 1 ? " día" : " días"), dias: quedan };
     return { tipo: "vencida", texto: "Prueba vencida", dias: 0 };

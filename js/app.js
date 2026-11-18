@@ -1949,6 +1949,9 @@ if ($("btnSalirPruebaVencida")) {
 // ============================================================
 // Cuántos días de prueba gratis tiene cada usuario nuevo.
 const DIAS_DE_PRUEBA = 25;
+// Reinicio de la prueba (18/11/2026): a todos los que se registraron antes de esta fecha
+// se les cuentan los 25 días desde acá. Debe coincidir con `trial_vigente()` en Supabase y con panel.html.
+const REINICIO_PRUEBA = new Date("2026-11-18T03:00:00Z").getTime();
 
 // Plan pago vigente: activo y, si tiene fecha de vencimiento, que no haya pasado.
 // Sin fecha (plan_vence vacío) = sin vencimiento (cuentas activadas a mano).
@@ -1961,7 +1964,7 @@ function planVigente() {
 function pruebaVencida() {
   if (planVigente()) return false; // ya pagó y sigue al día, no hay bloqueo
   if (!usuario?.created_at) return false; // por las dudas, no bloqueamos si no sabemos la fecha
-  const creado = new Date(usuario.created_at).getTime();
+  const creado = Math.max(new Date(usuario.created_at).getTime(), REINICIO_PRUEBA);
   const dias = (Date.now() - creado) / (1000 * 60 * 60 * 24);
   return dias > DIAS_DE_PRUEBA;
 }
