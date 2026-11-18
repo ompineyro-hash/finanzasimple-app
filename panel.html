@@ -40,6 +40,7 @@
   .e-pago { background: #E7EFE9; color: #1F5E42; }
   .e-prueba { background: #FFF3D6; color: #8A6212; }
   .e-vencida { background: #FBEAE6; color: #B0463A; }
+  .e-sinentrar { background: #ECEAE4; color: #5B5B55; }
   .e-equipo { background: #ECEAE2; color: #4A5750; margin-left: 6px; }
   .pie { font-size: 12px; color: #6B766F; margin-top: 12px; line-height: 1.5; }
 </style>
@@ -162,6 +163,9 @@
     if (pagoVigente) {
       return { tipo: "pago", texto: f.plan_vence ? "Pago activo hasta " + fechaCorta(f.plan_vence) : "Activa (sin vencimiento)", dias: null };
     }
+    if (!f.ultimo_ingreso && !(Number(f.movimientos) > 0)) {
+      return { tipo: "sinentrar", texto: "Nunca entró (mail sin confirmar)", dias: null };
+    }
     var finPrueba = Math.max(new Date(f.se_registro).getTime(), REINICIO_PRUEBA) + DIAS_DE_PRUEBA * DIA_MS;
     var quedan = Math.ceil((finPrueba - ahora) / DIA_MS);
     if (quedan > 0) return { tipo: "prueba", texto: "Prueba: quedan " + quedan + (quedan === 1 ? " día" : " días"), dias: quedan };
@@ -176,13 +180,15 @@
     var pagos = externas.filter(function (f) { return estadoDe(f).tipo === "pago"; }).length;
     var porVencer = externas.filter(function (f) { var e = estadoDe(f); return e.tipo === "prueba" && e.dias <= 3; }).length;
     var vencidas = externas.filter(function (f) { return estadoDe(f).tipo === "vencida"; }).length;
+    var sinEntrar = externas.filter(function (f) { return estadoDe(f).tipo === "sinentrar"; }).length;
     var items = [
       [externas.length, "Personas registradas (sin cuentas del equipo)"],
       [conMov, "Cargaron al menos un movimiento"],
       [activos7, "Iniciaron sesión en los últimos 7 días"],
       [pagos, "Con pago activo"],
       [porVencer, "Pruebas que vencen en 3 días o menos"],
-      [vencidas, "Pruebas vencidas sin pago"]
+      [vencidas, "Pruebas vencidas sin pago"],
+      [sinEntrar, "Registradas que nunca entraron (mail sin confirmar)"]
     ];
     $("kpis").innerHTML = items.map(function (i) {
       return '<div class="kpi"><div class="num">' + i[0] + '</div><div class="txt">' + i[1] + '</div></div>';
@@ -214,7 +220,7 @@
     });
     $("filas").innerHTML = filas.map(function (f) {
       var e = estadoDe(f);
-      var clase = e.tipo === "pago" ? "e-pago" : (e.tipo === "prueba" ? "e-prueba" : "e-vencida");
+      var clase = e.tipo === "pago" ? "e-pago" : (e.tipo === "prueba" ? "e-prueba" : (e.tipo === "sinentrar" ? "e-sinentrar" : "e-vencida"));
       return "<tr><td>" + esc(f.email) + (f.interna ? '<span class="etq e-equipo">equipo</span>' : "") + "</td>" +
         "<td>" + fechaCorta(f.se_registro) + "</td>" +
         "<td>" + fechaHora(f.ultimo_ingreso) + "</td>" +
