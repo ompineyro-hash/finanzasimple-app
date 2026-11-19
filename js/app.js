@@ -379,6 +379,8 @@ const TRADUCCIONES = {
     sitTotal: "Total",
     sitNetoMes: "Neto del mes",
     sitNadaGrupo: "No hay nada en este grupo.",
+    sitNadaPagar: "Nada por pagar",
+    sitNadaCobrar: "Nada por cobrar. Para anotar un cobro, cargá un ingreso con \"Lo voy a cobrar después\".",
     sitVacio: "No tenés pagos ni cobros pendientes. Cuando cargues algo para pagar o cobrar después, o una compra en cuotas, lo vas a ver acá ordenado.",
     navConfig: "Ajustes",
     modalNuevoTitulo: "Nuevo movimiento",
@@ -860,6 +862,8 @@ const TRADUCCIONES = {
     sitTotal: "Total",
     sitNetoMes: "Líquido do mês",
     sitNadaGrupo: "Não há nada neste grupo.",
+    sitNadaPagar: "Nada a pagar",
+    sitNadaCobrar: "Nada a receber. Para anotar um recebimento, lance uma receita com \"Vou receber depois\".",
     sitVacio: "Você não tem pagamentos nem recebimentos pendentes. Quando lançar algo para pagar ou receber depois, ou uma compra parcelada, você vai ver aqui, organizado.",
     navConfig: "Ajustes",
     modalNuevoTitulo: "Novo lançamento",
@@ -1341,6 +1345,8 @@ const TRADUCCIONES = {
     sitTotal: "Total",
     sitNetoMes: "Month net",
     sitNadaGrupo: "Nothing in this group.",
+    sitNadaPagar: "Nothing to pay",
+    sitNadaCobrar: "Nothing to collect. To record money owed to you, add income with \"I'll get paid later\".",
     sitVacio: "You have no pending payments or collections. When you add something to pay or collect later, or an installment purchase, it will show up here, organized.",
     navConfig: "Settings",
     modalNuevoTitulo: "New movement",
@@ -2397,14 +2403,14 @@ function renderSituacion() {
     if (tengoDisponible) {
       h += sitTarjeta("tengo", "", t("sitTengo"), t("sitVerDetalle"), tengoCalculo ? formatoMonto(tengoCalculo.total) : "…", "", "sit-bien");
     }
-    if (!pendientes.length) {
-      h += `<div class="sit-card sit-vacio-card">${escapeHTML(t("sitVacio"))}</div>`;
-    } else {
+    {
       const venc = sitSuma(deudas.filter((m) => sitGrupo(m) === "venc"));
       const sem = sitSuma(deudas.filter((m) => sitGrupo(m) === "sem"));
       h += sitTarjeta("debo", "", t("sitDebo"), t("sitVerDetalle"), formatoMonto(sitSuma(deudas)),
-        `${venc ? `<span class="sit-mal">${escapeHTML(t("sitVencido"))} ${escapeHTML(formatoMonto(venc))}</span> · ` : ""}${escapeHTML(t("sitProx7"))} ${escapeHTML(formatoMonto(sem))}`, "sit-mal");
-      if (cobros.length) h += sitTarjeta("cobrar", "", t("sitMeDeben"), t("sitVerDetalle"), formatoMonto(sitSuma(cobros)), "", "sit-bien");
+        deudas.length
+          ? `${venc ? `<span class="sit-mal">${escapeHTML(t("sitVencido"))} ${escapeHTML(formatoMonto(venc))}</span> · ` : ""}${escapeHTML(t("sitProx7"))} ${escapeHTML(formatoMonto(sem))}`
+          : `<span class="sit-nada">${escapeHTML(t("sitNadaPagar"))}</span>`, "sit-mal");
+      h += sitTarjeta("cobrar", "", t("sitMeDeben"), t("sitVerDetalle"), formatoMonto(sitSuma(cobros)), cobros.length ? "" : `<span class="sit-nada">${escapeHTML(t("sitNadaCobrar"))}</span>`, "sit-bien");
       const meses = sitMeses();
       if (meses.length) {
         const tot = (k) => sitSuma(sitFuturos().filter((m) => m.tipo === "Gasto" && mesClave(m.fecha_pago) === k));
