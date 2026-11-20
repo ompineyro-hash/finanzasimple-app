@@ -683,6 +683,43 @@ Al crear una cuenta aceptás nuestros
 </div>
 </div>
 
+
+<!-- ===================== MODAL: PRÉSTAMOS (nuevo + detalle y devoluciones) ===================== -->
+<div id="modalPrestamo" class="modal-fondo" hidden>
+<div class="modal">
+<div class="modal-cabecera">
+<h3 data-i18n="prTitulo">Anotar un préstamo</h3>
+<button id="btnCerrarPrestamo" type="button" class="icono-btn" data-i18n-aria="ariaCerrarModal" aria-label="Cerrar">✖</button>
+</div>
+<form id="formPrestamo" class="modal-cuerpo">
+<div class="segmentado" id="segmentadoPrestamo">
+<button type="button" class="segmentado-item activo" data-sentido="me_deben" data-i18n="prMeDeben">Me deben</button>
+<button type="button" class="segmentado-item" data-sentido="debo" data-i18n="prDebo">Debo</button>
+</div>
+<p class="texto-ayuda" id="prAyudaSentido"></p>
+<label><span id="prLabelPersona" data-i18n="prPersona">Persona</span><input type="text" id="prPersona" maxlength="80" autocomplete="off"></label>
+<label><span data-i18n="prMonto">Monto</span><input type="text" inputmode="decimal" id="prMonto" placeholder="0,00"></label>
+<label><span id="prLabelCuenta" data-i18n="prCuentaSale">Cuenta de donde sale la plata</span><select id="prCuenta"></select></label>
+<label><span data-i18n="labelFecha">Fecha</span><input type="date" id="prFecha"></label>
+<label><span data-i18n="prFechaDev">Fecha de devolución (opcional)</span><input type="date" id="prFechaDev"></label>
+<label><span data-i18n="prNota">Nota (opcional)</span><input type="text" id="prNota" maxlength="200" autocomplete="off"></label>
+<p class="texto-ayuda" data-i18n="prAviso">No cuenta como gasto ni como ingreso: solo mueve plata entre tus cuentas y queda anotado en Situación.</p>
+<div id="prError" class="aviso aviso-error" hidden></div>
+<div class="modal-acciones"><button type="submit" class="boton boton-primario boton-ancho" data-i18n="btnGuardarMov">Guardar</button></div>
+</form>
+</div>
+</div>
+
+<div id="modalPrestamoDet" class="modal-fondo" hidden>
+<div class="modal">
+<div class="modal-cabecera">
+<h3 id="pdTitulo"></h3>
+<button id="btnCerrarPrestamoDet" type="button" class="icono-btn" data-i18n-aria="ariaCerrarModal" aria-label="Cerrar">✖</button>
+</div>
+<div class="modal-cuerpo" id="pdCuerpo"></div>
+</div>
+</div>
+
 <!-- ===================== MODAL: NUEVO / EDITAR MOVIMIENTO ===================== -->
 <div id="modalFondo" class="modal-fondo" hidden>
 <div class="modal">

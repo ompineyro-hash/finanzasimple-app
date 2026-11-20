@@ -128,3 +128,19 @@ body.voz-abierta{overflow:hidden;}
 .pend-grupo-titulo{font-size:12.5px;font-weight:700;color:var(--texto-suave);margin-top:6px;padding-bottom:2px;border-bottom:1px solid #E7E2D8;}
 .pend-grupo-titulo:first-child{margin-top:0;}
 .sit-nada{display:block;font-size:16px;line-height:1.35;}
+
+/* Préstamos (violeta, siempre con la palabra además del color) */
+:root{--prestamo:#6B46C1;--prestamo-fondo:#EEE8FA;}
+html[data-tema="oscuro"]{--prestamo:#B9A0F2;--prestamo-fondo:#2E2745;}
+.pr-fila{border-left:5px solid var(--prestamo);cursor:pointer;}
+.pr-monto{color:var(--prestamo);}
+.pr-tag{display:inline-block;font-size:14px;font-weight:800;padding:2px 10px;border-radius:999px;background:var(--prestamo-fondo);color:var(--prestamo);}
+.pr-saldado{opacity:.85;}
+.sit-pres{color:var(--prestamo);font-weight:700;font-size:16px;}
+.pr-sentido{font-size:16px;font-weight:700;margin-left:6px;}
+.pr-linea{display:flex;justify-content:space-between;gap:10px;font-size:16px;padding:6px 0;border-bottom:1px solid var(--borde);}
+.pr-falta{color:var(--prestamo);}
+#modalPrestamo .texto-ayuda,#modalPrestamoDet .texto-ayuda{font-size:15px;}
+#segmentadoPrestamo .segmentado-item{padding:14px 10px;font-size:18px;}
+#vistaSituacion .titulo-subseccion,#modalPrestamoDet .titulo-subseccion{font-size:17px;}
+#modalPrestamo .modal-cuerpo label,#modalPrestamoDet .modal-cuerpo label{font-size:16px;}

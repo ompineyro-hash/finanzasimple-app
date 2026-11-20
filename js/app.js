@@ -381,6 +381,55 @@ const TRADUCCIONES = {
     sitNadaGrupo: "No hay nada en este grupo.",
     sitNadaPagar: "Nada por pagar",
     sitNadaCobrar: "Nada por cobrar. Para anotar un cobro, cargá un ingreso con \"Lo voy a cobrar después\".",
+    prTitulo: "Anotar un préstamo",
+    prMeDeben: "Me deben",
+    prDebo: "Debo",
+    prPersonaMeDeben: "¿A quién le prestaste?",
+    prPersonaDebo: "¿Quién te prestó?",
+    prAyudaMeDeben: "Prestaste plata: sale de una de tus cuentas y queda anotado que te la deben.",
+    prAyudaDebo: "Te prestaron plata: entra a una de tus cuentas y queda anotado que la debés.",
+    prMonto: "Monto",
+    prCuentaSale: "Cuenta de donde sale la plata",
+    prCuentaEntra: "Cuenta donde entra la plata",
+    prFechaDev: "Fecha de devolución (opcional)",
+    prNota: "Nota (opcional)",
+    prAviso: "No cuenta como gasto ni como ingreso: solo mueve plata entre tus cuentas y queda anotado en Situación.",
+    prErrPersona: "Escribí el nombre de la persona.",
+    prErrMonto: "Escribí un monto mayor a cero.",
+    prErrCuenta: "Elegí una cuenta.",
+    prErrFechaDev: "La fecha de devolución no puede ser anterior a la fecha del préstamo.",
+    prToast: "Préstamo guardado.",
+    prToastDev: "Devolución guardada.",
+    prToastBorrado: "Borrado.",
+    prSeccionMeDeben: "Plata que presté",
+    prSeccionDebo: "Plata que me prestaron",
+    prNada: "No hay préstamos pendientes.",
+    prAnotar: "➕ Anotar un préstamo",
+    prBtnMeDeben: "Me devolvieron",
+    prBtnDebo: "Devolví",
+    prEstPendiente: "Pendiente",
+    prEstParcial: "Devuelto en parte",
+    prEstSaldado: "Saldado",
+    prSaldados: "Saldados",
+    prLinea: "Préstamos:",
+    prDe: "de",
+    prPrestado: "Total del préstamo",
+    prDevuelto: "Ya devuelto",
+    prFalta: "Falta devolver",
+    prDesde: "Fecha del préstamo",
+    prDevoluciones: "Devoluciones",
+    prSinDev: "Todavía no hay devoluciones.",
+    prFormMeDeben: "Anotar que me devolvieron",
+    prFormDebo: "Anotar que devolví",
+    prCuentaDevMeDeben: "Cuenta donde entra la plata",
+    prCuentaDevDebo: "Cuenta de donde sale la plata",
+    prBtnDev: "Anotar devolución",
+    prAvisoDeMas: "Si te devuelven más de lo prestado, anotá la diferencia aparte como un ingreso.",
+    prErrMasQueFalta: "No puede ser más que lo que falta ({m}).",
+    prBorrar: "🗑️ Borrar este préstamo",
+    prBorrarNo: "Para borrar este préstamo, primero borrá sus devoluciones.",
+    prConfBorrar: "¿Borrar este préstamo? La plata vuelve al estado anterior en tus cuentas.",
+    prConfBorrarPago: "¿Borrar esta devolución?",
     sitVacio: "No tenés pagos ni cobros pendientes. Cuando cargues algo para pagar o cobrar después, o una compra en cuotas, lo vas a ver acá ordenado.",
     navConfig: "Ajustes",
     modalNuevoTitulo: "Nuevo movimiento",
@@ -864,6 +913,55 @@ const TRADUCCIONES = {
     sitNadaGrupo: "Não há nada neste grupo.",
     sitNadaPagar: "Nada a pagar",
     sitNadaCobrar: "Nada a receber. Para anotar um recebimento, lance uma receita com \"Vou receber depois\".",
+    prTitulo: "Registrar um empréstimo",
+    prMeDeben: "Me devem",
+    prDebo: "Eu devo",
+    prPersonaMeDeben: "Para quem você emprestou?",
+    prPersonaDebo: "Quem te emprestou?",
+    prAyudaMeDeben: "Você emprestou dinheiro: sai de uma das suas contas e fica registrado que lhe devem.",
+    prAyudaDebo: "Te emprestaram dinheiro: entra em uma das suas contas e fica registrado que você deve.",
+    prMonto: "Valor",
+    prCuentaSale: "Conta de onde sai o dinheiro",
+    prCuentaEntra: "Conta onde entra o dinheiro",
+    prFechaDev: "Data de devolução (opcional)",
+    prNota: "Nota (opcional)",
+    prAviso: "Não conta como despesa nem como receita: só move dinheiro entre suas contas e fica registrado em Situação.",
+    prErrPersona: "Escreva o nome da pessoa.",
+    prErrMonto: "Digite um valor maior que zero.",
+    prErrCuenta: "Escolha uma conta.",
+    prErrFechaDev: "A data de devolução não pode ser anterior à data do empréstimo.",
+    prToast: "Empréstimo salvo.",
+    prToastDev: "Devolução salva.",
+    prToastBorrado: "Apagado.",
+    prSeccionMeDeben: "Dinheiro que emprestei",
+    prSeccionDebo: "Dinheiro que me emprestaram",
+    prNada: "Não há empréstimos pendentes.",
+    prAnotar: "➕ Registrar um empréstimo",
+    prBtnMeDeben: "Me devolveram",
+    prBtnDebo: "Devolvi",
+    prEstPendiente: "Pendente",
+    prEstParcial: "Devolvido em parte",
+    prEstSaldado: "Quitado",
+    prSaldados: "Quitados",
+    prLinea: "Empréstimos:",
+    prDe: "de",
+    prPrestado: "Total do empréstimo",
+    prDevuelto: "Já devolvido",
+    prFalta: "Falta devolver",
+    prDesde: "Data do empréstimo",
+    prDevoluciones: "Devoluções",
+    prSinDev: "Ainda não há devoluções.",
+    prFormMeDeben: "Registrar que me devolveram",
+    prFormDebo: "Registrar que devolvi",
+    prCuentaDevMeDeben: "Conta onde entra o dinheiro",
+    prCuentaDevDebo: "Conta de onde sai o dinheiro",
+    prBtnDev: "Registrar devolução",
+    prAvisoDeMas: "Se devolverem mais do que o emprestado, registre a diferença à parte como uma receita.",
+    prErrMasQueFalta: "Não pode ser mais do que falta ({m}).",
+    prBorrar: "🗑️ Apagar este empréstimo",
+    prBorrarNo: "Para apagar este empréstimo, apague primeiro as devoluções.",
+    prConfBorrar: "Apagar este empréstimo? O dinheiro volta ao estado anterior nas suas contas.",
+    prConfBorrarPago: "Apagar esta devolução?",
     sitVacio: "Você não tem pagamentos nem recebimentos pendentes. Quando lançar algo para pagar ou receber depois, ou uma compra parcelada, você vai ver aqui, organizado.",
     navConfig: "Ajustes",
     modalNuevoTitulo: "Novo lançamento",
@@ -1347,6 +1445,55 @@ const TRADUCCIONES = {
     sitNadaGrupo: "Nothing in this group.",
     sitNadaPagar: "Nothing to pay",
     sitNadaCobrar: "Nothing to collect. To record money owed to you, add income with \"I'll get paid later\".",
+    prTitulo: "Record a loan",
+    prMeDeben: "Owed to me",
+    prDebo: "I owe",
+    prPersonaMeDeben: "Who did you lend to?",
+    prPersonaDebo: "Who lent you money?",
+    prAyudaMeDeben: "You lent money: it leaves one of your accounts and is recorded as owed to you.",
+    prAyudaDebo: "You were lent money: it enters one of your accounts and is recorded as something you owe.",
+    prMonto: "Amount",
+    prCuentaSale: "Account the money comes from",
+    prCuentaEntra: "Account the money goes into",
+    prFechaDev: "Return date (optional)",
+    prNota: "Note (optional)",
+    prAviso: "It counts as neither expense nor income: it only moves money between your accounts and is recorded in Situation.",
+    prErrPersona: "Write the person's name.",
+    prErrMonto: "Enter an amount above zero.",
+    prErrCuenta: "Choose an account.",
+    prErrFechaDev: "The return date can't be before the loan date.",
+    prToast: "Loan saved.",
+    prToastDev: "Repayment saved.",
+    prToastBorrado: "Deleted.",
+    prSeccionMeDeben: "Money I lent",
+    prSeccionDebo: "Money I was lent",
+    prNada: "No pending loans.",
+    prAnotar: "➕ Record a loan",
+    prBtnMeDeben: "They paid me back",
+    prBtnDebo: "I paid back",
+    prEstPendiente: "Pending",
+    prEstParcial: "Partly repaid",
+    prEstSaldado: "Settled",
+    prSaldados: "Settled",
+    prLinea: "Loans:",
+    prDe: "of",
+    prPrestado: "Loan total",
+    prDevuelto: "Already repaid",
+    prFalta: "Still to repay",
+    prDesde: "Loan date",
+    prDevoluciones: "Repayments",
+    prSinDev: "No repayments yet.",
+    prFormMeDeben: "Record that they paid me back",
+    prFormDebo: "Record that I paid back",
+    prCuentaDevMeDeben: "Account the money goes into",
+    prCuentaDevDebo: "Account the money comes from",
+    prBtnDev: "Record repayment",
+    prAvisoDeMas: "If you get back more than you lent, record the difference separately as income.",
+    prErrMasQueFalta: "It can't be more than what is left ({m}).",
+    prBorrar: "🗑️ Delete this loan",
+    prBorrarNo: "To delete this loan, first delete its repayments.",
+    prConfBorrar: "Delete this loan? The money goes back to how it was in your accounts.",
+    prConfBorrarPago: "Delete this repayment?",
     sitVacio: "You have no pending payments or collections. When you add something to pay or collect later, or an installment purchase, it will show up here, organized.",
     navConfig: "Settings",
     modalNuevoTitulo: "New movement",
@@ -2406,11 +2553,16 @@ function renderSituacion() {
     {
       const venc = sitSuma(deudas.filter((m) => sitGrupo(m) === "venc"));
       const sem = sitSuma(deudas.filter((m) => sitGrupo(m) === "sem"));
-      h += sitTarjeta("debo", "", t("sitDebo"), t("sitVerDetalle"), formatoMonto(sitSuma(deudas)),
-        deudas.length
-          ? `${venc ? `<span class="sit-mal">${escapeHTML(t("sitVencido"))} ${escapeHTML(formatoMonto(venc))}</span> · ` : ""}${escapeHTML(t("sitProx7"))} ${escapeHTML(formatoMonto(sem))}`
-          : `<span class="sit-nada">${escapeHTML(t("sitNadaPagar"))}</span>`, "sit-mal");
-      h += sitTarjeta("cobrar", "", t("sitMeDeben"), t("sitVerDetalle"), formatoMonto(sitSuma(cobros)), cobros.length ? "" : `<span class="sit-nada">${escapeHTML(t("sitNadaCobrar"))}</span>`, "sit-bien");
+      const prD = prAbiertos("debo"), prC = prAbiertos("me_deben");
+      const lineaPr = (l, sentido) => l.length ? `<span class="sit-pres">${escapeHTML(t("prLinea"))} ${escapeHTML(formatoMonto(prSuma(sentido)))}</span>` : "";
+      const subDebo = [deudas.length
+        ? `${venc ? `<span class="sit-mal">${escapeHTML(t("sitVencido"))} ${escapeHTML(formatoMonto(venc))}</span> · ` : ""}${escapeHTML(t("sitProx7"))} ${escapeHTML(formatoMonto(sem))}` : "",
+        lineaPr(prD, "debo")].filter(Boolean).join("<br>");
+      h += sitTarjeta("debo", "", t("sitDebo"), t("sitVerDetalle"), formatoMonto(sitSuma(deudas) + prSuma("debo")),
+        subDebo || `<span class="sit-nada">${escapeHTML(t("sitNadaPagar"))}</span>`, "sit-mal");
+      const subCobrar = lineaPr(prC, "me_deben");
+      h += sitTarjeta("cobrar", "", t("sitMeDeben"), t("sitVerDetalle"), formatoMonto(sitSuma(cobros) + prSuma("me_deben")),
+        cobros.length || prC.length ? subCobrar : `<span class="sit-nada">${escapeHTML(t("sitNadaCobrar"))}</span>`, "sit-bien");
       const meses = sitMeses();
       if (meses.length) {
         const tot = (k) => sitSuma(sitFuturos().filter((m) => m.tipo === "Gasto" && mesClave(m.fecha_pago) === k));
@@ -2423,18 +2575,21 @@ function renderSituacion() {
     h = sitCabecera(t("sitTengo"), `${inicio} › ${t("sitTengo")}`) + tengoHTML();
   } else if (s.v === "debo") {
     h = sitCabecera(t("sitDebo"), `${inicio} › ${t("sitDebo")}`);
-    h += `<div class="sit-card sit-resumen"><div class="sit-etq"><span>${escapeHTML(t("sitTotal"))}</span></div><div class="sit-grande">${escapeHTML(formatoMonto(sitSuma(deudas)))}</div></div>`;
+    h += `<div class="sit-card sit-resumen"><div class="sit-etq"><span>${escapeHTML(t("sitTotal"))}</span></div><div class="sit-grande">${escapeHTML(formatoMonto(sitSuma(deudas) + prSuma("debo")))}</div></div>`;
     ["venc", "sem", "mas"].forEach((k) => {
       const l = deudas.filter((m) => sitGrupo(m) === k);
       h += sitTarjeta("grupo", k, sitNombreGrupo(k), t("sitVerN").replace("{n}", l.length), formatoMonto(sitSuma(l)), "", k === "venc" && l.length ? "sit-mal" : "");
     });
+    h += prSeccionHTML("debo");
   } else if (s.v === "grupo") {
     const l = sitOrdenar(deudas.filter((m) => sitGrupo(m) === s.id));
     h = sitCabecera(sitNombreGrupo(s.id), `${inicio} › ${t("sitDebo")} › ${sitNombreGrupo(s.id)}`);
     h += `<div class="sit-card sit-resumen"><div class="sit-etq"><span>${escapeHTML(t("sitTotal"))}</span></div><div class="sit-grande">${escapeHTML(formatoMonto(sitSuma(l)))}</div></div>` + sitLista(l);
   } else if (s.v === "cobrar") {
     h = sitCabecera(t("sitMeDeben"), `${inicio} › ${t("sitMeDeben")}`);
-    h += `<div class="sit-card sit-resumen"><div class="sit-etq"><span>${escapeHTML(t("sitTotal"))}</span></div><div class="sit-grande">${escapeHTML(formatoMonto(sitSuma(cobros)))}</div></div>` + sitLista(sitOrdenar(cobros));
+    h += `<div class="sit-card sit-resumen"><div class="sit-etq"><span>${escapeHTML(t("sitTotal"))}</span></div><div class="sit-grande">${escapeHTML(formatoMonto(sitSuma(cobros) + prSuma("me_deben")))}</div></div>`;
+    if (cobros.length || prestamosDisponible === false || !prAbiertos("me_deben").length) h += sitLista(sitOrdenar(cobros));
+    h += prSeccionHTML("me_deben");
   } else if (s.v === "viene") {
     h = sitCabecera(t("sitSeViene"), `${inicio} › ${t("sitSeViene")}`);
     sitMeses().forEach((k) => {
@@ -2462,6 +2617,10 @@ $("vistaSituacion").addEventListener("click", (e) => {
     if (!confirm(t("trConfirmBorrar"))) return;
     return borrarTransferencia(tBor.dataset.tengoBorrar).then(cargarTengo).then(tengoRefrescarVista).catch((err) => mostrarToast(traducirErrorDatos(err)));
   }
+  const prNuevo = e.target.closest("[data-pr-nuevo]");
+  if (prNuevo) return abrirPrestamo(prNuevo.dataset.prNuevo);
+  const prFila = e.target.closest("[data-pr-id]");
+  if (prFila) return abrirPrestamoDet(prFila.dataset.prId);
   const cerrar = e.target.closest(".pend-cerrar");
   if (cerrar) { e.stopPropagation(); return cerrarPendiente(cerrar.dataset.id); }
   const fila = e.target.closest(".pend-fila");
@@ -3494,6 +3653,7 @@ let tengoUsuario = null;
 
 async function cargarTengo() {
   if (!usuario) return;
+  await cargarPrestamos();
   if (tengoUsuario !== usuario.id) { tengoUsuario = usuario.id; tengoDisponible = null; tengoCalculo = null; }
   try {
     const tr = await listarTransferencias(usuario.id);
@@ -3507,6 +3667,12 @@ async function cargarTengo() {
     transferencias.forEach((x) => {
       if (x.cuenta_origen in saldos) saldos[x.cuenta_origen] -= Number(x.monto_origen);
       if (x.cuenta_destino in saldos) saldos[x.cuenta_destino] += Number(x.monto_destino);
+    });
+    // Préstamos: al prestar sale plata de la cuenta (o entra, si me prestaron); cada devolución hace lo contrario.
+    prestamos.forEach((p) => { if (p.cuenta in saldos) saldos[p.cuenta] += (p.sentido === "me_deben" ? -1 : 1) * Number(p.monto); });
+    prestamoPagos.forEach((g) => {
+      const p = prestamos.find((x) => x.id === g.prestamo_id);
+      if (p && g.cuenta in saldos) saldos[g.cuenta] += (p.sentido === "me_deben" ? 1 : -1) * Number(g.monto);
     });
     const base = monedaBase(), cot = { ...leerCotiz() };
     // Los dólares se valúan al dólar oficial del Banco Nación (venta); si no se puede consultar, se usa el último valor guardado.
@@ -3633,6 +3799,184 @@ $("formTransfer").addEventListener("submit", async (e) => {
     tengoRefrescarVista();
     mostrarToast(t("trToast"));
   } catch (err) { mostrarAviso($("trError"), traducirErrorDatos(err)); }
+});
+
+// ============================================================
+// PRÉSTAMOS: Me deben / Debo, con devoluciones parciales (no cuentan como ingreso ni gasto)
+// ============================================================
+let prestamos = [], prestamoPagos = [];
+let prestamosDisponible = null; // false = faltan las tablas en Supabase (se esconde la función)
+
+async function cargarPrestamos() {
+  if (!usuario) return;
+  try {
+    const r = await listarPrestamos(usuario.id);
+    if (r.noDisponible) { prestamosDisponible = false; prestamos = []; prestamoPagos = []; }
+    else { prestamosDisponible = true; prestamos = r.prestamos; prestamoPagos = r.pagos; }
+  } catch { prestamosDisponible = false; prestamos = []; prestamoPagos = []; }
+}
+function prRedondeo(n) { return Math.round(n * 100) / 100; }
+function prDevuelto(p) { return prRedondeo(prestamoPagos.filter((g) => g.prestamo_id === p.id).reduce((a, g) => a + Number(g.monto), 0)); }
+function prPendiente(p) { return Math.max(0, prRedondeo(Number(p.monto) - prDevuelto(p))); }
+function prEstado(p) { return prDevuelto(p) <= 0 ? "Pendiente" : prPendiente(p) > 0 ? "Parcial" : "Saldado"; }
+function prMoneda(p) { return monedaDeCuentaNombre(p.cuenta); }
+function prAbiertos(sentido) { return prestamos.filter((p) => p.sentido === sentido && prPendiente(p) > 0); }
+function prBase(p) {
+  const mon = prMoneda(p), pend = prPendiente(p);
+  if (mon === monedaBase()) return pend;
+  const cot = Number(((tengoCalculo && tengoCalculo.cotUsada) || leerCotiz())[mon]);
+  return cot > 0 ? pend * cot : 0;
+}
+function prSuma(sentido) { return prAbiertos(sentido).reduce((a, p) => a + prBase(p), 0); }
+function prTextoMonto(n, p) { return formatoMontoMoneda(n, prMoneda(p)); }
+
+function prFilaHTML(p) {
+  const est = prEstado(p);
+  const dev = p.fecha_devolucion ? `<div class="pend-venc${diasHasta(p.fecha_devolucion) < 0 && prPendiente(p) > 0 ? " vencido" : ""}">${escapeHTML(textoVencimiento(p.fecha_devolucion))}</div>` : "";
+  const parcial = est === "Parcial" ? `<div class="mov-equiv">${escapeHTML(t("prDe"))} ${escapeHTML(prTextoMonto(Number(p.monto), p))}</div>` : "";
+  const btn = prPendiente(p) > 0 ? `<button type="button" class="boton boton-secundario pend-cerrar">${escapeHTML(t(p.sentido === "me_deben" ? "prBtnMeDeben" : "prBtnDebo"))}</button>` : "";
+  return `<div class="pend-fila pr-fila" data-pr-id="${p.id}">
+    <div class="pend-info">
+      <div class="pend-cat">${escapeHTML(p.persona)}</div>
+      <div class="pend-sub"><span class="pr-tag pr-${est.toLowerCase()}">${escapeHTML(t("prEst" + est))}</span></div>${p.nota ? `<div class="pend-sub">${escapeHTML(p.nota)}</div>` : ""}${dev}
+    </div>
+    <div class="pend-derecha"><div class="mov-monto pr-monto">${escapeHTML(prTextoMonto(est === "Saldado" ? Number(p.monto) : prPendiente(p), p))}</div>${parcial}${btn}</div></div>`;
+}
+
+function prSeccionHTML(sentido) {
+  if (prestamosDisponible === false) return "";
+  const todos = prestamos.filter((p) => p.sentido === sentido);
+  const abiertos = prAbiertos(sentido).sort((a, b) => String(a.fecha_devolucion || "9999").localeCompare(String(b.fecha_devolucion || "9999")));
+  const saldados = todos.filter((p) => prPendiente(p) <= 0).slice(0, 10);
+  let h = `<h3 class="titulo-subseccion">${escapeHTML(t(sentido === "me_deben" ? "prSeccionMeDeben" : "prSeccionDebo"))}</h3>`;
+  h += abiertos.length ? `<div class="sit-lista">${abiertos.map(prFilaHTML).join("")}</div>` : `<div class="sit-vacio">${escapeHTML(t("prNada"))}</div>`;
+  h += `<button type="button" class="boton boton-primario boton-ancho" data-pr-nuevo="${sentido}" style="margin-top:12px">${escapeHTML(t("prAnotar"))}</button>`;
+  if (saldados.length) h += `<h3 class="titulo-subseccion">${escapeHTML(t("prSaldados"))}</h3><div class="sit-lista">${saldados.map(prFilaHTML).join("")}</div>`;
+  return h;
+}
+
+// ----- Nuevo préstamo -----
+let prSentidoActual = "me_deben";
+function prAplicarSentido(sentido) {
+  prSentidoActual = sentido;
+  document.querySelectorAll("#segmentadoPrestamo .segmentado-item").forEach((b) => b.classList.toggle("activo", b.dataset.sentido === sentido));
+  const md = sentido === "me_deben";
+  $("prLabelPersona").textContent = t(md ? "prPersonaMeDeben" : "prPersonaDebo");
+  $("prLabelCuenta").textContent = t(md ? "prCuentaSale" : "prCuentaEntra");
+  $("prAyudaSentido").textContent = t(md ? "prAyudaMeDeben" : "prAyudaDebo");
+}
+function abrirPrestamo(sentido) {
+  if (!cuentas.length) return mostrarToast(t("prErrCuenta"));
+  $("prCuenta").innerHTML = cuentas.map((c) => `<option value="${escapeHTML(c.nombre)}">${escapeHTML(c.nombre)}${c.moneda && c.moneda !== monedaBase() ? " (" + escapeHTML(c.moneda) + ")" : ""}</option>`).join("");
+  $("prPersona").value = ""; $("prMonto").value = ""; $("prNota").value = ""; $("prFechaDev").value = "";
+  $("prFecha").value = hoyISO();
+  $("prError").hidden = true;
+  prAplicarSentido(sentido === "debo" ? "debo" : "me_deben");
+  $("modalPrestamo").hidden = false;
+}
+function cerrarPrestamo() { $("modalPrestamo").hidden = true; }
+document.querySelectorAll("#segmentadoPrestamo .segmentado-item").forEach((b) => b.addEventListener("click", () => prAplicarSentido(b.dataset.sentido)));
+$("btnCerrarPrestamo").addEventListener("click", cerrarPrestamo);
+$("modalPrestamo").addEventListener("click", (e) => { if (e.target === $("modalPrestamo")) cerrarPrestamo(); });
+
+async function prRefrescar() {
+  await cargarTengo();
+  tengoRefrescarVista();
+}
+
+$("formPrestamo").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const persona = $("prPersona").value.trim();
+  const monto = numeroDesdeTexto($("prMonto").value);
+  const cuenta = $("prCuenta").value;
+  const fecha = $("prFecha").value || hoyISO();
+  const fdev = $("prFechaDev").value || null;
+  if (!persona) return mostrarAviso($("prError"), t("prErrPersona"));
+  if (!Number.isFinite(monto) || monto <= 0) return mostrarAviso($("prError"), t("prErrMonto"));
+  if (!cuenta) return mostrarAviso($("prError"), t("prErrCuenta"));
+  if (fdev && fdev < fecha) return mostrarAviso($("prError"), t("prErrFechaDev"));
+  try {
+    await crearPrestamo(usuario.id, { sentido: prSentidoActual, persona, monto: prRedondeo(monto), cuenta, fecha, fecha_devolucion: fdev, nota: $("prNota").value.trim() || null });
+    cerrarPrestamo();
+    await prRefrescar();
+    mostrarToast(t("prToast"));
+  } catch (err) { mostrarAviso($("prError"), traducirErrorDatos(err)); }
+});
+
+// ----- Detalle y devoluciones -----
+let prDetId = null;
+function abrirPrestamoDet(id) {
+  prDetId = id;
+  renderPrestamoDet();
+  $("modalPrestamoDet").hidden = false;
+}
+function cerrarPrestamoDet() { $("modalPrestamoDet").hidden = true; prDetId = null; }
+$("btnCerrarPrestamoDet").addEventListener("click", cerrarPrestamoDet);
+$("modalPrestamoDet").addEventListener("click", (e) => { if (e.target === $("modalPrestamoDet")) cerrarPrestamoDet(); });
+
+function renderPrestamoDet() {
+  const p = prestamos.find((x) => x.id === prDetId);
+  if (!p) return cerrarPrestamoDet();
+  const md = p.sentido === "me_deben";
+  const est = prEstado(p), pend = prPendiente(p), pagos = prestamoPagos.filter((g) => g.prestamo_id === p.id);
+  const mon = prMoneda(p);
+  $("pdTitulo").textContent = p.persona;
+  const fila = (k, v, cls) => `<div class="pr-linea"><span>${escapeHTML(t(k))}</span><b${cls ? ` class="${cls}"` : ""}>${escapeHTML(v)}</b></div>`;
+  let h = `<div><span class="pr-tag pr-${est.toLowerCase()}">${escapeHTML(t("prEst" + est))}</span> <span class="pr-sentido">${escapeHTML(t(md ? "prMeDeben" : "prDebo"))}</span></div>`;
+  h += fila("prPrestado", prTextoMonto(Number(p.monto), p)) + fila("prDevuelto", prTextoMonto(prDevuelto(p), p)) + fila("prFalta", prTextoMonto(pend, p), pend > 0 ? "pr-falta" : "");
+  h += fila("prDesde", formatoFecha(p.fecha));
+  if (p.fecha_devolucion) h += `<div class="pr-linea"><span>${escapeHTML(t("prFechaDev").replace(/ \(.*\)/, ""))}</span><b>${escapeHTML(formatoFecha(p.fecha_devolucion))}</b></div>`;
+  if (p.nota) h += `<p class="texto-ayuda">${escapeHTML(p.nota)}</p>`;
+  h += `<h3 class="titulo-subseccion">${escapeHTML(t("prDevoluciones"))}</h3>`;
+  h += pagos.length ? `<div class="sit-lista">` + pagos.map((g) => `<div class="pend-fila"><div class="pend-info"><div class="pend-cat">${escapeHTML(formatoFecha(g.fecha))}</div><div class="pend-sub">${escapeHTML(g.cuenta)}</div></div>
+    <div class="pend-derecha"><div class="mov-monto pr-monto">${escapeHTML(prTextoMonto(Number(g.monto), p))}</div><button type="button" class="icono-btn" data-pd-borrar-pago="${g.id}" aria-label="${escapeHTML(t("fijoBorrar"))}">🗑️</button></div></div>`).join("") + `</div>`
+    : `<div class="sit-vacio">${escapeHTML(t("prSinDev"))}</div>`;
+  if (pend > 0) {
+    const ops = cuentas.filter((c) => (c.moneda || monedaBase()) === mon).map((c) => `<option value="${escapeHTML(c.nombre)}"${c.nombre === p.cuenta ? " selected" : ""}>${escapeHTML(c.nombre)}</option>`).join("");
+    h += `<h3 class="titulo-subseccion">${escapeHTML(t(md ? "prFormMeDeben" : "prFormDebo"))}</h3>
+      <label><span>${escapeHTML(t("prMonto"))} (${escapeHTML(mon)})</span><input type="text" inputmode="decimal" id="pdMonto" value="${escapeHTML(String(pend).replace(".", ","))}"></label>
+      <label><span>${escapeHTML(t(md ? "prCuentaDevMeDeben" : "prCuentaDevDebo"))}</span><select id="pdCuenta">${ops}</select></label>
+      <label><span>${escapeHTML(t("labelFecha"))}</span><input type="date" id="pdFecha" value="${hoyISO()}"></label>
+      <p class="texto-ayuda">${escapeHTML(t("prAvisoDeMas"))}</p>
+      <div id="pdError" class="aviso aviso-error" hidden></div>
+      <button type="button" class="boton boton-primario boton-ancho" data-pd-devolver>${escapeHTML(t("prBtnDev"))}</button>`;
+  }
+  if (pagos.length) h += `<p class="texto-ayuda">${escapeHTML(t("prBorrarNo"))}</p>`;
+  else h += `<button type="button" class="boton boton-secundario boton-ancho" data-pd-borrar>${escapeHTML(t("prBorrar"))}</button>`;
+  $("pdCuerpo").innerHTML = h;
+}
+
+$("pdCuerpo").addEventListener("click", async (e) => {
+  const p = prestamos.find((x) => x.id === prDetId);
+  if (!p) return;
+  try {
+    if (e.target.closest("[data-pd-devolver]")) {
+      const monto = numeroDesdeTexto($("pdMonto").value), pend = prPendiente(p);
+      if (!Number.isFinite(monto) || monto <= 0) return mostrarAviso($("pdError"), t("prErrMonto"));
+      if (monto > pend + 0.001) return mostrarAviso($("pdError"), t("prErrMasQueFalta").replace("{m}", prTextoMonto(pend, p)));
+      if (!$("pdCuenta").value) return mostrarAviso($("pdError"), t("prErrCuenta"));
+      await crearPagoPrestamo(usuario.id, { prestamo_id: p.id, monto: prRedondeo(monto), cuenta: $("pdCuenta").value, fecha: $("pdFecha").value || hoyISO() });
+      await prRefrescar();
+      renderPrestamoDet();
+      mostrarToast(t("prToastDev"));
+      return;
+    }
+    const bp = e.target.closest("[data-pd-borrar-pago]");
+    if (bp) {
+      if (!confirm(t("prConfBorrarPago"))) return;
+      await borrarPagoPrestamo(bp.dataset.pdBorrarPago);
+      await prRefrescar();
+      renderPrestamoDet();
+      return;
+    }
+    if (e.target.closest("[data-pd-borrar]")) {
+      if (!confirm(t("prConfBorrar"))) return;
+      await borrarPrestamo(p.id);
+      cerrarPrestamoDet();
+      await prRefrescar();
+      mostrarToast(t("prToastBorrado"));
+    }
+  } catch (err) { mostrarToast(traducirErrorDatos(err)); }
 });
 
 // ============================================================

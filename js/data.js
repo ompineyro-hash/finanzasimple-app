@@ -226,7 +226,7 @@ async function reiniciarDatosUsuario(userId) {
   if (e4) throw e4;
   // Estas tablas pueden no existir todavía: si falta alguna, se ignora.
   await borrarTodosLosComprobantes(userId);
-  for (const tabla of ["transferencias", "fijos", "presupuestos"]) {
+  for (const tabla of ["prestamo_pagos", "prestamos", "transferencias", "fijos", "presupuestos"]) {
     const { error } = await sbClient.from(tabla).delete().eq("user_id", userId);
     if (error && !esTablaInexistente(error)) throw error;
   }
@@ -324,6 +324,33 @@ async function borrarTransferencia(id) {
 
 async function actualizarSaldoInicial(id, valor) {
   const { error } = await sbClient.from("cuentas").update({ saldo_inicial: valor }).eq("id", id);
+  if (error) throw error;
+}
+
+
+// ---------- Préstamos (Me deben / Debo) y sus devoluciones ----------
+// Devuelve { prestamos, pagos } o { noDisponible: true } si las tablas aún no existen en Supabase.
+async function listarPrestamos(userId) {
+  const a = await sbClient.from("prestamos").select("*").eq("user_id", userId).order("fecha", { ascending: false });
+  if (a.error) { if (esTablaInexistente(a.error)) return { noDisponible: true }; throw a.error; }
+  const b = await sbClient.from("prestamo_pagos").select("*").eq("user_id", userId).order("fecha", { ascending: true });
+  if (b.error) { if (esTablaInexistente(b.error)) return { noDisponible: true }; throw b.error; }
+  return { prestamos: a.data || [], pagos: b.data || [] };
+}
+async function crearPrestamo(userId, p) {
+  const { error } = await sbClient.from("prestamos").insert({ user_id: userId, ...p });
+  if (error) throw error;
+}
+async function borrarPrestamo(id) {
+  const { error } = await sbClient.from("prestamos").delete().eq("id", id);
+  if (error) throw error;
+}
+async function crearPagoPrestamo(userId, pago) {
+  const { error } = await sbClient.from("prestamo_pagos").insert({ user_id: userId, ...pago });
+  if (error) throw error;
+}
+async function borrarPagoPrestamo(id) {
+  const { error } = await sbClient.from("prestamo_pagos").delete().eq("id", id);
   if (error) throw error;
 }
 
