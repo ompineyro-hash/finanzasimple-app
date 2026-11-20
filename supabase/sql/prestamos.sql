@@ -1,5 +1,5 @@
 -- Préstamos v1 (Me deben / Debo, con devoluciones parciales). Definido por Edu el 20/11/2026.
--- ESTADO: escrito, FALTA correrlo en Supabase (SQL Editor) ANTES de publicar la app.
+-- ESTADO: ya corrido en Supabase el 20/11/2026 (Success). trial_vigente() sin parámetros y eliminar_mi_cuenta verificados.
 -- No cuentan como ingreso ni gasto: solo mueven saldo de las cuentas (Tengo) y se ven en Situación.
 -- Cada préstamo se guarda en la moneda de la cuenta; las devoluciones van a cuentas de esa misma moneda.
 -- Importante: confirmar que trial_vigente() existe sin parámetros (como en las otras tablas) y
