@@ -65,7 +65,8 @@ Regla de diseño para todo: el público es mayormente de 55-60 años o más → 
 
 A. Para salir al mercado (lo más urgente)
 1. Probar el primer pago de alguien que nunca pagó (la renovación ya anda).
-2. Delegación de Gmail de ingastosoporte: concedida a ompineyro@gmail.com (aceptada) y a edusosa84@gmail.com (15/11, falta que Edu acepte el mail). Se usa desde la compu. Falta decidir el acceso de Edu a Mercado Pago para atender bajas y devoluciones.
+2. Delegación de Gmail de ingastosoporte: concedida a ompineyro@gmail.com (aceptada) y a edusosa84@gmail.com (aceptada por Edu, confirmado 20/11). Se usa desde la compu. Falta decidir el acceso de Edu a Mercado Pago para atender bajas y devoluciones.
+   Fotos de comprobantes: Edu definió guardarlas 90 días (20/11). Falta implementar el borrado automático y actualizar Privacidad y Términos (avisar a Marcelo).
 3. (Hecho 15/11) Filas de prueba borradas de `solicitudes`.
 4. Nombre/razón social y CUIT en Términos y Privacidad (consultar contador). Revisión de abogado: OK según Edu (18/11); después se agregaron puntos a los Términos (quedaron completos) y el 18/11 se cambió 15→25 días de prueba. Si se agregan cosas importantes, revisar de nuevo.
 5. (Hecho 17/11) Edu: verificación en dos pasos en Supabase y GitHub; `mp-webhook` copiado al repo.
