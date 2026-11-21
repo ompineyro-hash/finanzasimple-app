@@ -321,6 +321,10 @@ html[data-tema="oscuro"] .rapido-cat.activo{color:#0B1411;}
   .rapido-barra{gap:6px;padding:6px 0 2px;}
   .rapido-monto{font-size:40px;margin:2px 0;}
   .rapido-cursor{height:34px;}
+  /* en pantallas bajas las categorías van primero (lo más usado); QR, Banco y Hoy quedan debajo */
+  #formMovimiento.modo-rapido .rapido-titulo{order:4;}
+  #formMovimiento.modo-rapido .rapido-cats{order:5;}
+  #formMovimiento.modo-rapido .rapido-chips-chicos{order:6;}
 }
 
 /* Elegir cuenta en la carga rápida: botones grandes */
