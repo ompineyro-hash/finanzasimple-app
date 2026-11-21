@@ -313,6 +313,15 @@ html[data-tema="oscuro"] .rapido-cat.activo{color:#0B1411;}
 .rapido-teclado button:active{transform:scale(.95);background:var(--ingreso-fondo);}
 .rapido-mas-opciones{background:none;border:none;color:var(--primario);font-weight:700;font-size:15px;padding:8px;cursor:pointer;}
 @media (min-width:900px){.rapido-teclado button{padding:10px 0;font-size:22px;}}
+/* Pantallas bajas (celulares chicos o con la barra del navegador): teclado más compacto para no tapar monto, cuenta y categorías */
+@media (max-height:760px){
+  .rapido-teclado{gap:6px;}
+  .rapido-teclado button{padding:0;height:clamp(34px,6vh,44px);font-size:clamp(18px,3.4vh,22px);}
+  .rapido-guardar{padding:9px;font-size:17.5px;}
+  .rapido-barra{gap:6px;padding:6px 0 2px;}
+  .rapido-monto{font-size:40px;margin:2px 0;}
+  .rapido-cursor{height:34px;}
+}
 
 /* Elegir cuenta en la carga rápida: botones grandes */
 #formMovimiento.modo-rapido .rapido-cuentas{order:4;}
