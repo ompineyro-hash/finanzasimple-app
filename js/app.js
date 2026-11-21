@@ -410,6 +410,8 @@ const TRADUCCIONES = {
     prSeccionMeDeben: "Plata que presté",
     prSeccionDebo: "Plata que me prestaron",
     prNada: "No hay préstamos pendientes.",
+    prAtajoDebo: "➕ Anotar plata que me prestaron",
+    prAtajoMeDeben: "➕ Anotar plata que presté",
     prAnotar: "➕ Anotar un préstamo",
     prBtnMeDeben: "Me devolvieron",
     prBtnDebo: "Devolví",
@@ -948,6 +950,8 @@ const TRADUCCIONES = {
     prSeccionMeDeben: "Dinheiro que emprestei",
     prSeccionDebo: "Dinheiro que me emprestaram",
     prNada: "Não há empréstimos pendentes.",
+    prAtajoDebo: "➕ Registrar dinheiro que me emprestaram",
+    prAtajoMeDeben: "➕ Registrar dinheiro que emprestei",
     prAnotar: "➕ Registrar um empréstimo",
     prBtnMeDeben: "Me devolveram",
     prBtnDebo: "Devolvi",
@@ -1486,6 +1490,8 @@ const TRADUCCIONES = {
     prSeccionMeDeben: "Money I lent",
     prSeccionDebo: "Money I was lent",
     prNada: "No pending loans.",
+    prAtajoDebo: "➕ Record money I borrowed",
+    prAtajoMeDeben: "➕ Record money I lent",
     prAnotar: "➕ Record a loan",
     prBtnMeDeben: "They paid me back",
     prBtnDebo: "I paid back",
@@ -2578,9 +2584,11 @@ function renderSituacion() {
         lineaPr(prD, "debo")].filter(Boolean).join("<br>");
       h += sitTarjeta("debo", "", t("sitDebo"), t("sitVerDetalle"), formatoMonto(sitSuma(deudas) + prSuma("debo")),
         subDebo || `<span class="sit-nada">${escapeHTML(t("sitNadaPagar"))}</span>`, "sit-mal");
+      if (prestamosDisponible !== false) h += `<button type="button" class="pr-atajo" data-pr-nuevo="debo">${escapeHTML(t("prAtajoDebo"))}</button>`;
       const subCobrar = lineaPr(prC, "me_deben");
       h += sitTarjeta("cobrar", "", t("sitMeDeben"), t("sitVerDetalle"), formatoMonto(sitSuma(cobros) + prSuma("me_deben")),
         cobros.length || prC.length ? subCobrar : `<span class="sit-nada">${escapeHTML(t("sitNadaCobrar"))}</span>`, "sit-bien");
+      if (prestamosDisponible !== false) h += `<button type="button" class="pr-atajo" data-pr-nuevo="me_deben">${escapeHTML(t("prAtajoMeDeben"))}</button>`;
       const meses = sitMeses();
       if (meses.length) {
         const tot = (k) => sitSuma(sitFuturos().filter((m) => m.tipo === "Gasto" && mesClave(m.fecha_pago) === k));
