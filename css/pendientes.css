@@ -161,3 +161,8 @@ html[data-tema="oscuro"]{--prestamo:#B9A0F2;--prestamo-fondo:#2E2745;}
 /* Atajo para anotar un préstamo directo desde las tarjetas Debo / Me deben de Situación */
 .pr-atajo{display:block;width:100%;box-sizing:border-box;margin:-4px 0 14px;min-height:50px;padding:12px 14px;font:inherit;font-size:17px;font-weight:700;color:var(--prestamo,#7c5cd6);background:transparent;border:1.5px dashed var(--prestamo,#7c5cd6);border-radius:14px;cursor:pointer;text-align:center;}
 .pr-atajo:active{transform:scale(.98);}
+
+.pr-check{display:flex;align-items:center;gap:10px;font-size:17px;font-weight:700;margin:6px 0 12px;}
+.pr-check input{width:24px;height:24px;flex:none;margin:0;}
+#modalPrestamo label.pr-check{flex-direction:row;align-items:center;justify-content:flex-start;text-align:left;}
+#modalPrestamo label.pr-check span{flex:1;}

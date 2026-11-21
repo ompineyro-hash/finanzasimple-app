@@ -412,6 +412,25 @@ const TRADUCCIONES = {
     prNada: "No hay préstamos pendientes.",
     prAtajoDebo: "➕ Anotar plata que me prestaron",
     prAtajoMeDeben: "➕ Anotar plata que presté",
+    prEnCuotas: "Lo pago en cuotas (préstamo del banco)",
+    prCuotasN: "Cantidad de cuotas",
+    prCuotaValor: "Valor de cada cuota",
+    prCuotaFecha: "Fecha de la primera cuota",
+    prCuotaCat: "Categoría de las cuotas",
+    prQuedo: "¿La plata quedó en tu cuenta?",
+    prQuedoSi: "Sí, entró a mi cuenta",
+    prQuedoNo: "No, se usó directo (por ejemplo, para pagar una compra)",
+    prCuotasAyuda: "Se crea una cuota pendiente por mes, que aparece en Pendientes y en Debo. El préstamo no cuenta como ingreso.",
+    prCuentaCuotas: "Cuenta (donde entra la plata y desde donde pagás las cuotas)",
+    prErrCuotas: "Poné una cantidad de cuotas entre 2 y 120.",
+    prErrCuotaValor: "El valor de la cuota tiene que ser mayor a cero.",
+    prErrCuotasMoneda: "Por ahora, los préstamos en cuotas son solo en tu moneda base. Elegí una cuenta en esa moneda.",
+    prErrCuotasCat: "Elegí una categoría para las cuotas.",
+    prToastCuotas: "Préstamo anotado. Se crearon {n} cuotas pendientes.",
+    prSeccionCuotas: "Préstamos en cuotas",
+    prEstCuotas: "En cuotas",
+    prCuotasDet: "Las cuotas están en Pendientes (y en Debo). Si borrás este préstamo, las cuotas ya creadas siguen: borralas aparte desde Movimientos.",
+    prRecibido: "Recibido",
     prAnotar: "➕ Anotar un préstamo",
     prBtnMeDeben: "Me devolvieron",
     prBtnDebo: "Devolví",
@@ -952,6 +971,25 @@ const TRADUCCIONES = {
     prNada: "Não há empréstimos pendentes.",
     prAtajoDebo: "➕ Registrar dinheiro que me emprestaram",
     prAtajoMeDeben: "➕ Registrar dinheiro que emprestei",
+    prEnCuotas: "Pago em parcelas (empréstimo do banco)",
+    prCuotasN: "Quantidade de parcelas",
+    prCuotaValor: "Valor de cada parcela",
+    prCuotaFecha: "Data da primeira parcela",
+    prCuotaCat: "Categoria das parcelas",
+    prQuedo: "O dinheiro ficou na sua conta?",
+    prQuedoSi: "Sim, entrou na minha conta",
+    prQuedoNo: "Não, foi usado direto (por exemplo, para pagar uma compra)",
+    prCuotasAyuda: "É criada uma parcela pendente por mês, que aparece em Pendentes e em Devo. O empréstimo não conta como receita.",
+    prCuentaCuotas: "Conta (onde entra o dinheiro e de onde você paga as parcelas)",
+    prErrCuotas: "Informe uma quantidade de parcelas entre 2 e 120.",
+    prErrCuotaValor: "O valor da parcela precisa ser maior que zero.",
+    prErrCuotasMoneda: "Por enquanto, empréstimos em parcelas são só na sua moeda base. Escolha uma conta nessa moeda.",
+    prErrCuotasCat: "Escolha uma categoria para as parcelas.",
+    prToastCuotas: "Empréstimo registrado. Foram criadas {n} parcelas pendentes.",
+    prSeccionCuotas: "Empréstimos em parcelas",
+    prEstCuotas: "Em parcelas",
+    prCuotasDet: "As parcelas estão em Pendentes (e em Devo). Se você apagar este empréstimo, as parcelas já criadas continuam: apague-as à parte em Movimentos.",
+    prRecibido: "Recebido",
     prAnotar: "➕ Registrar um empréstimo",
     prBtnMeDeben: "Me devolveram",
     prBtnDebo: "Devolvi",
@@ -1492,6 +1530,25 @@ const TRADUCCIONES = {
     prNada: "No pending loans.",
     prAtajoDebo: "➕ Record money I borrowed",
     prAtajoMeDeben: "➕ Record money I lent",
+    prEnCuotas: "I pay it in installments (bank loan)",
+    prCuotasN: "Number of installments",
+    prCuotaValor: "Amount of each installment",
+    prCuotaFecha: "Date of the first installment",
+    prCuotaCat: "Category for the installments",
+    prQuedo: "Did the money reach your account?",
+    prQuedoSi: "Yes, it went into my account",
+    prQuedoNo: "No, it was used directly (for example, to pay for a purchase)",
+    prCuotasAyuda: "One pending installment is created per month; it shows in Pending and in I owe. The loan does not count as income.",
+    prCuentaCuotas: "Account (where the money goes in and where you pay installments from)",
+    prErrCuotas: "Enter a number of installments between 2 and 120.",
+    prErrCuotaValor: "The installment amount must be greater than zero.",
+    prErrCuotasMoneda: "For now, installment loans are only in your base currency. Pick an account in that currency.",
+    prErrCuotasCat: "Pick a category for the installments.",
+    prToastCuotas: "Loan recorded. {n} pending installments were created.",
+    prSeccionCuotas: "Installment loans",
+    prEstCuotas: "In installments",
+    prCuotasDet: "The installments are in Pending (and in I owe). If you delete this loan, the installments already created stay: delete them separately from Transactions.",
+    prRecibido: "Received",
     prAnotar: "➕ Record a loan",
     prBtnMeDeben: "They paid me back",
     prBtnDebo: "I paid back",
@@ -3890,7 +3947,8 @@ function prDevuelto(p) { return prRedondeo(prestamoPagos.filter((g) => g.prestam
 function prPendiente(p) { return Math.max(0, prRedondeo(Number(p.monto) - prDevuelto(p))); }
 function prEstado(p) { return prDevuelto(p) <= 0 ? "Pendiente" : prPendiente(p) > 0 ? "Parcial" : "Saldado"; }
 function prMoneda(p) { return monedaDeCuentaNombre(p.cuenta); }
-function prAbiertos(sentido) { return prestamos.filter((p) => p.sentido === sentido && prPendiente(p) > 0); }
+function prAbiertos(sentido) { return prestamos.filter((p) => p.sentido === sentido && !p.en_cuotas && prPendiente(p) > 0); }
+function prEnCuotasLista() { return prestamos.filter((p) => p.en_cuotas); }
 function prBase(p) {
   const mon = prMoneda(p), pend = prPendiente(p);
   if (mon === monedaBase()) return pend;
@@ -3901,6 +3959,12 @@ function prSuma(sentido) { return prAbiertos(sentido).reduce((a, p) => a + prBas
 function prTextoMonto(n, p) { return formatoMontoMoneda(n, prMoneda(p)); }
 
 function prFilaHTML(p) {
+  if (p.en_cuotas) {
+    return `<div class="pend-fila pr-fila" data-pr-id="${p.id}">
+    <div class="pend-info"><div class="pend-cat">${escapeHTML(p.persona)}</div>
+      <div class="pend-sub"><span class="pr-tag pr-pendiente">${escapeHTML(t("prEstCuotas"))}</span></div></div>
+    <div class="pend-derecha"><div class="mov-monto pr-monto">${escapeHTML(prTextoMonto(Number(p.monto), p))}</div><div class="mov-equiv">${escapeHTML(t("prRecibido"))}</div></div></div>`;
+  }
   const est = prEstado(p);
   const dev = p.fecha_devolucion ? `<div class="pend-venc${diasHasta(p.fecha_devolucion) < 0 && prPendiente(p) > 0 ? " vencido" : ""}">${escapeHTML(textoVencimiento(p.fecha_devolucion))}</div>` : "";
   const parcial = est === "Parcial" ? `<div class="mov-equiv">${escapeHTML(t("prDe"))} ${escapeHTML(prTextoMonto(Number(p.monto), p))}</div>` : "";
@@ -3917,10 +3981,12 @@ function prSeccionHTML(sentido) {
   if (prestamosDisponible === false) return "";
   const todos = prestamos.filter((p) => p.sentido === sentido);
   const abiertos = prAbiertos(sentido).sort((a, b) => String(a.fecha_devolucion || "9999").localeCompare(String(b.fecha_devolucion || "9999")));
-  const saldados = todos.filter((p) => prPendiente(p) <= 0).slice(0, 10);
+  const saldados = todos.filter((p) => !p.en_cuotas && prPendiente(p) <= 0).slice(0, 10);
+  const encuotas = sentido === "debo" ? prEnCuotasLista() : [];
   let h = `<h3 class="titulo-subseccion">${escapeHTML(t(sentido === "me_deben" ? "prSeccionMeDeben" : "prSeccionDebo"))}</h3>`;
   h += abiertos.length ? `<div class="sit-lista">${abiertos.map(prFilaHTML).join("")}</div>` : `<div class="sit-vacio">${escapeHTML(t("prNada"))}</div>`;
   h += `<button type="button" class="boton boton-primario boton-ancho" data-pr-nuevo="${sentido}" style="margin-top:12px">${escapeHTML(t("prAnotar"))}</button>`;
+  if (encuotas.length) h += `<h3 class="titulo-subseccion">${escapeHTML(t("prSeccionCuotas"))}</h3><div class="sit-lista">${encuotas.map(prFilaHTML).join("")}</div>`;
   if (saldados.length) h += `<h3 class="titulo-subseccion">${escapeHTML(t("prSaldados"))}</h3><div class="sit-lista">${saldados.map(prFilaHTML).join("")}</div>`;
   return h;
 }
@@ -3934,13 +4000,29 @@ function prAplicarSentido(sentido) {
   $("prLabelPersona").textContent = t(md ? "prPersonaMeDeben" : "prPersonaDebo");
   $("prLabelCuenta").textContent = t(md ? "prCuentaSale" : "prCuentaEntra");
   $("prAyudaSentido").textContent = t(md ? "prAyudaMeDeben" : "prAyudaDebo");
+  $("prBloqueCuotas").hidden = md;
+  if (md && $("prEnCuotas").checked) $("prEnCuotas").checked = false;
+  prAplicarCuotas();
 }
+function prAplicarCuotas() {
+  const on = $("prEnCuotas").checked && prSentidoActual === "debo";
+  $("prCuotasCampos").hidden = !on;
+  $("prLblFechaDev").hidden = on;
+  $("prLabelCuenta").textContent = on ? t("prCuentaCuotas") : t(prSentidoActual === "me_deben" ? "prCuentaSale" : "prCuentaEntra");
+}
+$("prEnCuotas").addEventListener("change", prAplicarCuotas);
 function abrirPrestamo(sentido) {
   if (!cuentas.length) return mostrarToast(t("prErrCuenta"));
   $("prCuenta").innerHTML = cuentas.map((c) => `<option value="${escapeHTML(c.nombre)}">${escapeHTML(c.nombre)}${c.moneda && c.moneda !== monedaBase() ? " (" + escapeHTML(c.moneda) + ")" : ""}</option>`).join("");
   $("prPersona").value = ""; $("prMonto").value = ""; $("prNota").value = ""; $("prFechaDev").value = "";
   $("prFecha").value = hoyISO();
   $("prError").hidden = true;
+  $("prEnCuotas").checked = false;
+  $("prCuotasN").value = ""; $("prCuotaValor").value = ""; $("prCuotaFecha").value = ""; $("prQuedo").value = "si";
+  const catsG = categorias.filter((c) => (c.tipo || "Gasto") === "Gasto");
+  $("prCuotaCat").innerHTML = catsG.map((c) => `<option value="${escapeHTML(c.nombre)}">${escapeHTML(c.nombre)}</option>`).join("");
+  const catPres = catsG.find((c) => /pr[eé]stamo|empr[eé]stimo|loan/i.test(c.nombre));
+  if (catPres) $("prCuotaCat").value = catPres.nombre;
   prAplicarSentido(sentido === "debo" ? "debo" : "me_deben");
   $("modalPrestamo").hidden = false;
 }
@@ -3964,6 +4046,7 @@ $("formPrestamo").addEventListener("submit", async (e) => {
   if (!persona) return mostrarAviso($("prError"), t("prErrPersona"));
   if (!Number.isFinite(monto) || monto <= 0) return mostrarAviso($("prError"), t("prErrMonto"));
   if (!cuenta) return mostrarAviso($("prError"), t("prErrCuenta"));
+  if (prSentidoActual === "debo" && $("prEnCuotas").checked) return prGuardarEnCuotas({ persona, monto, cuenta, fecha });
   if (fdev && fdev < fecha) return mostrarAviso($("prError"), t("prErrFechaDev"));
   try {
     await crearPrestamo(usuario.id, { sentido: prSentidoActual, persona, monto: prRedondeo(monto), cuenta, fecha, fecha_devolucion: fdev, nota: $("prNota").value.trim() || null });
@@ -3972,6 +4055,47 @@ $("formPrestamo").addEventListener("submit", async (e) => {
     mostrarToast(t("prToast"));
   } catch (err) { mostrarAviso($("prError"), traducirErrorDatos(err)); }
 });
+
+// Préstamo del banco en cuotas: una cuota pendiente por mes (como "Compras en cuotas") y,
+// si la plata entró a la cuenta, un préstamo marcado "en cuotas" que solo suma al "Tengo".
+async function prGuardarEnCuotas({ persona, monto, cuenta, fecha }) {
+  const n = parseInt($("prCuotasN").value, 10);
+  const valor = numeroDesdeTexto($("prCuotaValor").value);
+  const primera = $("prCuotaFecha").value || fecha;
+  const cat = $("prCuotaCat").value;
+  if (!Number.isInteger(n) || n < 2 || n > 120) return mostrarAviso($("prError"), t("prErrCuotas"));
+  if (!Number.isFinite(valor) || valor <= 0) return mostrarAviso($("prError"), t("prErrCuotaValor"));
+  if (!cat) return mostrarAviso($("prError"), t("prErrCuotasCat"));
+  if (monedaDeCuentaNombre(cuenta) !== monedaBase()) return mostrarAviso($("prError"), t("prErrCuotasMoneda"));
+  const cuotas = [];
+  for (let k = 0; k < n; k++) {
+    const f = sumarMesesISO(primera, k);
+    cuotas.push({ tipo: "Gasto", fecha: f, cuenta, categoria: cat, monto: prRedondeo(valor), moneda: monedaBase(), cotizacion: 1,
+      detalle: persona + " · " + t("textoCuota") + " " + (k + 1) + "/" + n, estado: "pendiente", fecha_pago: f });
+  }
+  const quedo = $("prQuedo").value === "si";
+  let creado = false;
+  try {
+    if (quedo) {
+      await crearPrestamo(usuario.id, { sentido: "debo", persona, monto: prRedondeo(monto), cuenta, fecha, fecha_devolucion: null, nota: $("prNota").value.trim() || null, en_cuotas: true });
+      creado = true;
+    }
+    await crearMovimientos(usuario.id, cuotas);
+    cerrarPrestamo();
+    await cargarMesActual();
+    await prRefrescar();
+    mostrarToast(t("prToastCuotas").replace("{n}", n));
+  } catch (err) {
+    if (creado) {
+      try {
+        await cargarPrestamos();
+        const c = prestamos.filter((p) => p.en_cuotas && p.persona === persona && p.fecha === fecha).pop();
+        if (c) await borrarPrestamo(c.id);
+      } catch (_) {}
+    }
+    mostrarAviso($("prError"), traducirErrorDatos(err));
+  }
+}
 
 // ----- Detalle y devoluciones -----
 let prDetId = null;
@@ -3992,6 +4116,14 @@ function renderPrestamoDet() {
   const mon = prMoneda(p);
   $("pdTitulo").textContent = p.persona;
   const fila = (k, v, cls) => `<div class="pr-linea"><span>${escapeHTML(t(k))}</span><b${cls ? ` class="${cls}"` : ""}>${escapeHTML(v)}</b></div>`;
+  if (p.en_cuotas) {
+    $("pdCuerpo").innerHTML = `<div><span class="pr-tag pr-pendiente">${escapeHTML(t("prEstCuotas"))}</span> <span class="pr-sentido">${escapeHTML(t("prDebo"))}</span></div>`
+      + fila("prRecibido", prTextoMonto(Number(p.monto), p)) + fila("prDesde", formatoFecha(p.fecha))
+      + (p.nota ? `<p class="texto-ayuda">${escapeHTML(p.nota)}</p>` : "")
+      + `<p class="texto-ayuda">${escapeHTML(t("prCuotasDet"))}</p>`
+      + `<button type="button" class="boton boton-secundario boton-ancho" data-pd-borrar>${escapeHTML(t("prBorrar"))}</button>`;
+    return;
+  }
   let h = `<div><span class="pr-tag pr-${est.toLowerCase()}">${escapeHTML(t("prEst" + est))}</span> <span class="pr-sentido">${escapeHTML(t(md ? "prMeDeben" : "prDebo"))}</span></div>`;
   h += fila("prPrestado", prTextoMonto(Number(p.monto), p)) + fila("prDevuelto", prTextoMonto(prDevuelto(p), p)) + fila("prFalta", prTextoMonto(pend, p), pend > 0 ? "pr-falta" : "");
   h += fila("prDesde", formatoFecha(p.fecha));

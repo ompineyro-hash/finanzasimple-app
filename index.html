@@ -699,9 +699,20 @@ Al crear una cuenta aceptás nuestros
 <p class="texto-ayuda" id="prAyudaSentido"></p>
 <label><span id="prLabelPersona" data-i18n="prPersona">Persona</span><input type="text" id="prPersona" maxlength="80" autocomplete="off"></label>
 <label><span data-i18n="prMonto">Monto</span><input type="text" inputmode="decimal" id="prMonto" placeholder="0,00"></label>
+<div id="prBloqueCuotas" hidden>
+<label class="pr-check"><input type="checkbox" id="prEnCuotas"><span data-i18n="prEnCuotas">Lo pago en cuotas (préstamo del banco)</span></label>
+<div id="prCuotasCampos" hidden>
+<label><span data-i18n="prCuotasN">Cantidad de cuotas</span><input type="text" inputmode="numeric" id="prCuotasN" placeholder="12"></label>
+<label><span data-i18n="prCuotaValor">Valor de cada cuota</span><input type="text" inputmode="decimal" id="prCuotaValor" placeholder="0,00"></label>
+<label><span data-i18n="prCuotaFecha">Fecha de la primera cuota</span><input type="date" id="prCuotaFecha"></label>
+<label><span data-i18n="prCuotaCat">Categoría de las cuotas</span><select id="prCuotaCat"></select></label>
+<label><span data-i18n="prQuedo">¿La plata quedó en tu cuenta?</span><select id="prQuedo"><option value="si" data-i18n="prQuedoSi">Sí, entró a mi cuenta</option><option value="no" data-i18n="prQuedoNo">No, se usó directo (por ejemplo, para pagar una compra)</option></select></label>
+<p class="texto-ayuda" data-i18n="prCuotasAyuda">Se crea una cuota pendiente por mes, que aparece en Pendientes y en Debo. El préstamo no cuenta como ingreso.</p>
+</div>
+</div>
 <label><span id="prLabelCuenta" data-i18n="prCuentaSale">Cuenta de donde sale la plata</span><select id="prCuenta"></select></label>
 <label><span data-i18n="labelFecha">Fecha</span><input type="date" id="prFecha"></label>
-<label><span data-i18n="prFechaDev">Fecha de devolución (opcional)</span><input type="date" id="prFechaDev"></label>
+<label id="prLblFechaDev"><span data-i18n="prFechaDev">Fecha de devolución (opcional)</span><input type="date" id="prFechaDev"></label>
 <label><span data-i18n="prNota">Nota (opcional)</span><input type="text" id="prNota" maxlength="200" autocomplete="off"></label>
 <p class="texto-ayuda" data-i18n="prAviso">No cuenta como gasto ni como ingreso: solo mueve plata entre tus cuentas y queda anotado en Situación.</p>
 <div id="prError" class="aviso aviso-error" hidden></div>
