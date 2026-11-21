@@ -710,6 +710,22 @@ Al crear una cuenta aceptás nuestros
 </div>
 </div>
 
+<div id="modalPedir" class="modal-fondo" hidden>
+<div class="modal">
+<div class="modal-cabecera">
+<h3 id="pedirTitulo"></h3>
+<button id="pedirCerrar" type="button" class="icono-btn" data-i18n-aria="ariaCerrarModal" aria-label="Cerrar">✖</button>
+</div>
+<form id="pedirForm" class="modal-cuerpo" novalidate>
+<div id="pedirCampos"></div>
+<div id="pedirError" class="aviso aviso-error" hidden></div>
+<div class="pedir-botones">
+<button type="button" class="boton boton-secundario" id="pedirCancelar" data-i18n="qrCancelar">Cancelar</button>
+<button type="submit" class="boton boton-primario" id="pedirOk" data-i18n="btnGuardar">Guardar</button>
+</div>
+</form>
+</div>
+</div>
 <div id="modalPrestamoDet" class="modal-fondo" hidden>
 <div class="modal">
 <div class="modal-cabecera">

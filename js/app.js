@@ -271,6 +271,11 @@ const TRADUCCIONES = {
     qrTitulo: "Escanear factura",
     qrAyuda: "Apuntá la cámara al código QR de la factura.",
     qrGaleria: "Elegir foto de la galería",
+    pedirNombre: "Nuevo nombre",
+    toastGuardado: "Guardado.",
+    toastBorrado: "Borrado.",
+    toastNoBorrar: "No se pudo borrar (¿tiene movimientos asociados?)",
+    pedirNumero: "Escribí un número válido.",
     qrCancelar: "Cancelar",
     qrPreparando: "Preparando el lector…",
     qrSinCamara: "No se pudo abrir la cámara. Probá con una foto de la galería.",
@@ -804,6 +809,11 @@ const TRADUCCIONES = {
     qrTitulo: "Escanear fatura",
     qrAyuda: "Aponte a câmera para o código QR da fatura.",
     qrGaleria: "Escolher foto da galeria",
+    pedirNombre: "Novo nome",
+    toastGuardado: "Salvo.",
+    toastBorrado: "Apagado.",
+    toastNoBorrar: "Não foi possível apagar (tem movimentos associados?)",
+    pedirNumero: "Digite um número válido.",
     qrCancelar: "Cancelar",
     qrPreparando: "Preparando o leitor…",
     qrSinCamara: "Não foi possível abrir a câmera. Tente com uma foto da galeria.",
@@ -1337,6 +1347,11 @@ const TRADUCCIONES = {
     qrTitulo: "Scan invoice",
     qrAyuda: "Point the camera at the invoice QR code.",
     qrGaleria: "Choose a photo from the gallery",
+    pedirNombre: "New name",
+    toastGuardado: "Saved.",
+    toastBorrado: "Deleted.",
+    toastNoBorrar: "Could not delete (does it have linked transactions?)",
+    pedirNumero: "Enter a valid number.",
     qrCancelar: "Cancel",
     qrPreparando: "Getting the reader ready…",
     qrSinCamara: "Couldn't open the camera. Try a photo from the gallery.",
@@ -3730,14 +3745,58 @@ function tengoHTML() {
   return h;
 }
 
+// Ventana propia para pedir uno o varios datos (reemplaza los cuadros feos del navegador).
+// campos: [{ id, etiqueta, valor, tipo: "texto" | "numero" | "dia" }]. Devuelve {id: valor} o null si se cancela.
+function pedirDatos(titulo, campos) {
+  return new Promise((resolve) => {
+    const modal = $("modalPedir"), form = $("pedirForm");
+    $("pedirTitulo").textContent = titulo;
+    $("pedirCampos").innerHTML = campos.map((c) =>
+      `<label>${escapeHTML(c.etiqueta)}<input id="pedir_${c.id}" type="text" autocomplete="off" inputmode="${c.tipo === "texto" ? "text" : c.tipo === "dia" ? "numeric" : "decimal"}" value="${escapeHTML(c.valor ?? "")}"></label>`).join("");
+    $("pedirError").hidden = true;
+    modal.hidden = false;
+    const primero = $("pedir_" + campos[0].id);
+    setTimeout(() => { primero.focus(); primero.select(); }, 50);
+    let listo = false;
+    const cerrar = (res) => {
+      if (listo) return; listo = true;
+      modal.hidden = true;
+      form.onsubmit = null; $("pedirCancelar").onclick = null; $("pedirCerrar").onclick = null; modal.onclick = null;
+      resolve(res);
+    };
+    form.onsubmit = (e) => {
+      e.preventDefault();
+      const res = {};
+      for (const c of campos) {
+        const v = $("pedir_" + c.id).value.trim();
+        if (c.tipo === "numero") {
+          const n = numeroDesdeTexto(v);
+          if (!Number.isFinite(n)) { $("pedirError").textContent = t("pedirNumero"); $("pedirError").hidden = false; return; }
+          res[c.id] = n;
+        } else if (c.tipo === "dia") {
+          const n = parseInt(v, 10);
+          if (!Number.isInteger(n) || n < 1 || n > 31) { $("pedirError").textContent = t("pedirNumero"); $("pedirError").hidden = false; return; }
+          res[c.id] = n;
+        } else {
+          if (!v) { $("pedirError").textContent = t("fijoError"); $("pedirError").hidden = false; return; }
+          res[c.id] = v;
+        }
+      }
+      cerrar(res);
+    };
+    $("pedirCancelar").onclick = () => cerrar(null);
+    $("pedirCerrar").onclick = () => cerrar(null);
+    modal.onclick = (e) => { if (e.target === modal) cerrar(null); };
+  });
+}
+
 async function tengoAjustar(id) {
   const f = tengoCalculo?.filas.find((x) => x.id === id);
   const c = cuentas.find((x) => x.id === id);
   if (!f || !c) return;
-  const r = prompt(t("tengoAjustarPide").replace("{c}", f.cuenta), String(f.saldo).replace(".", ","));
-  if (r === null) return;
-  const nuevo = numeroDesdeTexto(r);
-  if (!Number.isFinite(nuevo)) return;
+  const r = await pedirDatos(t("tengoAjustarPide").replace("{c}", f.cuenta), [{ id: "saldo", etiqueta: t("tengoAjustarPide").replace("{c}", f.cuenta), valor: String(f.saldo).replace(".", ","), tipo: "numero" }]);
+  if (!r) return;
+  const nuevo = r.saldo;
   try {
     await actualizarSaldoInicial(id, Math.round(((Number(c.saldo_inicial) || 0) + (nuevo - f.saldo)) * 100) / 100);
     await cargarCuentasYCategorias();
@@ -4094,15 +4153,13 @@ $("listaFijos").addEventListener("click", async (e) => {
   if (ed) {
     const f = fijos.find((x) => x.id === ed.dataset.editarFijo);
     if (!f) return;
-    const rDia = prompt(t("fijoPideDia"), String(f.dia));
-    if (rDia === null) return;
-    const dia = parseInt(rDia, 10);
-    const rMonto = prompt(t("fijoPideMonto"), String(f.monto).replace(".", ","));
-    if (rMonto === null) return;
-    const rNombre = prompt(t("fijoPideDetalle"), f.detalle || "");
-    if (rNombre === null) return;
-    const monto = numeroDesdeTexto(rMonto), detalle = rNombre.trim();
-    if (!detalle || !Number.isInteger(dia) || dia < 1 || dia > 31 || !Number.isFinite(monto) || monto <= 0) return mostrarToast(t("fijoError"));
+    const r = await pedirDatos(f.detalle || t("fijoPideDetalle"), [
+      { id: "detalle", etiqueta: t("fijoPideDetalle"), valor: f.detalle || "", tipo: "texto" },
+      { id: "monto", etiqueta: t("fijoPideMonto"), valor: String(f.monto).replace(".", ","), tipo: "numero" },
+      { id: "dia", etiqueta: t("fijoPideDia"), valor: String(f.dia), tipo: "dia" }]);
+    if (!r) return;
+    const { dia, monto, detalle } = r;
+    if (monto <= 0) return mostrarToast(t("fijoError"));
     try { await actualizarFijo(f.id, { dia, monto, detalle }); await cargarFijos(); renderFijos(); mostrarToast(t("fijoToastAgregado")); }
     catch (err) { mostrarToast(traducirErrorDatos(err)); }
     return;
@@ -4390,13 +4447,13 @@ function enlazarAccionesEditables(tipo) {
       const actual = lista.find((x) => x.id === id);
 
       if (accion === "editar") {
-        const nuevo = prompt("Nuevo nombre:", actual.nombre);
-        if (nuevo === null || !nuevo.trim()) return;
+        const r = await pedirDatos(t("pedirNombre"), [{ id: "nombre", etiqueta: t("pedirNombre"), valor: actual.nombre, tipo: "texto" }]);
+        if (!r) return;
         try {
-          if (tipo === "cuenta") await renombrarCuenta(id, nuevo.trim());
-          else await renombrarCategoria(id, nuevo.trim());
+          if (tipo === "cuenta") await renombrarCuenta(id, r.nombre);
+          else await renombrarCategoria(id, r.nombre);
           await cargarCuentasYCategorias();
-          mostrarToast("Guardado.");
+          mostrarToast(t("toastGuardado"));
         } catch (err) { mostrarToast(traducirErrorDatos(err)); }
       }
 
@@ -4406,8 +4463,8 @@ function enlazarAccionesEditables(tipo) {
           if (tipo === "cuenta") await borrarCuenta(id);
           else await borrarCategoria(id);
           await cargarCuentasYCategorias();
-          mostrarToast("Borrado.");
-        } catch (err) { mostrarToast("No se pudo borrar (¿tiene movimientos asociados?)"); }
+          mostrarToast(t("toastBorrado"));
+        } catch (err) { mostrarToast(t("toastNoBorrar")); }
       }
 
       if (accion === "cambiar-tipo") {
