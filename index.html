@@ -505,7 +505,7 @@ Al crear una cuenta aceptás nuestros
 <p class="texto-ayuda" data-i18n="textoImportar">Subí un archivo de Excel (.xlsx) o CSV, por ejemplo el reporte de Mercado Pago o el resumen de tu banco. Antes de guardar vas a ver cuántos movimientos entran.</p>
 <details class="imp-ayuda"><summary data-i18n="impAyudaTitulo">¿Cómo bajo el archivo de Mercado Pago?</summary>
 <p class="texto-ayuda" data-i18n="impAyudaPasos">En Mercado Pago: Reportes → Todas las transacciones → Nuevo reporte. Elegí el período, formato CSV, y tocá Generar. Cuando diga "Nuevo", tocá Descargar.</p></details>
-<div class="fila-config"><input type="file" id="impArchivo" accept=".csv,.txt,.xlsx,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"></div>
+<div class="fila-config"><label class="btn-principal imp-elegir" for="impArchivo" data-i18n="impElegir">Elegir archivo</label><input type="file" id="impArchivo" class="imp-oculto" accept=".csv,.txt,.xlsx,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"></div>
 <div id="impError" class="aviso aviso-error" hidden></div>
 <div id="impPaso2" hidden>
 <div class="fila-config"><label><span data-i18n="impCuenta">Cuenta por defecto (si el archivo no trae cuenta)</span><select id="impCuenta"></select></label></div>

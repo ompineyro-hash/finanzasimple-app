@@ -144,3 +144,10 @@ html[data-tema="oscuro"]{--prestamo:#B9A0F2;--prestamo-fondo:#2E2745;}
 #segmentadoPrestamo .segmentado-item{padding:14px 10px;font-size:18px;}
 #vistaSituacion .titulo-subseccion,#modalPrestamoDet .titulo-subseccion{font-size:17px;}
 #modalPrestamo .modal-cuerpo label,#modalPrestamoDet .modal-cuerpo label{font-size:16px;}
+
+.imp-oculto{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;}
+.imp-elegir{display:block;width:100%;text-align:center;font-size:17px;padding:14px;cursor:pointer;box-sizing:border-box;}
+#impConfirmar{width:100%;font-size:17px;min-height:52px;}
+.fijos-total{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;}
+.fijos-total small{font-size:16px;}
+.fijos-total b{font-size:18px;}
