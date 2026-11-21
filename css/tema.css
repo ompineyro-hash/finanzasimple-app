@@ -329,9 +329,9 @@ html[data-tema="oscuro"] .rapido-cat.activo{color:#0B1411;}
 
 /* Pantallas muy bajas (celulares con letra grande o barra del navegador): se ven por lo menos 2 filas de categorías sin mover la pantalla */
 @media (max-height:700px){
-  #modalMovimiento .modal-cabecera{padding:10px 18px 2px;flex-wrap:nowrap;}
-  #modalMovimiento .modal-cabecera h3{font-size:19px;white-space:nowrap;}
-  #modalMovimiento .boton-voz-chico{white-space:nowrap;padding:4px 12px;min-height:36px;font-size:15px;margin-right:4px;}
+  #modalFondo .modal-cabecera{padding:10px 18px 2px;flex-wrap:nowrap;gap:10px;}
+  #modalFondo .modal-cabecera h3{font-size:19px;white-space:nowrap;}
+  #modalFondo .boton-voz-chico{white-space:nowrap;padding:4px 12px;min-height:36px;font-size:15px;margin-right:4px;}
   #formMovimiento.modo-rapido{gap:8px;}
   #segmentadoTipo .segmentado-item{padding:8px 10px;font-size:17px;}
   .rapido-monto{font-size:34px;margin:0;}
