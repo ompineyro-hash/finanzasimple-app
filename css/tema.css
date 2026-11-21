@@ -327,6 +327,22 @@ html[data-tema="oscuro"] .rapido-cat.activo{color:#0B1411;}
   #formMovimiento.modo-rapido .rapido-chips-chicos{order:6;}
 }
 
+/* Pantallas muy bajas (celulares con letra grande o barra del navegador): se ven por lo menos 2 filas de categorías sin mover la pantalla */
+@media (max-height:700px){
+  #modalMovimiento .modal-cabecera{padding:10px 18px 2px;flex-wrap:nowrap;}
+  #modalMovimiento .modal-cabecera h3{font-size:19px;white-space:nowrap;}
+  #modalMovimiento .boton-voz-chico{white-space:nowrap;padding:4px 12px;min-height:36px;font-size:15px;margin-right:4px;}
+  #formMovimiento.modo-rapido{gap:8px;}
+  #segmentadoTipo .segmentado-item{padding:8px 10px;font-size:17px;}
+  .rapido-monto{font-size:34px;margin:0;}
+  .rapido-cursor{height:28px;}
+  .rapido-teclado{gap:5px;}
+  .rapido-teclado button{height:clamp(30px,5.4vh,40px);font-size:clamp(17px,3.2vh,21px);}
+  .rapido-guardar{padding:7px;font-size:17px;}
+  .rapido-barra{gap:5px;padding:5px 0 2px;}
+  .rapido-titulo{margin-top:0;}
+}
+
 /* Elegir cuenta en la carga rápida: botones grandes */
 #formMovimiento.modo-rapido .rapido-cuentas{order:4;}
 .rapido-cuentas{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;}
