@@ -328,7 +328,7 @@ html[data-tema="oscuro"] .rapido-cat.activo{color:#0B1411;}
 }
 
 /* Pantallas muy bajas (celulares con letra grande o barra del navegador): se ven por lo menos 2 filas de categorías sin mover la pantalla */
-@media (max-height:700px){
+@media (max-height:780px){
   #modalFondo .modal-cabecera{padding:10px 18px 2px;flex-wrap:nowrap;gap:10px;}
   #modalFondo .modal-cabecera h3{font-size:19px;white-space:nowrap;}
   #modalFondo .boton-voz-chico{white-space:nowrap;padding:4px 12px;min-height:36px;font-size:15px;margin-right:4px;}
@@ -342,6 +342,14 @@ html[data-tema="oscuro"] .rapido-cat.activo{color:#0B1411;}
   .rapido-barra{gap:5px;padding:5px 0 2px;}
   .rapido-titulo{margin-top:0;}
 }
+
+/* Encabezado de Nuevo movimiento: nunca se sale de la pantalla (letra grande del celular) */
+#modalFondo .modal-cabecera{flex-wrap:wrap;row-gap:6px;}
+#modalFondo .modal-cabecera h3{flex:1 1 150px;min-width:0;}
+#modalFondo .modal-cabecera .boton-voz-chico,#modalFondo .modal-cabecera .icono-btn{flex:none;}
+#modalFondo .modal-cabecera h3{order:1;}
+#modalFondo .modal-cabecera .icono-btn{order:2;margin-left:auto;}
+#modalFondo .modal-cabecera .boton-voz-chico{order:3;}
 
 /* Elegir cuenta en la carga rápida: botones grandes */
 #formMovimiento.modo-rapido .rapido-cuentas{order:4;}
