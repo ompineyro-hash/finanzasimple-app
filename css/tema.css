@@ -365,6 +365,13 @@ html[data-tema="oscuro"] .rapido-cat.activo{color:#0B1411;}
   .rapido-barra{gap:4px;padding:3px 0 0;}
 }
 
+/* Sombra sobre el teclado: avisa que hay más categorías para deslizar */
+.rapido-barra::before{content:"";position:absolute;left:0;right:0;top:-26px;height:26px;background:linear-gradient(to bottom,transparent,var(--papel));pointer-events:none;}
+@media (max-height:900px){
+  .rapido-cats{gap:6px;}
+  .rapido-cat{padding:7px 14px;}
+}
+
 /* Elegir cuenta en la carga rápida: botones grandes */
 #formMovimiento.modo-rapido .rapido-cuentas{order:4;}
 .rapido-cuentas{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;}
