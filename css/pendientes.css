@@ -166,3 +166,5 @@ html[data-tema="oscuro"]{--prestamo:#B9A0F2;--prestamo-fondo:#2E2745;}
 .pr-check input{width:24px;height:24px;flex:none;margin:0;}
 #modalPrestamo label.pr-check{flex-direction:row;align-items:center;justify-content:flex-start;text-align:left;}
 #modalPrestamo label.pr-check span{flex:1;}
+
+.foto-aviso{display:block;font-size:15px;line-height:1.35;color:var(--texto-suave);margin:4px 0 8px;}
