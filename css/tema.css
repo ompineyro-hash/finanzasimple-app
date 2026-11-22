@@ -351,6 +351,20 @@ html[data-tema="oscuro"] .rapido-cat.activo{color:#0B1411;}
 #modalFondo .modal-cabecera .icono-btn{order:2;margin-left:auto;}
 #modalFondo .modal-cabecera .boton-voz-chico{order:3;}
 
+/* Pantallas muy bajas (letra grande del celular): todo más junto para que entren 2 filas de categorías */
+@media (max-height:640px){
+  #modalFondo .modal-cabecera{padding:6px 16px 0;gap:6px;}
+  #modalFondo .modal-cabecera h3{font-size:clamp(15px,5.4vw,19px);flex:1 1 auto;}
+  #modalFondo .boton-voz-chico{min-height:30px;padding:2px 10px;font-size:14px;}
+  #segmentadoTipo .segmentado-item{padding:5px 8px;}
+  .rapido-monto{font-size:28px;}
+  .rapido-cursor{height:22px;}
+  .rapido-teclado{gap:4px;}
+  .rapido-teclado button{height:clamp(26px,5vh,34px);font-size:clamp(16px,3vh,19px);}
+  .rapido-guardar{padding:5px;}
+  .rapido-barra{gap:4px;padding:3px 0 0;}
+}
+
 /* Elegir cuenta en la carga rápida: botones grandes */
 #formMovimiento.modo-rapido .rapido-cuentas{order:4;}
 .rapido-cuentas{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;}
