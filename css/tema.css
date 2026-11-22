@@ -372,6 +372,11 @@ html[data-tema="oscuro"] .rapido-cat.activo{color:#0B1411;}
   .rapido-cat{padding:7px 14px;}
 }
 
+/* El bloque de números se ve como una tarjeta aparte, separada de las categorías */
+.rapido-barra{background:var(--papel-alto);border-top:2px solid var(--borde);border-radius:18px 18px 0 0;box-shadow:0 -8px 16px rgba(0,0,0,.14);padding:10px 10px 4px;margin:0 -2px;}
+.rapido-barra::before{display:none;}
+.rapido-teclado button{background:var(--papel);}
+
 /* Elegir cuenta en la carga rápida: botones grandes */
 #formMovimiento.modo-rapido .rapido-cuentas{order:4;}
 .rapido-cuentas{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;}
