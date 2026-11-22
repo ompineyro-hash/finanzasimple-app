@@ -7,6 +7,9 @@
 <title>Ingasto – controlá tus finanzas sin planillas</title>
 
 
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2F6F5E">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&amp;family=Work+Sans:wght@400;500;600&amp;display=swap">
 <style>
   body { margin: 0; font-family: 'Work Sans', system-ui, sans-serif; color: #1E2420; }
@@ -240,5 +243,9 @@
 </div>
 
 
+<script>
+// Para que Chrome ofrezca "Instalar app" también desde esta página de entrada
+if ("serviceWorker" in navigator) { window.addEventListener("load", function () { navigator.serviceWorker.register("sw.js").catch(function () {}); }); }
+</script>
 </body>
 </html>

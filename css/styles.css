@@ -96,8 +96,8 @@ input,select{font-family:inherit;font-size:16px;}
   color:var(--texto);
 }
 .form-login input:focus{outline:2px solid var(--primario);outline-offset:1px;}
-.campo-clave{position:relative;display:flex;}
-.campo-clave input{flex:1;padding-right:42px;}
+.campo-clave{position:relative;display:flex;width:100%;}
+.campo-clave input{flex:1;min-width:0;width:100%;box-sizing:border-box;padding-right:42px;}
 .btn-ojito{
   position:absolute;right:4px;top:50%;transform:translateY(-50%);
   background:none;border:none;font-size:17px;line-height:1;
