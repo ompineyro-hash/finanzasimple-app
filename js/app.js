@@ -3009,6 +3009,7 @@ function rapidoRefrescar() {
   f2.classList.toggle("rapido-ver-diferido", $("movDiferido").checked);
   $("rapido").classList.toggle("es-ingreso", tipo === "Ingreso");
   $("rapQR").hidden = tipo !== "Gasto";
+  $("rapQR2").hidden = tipo !== "Gasto";
   rapidoMostrarMonto();
 }
 function rapidoMostrarMonto() {
@@ -3201,6 +3202,7 @@ async function qrBucle() {
   } catch {}
   qrTimer = setTimeout(qrBucle, 300);
 }
+$("rapQR2").addEventListener("click", () => $("rapQR").click());
 $("rapQR").addEventListener("click", async () => {
   $("qrEstado").textContent = t("qrPreparando");
   $("qrEscaner").hidden = false;

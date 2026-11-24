@@ -459,3 +459,9 @@ html[data-tema="oscuro"] .rapido-cat.activo{color:#0B1411;}
 }
 /* "Más opciones" va ANTES del teclado: así el teclado es lo último del formulario y queda siempre fijo abajo */
 #formMovimiento.modo-rapido .rapido-mas-opciones{order:10;}
+/* Pantallas bajas: "Escanear QR" pasa debajo de las categorías (Banco y Hoy quedan arriba) para que se vean más categorías */
+#rapQR2{display:none;}
+@media (max-height:900px){
+  #rapQR{display:none;}
+  #formMovimiento.modo-rapido #rapQR2{display:inline-block;align-self:center;order:7;}
+}
