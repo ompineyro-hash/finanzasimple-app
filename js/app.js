@@ -266,6 +266,7 @@ const TRADUCCIONES = {
     cuotasRestan: "Restan",
     cuotasVacio: "No tenés compras en cuotas pendientes. Se cargan desde Agregar, tildando “Pagar en cuotas”.",
     cuotasVacioMes: "No tenés cuotas para pagar en este mes.",
+    rapMasHint: "⬇ Más categorías",
     rapCategorias: "Elegí la categoría",
     rapMas: "Otra…",
     qrBtn: "📷 Escanear QR",
@@ -826,6 +827,7 @@ const TRADUCCIONES = {
     cuotasRestan: "Faltam",
     cuotasVacio: "Você não tem compras parceladas pendentes. Elas são registradas em Adicionar, marcando “Pagar em parcelas”.",
     cuotasVacioMes: "Você não tem parcelas para pagar neste mês.",
+    rapMasHint: "⬇ Mais categorias",
     rapCategorias: "Escolha a categoria",
     rapMas: "Outra…",
     qrBtn: "📷 Escanear QR",
@@ -1386,6 +1388,7 @@ const TRADUCCIONES = {
     cuotasRestan: "Remaining",
     cuotasVacio: "You have no pending installment purchases. Add them from Add, ticking “Pay in installments”.",
     cuotasVacioMes: "You have no installments to pay this month.",
+    rapMasHint: "⬇ More categories",
     rapCategorias: "Choose the category",
     rapMas: "Other…",
     qrBtn: "📷 Scan QR",
@@ -3012,6 +3015,22 @@ function rapidoRefrescar() {
   $("rapQR2").hidden = tipo !== "Gasto";
   rapidoMostrarMonto();
 }
+// Cartel "Más categorías": aparece solo si hay más para ver deslizando; al tocarlo baja solo
+function rapidoHint() {
+  const f = $("formMovimiento"), h = $("rapMasHint");
+  if (!f || !h) return;
+  const resta = f.scrollHeight - f.scrollTop - f.clientHeight;
+  h.hidden = !(rapidoActivo() && resta > 8);
+}
+$("rapMasHint").addEventListener("click", () => {
+  const f = $("formMovimiento");
+  f.scrollBy({ top: Math.round(f.clientHeight * 0.6), behavior: "smooth" });
+});
+$("formMovimiento").addEventListener("scroll", rapidoHint, { passive: true });
+window.addEventListener("resize", rapidoHint);
+let rapidoHintPend = false;
+new MutationObserver(() => { if (rapidoHintPend) return; rapidoHintPend = true; requestAnimationFrame(() => { rapidoHintPend = false; rapidoHint(); }); })
+  .observe($("formMovimiento"), { attributes: true, childList: true, subtree: true });
 function rapidoMostrarMonto() {
   $("rapMonto").textContent = $("movMonto").value || "0";
   $("rapSigno").textContent = (() => { const c = cuentas.find((x) => x.nombre === $("movCuenta").value); return c && c.moneda && c.moneda !== monedaBase() ? simboloDe(c.moneda) : moneda(); })();
