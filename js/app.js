@@ -292,6 +292,14 @@ const TRADUCCIONES = {
     rapGuardarGasto: "Guardar gasto",
     rapGuardarIngreso: "Guardar ingreso",
     rapElegiCategoria: "Tocá una categoría antes de guardar.",
+    tituloLetra: "Tamaño de letra",
+    letraAyuda: "Elegí cómo querés ver las letras en Ingasto. Se guarda en este celular.",
+    letraNormal: "Normal",
+    letraNormalDet: "Como se ve siempre",
+    letraGrande: "Grande",
+    letraGrandeDet: "Letras más grandes",
+    letraMuy: "Muy grande",
+    letraMuyDet: "Las letras más grandes",
     tituloTema: "Modo oscuro",
     temaAuto: "Automático",
     temaAutoDet: "Igual que tu celular",
@@ -853,6 +861,14 @@ const TRADUCCIONES = {
     rapGuardarGasto: "Salvar despesa",
     rapGuardarIngreso: "Salvar receita",
     rapElegiCategoria: "Toque em uma categoria antes de salvar.",
+    tituloLetra: "Tamanho da letra",
+    letraAyuda: "Escolha como quer ver as letras no Ingasto. Fica guardado neste celular.",
+    letraNormal: "Normal",
+    letraNormalDet: "Como sempre",
+    letraGrande: "Grande",
+    letraGrandeDet: "Letras maiores",
+    letraMuy: "Muito grande",
+    letraMuyDet: "As maiores letras",
     tituloTema: "Modo escuro",
     temaAuto: "Automático",
     temaAutoDet: "Igual ao seu celular",
@@ -1414,6 +1430,14 @@ const TRADUCCIONES = {
     rapGuardarGasto: "Save expense",
     rapGuardarIngreso: "Save income",
     rapElegiCategoria: "Tap a category before saving.",
+    tituloLetra: "Text size",
+    letraAyuda: "Choose how you want to see the text in Ingasto. It is saved on this phone.",
+    letraNormal: "Normal",
+    letraNormalDet: "As usual",
+    letraGrande: "Large",
+    letraGrandeDet: "Bigger text",
+    letraMuy: "Extra large",
+    letraMuyDet: "The biggest text",
     tituloTema: "Dark mode",
     temaAuto: "Automatic",
     temaAutoDet: "Same as your phone",
@@ -3323,6 +3347,17 @@ async function renderCuotas() {
     </div>`).join("");
 }
 document.querySelectorAll('[data-config="configPanelCuotas"]').forEach((b) => b.addEventListener("click", renderCuotas));
+
+// ---------- Tamaño de letra ----------
+function letraGuardada() { try { const l = localStorage.getItem("fs_letra"); return l === "grande" || l === "muy" ? l : "normal"; } catch { return "normal"; } }
+function aplicarLetra(v) {
+  try { localStorage.setItem("fs_letra", v); } catch {}
+  if (v === "grande" || v === "muy") document.documentElement.setAttribute("data-letra", v);
+  else document.documentElement.removeAttribute("data-letra");
+  document.querySelectorAll("[data-letra-opcion]").forEach((b) => b.classList.toggle("activo", b.dataset.letraOpcion === v));
+}
+document.querySelectorAll("[data-letra-opcion]").forEach((b) => b.addEventListener("click", () => aplicarLetra(b.dataset.letraOpcion)));
+aplicarLetra(letraGuardada());
 
 // ---------- Tema claro / oscuro ----------
 function temaGuardado() { try { return localStorage.getItem("fs_tema") || "auto"; } catch { return "auto"; } }

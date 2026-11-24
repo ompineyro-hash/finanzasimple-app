@@ -63,10 +63,10 @@ html[data-tema="oscuro"] .segmentado-item.activo{background:#3A5148;color:var(--
 
 /* Elegir tema en Ajustes */
 .tema-opciones{display:flex;flex-direction:column;gap:10px;}
-.tema-opcion{display:flex;align-items:center;gap:12px;padding:14px 16px;border:2px solid var(--borde);border-radius:14px;background:var(--papel-alto);color:var(--texto);font-size:17px;font-weight:700;text-align:left;}
+.tema-opcion{display:flex;align-items:center;gap:12px;padding:14px 16px;border:2px solid var(--borde);border-radius:14px;background:var(--papel-alto);color:var(--texto);font-size:calc(17px * var(--letra,1));font-weight:700;text-align:left;}
 .tema-opcion.activo{border-color:var(--primario);}
-.tema-opcion small{display:block;font-size:13.5px;font-weight:500;color:var(--texto-suave);}
-.tema-opcion-ic{font-size:24px;width:32px;text-align:center;}
+.tema-opcion small{display:block;font-size:calc(13.5px * var(--letra,1));font-weight:500;color:var(--texto-suave);}
+.tema-opcion-ic{font-size:calc(24px * var(--letra,1));width:32px;text-align:center;}
 
 /* ===== Barra de abajo: íconos de línea gruesos, con nombre, y botón + amarillo ===== */
 .ic-linea{width:25px;height:25px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;display:block;}
@@ -77,7 +77,7 @@ html[data-tema="oscuro"] .segmentado-item.activo{background:#3A5148;color:var(--
 .navbar-icono{display:flex;align-items:center;justify-content:center;width:44px;height:30px;}
 .navbar-agregar{font-size:12.5px;color:var(--texto);position:relative;}
 .navbar-agregar-signo{
-  width:52px;height:52px;margin-top:-22px;font-size:32px;font-weight:600;
+  width:52px;height:52px;margin-top:-22px;font-size:calc(32px * var(--letra,1));font-weight:600;
   background:#F2C230;color:#1E2A24;border:4px solid var(--papel-alto);
   box-shadow:0 4px 14px rgba(242,194,48,.45);
 }
@@ -92,13 +92,13 @@ html[data-tema="oscuro"] .navbar-agregar-signo{border-color:#111D19;}
 @media (max-width:380px){.navbar-item,.navbar-agregar{font-size:11.5px;}}
 
 /* ===== Movimientos: ícono de cada categoría en un cuadradito de su color ===== */
-.lista-movimientos .mov-icono{border-radius:12px;width:44px;height:44px;font-size:21px;background:hsl(var(--cat-h,150) 70% 92%);}
+.lista-movimientos .mov-icono{border-radius:12px;width:44px;height:44px;font-size:calc(21px * var(--letra,1));background:hsl(var(--cat-h,150) 70% 92%);}
 html[data-tema="oscuro"] .lista-movimientos .mov-icono{background:hsl(var(--cat-h,150) 40% 22%);}
 .lista-movimientos .mov-icono.interno{background:#e7ebf0;}
 html[data-tema="oscuro"] .lista-movimientos .mov-icono.interno{background:#22312C;}
-.mov-categoria{font-size:16.5px;}
-.mov-detalle{font-size:14px;}
-.mov-monto{font-size:16.5px;}
+.mov-categoria{font-size:calc(16.5px * var(--letra,1));}
+.mov-detalle{font-size:calc(14px * var(--letra,1));}
+.mov-monto{font-size:calc(16.5px * var(--letra,1));}
 /* Pendientes en modo oscuro: cartel naranja */
 html[data-tema="oscuro"] .banner-pendientes{background:#2B1B0F;border-color:#7A4A22;color:#FFC08F;}
 html[data-tema="oscuro"] .banner-pendientes.tiene-vencidos{background:#3A1A14;border-color:#A8432F;}
@@ -119,13 +119,13 @@ html[data-tema="oscuro"] .linea-previsto{background:#15231E;}
     grid-column:1;grid-row:1 / -1;flex-direction:column;justify-content:flex-start;align-items:stretch;
     gap:4px;padding:18px 14px;border-top:none;border-right:1px solid var(--borde);
   }
-  .app > .navbar::before{content:"Ingasto";font-size:24px;font-weight:800;color:var(--primario);padding:0 10px 14px;order:-2;}
-  .navbar .navbar-item,.navbar .navbar-agregar{flex:0 0 auto;flex-direction:row;justify-content:flex-start;gap:12px;padding:10px 12px;border-radius:12px;font-size:16px;}
+  .app > .navbar::before{content:"Ingasto";font-size:calc(24px * var(--letra,1));font-weight:800;color:var(--primario);padding:0 10px 14px;order:-2;}
+  .navbar .navbar-item,.navbar .navbar-agregar{flex:0 0 auto;flex-direction:row;justify-content:flex-start;gap:12px;padding:10px 12px;border-radius:12px;font-size:calc(16px * var(--letra,1));}
   .navbar .navbar-item.activo{background:var(--ingreso-fondo);}
   .navbar .navbar-item.activo .navbar-icono{background:none;}
   .navbar .navbar-icono{width:26px;height:26px;}
   .navbar .navbar-agregar{order:-1;margin-bottom:14px;justify-content:center;background:#F2C230;color:#1E2A24;font-weight:800;padding:13px 12px;box-shadow:0 4px 14px rgba(242,194,48,.35);}
-  .navbar .navbar-agregar-signo{width:auto;height:auto;margin:0;border:none;background:none;box-shadow:none;font-size:22px;animation:none;color:inherit;}
+  .navbar .navbar-agregar-signo{width:auto;height:auto;margin:0;border:none;background:none;box-shadow:none;font-size:calc(22px * var(--letra,1));animation:none;color:inherit;}
   .topbar{border-radius:0;}
 }
 
@@ -134,41 +134,41 @@ html[data-tema="oscuro"] .mov-monto.interno{color:var(--texto-suave);}
 /* ===== Nuevo movimiento ===== */
 /* Gasto / Ingreso: dos botones grandes; el elegido se pinta de su color (naranja o verde) */
 #segmentadoTipo{background:none;padding:0;gap:10px;}
-#segmentadoTipo .segmentado-item{padding:14px 10px;font-size:18px;border:2px solid var(--borde);border-radius:14px;background:var(--papel-alto);color:var(--texto-suave);box-shadow:none;}
-#segmentadoTipo .segmentado-item[data-tipo="Gasto"]::before{content:"▼ ";font-size:13px;}
-#segmentadoTipo .segmentado-item[data-tipo="Ingreso"]::before{content:"▲ ";font-size:13px;}
+#segmentadoTipo .segmentado-item{padding:14px 10px;font-size:calc(18px * var(--letra,1));border:2px solid var(--borde);border-radius:14px;background:var(--papel-alto);color:var(--texto-suave);box-shadow:none;}
+#segmentadoTipo .segmentado-item[data-tipo="Gasto"]::before{content:"▼ ";font-size:calc(13px * var(--letra,1));}
+#segmentadoTipo .segmentado-item[data-tipo="Ingreso"]::before{content:"▲ ";font-size:calc(13px * var(--letra,1));}
 #segmentadoTipo .segmentado-item.activo[data-tipo="Gasto"]{background:#D9582B;border-color:#D9582B;color:#fff;}
 #segmentadoTipo .segmentado-item.activo[data-tipo="Ingreso"]{background:#2F8A6C;border-color:#2F8A6C;color:#fff;}
-.modal-cuerpo label{font-size:14.5px;}
-.modal-cuerpo input,.modal-cuerpo select{background:var(--papel-alto);font-size:17px;}
+.modal-cuerpo label{font-size:calc(14.5px * var(--letra,1));}
+.modal-cuerpo input,.modal-cuerpo select{background:var(--papel-alto);font-size:calc(17px * var(--letra,1));}
 /* Botón de voz naranja, bien visible */
-.boton-voz-chico,html[data-tema="oscuro"] .boton-voz-chico{background:#FF6A2B;color:#fff;padding:8px 16px;font-size:15px;border-radius:20px;}
+.boton-voz-chico,html[data-tema="oscuro"] .boton-voz-chico{background:#FF6A2B;color:#fff;padding:8px 16px;font-size:calc(15px * var(--letra,1));border-radius:20px;}
 
 /* ===== Ajustes: tarjetas con el ícono en un círculo de color ===== */
 .config-tarjeta{background:var(--papel-alto);border:1px solid var(--borde);box-shadow:var(--sombra);padding:18px 10px;}
-.config-tarjeta-icono{display:flex;align-items:center;justify-content:center;width:52px;height:52px;border-radius:16px;background:var(--ingreso-fondo);font-size:28px;}
-.config-tarjeta-titulo{font-size:15.5px;font-weight:700;color:var(--texto);}
+.config-tarjeta-icono{display:flex;align-items:center;justify-content:center;width:52px;height:52px;border-radius:16px;background:var(--ingreso-fondo);font-size:calc(28px * var(--letra,1));}
+.config-tarjeta-titulo{font-size:calc(15.5px * var(--letra,1));font-weight:700;color:var(--texto);}
 .config-tarjeta-peligro{background:var(--gasto-fondo);border-color:transparent;}
 .config-tarjeta-peligro .config-tarjeta-icono{background:transparent;}
 .config-tarjeta-peligro .config-tarjeta-titulo{color:var(--peligro);}
 
 /* ===== Análisis: pestañas principales como "píldoras" verdes ===== */
-#segmentadoVistaAnalisis .segmentado-item{font-size:15px;}
+#segmentadoVistaAnalisis .segmentado-item{font-size:calc(15px * var(--letra,1));}
 #segmentadoVistaAnalisis .segmentado-item.activo{background:var(--primario);color:#fff;}
 html[data-tema="oscuro"] #segmentadoVistaAnalisis .segmentado-item.activo{color:#0B1411;}
 /* Balance, Ingresos y Gastos en una sola tarjeta, más compacta */
 .resumen-tarjetas-analisis{gap:0;background:var(--papel-alto);border:1px solid var(--borde);border-radius:14px;box-shadow:var(--sombra);overflow:hidden;}
 .resumen-tarjetas-analisis .tarjeta-resumen-clara{border:none;border-radius:0;box-shadow:none;display:flex;justify-content:space-between;align-items:center;padding:10px 16px;text-align:left;}
 .resumen-tarjetas-analisis .tarjeta-resumen-clara + .tarjeta-resumen-clara{border-top:1px solid var(--borde);}
-.resumen-tarjetas-analisis .tarjeta-resumen-label{font-size:15px;}
-.resumen-tarjetas-analisis .tarjeta-resumen-valor{font-size:18px;margin:0;}
+.resumen-tarjetas-analisis .tarjeta-resumen-label{font-size:calc(15px * var(--letra,1));}
+.resumen-tarjetas-analisis .tarjeta-resumen-valor{font-size:calc(18px * var(--letra,1));margin:0;}
 
 /* ===== Botón "Volver" de Ajustes: grande y bien visible ===== */
 .config-volver{
   display:inline-flex;align-items:center;gap:6px;
   background:var(--papel-alto);color:var(--primario);
   border:2px solid var(--primario);border-radius:12px;
-  padding:10px 18px;font-size:17px;font-weight:800;margin:4px 0 14px;
+  padding:10px 18px;font-size:calc(17px * var(--letra,1));font-weight:800;margin:4px 0 14px;
   box-shadow:var(--sombra);cursor:pointer;
 }
 .config-volver:hover{background:var(--ingreso-fondo);}
@@ -188,8 +188,8 @@ html[data-tema="oscuro"] .topbar #valorGastos,html[data-tema="oscuro"] .flecha-r
 /* Torta: más grande, aro más grueso, entra girando y con brillo suave */
 .grafico-dona{width:210px;height:210px;margin:8px auto 24px;animation:dona-entra .9s cubic-bezier(.2,.9,.3,1.2) both;filter:drop-shadow(0 6px 16px rgba(0,0,0,.18));}
 .grafico-dona::after{inset:34px;box-shadow:inset 0 2px 8px rgba(0,0,0,.12);}
-.grafico-dona-total{font-size:19px;}
-.grafico-dona-label{font-size:13px;}
+.grafico-dona-total{font-size:calc(19px * var(--letra,1));}
+.grafico-dona-label{font-size:calc(13px * var(--letra,1));}
 @keyframes dona-entra{from{transform:rotate(-120deg) scale(.6);opacity:0;}to{transform:none;opacity:1;}}
 /* Barritas de cada categoría: se llenan de izquierda a derecha */
 .analisis-barra-fondo{height:12px;border-radius:99px;}
@@ -200,19 +200,19 @@ html[data-tema="oscuro"] .topbar #valorGastos,html[data-tema="oscuro"] .flecha-r
 .analisis-item:nth-child(n+6) .analisis-barra{animation-delay:.32s}
 @keyframes barra-llena{from{transform:scaleX(0);}to{transform:scaleX(1);}}
 .analisis-swatch{width:12px;height:12px;border-radius:4px;}
-.analisis-fila{font-size:15px;}
+.analisis-fila{font-size:calc(15px * var(--letra,1));}
 /* Barras por mes: más anchas, redondeadas, con degradé, y crecen desde abajo */
 .barra-par{height:140px;gap:5px;}
-.grafico-eje-y{height:140px;font-size:11px;}
+.grafico-eje-y{height:140px;font-size:calc(11px * var(--letra,1));}
 .barra{width:20px;border-radius:8px 8px 3px 3px;transform-origin:bottom;animation:barra-crece .8s cubic-bezier(.2,.9,.3,1.1) both;}
 .barra-ingreso{background:linear-gradient(180deg,#5BE0BC,#1FB58F);box-shadow:0 4px 10px rgba(31,181,143,.3);}
 .barra-gasto{background:linear-gradient(180deg,#FF9A7E,#FF6B4A);box-shadow:0 4px 10px rgba(255,107,74,.3);animation-delay:.12s;}
 .barra-mes:nth-child(2) .barra{animation-delay:.1s}.barra-mes:nth-child(3) .barra{animation-delay:.2s}
 .barra-mes:nth-child(4) .barra{animation-delay:.3s}.barra-mes:nth-child(n+5) .barra{animation-delay:.4s}
 @keyframes barra-crece{from{transform:scaleY(0);}to{transform:scaleY(1);}}
-.barra-mes-label{font-size:12.5px;font-weight:700;}
-.barra-mes-neto{font-size:12px;}
-.grafico-leyenda{font-size:14px;font-weight:700;color:var(--texto);}
+.barra-mes-label{font-size:calc(12.5px * var(--letra,1));font-weight:700;}
+.barra-mes-neto{font-size:calc(12px * var(--letra,1));}
+.grafico-leyenda{font-size:calc(14px * var(--letra,1));font-weight:700;color:var(--texto);}
 .grafico-leyenda-swatch{width:12px;height:12px;border-radius:4px;}
 /* Línea día a día: se dibuja de izquierda a derecha */
 .linea-anim{stroke-dasharray:3000;stroke-dashoffset:3000;animation:linea-dibuja 1.4s ease-out forwards;}
@@ -234,28 +234,28 @@ html[data-tema="oscuro"] .grafico-dona{filter:drop-shadow(0 6px 18px rgba(0,0,0,
 .vacio-lindo{text-align:center;padding:28px 16px 20px;display:flex;flex-direction:column;align-items:center;gap:10px;}
 .vacio-lindo-ic{width:96px;height:96px;border-radius:50%;background:var(--ingreso-fondo);color:var(--primario);display:flex;align-items:center;justify-content:center;}
 .vacio-lindo-ic .ic-linea{width:46px;height:46px;stroke-width:1.9;}
-.vacio-lindo h3{margin:6px 0 0;font-size:21px;color:var(--texto);}
-.vacio-lindo p{margin:0 0 6px;font-size:16px;color:var(--texto-suave);max-width:320px;}
-.vacio-btn-voz{background:#F2C230;color:#1E2A24;border:none;border-radius:99px;padding:14px 28px;font-size:18px;font-weight:800;box-shadow:0 4px 14px rgba(242,194,48,.35);cursor:pointer;}
-.vacio-btn-mano{background:none;border:none;color:var(--primario);font-size:17px;font-weight:800;padding:8px;cursor:pointer;}
-.vacio-btn-guia{background:none;border:none;color:var(--texto-suave);font-size:14.5px;text-decoration:underline;cursor:pointer;}
+.vacio-lindo h3{margin:6px 0 0;font-size:calc(21px * var(--letra,1));color:var(--texto);}
+.vacio-lindo p{margin:0 0 6px;font-size:calc(16px * var(--letra,1));color:var(--texto-suave);max-width:320px;}
+.vacio-btn-voz{background:#F2C230;color:#1E2A24;border:none;border-radius:99px;padding:14px 28px;font-size:calc(18px * var(--letra,1));font-weight:800;box-shadow:0 4px 14px rgba(242,194,48,.35);cursor:pointer;}
+.vacio-btn-mano{background:none;border:none;color:var(--primario);font-size:calc(17px * var(--letra,1));font-weight:800;padding:8px;cursor:pointer;}
+.vacio-btn-guia{background:none;border:none;color:var(--texto-suave);font-size:calc(14.5px * var(--letra,1));text-decoration:underline;cursor:pointer;}
 
 /* ===== Compras en cuotas ===== */
 .cuotas-resumen{display:flex;flex-direction:column;gap:2px;margin:4px 0 16px;}
-.cuotas-resumen span{font-size:15px;color:var(--texto-suave);font-weight:600;}
-.cuotas-resumen b{font-size:34px;font-weight:800;color:var(--gasto);}
+.cuotas-resumen span{font-size:calc(15px * var(--letra,1));color:var(--texto-suave);font-weight:600;}
+.cuotas-resumen b{font-size:calc(34px * var(--letra,1));font-weight:800;color:var(--gasto);}
 .lista-cuotas{display:flex;flex-direction:column;gap:12px;}
 .cuota-tarjeta{background:var(--papel-alto);border:1px solid var(--borde);border-radius:16px;padding:14px 16px;box-shadow:var(--sombra);}
 .cuota-fila{display:flex;align-items:center;gap:12px;}
-.cuota-fila .mov-icono{width:46px;height:46px;border-radius:12px;font-size:22px;background:hsl(var(--cat-h,150) 70% 92%);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.cuota-fila .mov-icono{width:46px;height:46px;border-radius:12px;font-size:calc(22px * var(--letra,1));background:hsl(var(--cat-h,150) 70% 92%);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 html[data-tema="oscuro"] .cuota-fila .mov-icono{background:hsl(var(--cat-h,150) 40% 22%);}
 .cuota-txt{flex:1;min-width:0;display:flex;flex-direction:column;}
-.cuota-txt b{font-size:17px;color:var(--texto);}
-.cuota-txt span{font-size:14.5px;color:var(--texto-suave);}
-.cuota-monto{font-size:17px;font-weight:800;color:var(--gasto);white-space:nowrap;}
+.cuota-txt b{font-size:calc(17px * var(--letra,1));color:var(--texto);}
+.cuota-txt span{font-size:calc(14.5px * var(--letra,1));color:var(--texto-suave);}
+.cuota-monto{font-size:calc(17px * var(--letra,1));font-weight:800;color:var(--gasto);white-space:nowrap;}
 .cuota-barra{height:10px;border-radius:99px;background:var(--borde);margin:12px 0 8px;overflow:hidden;}
 .cuota-barra div{height:100%;border-radius:99px;background:linear-gradient(90deg,#1FB58F,#5BE0BC);transform-origin:left;animation:barra-llena .9s ease-out both;}
-.cuota-restan{font-size:15px;color:var(--texto-suave);}
+.cuota-restan{font-size:calc(15px * var(--letra,1));color:var(--texto-suave);}
 .cuota-restan b{color:var(--texto);}
 
 /* ===== Carga rápida (Nuevo movimiento) ===== */
@@ -291,50 +291,50 @@ html[data-tema="oscuro"] .cuota-fila .mov-icono{background:hsl(var(--cat-h,150) 
 #formMovimiento.modo-rapido.rapido-ver-diferido .bloque-diferido:not(#bloqueCuotas),
 #formMovimiento.modo-rapido.rapido-ver-mas #bloqueCuotas,
 #formMovimiento.modo-rapido.rapido-ver-cuotas #bloqueCuotas{display:block;order:8;}
-.rapido-monto{text-align:center;font-size:52px;font-weight:800;color:var(--gasto);line-height:1.1;margin:6px 0 2px;letter-spacing:-1px;display:flex;justify-content:center;align-items:baseline;gap:4px;}
+.rapido-monto{text-align:center;font-size:calc(52px * var(--letra,1));font-weight:800;color:var(--gasto);line-height:1.1;margin:6px 0 2px;letter-spacing:-1px;display:flex;justify-content:center;align-items:baseline;gap:4px;}
 .rapido.es-ingreso .rapido-monto{color:var(--ingreso);}
-.rapido-signo{font-size:26px;}
+.rapido-signo{font-size:calc(26px * var(--letra,1));}
 .rapido-cursor{width:3px;height:44px;background:var(--primario);align-self:center;animation:parpadeo 1s steps(1) infinite;}
 @keyframes parpadeo{50%{opacity:0;}}
 .rapido-chips-chicos{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;}
-.rapido-chip-chico{background:var(--papel-alto);border:1.5px solid var(--borde);color:var(--texto);border-radius:99px;padding:8px 14px;font-size:15.5px;font-weight:700;cursor:pointer;}
+.rapido-chip-chico{background:var(--papel-alto);border:1.5px solid var(--borde);color:var(--texto);border-radius:99px;padding:8px 14px;font-size:calc(15.5px * var(--letra,1));font-weight:700;cursor:pointer;}
 .rapido-chip-chico.activo{background:var(--ingreso-fondo);border-color:var(--primario);color:var(--primario);}
 .rapido-opciones{justify-content:flex-start;}
-.rapido-titulo{font-size:14px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--texto-suave);margin-top:6px;}
+.rapido-titulo{font-size:calc(14px * var(--letra,1));font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--texto-suave);margin-top:6px;}
 .rapido-cats{display:flex;flex-wrap:wrap;gap:8px;}
-.rapido-cat{background:var(--papel-alto);border:1.5px solid var(--borde);color:var(--texto);border-radius:99px;padding:10px 16px;font-size:16.5px;font-weight:700;cursor:pointer;}
+.rapido-cat{background:var(--papel-alto);border:1.5px solid var(--borde);color:var(--texto);border-radius:99px;padding:10px 16px;font-size:calc(16.5px * var(--letra,1));font-weight:700;cursor:pointer;}
 .rapido-cat.activo{background:var(--primario);border-color:var(--primario);color:#fff;}
 html[data-tema="oscuro"] .rapido-cat.activo{color:#0B1411;}
 .rapido-cat-mas{color:var(--texto-suave);}
-.rapido-guardar{font-size:19px;padding:13px;}
+.rapido-guardar{font-size:calc(19px * var(--letra,1));padding:13px;}
 .rapido-teclado{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
 .rapido-barra{position:sticky;bottom:0;z-index:2;display:flex;flex-direction:column;gap:8px;background:var(--papel);padding:8px 0 4px;border-top:1px solid var(--borde);}
-.rapido-teclado button{background:var(--papel-alto);border:1px solid var(--borde);border-radius:14px;padding:9px 0;font-size:24px;font-weight:700;color:var(--texto);cursor:pointer;box-shadow:var(--sombra);}
+.rapido-teclado button{background:var(--papel-alto);border:1px solid var(--borde);border-radius:14px;padding:9px 0;font-size:calc(24px * var(--letra,1));font-weight:700;color:var(--texto);cursor:pointer;box-shadow:var(--sombra);}
 .rapido-teclado button:active{transform:scale(.95);background:var(--ingreso-fondo);}
-.rapido-mas-opciones{background:none;border:none;color:var(--primario);font-weight:700;font-size:15px;padding:8px;cursor:pointer;}
-@media (min-width:900px){.rapido-teclado button{padding:10px 0;font-size:22px;}}
+.rapido-mas-opciones{background:none;border:none;color:var(--primario);font-weight:700;font-size:calc(15px * var(--letra,1));padding:8px;cursor:pointer;}
+@media (min-width:900px){.rapido-teclado button{padding:10px 0;font-size:calc(22px * var(--letra,1));}}
 /* Pantallas bajas (celulares chicos o con la barra del navegador): teclado más compacto para no tapar monto, cuenta y categorías */
 @media (max-height:760px){
   .rapido-teclado{gap:6px;}
-  .rapido-teclado button{padding:0;height:clamp(34px,6vh,44px);font-size:clamp(18px,3.4vh,22px);}
-  .rapido-guardar{padding:9px;font-size:17.5px;}
+  .rapido-teclado button{padding:0;height:clamp(34px,6vh,44px);font-size:calc(clamp(18px,3.4vh,22px) * var(--letra,1));}
+  .rapido-guardar{padding:9px;font-size:calc(17.5px * var(--letra,1));}
   .rapido-barra{gap:6px;padding:6px 0 2px;}
-  .rapido-monto{font-size:40px;margin:2px 0;}
+  .rapido-monto{font-size:calc(40px * var(--letra,1));margin:2px 0;}
   .rapido-cursor{height:34px;}
 }
 
 /* Pantallas muy bajas (celulares con letra grande o barra del navegador): se ven por lo menos 2 filas de categorías sin mover la pantalla */
 @media (max-height:900px){
   #modalFondo .modal-cabecera{padding:10px 18px 2px;flex-wrap:nowrap;gap:10px;}
-  #modalFondo .modal-cabecera h3{font-size:19px;white-space:nowrap;}
-  #modalFondo .boton-voz-chico{white-space:nowrap;padding:4px 12px;min-height:36px;font-size:15px;margin-right:4px;}
+  #modalFondo .modal-cabecera h3{font-size:calc(19px * var(--letra,1));white-space:nowrap;}
+  #modalFondo .boton-voz-chico{white-space:nowrap;padding:4px 12px;min-height:36px;font-size:calc(15px * var(--letra,1));margin-right:4px;}
   #formMovimiento.modo-rapido{gap:8px;}
-  #segmentadoTipo .segmentado-item{padding:8px 10px;font-size:17px;}
-  .rapido-monto{font-size:34px;margin:0;}
+  #segmentadoTipo .segmentado-item{padding:8px 10px;font-size:calc(17px * var(--letra,1));}
+  .rapido-monto{font-size:calc(34px * var(--letra,1));margin:0;}
   .rapido-cursor{height:28px;}
   .rapido-teclado{gap:5px;}
-  .rapido-teclado button{height:clamp(30px,5.4vh,40px);font-size:clamp(17px,3.2vh,21px);}
-  .rapido-guardar{padding:7px;font-size:17px;}
+  .rapido-teclado button{height:clamp(30px,5.4vh,40px);font-size:calc(clamp(17px,3.2vh,21px) * var(--letra,1));}
+  .rapido-guardar{padding:7px;font-size:calc(17px * var(--letra,1));}
   .rapido-barra{gap:5px;padding:5px 0 2px;}
   .rapido-titulo{margin-top:0;}
 }
@@ -350,13 +350,13 @@ html[data-tema="oscuro"] .rapido-cat.activo{color:#0B1411;}
 /* Pantallas muy bajas (letra grande del celular): todo más junto para que entren 2 filas de categorías */
 @media (max-height:640px){
   #modalFondo .modal-cabecera{padding:6px 16px 0;gap:6px;}
-  #modalFondo .modal-cabecera h3{font-size:clamp(15px,5.4vw,19px);flex:1 1 auto;}
-  #modalFondo .boton-voz-chico{min-height:30px;padding:2px 10px;font-size:14px;}
+  #modalFondo .modal-cabecera h3{font-size:calc(clamp(15px,5.4vw,19px) * var(--letra,1));flex:1 1 auto;}
+  #modalFondo .boton-voz-chico{min-height:30px;padding:2px 10px;font-size:calc(14px * var(--letra,1));}
   #segmentadoTipo .segmentado-item{padding:5px 8px;}
-  .rapido-monto{font-size:28px;}
+  .rapido-monto{font-size:calc(28px * var(--letra,1));}
   .rapido-cursor{height:22px;}
   .rapido-teclado{gap:4px;}
-  .rapido-teclado button{height:clamp(26px,5vh,34px);font-size:clamp(16px,3vh,19px);}
+  .rapido-teclado button{height:clamp(26px,5vh,34px);font-size:calc(clamp(16px,3vh,19px) * var(--letra,1));}
   .rapido-guardar{padding:5px;}
   .rapido-barra{gap:4px;padding:3px 0 0;}
 }
@@ -376,8 +376,8 @@ html[data-tema="oscuro"] .rapido-cat.activo{color:#0B1411;}
 /* Título + Voz + X en una sola línea (ahorra una fila) */
 @media (max-height:900px){
   #modalFondo .modal-cabecera{flex-wrap:nowrap;}
-  #modalFondo .modal-cabecera h3{font-size:clamp(15px,4.6vw,18px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:0 1 auto;min-width:0;}
-  #modalFondo .modal-cabecera .boton-voz-chico{order:2;min-height:34px;padding:2px 10px;font-size:14px;margin-left:auto;}
+  #modalFondo .modal-cabecera h3{font-size:calc(clamp(15px,4.6vw,18px) * var(--letra,1));white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:0 1 auto;min-width:0;}
+  #modalFondo .modal-cabecera .boton-voz-chico{order:2;min-height:34px;padding:2px 10px;font-size:calc(14px * var(--letra,1));margin-left:auto;}
   #modalFondo .modal-cabecera .icono-btn{order:3;margin-left:0;}
 }
 
@@ -385,16 +385,16 @@ html[data-tema="oscuro"] .rapido-cat.activo{color:#0B1411;}
 #formMovimiento.modo-rapido .rapido-cuentas{order:4;}
 .rapido-cuentas{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;}
 .rapido-cuentas[hidden]{display:none;}
-.rapido-cuentas button{background:var(--papel-alto);border:1.5px solid var(--borde);color:var(--texto);border-radius:99px;padding:10px 16px;font-size:16.5px;font-weight:700;cursor:pointer;}
+.rapido-cuentas button{background:var(--papel-alto);border:1.5px solid var(--borde);color:var(--texto);border-radius:99px;padding:10px 16px;font-size:calc(16.5px * var(--letra,1));font-weight:700;cursor:pointer;}
 .rapido-cuentas button.activo{background:var(--ingreso-fondo);border-color:var(--primario);color:var(--primario);}
 
 /* Escáner de QR de factura */
 .qr-escaner{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.82);display:flex;align-items:center;justify-content:center;padding:14px;}
 .qr-escaner[hidden]{display:none;}
 .qr-caja{background:var(--papel);color:var(--texto);border-radius:20px;padding:16px;width:100%;max-width:420px;display:flex;flex-direction:column;gap:12px;max-height:96vh;overflow:auto;}
-.qr-caja h3{margin:0;font-size:20px;}
+.qr-caja h3{margin:0;font-size:calc(20px * var(--letra,1));}
 .qr-caja video{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:14px;background:#000;}
-.qr-estado{margin:0;font-size:16.5px;text-align:center;}
+.qr-estado{margin:0;font-size:calc(16.5px * var(--letra,1));text-align:center;}
 .qr-galeria{cursor:pointer;text-align:center;}
 
 /* Celulares: cabecera y filtros más compactos para que se vea la lista de movimientos */
@@ -406,21 +406,21 @@ html[data-tema="oscuro"] .rapido-cat.activo{color:#0B1411;}
   /* Resultado del mes más bajo: el nombre y el monto van en la misma fila */
   .topbar .tarjeta-resumen-balance{display:grid;grid-template-columns:1fr auto;align-items:baseline;column-gap:10px;}
   .topbar .tarjeta-resumen-balance .consumo-mes{grid-column:1 / -1;}
-  .topbar .tarjeta-resumen-balance .tarjeta-resumen-label{font-size:15px;}
+  .topbar .tarjeta-resumen-balance .tarjeta-resumen-label{font-size:calc(15px * var(--letra,1));}
   .topbar .tarjeta-resumen-balance .tarjeta-resumen-valor{text-align:right;}
-  .topbar .tarjeta-resumen-balance .tarjeta-resumen-label{font-size:13.5px;}
-  .topbar .tarjeta-resumen-balance .tarjeta-resumen-valor{font-size:26px;margin-top:0;line-height:1.1;}
+  .topbar .tarjeta-resumen-balance .tarjeta-resumen-label{font-size:calc(13.5px * var(--letra,1));}
+  .topbar .tarjeta-resumen-balance .tarjeta-resumen-valor{font-size:calc(26px * var(--letra,1));margin-top:0;line-height:1.1;}
   .topbar .consumo-mes{margin-top:5px;}
   .topbar .consumo-mes-fondo{height:6px;}
-  .topbar .consumo-mes-texto{margin-top:3px;font-size:13px;line-height:1.2;}
+  .topbar .consumo-mes-texto{margin-top:3px;font-size:calc(13px * var(--letra,1));line-height:1.2;}
   .topbar .tarjeta-resumen{padding:5px 10px;}
-  .topbar .tarjeta-resumen-label{font-size:13.5px;}
-  .topbar .tarjeta-resumen-valor{font-size:17px;}
+  .topbar .tarjeta-resumen-label{font-size:calc(13.5px * var(--letra,1));}
+  .topbar .tarjeta-resumen-valor{font-size:calc(17px * var(--letra,1));}
   #filaAccesosLista{margin-bottom:6px !important;gap:6px !important;}
-  #segmentadoTipoLista .segmentado-item{padding:7px 2px;font-size:16px;}
-  #filaAccesosLista #btnBuscarSimple{padding:6px 12px !important;font-size:16px;border-width:1.5px;}
-  #btnClasificar{padding:6px 2px;font-size:clamp(12px,3.7vw,15px);white-space:nowrap;overflow:hidden;margin:0;border-width:1.5px;}
-  #filaAccesosLista #btnBuscarSimple{font-size:clamp(13px,4vw,16px);}
+  #segmentadoTipoLista .segmentado-item{padding:7px 2px;font-size:calc(16px * var(--letra,1));}
+  #filaAccesosLista #btnBuscarSimple{padding:6px 12px !important;font-size:calc(16px * var(--letra,1));border-width:1.5px;}
+  #btnClasificar{padding:6px 2px;font-size:calc(clamp(12px,3.7vw,15px) * var(--letra,1));white-space:nowrap;overflow:hidden;margin:0;border-width:1.5px;}
+  #filaAccesosLista #btnBuscarSimple{font-size:calc(clamp(13px,4vw,16px) * var(--letra,1));}
   .contenido{padding-top:8px;}
   /* En el celular la cabecera va dentro de la lista: queda fija solo la fila del mes y el resumen
      se va con el scroll (natural, sin saltos). El header pasa a display:contents y sus hijos
@@ -442,9 +442,9 @@ html[data-tema="oscuro"] .rapido-cat.activo{color:#0B1411;}
 .captcha-box[hidden]{display:none}
 
 /* Casilla "Mantener sesión iniciada" */
-.recordar-sesion{display:flex;align-items:center;gap:12px;font-size:16.5px;font-weight:600;margin:6px 0 4px;cursor:pointer;color:var(--texto);}
+.recordar-sesion{display:flex;align-items:center;gap:12px;font-size:calc(16.5px * var(--letra,1));font-weight:600;margin:6px 0 4px;cursor:pointer;color:var(--texto);}
 .recordar-sesion input{width:24px;height:24px;flex:0 0 24px;accent-color:var(--primario);}
-.form-login .recordar-sesion{flex-direction:row;align-items:center;gap:12px;font-size:16.5px;font-weight:600;color:var(--texto);}
+.form-login .recordar-sesion{flex-direction:row;align-items:center;gap:12px;font-size:calc(16.5px * var(--letra,1));font-weight:600;color:var(--texto);}
 .form-login .recordar-sesion input{width:24px;height:24px;min-height:0;padding:0;margin:0;flex:0 0 24px;}
 
 /* ===== Nuevo movimiento: orden Monto > Cuenta (QR / Banco / Hoy) > Categoría, y teclado fijo (pedido de Edu, 24/11) ===== */
@@ -455,7 +455,7 @@ html[data-tema="oscuro"] .rapido-cat.activo{color:#0B1411;}
 #formMovimiento .rapido-barra{bottom:0;}
 @media (max-height:900px){
   .rapido-chips-chicos{gap:6px;}
-  .rapido-chip-chico{padding:5px 11px;font-size:15px;}
+  .rapido-chip-chico{padding:5px 11px;font-size:calc(15px * var(--letra,1));}
 }
 /* "Más opciones" va ANTES del teclado: así el teclado es lo último del formulario y queda siempre fijo abajo */
 #formMovimiento.modo-rapido .rapido-mas-opciones{order:10;}
@@ -472,10 +472,19 @@ html[data-tema="oscuro"] .rapido-cat.activo{color:#0B1411;}
 .config-tarjeta-titulo{overflow-wrap:anywhere;hyphens:auto;}
 
 /* Cartel "Más categorías": va dentro de la tarjeta del teclado (no tapa nada); se toca para bajar */
-.rapido-mas-hint{position:static;align-self:stretch;background:transparent;color:var(--primario);border:none;border-radius:12px;padding:0;min-height:30px;font-size:16.5px;font-weight:800;cursor:pointer;text-align:center;}
+.rapido-mas-hint{position:static;align-self:stretch;background:transparent;color:var(--primario);border:none;border-radius:12px;padding:0;min-height:30px;font-size:calc(16.5px * var(--letra,1));font-weight:800;cursor:pointer;text-align:center;}
 
 /* Celulares angostos y bajos: las categorías van de a dos columnas (los nombres largos pasan a 2 renglones) */
 @media (max-height:900px) and (max-width:420px){
   .rapido-cats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;}
-  .rapido-cat{display:flex;align-items:center;justify-content:center;text-align:center;padding:6px 6px;font-size:15.5px;line-height:1.2;overflow-wrap:break-word;hyphens:auto;border-radius:16px;min-height:44px;}
+  .rapido-cat{display:flex;align-items:center;justify-content:center;text-align:center;padding:6px 6px;font-size:calc(15.5px * var(--letra,1));line-height:1.2;overflow-wrap:break-word;hyphens:auto;border-radius:16px;min-height:44px;}
 }
+
+/* ===== Tamaño de letra (Ajustes > Tamaño de letra): escala todos los textos ===== */
+:root{--letra:1;}
+html[data-letra="grande"]{--letra:1.15;}
+html[data-letra="muy"]{--letra:1.3;}
+
+/* Botones de acción de Movimientos: si el texto no entra, pasa a otro renglón en vez de cortarse */
+.clasif-btn,#btnBuscar,.boton-secundario{white-space:normal;line-height:1.2;}
+#btnClasificar.clasif-btn{white-space:normal;overflow:visible;line-height:1.2;padding-left:6px;padding-right:6px;}

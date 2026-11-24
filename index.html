@@ -31,6 +31,7 @@ try {
   }
 } catch (e) {}
 </script>
+<script>try{var l=localStorage.getItem("fs_letra");if(l==="grande"||l==="muy")document.documentElement.setAttribute("data-letra",l);}catch(e){}</script>
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
@@ -316,6 +317,10 @@ Al crear una cuenta aceptás nuestros
 <span class="config-tarjeta-icono">🌙</span>
 <span class="config-tarjeta-titulo" data-i18n="tituloTema">Modo oscuro</span>
 </button>
+<button type="button" class="config-tarjeta" data-config="configPanelLetra">
+<span class="config-tarjeta-icono">🔠</span>
+<span class="config-tarjeta-titulo" data-i18n="tituloLetra">Tamaño de letra</span>
+</button>
 <button type="button" class="config-tarjeta" data-config="configPanelSeguridad">
 <span class="config-tarjeta-icono">🔒</span>
 <span class="config-tarjeta-titulo" data-i18n="tituloSeguridad">Seguridad</span>
@@ -395,6 +400,18 @@ Al crear una cuenta aceptás nuestros
 <button type="button" class="tema-opcion" data-tema-opcion="auto"><span class="tema-opcion-ic">📱</span><span><span data-i18n="temaAuto">Automático</span><small data-i18n="temaAutoDet">Igual que tu celular</small></span></button>
 <button type="button" class="tema-opcion" data-tema-opcion="claro"><span class="tema-opcion-ic">☀️</span><span><span data-i18n="temaClaro">Claro</span><small data-i18n="temaClaroDet">Fondo claro, como siempre</small></span></button>
 <button type="button" class="tema-opcion" data-tema-opcion="oscuro"><span class="tema-opcion-ic">🌙</span><span><span data-i18n="temaOscuro">Oscuro</span><small data-i18n="temaOscuroDet">Fondo oscuro, descansa la vista de noche</small></span></button>
+</div>
+</div>
+
+<!-- Panel: Tamaño de letra -->
+<div id="configPanelLetra" class="config-panel" hidden>
+<button type="button" class="config-volver" data-i18n="btnVolver">← Volver</button>
+<h2 class="titulo-seccion" data-i18n="tituloLetra">Tamaño de letra</h2>
+<p class="texto-ayuda" data-i18n="letraAyuda">Elegí cómo querés ver las letras en Ingasto. Se guarda en este celular.</p>
+<div class="tema-opciones">
+<button type="button" class="tema-opcion" data-letra-opcion="normal"><span class="tema-opcion-ic" style="font-size:20px">A</span><span><span data-i18n="letraNormal">Normal</span><small data-i18n="letraNormalDet">Como se ve siempre</small></span></button>
+<button type="button" class="tema-opcion" data-letra-opcion="grande"><span class="tema-opcion-ic" style="font-size:26px">A</span><span><span data-i18n="letraGrande">Grande</span><small data-i18n="letraGrandeDet">Letras más grandes</small></span></button>
+<button type="button" class="tema-opcion" data-letra-opcion="muy"><span class="tema-opcion-ic" style="font-size:32px">A</span><span><span data-i18n="letraMuy">Muy grande</span><small data-i18n="letraMuyDet">Las letras más grandes</small></span></button>
 </div>
 </div>
 
