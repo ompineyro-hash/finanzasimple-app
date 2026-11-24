@@ -465,3 +465,8 @@ html[data-tema="oscuro"] .rapido-cat.activo{color:#0B1411;}
   #rapQR{display:none;}
   #formMovimiento.modo-rapido #rapQR2{display:inline-block;align-self:center;order:7;}
 }
+
+/* Ajustes: las 2 columnas nunca se salen de la pantalla, aunque la letra del celular sea muy grande */
+.config-menu{grid-template-columns:repeat(2,minmax(0,1fr));}
+.config-tarjeta{min-width:0;}
+.config-tarjeta-titulo{overflow-wrap:anywhere;hyphens:auto;}
