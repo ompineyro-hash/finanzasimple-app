@@ -471,6 +471,11 @@ html[data-tema="oscuro"] .rapido-cat.activo{color:#0B1411;}
 .config-tarjeta{min-width:0;}
 .config-tarjeta-titulo{overflow-wrap:anywhere;hyphens:auto;}
 
-/* Cartel "Más categorías": flota arriba del teclado, a la derecha; se toca para bajar */
-.rapido-mas-hint{position:absolute;right:10px;top:-42px;background:var(--primario);color:#fff;border:none;border-radius:99px;padding:8px 16px;min-height:38px;font-size:16px;font-weight:800;box-shadow:0 3px 10px rgba(0,0,0,.28);cursor:pointer;}
-html[data-tema="oscuro"] .rapido-mas-hint{color:#0B1411;}
+/* Cartel "Más categorías": va dentro de la tarjeta del teclado (no tapa nada); se toca para bajar */
+.rapido-mas-hint{position:static;align-self:stretch;background:transparent;color:var(--primario);border:none;border-radius:12px;padding:0;min-height:30px;font-size:16.5px;font-weight:800;cursor:pointer;text-align:center;}
+
+/* Celulares angostos y bajos: las categorías van de a dos columnas (los nombres largos pasan a 2 renglones) */
+@media (max-height:900px) and (max-width:420px){
+  .rapido-cats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;}
+  .rapido-cat{display:flex;align-items:center;justify-content:center;text-align:center;padding:6px 6px;font-size:15.5px;line-height:1.2;overflow-wrap:break-word;hyphens:auto;border-radius:16px;min-height:44px;}
+}
