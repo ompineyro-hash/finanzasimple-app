@@ -321,10 +321,6 @@ html[data-tema="oscuro"] .rapido-cat.activo{color:#0B1411;}
   .rapido-barra{gap:6px;padding:6px 0 2px;}
   .rapido-monto{font-size:40px;margin:2px 0;}
   .rapido-cursor{height:34px;}
-  /* en pantallas bajas las categorías van primero (lo más usado); QR, Banco y Hoy quedan debajo */
-  #formMovimiento.modo-rapido .rapido-titulo{order:4;}
-  #formMovimiento.modo-rapido .rapido-cats{order:5;}
-  #formMovimiento.modo-rapido .rapido-chips-chicos{order:6;}
 }
 
 /* Pantallas muy bajas (celulares con letra grande o barra del navegador): se ven por lo menos 2 filas de categorías sin mover la pantalla */
@@ -450,3 +446,16 @@ html[data-tema="oscuro"] .rapido-cat.activo{color:#0B1411;}
 .recordar-sesion input{width:24px;height:24px;flex:0 0 24px;accent-color:var(--primario);}
 .form-login .recordar-sesion{flex-direction:row;align-items:center;gap:12px;font-size:16.5px;font-weight:600;color:var(--texto);}
 .form-login .recordar-sesion input{width:24px;height:24px;min-height:0;padding:0;margin:0;flex:0 0 24px;}
+
+/* ===== Nuevo movimiento: orden Monto > Cuenta (QR / Banco / Hoy) > Categoría, y teclado fijo (pedido de Edu, 24/11) ===== */
+/* El formulario es el que se desliza (no todo el cuadro): el teclado queda fijo abajo y no "salta" en iPhone cuando cambia la barra de Safari. dvh = alto real visible. */
+#modalFondo .modal{display:flex;flex-direction:column;max-height:92vh;max-height:92dvh;overflow:hidden;}
+#modalFondo .modal-cabecera{position:static;flex:none;}
+#formMovimiento{flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding-bottom:0;}
+#formMovimiento .rapido-barra{bottom:0;}
+@media (max-height:900px){
+  .rapido-chips-chicos{gap:6px;}
+  .rapido-chip-chico{padding:5px 11px;font-size:15px;}
+}
+/* "Más opciones" va ANTES del teclado: así el teclado es lo último del formulario y queda siempre fijo abajo */
+#formMovimiento.modo-rapido .rapido-mas-opciones{order:10;}
