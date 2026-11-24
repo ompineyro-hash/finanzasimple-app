@@ -3512,7 +3512,7 @@ function renderCategoriasAnalisis(lista, tipo) {
     return;
   }
   const colores = esGasto
-    ? ["#FF6B4A", "#1FB58F", "#F2B731", "#4C8DF6", "#A46BF5", "#FF5D8F", "#22B8CF", "#8BC34A"]
+    ? ["#FF8A6B", "#7DB8FF", "#F2C230", "#4C8DF6", "#A46BF5", "#FF5D8F", "#22B8CF", "#8BC34A"]
     : ["#1FB58F", "#22B8CF", "#4C8DF6", "#F2B731", "#A46BF5", "#FF6B4A", "#8BC34A", "#FF5D8F"];
   let acumulado = 0;
   const segmentos = entradas.map(([, monto], i) => {
