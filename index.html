@@ -31,6 +31,7 @@ try {
   }
 } catch (e) {}
 </script>
+<script>try{if(localStorage.getItem("fs_ocultar")==="1")document.documentElement.setAttribute("data-ocultar","1");}catch(e){}</script>
 <script>try{var l=localStorage.getItem("fs_letra");if(l==="grande"||l==="muy")document.documentElement.setAttribute("data-letra",l);}catch(e){}</script>
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icons/icon-192.png">
@@ -136,6 +137,7 @@ Al crear una cuenta aceptás nuestros
 <div class="mes-centro"><span id="etiquetaMes">—</span><span id="fechaHoy" class="fecha-hoy">—</span></div>
 <button id="btnMesSiguiente" class="icono-btn" data-i18n-aria="ariaMesSiguiente" aria-label="Mes siguiente">▶</button>
 </div>
+<button id="btnOjo" type="button" class="icono-btn" data-i18n-aria="ariaOjo" aria-label="Ocultar o mostrar los saldos" aria-pressed="false">👁️</button>
 <button id="btnSalir" class="icono-btn" data-i18n-aria="ariaSalir" aria-label="Salir">↪</button>
 </div>
 <div class="topbar-resumen">

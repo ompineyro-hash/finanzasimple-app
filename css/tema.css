@@ -504,3 +504,14 @@ html[data-letra="muy"]{--letra:1.3;}
 #segmentadoTipo .segmentado-item[data-tipo="Ingreso"]::before{color:var(--ingreso);}
 
 @media (max-height:900px){#modalFondo .modal{max-height:96vh;max-height:96dvh;}}
+
+/* ===== Ojito: oculta saldos y montos (se desenfocan) ===== */
+html[data-ocultar] .tarjeta-resumen-valor,
+html[data-ocultar] .sit-grande,
+html[data-ocultar] .sit-sub,
+html[data-ocultar] .sit-barra span:last-child,
+html[data-ocultar] .mov-monto,
+html[data-ocultar] .mov-equiv,
+html[data-ocultar] #lineaPrevisto,
+html[data-ocultar] .pend-resumen b{filter:blur(9px);user-select:none;pointer-events:none;}
+#btnOjo{font-size:calc(20px * var(--letra,1));}

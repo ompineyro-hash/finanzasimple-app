@@ -62,6 +62,7 @@ const TRADUCCIONES = {
     ariaMesAnterior: "Mes anterior",
     ariaMesSiguiente: "Mes siguiente",
     ariaSalir: "Salir",
+    ariaOjo: "Ocultar o mostrar los saldos",
     confirmarSalir: "¿Querés cerrar tu sesión?",
     lblBalance: "Balance",
     lblResultadoMes: "Resultado del mes",
@@ -631,6 +632,7 @@ const TRADUCCIONES = {
     ariaMesAnterior: "Mês anterior",
     ariaMesSiguiente: "Próximo mês",
     ariaSalir: "Sair",
+    ariaOjo: "Ocultar ou mostrar os saldos",
     confirmarSalir: "Quer encerrar a sessão?",
     lblBalance: "Saldo",
     lblResultadoMes: "Resultado do mês",
@@ -1200,6 +1202,7 @@ const TRADUCCIONES = {
     ariaMesAnterior: "Previous month",
     ariaMesSiguiente: "Next month",
     ariaSalir: "Log out",
+    ariaOjo: "Hide or show balances",
     confirmarSalir: "Do you want to log out?",
     lblBalance: "Balance",
     lblResultadoMes: "Month result",
@@ -3363,6 +3366,18 @@ function aplicarLetra(v) {
 }
 document.querySelectorAll("[data-letra-opcion]").forEach((b) => b.addEventListener("click", () => aplicarLetra(b.dataset.letraOpcion)));
 aplicarLetra(letraGuardada());
+
+// Ojito: oculta los saldos (se desenfocan) y recuerda la elección en este aparato
+function ocultarGuardado() { try { return localStorage.getItem("fs_ocultar") === "1"; } catch (e) { return false; } }
+function aplicarOcultar(v) {
+  if (v) document.documentElement.setAttribute("data-ocultar", "1");
+  else document.documentElement.removeAttribute("data-ocultar");
+  try { localStorage.setItem("fs_ocultar", v ? "1" : "0"); } catch (e) {}
+  const b = $("btnOjo");
+  if (b) { b.textContent = v ? "🙈" : "👁️"; b.setAttribute("aria-pressed", v ? "true" : "false"); }
+}
+$("btnOjo").addEventListener("click", () => aplicarOcultar(!ocultarGuardado()));
+aplicarOcultar(ocultarGuardado());
 
 // ---------- Tema claro / oscuro ----------
 function temaGuardado() { try { return localStorage.getItem("fs_tema") || "auto"; } catch { return "auto"; } }
