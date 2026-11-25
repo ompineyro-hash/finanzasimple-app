@@ -5668,6 +5668,8 @@ function fsVoiceNumeroPalabras(txt) {
 
 function fsVoiceMonto(t) {
   let q = fsVoiceNorm(t).replace(/\$/g, " ").replace(/\s+/g, " ").trim();
+  // "32 dollars and 50 cents" / "32 reais e 50 centavos" => "32 con 50"
+  q = q.replace(/\b(dollars?|bucks|reais|real|euros?)\s+(?:and|e)\s+/, " con ").replace(/\b(cents?)\b/g, "centavos");
   function vp(txt) { txt = (txt || "").trim(); if (!txt) return null; if (/^\d+$/.test(txt)) return parseInt(txt, 10); return fsVoiceNumeroPalabras(txt); }
   function cents(txt) { txt = (txt || "").replace(/\bcentavos?\b/g, " ").trim(); let m = txt.match(/\b(\d{1,2})\b/); if (m) return Math.min(99, parseInt(m[1], 10)); let n = vp(txt); return n === null ? null : Math.min(99, n); }
   if (/\bmillon(?:es)?\b/.test(q)) {
