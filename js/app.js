@@ -3023,6 +3023,7 @@ function rapidoRefrescar() {
   const elegida = $("movCategoria").value;
   const top = lista.slice(0, 5);
   if (elegida && !top.includes(elegida) && $("formMovimiento").dataset.rapCatElegida) top.unshift(elegida);
+  $("rapCats").classList.remove("una-col");
   $("rapCats").innerHTML = top.map((n) => `<button type="button" class="rapido-cat${$("formMovimiento").dataset.rapCatElegida === n ? " activo" : ""}" data-cat="${escapeHTML(n)}" style="--cat-h:${tonoCategoria(n)}"><span aria-hidden="true">${iconoCategoria(n) || "•"}</span> ${escapeHTML(n)}</button>`).join("")
     + `<button type="button" class="rapido-cat rapido-cat-mas" data-cat-mas>${escapeHTML(t("rapMas"))}</button>`;
   $("rapCuenta").textContent = "🏦 " + ($("movCuenta").value || "—");
@@ -3045,6 +3046,10 @@ function rapidoHint() {
   if (!f || !h) return;
   const resta = f.scrollHeight - f.scrollTop - f.clientHeight;
   h.hidden = !(rapidoActivo() && resta > 8);
+  // Si algún nombre de categoría no entra en media pantalla (letra grande), pasa a una sola columna
+  const rc = $("rapCats");
+  if (rc && !rc.classList.contains("una-col") && rc.clientWidth > 0 &&
+      [...rc.querySelectorAll(".rapido-cat")].some((b) => b.scrollWidth > b.clientWidth + 1)) rc.classList.add("una-col");
 }
 $("rapMasHint").addEventListener("click", () => {
   const f = $("formMovimiento");
