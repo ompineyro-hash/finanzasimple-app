@@ -559,6 +559,10 @@ const TRADUCCIONES = {
     vozToque: "Tocá el micrófono y hablá, o elegí abajo.",
     vozEscuchando: "🔴 Escuchando…",
     vozNoEntendi: "No pude interpretar el dato. Repetilo o escribilo.",
+    vozFraseBtn: "🎙️ Decilo todo junto",
+    vozFraseEj: "Ejemplo: «Gasté 32 mil en el súper con la Visa, en 3 cuotas». Después revisás y guardás.",
+    vozFraseNada: "No entendí el monto. Probá de nuevo o seguí paso a paso.",
+    vozFraseListo: "Revisá los datos y completá lo que falta.",
     vozNoTipo: "No entendí si es gasto o ingreso. Decí “gasto” o “ingreso”, o tocá un botón.",
     vozNoEscuche: "No escuché nada. Tocá el micrófono y hablá apenas empiece.",
     vozMicBloq: "El micrófono está bloqueado para esta página. Revisá los permisos del navegador (candado junto a la dirección).",
@@ -1129,6 +1133,10 @@ const TRADUCCIONES = {
     vozToque: "Toque no microfone e fale, ou escolha abaixo.",
     vozEscuchando: "🔴 Ouvindo…",
     vozNoEntendi: "Não consegui interpretar. Repita ou digite.",
+    vozFraseBtn: "🎙️ Diga tudo junto",
+    vozFraseEj: "Exemplo: «Gastei 32 mil no mercado com o Visa, em 3 parcelas». Depois você revisa e salva.",
+    vozFraseNada: "Não entendi o valor. Tente de novo ou siga passo a passo.",
+    vozFraseListo: "Revise os dados e complete o que falta.",
     vozNoTipo: "Não entendi se é despesa ou receita. Diga “gasto” ou “ingreso”, ou toque num botão.",
     vozNoEscuche: "Não ouvi nada. Toque no microfone e fale assim que começar.",
     vozMicBloq: "O microfone está bloqueado para esta página. Verifique as permissões do navegador.",
@@ -1699,6 +1707,10 @@ const TRADUCCIONES = {
     vozToque: "Tap the microphone and speak, or pick below.",
     vozEscuchando: "🔴 Listening…",
     vozNoEntendi: "Couldn't read that. Say it again or type it.",
+    vozFraseBtn: "🎙️ Say it all at once",
+    vozFraseEj: "Example: “I spent 32 thousand at the supermarket on my Visa, in 3 installments”. Then you review and save.",
+    vozFraseNada: "I didn't catch the amount. Try again or go step by step.",
+    vozFraseListo: "Check the details and fill in what is missing.",
     vozNoTipo: "Couldn't tell expense from income. Say “gasto” or “ingreso”, or tap a button.",
     vozNoEscuche: "I heard nothing. Tap the microphone and speak right away.",
     vozMicBloq: "The microphone is blocked for this page. Check your browser permissions.",
@@ -5389,6 +5401,7 @@ function fsVozPrepararNuevo() {
   b.onclick = fsVozAbrir;
   $("vozCerrar").onclick = fsVozCerrar;
   $("vozMic").onclick = fsVoiceEscuchar;
+  $("vozFrase").onclick = fsVoiceFrase;
   $("vozDeshacer").onclick = fsVozDeshacer;
   $("vozGuardar").onclick = () => { fsVozCerrar(); $("formMovimiento").requestSubmit(); };
   $("vozRevisar").onclick = fsVozCerrar;
@@ -5461,6 +5474,81 @@ function fsVoiceEscuchar() {
   };
   try { fsVoiceRec.start(); } catch (err) { st.textContent = t("vozNoPude"); }
 }
+// ---------- Voz: todo en una sola frase ----------
+// Devuelve lo que se entendió de una frase como "Gasté 32 mil en el súper con la Visa, en 3 cuotas, ayer".
+function fsVozFraseInterpretar(texto) {
+  let q = fsVoiceNorm(texto);
+  const r = {};
+  let m = q.match(/\b(?:en|em|in|a)\s+([a-z0-9]+)\s+(?:cuotas?|pagos?|parcelas?|installments?|payments?)\b/)
+    || q.match(/\b([a-z0-9]+)\s+(?:cuotas?|parcelas?|installments?)\b/);
+  if (m) { const n = fsVozNum(m[1]); if (n >= 2 && n <= 60) r.cuotas = n; q = q.replace(m[0], " "); }
+  const base = new Date(); base.setHours(12, 0, 0, 0);
+  const iso = (d) => d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+  const dia = (n) => { const d = new Date(base); d.setDate(d.getDate() + n); return iso(d); };
+  if (/\b(anteayer|antes de ontem|day before yesterday)\b/.test(q)) { r.fecha = dia(-2); q = q.replace(/\b(anteayer|antes de ontem|day before yesterday)\b/, " "); }
+  else if (/\b(ayer|ontem|yesterday)\b/.test(q)) { r.fecha = dia(-1); q = q.replace(/\b(ayer|ontem|yesterday)\b/, " "); }
+  else if (/\b(hoy|hoje|today)\b/.test(q)) { r.fecha = dia(0); q = q.replace(/\b(hoy|hoje|today)\b/, " "); }
+  const tipo = fsVoiceTipo(q);
+  if (tipo) r.tipo = tipo;
+  const monto = fsVoiceMonto(q);
+  if (monto && Number(monto) > 0) r.monto = monto;
+  const c = fsVoiceOpcionLista("movCuenta", q);
+  if (c.length === 1) r.cuenta = c[0];
+  r.texto = q;
+  return r;
+}
+function fsVozAplicarFrase(texto) {
+  const r = fsVozFraseInterpretar(texto);
+  const st = $("vozEstado");
+  if (!r.monto) { st.textContent = t("vozFraseNada"); return false; }
+  fsVozHecho = {}; fsVozUltimo = null;
+  if (r.tipo) fsVozAplicar("tipo", r.tipo, true);
+  if (r.cuenta) fsVozAplicar("movCuenta", r.cuenta, true);
+  const cats = fsVoiceOpcionLista("movCategoria", r.texto);
+  if (cats.length === 1) fsVozAplicar("movCategoria", cats[0], true);
+  fsVozAplicar("movMonto", r.monto, true, true);
+  if (r.cuotas) { fsVozAplicar("movCuotas", "si", true); fsVozAplicar("movCuotaN", String(r.cuotas), true); }
+  if (r.fecha) { $("movFecha").value = r.fecha; $("movFecha").dispatchEvent(new Event("change", { bubbles: true })); }
+  const pasos = fsVozPasos();
+  const falta = pasos.findIndex((id) => !fsVozHecho[id]);
+  fsVozIdx = falta === -1 ? pasos.length : falta;
+  fsVozDibujar();
+  $("vozEscuchado").textContent = "“" + texto + "”";
+  st.textContent = t("vozFraseListo");
+  return true;
+}
+function fsVoiceFrase() {
+  const Reconocimiento = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const st = $("vozEstado"), heard = $("vozEscuchado"), mic = $("vozMic");
+  if (!Reconocimiento) { st.textContent = t("vozSinSoporte"); return; }
+  let pendiente = "";
+  fsVoiceRec = new Reconocimiento();
+  fsVoiceRec.lang = LOCALES_POR_IDIOMA[idiomaActual] || "es-AR";
+  fsVoiceRec.continuous = false;
+  fsVoiceRec.interimResults = false;
+  fsVoiceRec.maxAlternatives = 5;
+  fsVoiceRec.onstart = () => { st.textContent = t("vozEscuchando"); mic.classList.add("grabando"); };
+  fsVoiceRec.onresult = (e) => {
+    const cand = [];
+    for (let i = 0; i < e.results.length; i++) for (let j = 0; j < e.results[i].length; j++) cand.push(e.results[i][j].transcript.trim());
+    pendiente = cand.find((x) => fsVozFraseInterpretar(x).monto) || cand[0] || "";
+    heard.textContent = "“" + pendiente + "”";
+  };
+  fsVoiceRec.onerror = (e) => {
+    mic.classList.remove("grabando");
+    if (e.error === "not-allowed" || e.error === "permission-denied") st.textContent = t("vozMicBloq");
+    else if (e.error === "no-speech") st.textContent = t("vozNoEscuche");
+    else if (e.error !== "aborted") st.textContent = t("vozNoPude") + " (" + e.error + ")";
+    pendiente = "";
+  };
+  fsVoiceRec.onend = () => {
+    mic.classList.remove("grabando");
+    if (!pendiente) { if (!st.textContent || st.textContent === t("vozEscuchando")) st.textContent = t("vozNoEscuche"); return; }
+    fsVozAplicarFrase(pendiente);
+  };
+  try { fsVoiceRec.start(); } catch (err) { st.textContent = t("vozNoPude"); }
+}
+
 // movCotizacion se interpreta igual que un monto.
 function fsVoiceIdInterno(id) { return id === "movCotizacion" ? "movMonto" : id; }
 
