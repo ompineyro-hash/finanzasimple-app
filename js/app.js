@@ -5417,7 +5417,7 @@ function fsVoiceEscuchar() {
   if (!id) return;
   let pendiente = "";
   fsVoiceRec = new Reconocimiento();
-  fsVoiceRec.lang = "es-AR";
+  fsVoiceRec.lang = LOCALES_POR_IDIOMA[idiomaActual] || "es-AR";
   fsVoiceRec.continuous = false;
   fsVoiceRec.interimResults = false;
   fsVoiceRec.maxAlternatives = 5;
@@ -5429,7 +5429,7 @@ function fsVoiceEscuchar() {
       || ((id === "movCuenta" || id === "movCategoria") ? cand.find((x) => fsVoiceOpcionLista(id, x).length > 1) : "")
       || cand[0] || "";
     if (id === "movMonto" || id === "movCotizacion") {
-      const esc = cand.find((x) => /\bmil\b|\bmill[oó]n(?:es)?\b/i.test(x) && !!fsVoiceMonto(x));
+      const esc = cand.find((x) => /\bmil\b|\bthousand\b|\bmill[oó]n(?:es)?\b|\bmilh[aã]o\b|\bmilh[oõ]es\b|\bmillion\b/i.test(x) && !!fsVoiceMonto(x));
       if (esc) elegido = esc;
     }
     pendiente = elegido;
@@ -5470,9 +5470,9 @@ function fsVozFecha(txt) {
   base.setHours(12, 0, 0, 0);
   const iso = (d) => d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
   const add = (n) => { const d = new Date(base); d.setDate(d.getDate() + n); return iso(d); };
-  if (/\bpasado manana\b/.test(q)) return add(2);
-  if (/\bmanana\b/.test(q)) return add(1);
-  if (/\bhoy\b/.test(q)) return add(0);
+  if (/\b(pasado manana|depois de amanha|day after tomorrow)\b/.test(q)) return add(2);
+  if (/\b(manana|amanha|tomorrow)\b/.test(q)) return add(1);
+  if (/\b(hoy|hoje|today)\b/.test(q)) return add(0);
   let m = q.match(/\ben ([a-z0-9]+) (dias?|semanas?)\b/);
   if (m) { const n = fsVozNum(m[1]); if (n) return add(/sem/.test(m[2]) ? n * 7 : n); }
   const meses = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
@@ -5499,8 +5499,8 @@ function fsVozFecha(txt) {
 function fsVozInterpretar(id, texto) {
   if (id === "movDiferido" || id === "movCuotas") {
     const q = fsVoiceNorm(texto);
-    if (/\bno\b/.test(q)) return "no";
-    if (/\b(si|dale|claro|ok|afirmativo|obvio)\b/.test(q)) return "si";
+    if (/\b(no|nao|nope)\b/.test(q)) return "no";
+    if (/\b(si|dale|claro|ok|afirmativo|obvio|sim|yes|yeah|sure)\b/.test(q)) return "si";
     return "";
   }
   if (id === "movFechaPago" || id === "movCuotaFecha") return fsVozFecha(texto);
@@ -5524,8 +5524,8 @@ function fsVoiceSetSel(id, val) {
 
 function fsVoiceTipo(t) {
   t = fsVoiceNorm(t);
-  if (/\b(gasto|gastos|gaste|gaste|pague|pago|pagar|compre|compra|compre|sali[oó]|salida|egreso|debito|d[eé]bito|debitaron)\b/.test(t)) return "Gasto";
-  if (/\b(ingreso|ingresos|cobre|cobro|cobrar|recibi|recibo|entro|entrada|deposito|dep[oó]sito|acredito|acreditaron|sueldo|cobranza)\b/.test(t)) return "Ingreso";
+  if (/\b(gasto|gastos|gaste|gaste|pague|pago|pagar|compre|compra|compre|sali[oó]|salida|egreso|debito|d[eé]bito|debitaron|despesa|despesas|gastei|paguei|comprei|saida|expense|expenses|spent|paid|bought|cost)\b/.test(t)) return "Gasto";
+  if (/\b(ingreso|ingresos|cobre|cobro|cobrar|recibi|recibo|entro|entrada|deposito|dep[oó]sito|acredito|acreditaron|sueldo|cobranza|receita|receitas|renda|recebi|recebo|salario|income|earned|received|salary|deposit)\b/.test(t)) return "Ingreso";
   return "";
 }
 
@@ -5555,18 +5555,25 @@ function fsVoiceOpcion(id, t) {
 }
 
 function fsVoiceNumeroPalabras(txt) {
-  txt = fsVoiceNorm(txt).replace(/\by\b/g, " ").replace(/\s+/g, " ").trim();
+  txt = fsVoiceNorm(txt).replace(/\b(y|e|and)\b/g, " ").replace(/\s+/g, " ").trim();
   const u = { cero:0,un:1,uno:1,una:1,dos:2,tres:3,cuatro:4,cinco:5,seis:6,siete:7,ocho:8,nueve:9,
     diez:10,once:11,doce:12,trece:13,catorce:14,quince:15,dieciseis:16,diecisiete:17,dieciocho:18,diecinueve:19,
     veinte:20,veintiuno:21,veintidos:22,veintitres:23,veinticuatro:24,veinticinco:25,veintiseis:26,veintisiete:27,veintiocho:28,veintinueve:29,
     treinta:30,cuarenta:40,cincuenta:50,sesenta:60,setenta:70,ochenta:80,noventa:90,
-    cien:100,ciento:100,doscientos:200,trescientos:300,cuatrocientos:400,quinientos:500,seiscientos:600,setecientos:700,ochocientos:800,novecientos:900 };
+    cien:100,ciento:100,doscientos:200,trescientos:300,cuatrocientos:400,quinientos:500,seiscientos:600,setecientos:700,ochocientos:800,novecientos:900,
+    // portugués
+    um:1,uma:1,dois:2,duas:2,quatro:4,sete:7,oito:8,nove:9,dez:10,onze:11,doze:12,treze:13,quatorze:14,quinze:15,dezesseis:16,dezessete:17,dezoito:18,dezenove:19,
+    vinte:20,trinta:30,quarenta:40,cinquenta:50,sessenta:60,oitenta:80,cem:100,cento:100,duzentos:200,trezentos:300,quatrocentos:400,quinhentos:500,seiscentos:600,setecentos:700,oitocentos:800,novecentos:900,
+    // inglés
+    zero:0,one:1,two:2,three:3,four:4,five:5,six:6,seven:7,eight:8,ten:10,eleven:11,twelve:12,thirteen:13,fourteen:14,fifteen:15,sixteen:16,seventeen:17,eighteen:18,nineteen:19,
+    twenty:20,thirty:30,forty:40,fifty:50,seventy:70,eighty:80,ninety:90 };
   let total = 0, actual = 0, vio = false;
   for (const w of txt.split(" ")) {
     if (w in u) { actual += u[w]; vio = true; continue; }
     if (/^\d+$/.test(w)) { actual += parseInt(w, 10); vio = true; continue; } // "15 mil", "5 mil 500"
-    if (w === "mil") { total += (actual || 1) * 1000; actual = 0; vio = true; continue; }
-    if (w === "millon" || w === "millones") { total += (actual || 1) * 1000000; actual = 0; vio = true; continue; }
+    if (w === "hundred") { actual = (actual || 1) * 100; vio = true; continue; }
+    if (w === "mil" || w === "thousand") { total += (actual || 1) * 1000; actual = 0; vio = true; continue; }
+    if (w === "millon" || w === "millones" || w === "milhao" || w === "milhoes" || w === "million") { total += (actual || 1) * 1000000; actual = 0; vio = true; continue; }
   }
   return vio ? total + actual : null;
 }
