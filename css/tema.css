@@ -409,11 +409,10 @@ html[data-tema="oscuro"] .rapido-cat.activo{color:#0B1411;}
   .topbar .resumen-tarjetas{gap:6px;margin-top:6px;}
   .topbar .resumen-tarjetas-fila{gap:6px;}
   .topbar .tarjeta-resumen-balance{padding:6px 12px 8px;}
-  /* Resultado del mes más bajo: el nombre y el monto van en la misma fila */
-  .topbar .tarjeta-resumen-balance{display:grid;grid-template-columns:1fr auto;align-items:baseline;column-gap:10px;}
-  .topbar .tarjeta-resumen-balance .consumo-mes{grid-column:1 / -1;}
+  /* Resultado del mes: título arriba y monto abajo, a la izquierda (igual que en la compu) */
+  .topbar .tarjeta-resumen-balance{display:block;text-align:left;}
   .topbar .tarjeta-resumen-balance .tarjeta-resumen-label{font-size:calc(15px * var(--letra,1));}
-  .topbar .tarjeta-resumen-balance .tarjeta-resumen-valor{text-align:right;}
+  .topbar .tarjeta-resumen-balance .tarjeta-resumen-valor{text-align:left;}
   .topbar .tarjeta-resumen-balance .tarjeta-resumen-label{font-size:calc(13.5px * var(--letra,1));}
   .topbar .tarjeta-resumen-balance .tarjeta-resumen-valor{font-size:calc(26px * var(--letra,1));margin-top:0;line-height:1.1;}
   .topbar .consumo-mes{margin-top:5px;}
