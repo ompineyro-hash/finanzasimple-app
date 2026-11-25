@@ -312,6 +312,13 @@ html[data-tema="oscuro"] .rapido-cat.activo{color:#0B1411;}
 .rapido-teclado button:active{transform:scale(.95);background:var(--ingreso-fondo);}
 .rapido-mas-opciones{background:none;border:none;color:var(--primario);font-weight:700;font-size:calc(15px * var(--letra,1));padding:8px;cursor:pointer;}
 @media (min-width:900px){.rapido-teclado button{padding:10px 0;font-size:calc(22px * var(--letra,1));}}
+/* Celulares de 761 a 900 px de alto: teclas un poco más bajas para que se vean más categorías */
+@media (max-height:900px){
+  .rapido-teclado{gap:6px;}
+  .rapido-teclado button{padding:0;height:clamp(36px,4.8vh,42px);font-size:calc(22px * var(--letra,1));}
+  .rapido-guardar{padding:10px;}
+  .rapido-barra{gap:6px;padding:6px 0 2px;}
+}
 /* Pantallas bajas (celulares chicos o con la barra del navegador): teclado más compacto para no tapar monto, cuenta y categorías */
 @media (max-height:760px){
   .rapido-teclado{gap:6px;}
@@ -496,3 +503,5 @@ html[data-letra="muy"]{--letra:1.3;}
 .vacio-btn-mano{background:transparent;border:1.5px solid var(--primario);color:var(--primario);}
 #segmentadoTipo .segmentado-item[data-tipo="Gasto"]::before{color:var(--gasto);}
 #segmentadoTipo .segmentado-item[data-tipo="Ingreso"]::before{color:var(--ingreso);}
+
+@media (max-height:900px){#modalFondo .modal{max-height:96vh;max-height:96dvh;}}
