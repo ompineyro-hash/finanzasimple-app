@@ -3411,7 +3411,7 @@ async function renderCuotas() {
   cont.innerHTML = filas.map(({ g, actual, restan, pct }) => `
     <div class="cuota-tarjeta">
       <div class="cuota-fila">
-        <div class="mov-icono gasto" style="--cat-h:${tonoCategoria(g.categoria)}" aria-hidden="true">${iconoCategoria(g.categoria) || "💳"}</div>
+        <div class="mov-icono gasto" style="--cat-h:${tonoCategoria(g.categoria)}" aria-hidden="true">${iconoCategoria(g.categoria) || svgIcono("tarjeta")}</div>
         <div class="cuota-txt">
           <b>${escapeHTML(g.base || g.categoria)}</b>
           <span>${escapeHTML(t("cuotaXdeN").replace("{k}", actual.k).replace("{n}", g.n))} · ${escapeHTML(g.cuenta || "")}</span>
@@ -6111,22 +6111,48 @@ $("btnEliminarCuenta").addEventListener("click", async () => {
 // Utilidad de escape HTML
 // ============================================================
 // Ícono por nombre de categoría (es/pt/en). Si no hay coincidencia, devuelve "" y se usa la flecha.
+const SVG_ICONOS = {
+  pregunta: `<circle cx="12" cy="12" r="10" /> <path d="M9 9.5a3 2.5 0 016 0c0 2-2 2-3 3.5" /> <path d="M12 17h.01" />`,
+  tarjeta: `<rect width="20" height="14" x="2" y="5" rx="2" /> <line x1="2" x2="22" y1="10" y2="10" /> <path d="M6 14h2" />`,
+  fuel: `<path d="M14 13h2a2 2 0 0 1 2 2v2a2 2 0 0 0 4 0v-6.998a2 2 0 0 0-.59-1.42L18 5" /> <path d="M14 21V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v16" /> <path d="M2 21h13" /> <path d="M3 9h11" />`,
+  bus: `<path d="M8 6v6" /> <path d="M15 6v6" /> <path d="M2 12h19.6" /> <path d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3" /> <circle cx="7" cy="18" r="2" /> <path d="M9 18h5" /> <circle cx="16" cy="18" r="2" />`,
+  luz: `<path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5" /> <path d="M9 18h6" /> <path d="M10 22h4" />`,
+  super: `<path d="m2.05 2.05 1.099-.028a1 1 0 0 1 1.008.815l2.69 14.347A1 1 0 0 0 7.83 18H18" /> <path d="M4.563 5h16.435a1 1 0 0 1 .981 1.204l-1.026 6.226A2 2 0 0 1 18.962 14H6.25" /> <circle cx="18" cy="20" r="2" /> <circle cx="8" cy="20" r="2" />`,
+  casa: `<path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8" /> <path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />`,
+  salud: `<path d="M11 2v2" /> <path d="M5 2v2" /> <path d="M5 3H4a2 2 0 0 0-2 2v4a6 6 0 0 0 12 0V5a2 2 0 0 0-2-2h-1" /> <path d="M8 15a6 6 0 0 0 12 0v-3" /> <circle cx="20" cy="10" r="2" />`,
+  educ: `<path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z" /> <path d="M22 10v6" /> <path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5" />`,
+  imp: `<path d="M12 17V7" /> <path d="M16 8h-6a2 2 0 0 0 0 4h4a2 2 0 0 1 0 4H8" /> <path d="M4 3a1 1 0 0 1 1-1 1.3 1.3 0 0 1 .7.2l.933.6a1.3 1.3 0 0 0 1.4 0l.934-.6a1.3 1.3 0 0 1 1.4 0l.933.6a1.3 1.3 0 0 0 1.4 0l.933-.6a1.3 1.3 0 0 1 1.4 0l.934.6a1.3 1.3 0 0 0 1.4 0l.933-.6A1.3 1.3 0 0 1 19 2a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1 1.3 1.3 0 0 1-.7-.2l-.933-.6a1.3 1.3 0 0 0-1.4 0l-.934.6a1.3 1.3 0 0 1-1.4 0l-.933-.6a1.3 1.3 0 0 0-1.4 0l-.933.6a1.3 1.3 0 0 1-1.4 0l-.934-.6a1.3 1.3 0 0 0-1.4 0l-.933.6a1.3 1.3 0 0 1-.7.2 1 1 0 0 1-1-1z" />`,
+  ropa: `<path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z" />`,
+  ocio: `<path d="M5.8 11.3 2 22l10.7-3.79" /> <path d="M4 3h.01" /> <path d="M22 8h.01" /> <path d="M15 2h.01" /> <path d="M22 20h.01" /> <path d="m22 2-2.24.75a2.9 2.9 0 0 0-1.96 3.12c.1.86-.57 1.63-1.45 1.63h-.38c-.86 0-1.6.6-1.76 1.44L14 10" /> <path d="m22 13-.82-.33c-.86-.34-1.82.2-1.98 1.11c-.11.7-.72 1.22-1.43 1.22H17" /> <path d="m11 2 .33.82c.34.86-.2 1.82-1.11 1.98C9.52 4.9 9 5.52 9 6.23V7" /> <path d="M11 13c1.93 1.93 2.83 4.17 2 5-.83.83-3.07-.07-5-2-1.93-1.93-2.83-4.17-2-5 .83-.83 3.07.07 5 2Z" />`,
+  mascota: `<circle cx="11" cy="4" r="2" /> <circle cx="18" cy="8" r="2" /> <circle cx="20" cy="16" r="2" /> <path d="M9 10a5 5 0 0 1 5 5v3.5a3.5 3.5 0 0 1-6.84 1.045Q6.52 17.48 4.46 16.84A3.5 3.5 0 0 1 5.5 10Z" />`,
+  regalo: `<path d="M12 7v14" /> <path d="M20 11v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8" /> <path d="M7.5 7a1 1 0 0 1 0-5A4.8 8 0 0 1 12 7a4.8 8 0 0 1 4.5-5 1 1 0 0 1 0 5" /> <rect x="3" y="7" width="18" height="4" rx="1" />`,
+  sueldo: `<path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" /> <rect width="20" height="14" x="2" y="6" rx="2" />`,
+  venta: `<path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z" /> <circle cx="7.5" cy="7.5" r=".5" fill="currentColor" />`,
+  otro: `<path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z" /> <path d="M12 22V12" /> <polyline points="3.29 7 12 12 20.71 7" /> <path d="m7.5 4.27 9 5.15" />`,
+};
+// Íconos de línea: Lucide (licencia ISC, https://lucide.dev), copiados acá para que anden sin conexión.
+function svgIcono(clave) {
+  const d = SVG_ICONOS[clave];
+  return d ? `<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false">${d}</svg>` : "";
+}
 const ICONOS_CATEGORIA = [
-  ["💳", /\b(tarjeta|cartao|card)/],
-  ["🚌", /\b(transport|combustible|combustivel|nafta|fuel|colectivo|taxi|uber|peaje|pedagio|toll)/],
-  ["💡", /\b(servicio|servico|utilit|luz\b|agua\b|gas\b|internet|electric)/],
-  ["🛒", /\b(super|aliment|comida|food|almacen|verduler|grocer|feira)/],
-  ["🏠", /\b(viviend|alquiler|aluguel|moradia|housing|rent\b|hogar|casa\b|home\b|expensas|condominio)/],
-  ["🩺", /\b(salud|saude|health|medic|farmac|pharmac)/],
-  ["🎓", /\b(educ|escuela|colegio|curso|school|universidad|faculdade)/],
-  ["🧾", /\b(impuest|imposto|tax)/],
-  ["👕", /\b(ropa|roupa|cloth|calzado)/],
-  ["🎉", /\b(salida|saidas|ocio|lazer|leisure|going out|entreten|restaurant)/],
-  ["🐾", /\b(mascota|animais|animal|pet\b|pets\b|veterinar)/],
-  ["🎁", /\b(regalo|presente|gift)/],
-  ["💼", /\b(sueldo|salario|salary|honorario|trabajo|trabalho)/],
-  ["🏷️", /\b(venta|vendas|sales)/],
-  ["📦", /\b(otro|outra|outro|other)/],
+  ["pregunta", /\b(sin clasificar|sem classific|unclassified|uncategori|sin categoria|sem categoria)/],
+  ["tarjeta", /\b(tarjeta|cartao|card)/],
+  ["fuel", /\b(combustible|combustivel|nafta|fuel|gasolin|gasoil)/],
+  ["bus", /\b(transport|colectivo|taxi|uber|peaje|pedagio|toll)/],
+  ["luz", /\b(servicio|servico|utilit|luz\b|agua\b|gas\b|internet|electric)/],
+  ["super", /\b(super|aliment|comida|food|almacen|verduler|grocer|feira)/],
+  ["casa", /\b(viviend|alquiler|aluguel|moradia|housing|rent\b|hogar|casa\b|home\b|expensas|condominio)/],
+  ["salud", /\b(salud|saude|health|medic|farmac|pharmac)/],
+  ["educ", /\b(educ|escuela|colegio|curso|school|universidad|faculdade)/],
+  ["imp", /\b(impuest|imposto|tax)/],
+  ["ropa", /\b(ropa|roupa|cloth|calzado)/],
+  ["ocio", /\b(salida|saidas|ocio|lazer|leisure|going out|entreten|restaurant)/],
+  ["mascota", /\b(mascota|animais|animal|pet\b|pets\b|veterinar)/],
+  ["regalo", /\b(regalo|presente|gift)/],
+  ["sueldo", /\b(sueldo|salario|salary|honorario|trabajo|trabalho)/],
+  ["venta", /\b(venta|vendas|sales)/],
+  ["otro", /\b(otro|outra|outro|other)/],
 ];
 // Cada categoría tiene siempre el mismo color (se calcula con su nombre).
 function tonoCategoria(nombre) {
@@ -6138,7 +6164,7 @@ function tonoCategoria(nombre) {
 
 function iconoCategoria(nombre) {
   const n = String(nombre || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-  for (const [emoji, re] of ICONOS_CATEGORIA) if (re.test(n)) return emoji;
+  for (const [clave, re] of ICONOS_CATEGORIA) if (re.test(n)) return svgIcono(clave);
   return "";
 }
 

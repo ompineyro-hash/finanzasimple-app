@@ -689,3 +689,11 @@ a.config-tarjeta{text-decoration:none;}
 .moneda-ini-op.activo .moneda-ini-radio{border-color:var(--primario);background:radial-gradient(circle,var(--primario) 0 45%,transparent 50%);}
 .moneda-ini-select{font-size:calc(18px * var(--letra,1));padding:12px;border-radius:12px;border:2px solid var(--borde);background:var(--papel-alto);color:var(--texto);width:100%;}
 .moneda-ini-pie{margin-top:auto;padding-top:18px;text-align:center;}
+
+/* Íconos de línea (categorías) */
+.ico{width:1.15em;height:1.15em;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vertical-align:-0.2em;flex-shrink:0;}
+.mov-icono .ico{width:1.1em;height:1.1em;vertical-align:middle;}
+.mov-icono.gasto,.mov-icono.ingreso{color:hsl(var(--cat-h,150) 55% 26%);}
+html[data-tema="oscuro"] .mov-icono.gasto,html[data-tema="oscuro"] .mov-icono.ingreso{color:hsl(var(--cat-h,150) 60% 78%);}
+.rapido-cat .ico{margin-right:4px;}
+.rapido-cat .ico{width:1.3em;height:1.3em;}
