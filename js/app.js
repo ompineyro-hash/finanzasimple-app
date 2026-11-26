@@ -3580,8 +3580,33 @@ if (window.matchMedia) {
 }
 aplicarTema(temaGuardado());
 
+// El mes se achica (o pasa a nombre corto) si no entra entre las flechas, para que nunca se pise.
+function ajustarMes() {
+  const el = $("etiquetaMes");
+  if (!el) return;
+  const caja = el.closest(".mes-centro");
+  if (!caja) return;
+  el.style.fontSize = "";
+  el.textContent = nombreMes(fechaVista);
+  const sobra = () => caja.scrollWidth > caja.clientWidth + 1;
+  let fs = parseFloat(getComputedStyle(el).fontSize) || 15;
+  let n = 0;
+  while (sobra() && fs > 10.5 && n++ < 24) { fs -= 0.5; el.style.fontSize = fs + "px"; }
+  if (sobra()) {
+    const locale = LOCALES_POR_IDIOMA[idiomaActual] || "es-AR";
+    const corto = fechaVista.toLocaleString(locale, { month: "short", year: "numeric" }).replace(".", "");
+    el.textContent = corto.charAt(0).toUpperCase() + corto.slice(1);
+    el.style.fontSize = "";
+    fs = parseFloat(getComputedStyle(el).fontSize) || 15;
+    n = 0;
+    while (sobra() && fs > 10.5 && n++ < 24) { fs -= 0.5; el.style.fontSize = fs + "px"; }
+  }
+}
+window.addEventListener("resize", () => { if (typeof ajustarMes === "function" && usuario) ajustarMes(); });
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { if (usuario) ajustarMes(); });
+
 function renderMovimientos() {
-  $("etiquetaMes").textContent = nombreMes(fechaVista);
+  ajustarMes();
   const cont = $("listaMovimientos");
   const visibles = movimientos.filter(pasaBusqueda);
   const hayBusqueda = !!($("textoBusqueda") && $("textoBusqueda").value.trim());

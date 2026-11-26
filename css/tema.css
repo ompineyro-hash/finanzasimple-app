@@ -548,3 +548,8 @@ html[data-letra] .acceso-btn .acc-txt{font-size:calc(15px * var(--letra,1));}
 .topbar .mes-centro #etiquetaMes{font-size:calc(clamp(12px, 4.2vw, 15px) * min(var(--letra,1), 1.12));white-space:nowrap;}
 .topbar .mes-selector .icono-btn{flex:0 0 auto;min-width:26px;padding:6px 2px;}
 .topbar .selector-idioma{font-size:calc(clamp(11px, 3.3vw, 13px) * min(var(--letra,1), 1.12)) !important;}
+.topbar .mes-centro{overflow:hidden;}
+
+/* Cerrar sesión: botón ancho al final de Ajustes, con su palabra */
+.btn-cerrar-sesion{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:16px;min-height:56px;font-size:calc(17px * var(--letra,1));font-weight:700;border-width:2px;}
+.btn-cerrar-sesion .ico{width:24px;height:24px;vertical-align:middle;}
