@@ -535,3 +535,16 @@ html[data-letra] .acceso-btn{flex:1 1 calc(50% - 6px) !important;flex-direction:
 html[data-letra] .acceso-btn .acc-txt{font-size:calc(15px * var(--letra,1));}
 #filaAccesosLista #segmentadoTipoLista{padding:3px;}
 #filaAccesosLista #segmentadoTipoLista .segmentado-item{flex:1 1 auto;overflow:visible;text-overflow:clip;white-space:nowrap;padding:8px 4px;}
+
+/* Si no entran en una fila (pantalla angosta o letra grande del celular): pestañas arriba, botones abajo */
+#filaAccesosLista #segmentadoTipoLista{min-width:max-content;}
+#filaAccesosLista.acc-wrap{flex-wrap:wrap !important;}
+#filaAccesosLista.acc-wrap #segmentadoTipoLista{flex:1 1 100% !important;min-width:0;}
+#filaAccesosLista.acc-wrap .acceso-btn{flex:1 1 calc(50% - 6px) !important;flex-direction:row;gap:8px;min-height:46px;}
+#filaAccesosLista.acc-wrap .acceso-btn .acc-txt{font-size:calc(15px * var(--letra,1));}
+/* Cabecera: el mes se achica en vez de pisarse con las flechas */
+.topbar .mes-selector{flex:1 1 0;min-width:0;overflow:hidden;}
+.topbar .mes-centro{min-width:0;flex:1 1 auto;}
+.topbar .mes-centro #etiquetaMes{font-size:calc(clamp(12px, 4.2vw, 15px) * min(var(--letra,1), 1.12));white-space:nowrap;}
+.topbar .mes-selector .icono-btn{flex:0 0 auto;min-width:26px;padding:6px 2px;}
+.topbar .selector-idioma{font-size:calc(clamp(11px, 3.3vw, 13px) * min(var(--letra,1), 1.12)) !important;}

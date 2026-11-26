@@ -3096,6 +3096,16 @@ function pasaBusqueda(m) {
     botonAcceso(btnBuscar, "buscar", filaBusqueda.hidden ? t("accBuscar") : t("accCerrar"));
   });
 
+  window.ajustarAccesos = function () {
+    filaAccesos.classList.remove("acc-wrap");
+    const tope = segmentado.getBoundingClientRect().top;
+    const apretado = segmentado.scrollWidth > segmentado.clientWidth + 1 ||
+      [...filaAccesos.querySelectorAll(".acceso-btn")].some((b) => b.getBoundingClientRect().top > tope + 8);
+    if (apretado) filaAccesos.classList.add("acc-wrap");
+  };
+  window.addEventListener("resize", window.ajustarAccesos);
+  setTimeout(window.ajustarAccesos, 0);
+  setTimeout(window.ajustarAccesos, 800);
   segmentado.querySelectorAll(".segmentado-item").forEach((btn) => {
     btn.addEventListener("click", () => {
       segmentado.querySelectorAll(".segmentado-item").forEach((b) => b.classList.remove("activo"));

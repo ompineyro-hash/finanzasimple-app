@@ -725,3 +725,7 @@ html[data-tema="oscuro"] .mov-icono.gasto,html[data-tema="oscuro"] .mov-icono.in
 .login-idioma-mini{position:static;justify-content:center;flex-wrap:wrap;gap:6px;margin:0 0 10px;}
 .login-idioma-mini button{min-width:0;padding:4px 10px;}
 .tarjeta-login .logo-login{margin-top:0;}
+
+/* Idioma en la entrada: tres opciones parejas en una sola fila */
+.login-idioma-mini{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;width:100%;}
+.login-idioma-mini button{min-width:0;width:100%;padding:7px 0;font-size:clamp(10.5px, 3.5vw, 14px);letter-spacing:-0.2px;white-space:nowrap;overflow:hidden;text-overflow:clip;}
