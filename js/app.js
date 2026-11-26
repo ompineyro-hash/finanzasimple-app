@@ -3,6 +3,22 @@
 // ============================================================
 
 const SVG_ICONOS = {
+  ojo: `<path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" /> <circle cx="12" cy="12" r="3" />`,
+  ojoOff: `<path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49" /> <path d="M14.084 14.158a3 3 0 0 1-4.242-4.242" /> <path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143" /> <path d="m2 2 20 20" />`,
+  izq: `<path d="m15 18-6-6 6-6" />`,
+  der: `<path d="m9 18 6-6-6-6" />`,
+  ingresoFl: `<path d="M7 7h10v10" /> <path d="M7 17 17 7" />`,
+  gastoFl: `<path d="m7 7 10 10" /> <path d="M17 7v10H7" />`,
+  reloj: `<circle cx="12" cy="12" r="10" /> <path d="M12 6v6l4 2" />`,
+  tilde: `<path d="M20 6 9 17l-5-5" />`,
+  mic: `<path d="M12 19v3" /> <path d="M19 10v2a7 7 0 0 1-14 0v-2" /> <rect x="9" y="2" width="6" height="13" rx="3" />`,
+  billetera: `<path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1" /> <path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4" />`,
+  calendario: `<path d="M8 2v3" /> <path d="M16 2v3" /> <rect x="3" y="3" width="18" height="18" rx="2" /> <path d="M3 9h18" />`,
+  qr: `<rect width="5" height="5" x="3" y="3" rx="1" /> <rect width="5" height="5" x="16" y="3" rx="1" /> <rect width="5" height="5" x="3" y="16" rx="1" /> <path d="M21 16h-3a2 2 0 0 0-2 2v3" /> <path d="M21 21v.01" /> <path d="M12 7v3a2 2 0 0 1-2 2H7" /> <path d="M3 12h.01" /> <path d="M12 3h.01" /> <path d="M12 16v.01" /> <path d="M16 12h1" /> <path d="M21 12v.01" /> <path d="M12 21v-1" />`,
+  abajo: `<path d="m6 9 6 6 6-6" />`,
+  borrar: `<path d="M10 5a2 2 0 0 0-1.344.519l-6.328 5.74a1 1 0 0 0 0 1.481l6.328 5.741A2 2 0 0 0 10 19h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2z" /> <path d="m12 9 6 6" /> <path d="m18 9-6 6" />`,
+  camara: `<path d="M13.997 4a2 2 0 0 1 1.76 1.05l.486.9A2 2 0 0 0 18.003 7H20a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h1.997a2 2 0 0 0 1.759-1.048l.489-.904A2 2 0 0 1 10.004 4z" /> <circle cx="12" cy="13" r="3" />`,
+  baja: `<circle cx="12" cy="12" r="10" /> <path d="m15 9-6 6" /> <path d="m9 9 6 6" />`,
   buscar: `<path d="m21 21-4.34-4.34" /> <circle cx="11" cy="11" r="8" />`,
   clasificar: `<path d="M13 5h8" /> <path d="M13 12h8" /> <path d="M13 19h8" /> <path d="m3 17 2 2 4-4" /> <path d="m3 7 2 2 4-4" />`,
   globe: `<circle cx="12" cy="12" r="10" /> <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" /> <path d="M2 12h20" />`,
@@ -107,6 +123,7 @@ const TRADUCCIONES = {
     pagoNoEncontrado: "Todavía no encontramos tu pago. Puede demorar unos minutos: probá de nuevo en un rato.",
     btnAvisarSoporte: "Escribir a soporte",
     btnSalir2: "Salir",
+    tarjetaCerrarSesion: "Cerrar sesión",
     btnCrearCuentaSubmit: "Crear cuenta",
     btnYaTengoCuenta: "Ya tengo cuenta",
     ariaMesAnterior: "Mes anterior",
@@ -687,6 +704,7 @@ const TRADUCCIONES = {
     pagoNoEncontrado: "Ainda não encontramos seu pagamento. Pode demorar alguns minutos: tente de novo daqui a pouco.",
     btnAvisarSoporte: "Escrever ao suporte",
     btnSalir2: "Sair",
+    tarjetaCerrarSesion: "Sair da conta",
     btnCrearCuentaSubmit: "Criar conta",
     btnYaTengoCuenta: "Já tenho conta",
     ariaMesAnterior: "Mês anterior",
@@ -1267,6 +1285,7 @@ const TRADUCCIONES = {
     pagoNoEncontrado: "We haven't found your payment yet. It can take a few minutes: please try again shortly.",
     btnAvisarSoporte: "Contact support",
     btnSalir2: "Log out",
+    tarjetaCerrarSesion: "Log out",
     btnCrearCuentaSubmit: "Create account",
     btnYaTengoCuenta: "I already have an account",
     ariaMesAnterior: "Previous month",
@@ -2102,21 +2121,24 @@ document.querySelectorAll(".btn-ojito").forEach((btn) => {
     if (!input) return;
     const mostrando = input.type === "text";
     input.type = mostrando ? "password" : "text";
-    btn.textContent = mostrando ? "👁️" : "🙈";
+    btn.innerHTML = svgIcono(mostrando ? "ojo" : "ojoOff");
   });
 });
 
 function marcarIdiomaLogin() {
-  const s = $("selectIdiomaLogin");
-  if (s) s.value = idiomaActual;
+  document.querySelectorAll("[data-idioma-login]").forEach((b) => {
+    const act = b.dataset.idiomaLogin === idiomaActual;
+    b.classList.toggle("activo", act);
+    b.setAttribute("aria-pressed", act ? "true" : "false");
+  });
 }
-if ($("selectIdiomaLogin")) {
-  $("selectIdiomaLogin").addEventListener("change", (e) => {
-    aplicarIdioma(e.target.value);
+document.querySelectorAll("[data-idioma-login]").forEach((b) => {
+  b.addEventListener("click", () => {
+    aplicarIdioma(b.dataset.idiomaLogin);
     try { localStorage.setItem("fs_idioma_eleg", "1"); } catch {}
     marcarIdiomaLogin();
   });
-}
+});
 marcarIdiomaLogin();
 
 $("formLogin").addEventListener("submit", async (e) => {
@@ -3528,7 +3550,7 @@ function aplicarOcultar(v) {
   else document.documentElement.removeAttribute("data-ocultar");
   try { localStorage.setItem("fs_ocultar", v ? "1" : "0"); } catch (e) {}
   const b = $("btnOjo");
-  if (b) { b.textContent = v ? "🙈" : "👁️"; b.setAttribute("aria-pressed", v ? "true" : "false"); }
+  if (b) { b.innerHTML = svgIcono(v ? "ojoOff" : "ojo"); b.setAttribute("aria-pressed", v ? "true" : "false"); }
 }
 $("btnOjo").addEventListener("click", () => aplicarOcultar(!ocultarGuardado()));
 aplicarOcultar(ocultarGuardado());

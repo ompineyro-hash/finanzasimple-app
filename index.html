@@ -47,11 +47,11 @@ try {
 <!-- ===================== PANTALLA DE INGRESO ===================== -->
 <div id="pantallaLogin" class="pantalla-login">
 <div class="tarjeta-login">
-<select id="selectIdiomaLogin" class="login-idioma-sel" aria-label="Idioma / Language / Idioma">
-<option value="es">🇦🇷 Español</option>
-<option value="pt">🇧🇷 Português</option>
-<option value="en">🇺🇸 English</option>
-</select>
+<div class="login-idioma-mini" role="group" aria-label="Idioma / Language / Idioma">
+<button type="button" data-idioma-login="es" aria-label="Español" title="Español">ES</button>
+<button type="button" data-idioma-login="pt" aria-label="Português" title="Português">PT</button>
+<button type="button" data-idioma-login="en" aria-label="English" title="English">EN</button>
+</div>
 <div class="logo-login"><img src="icons/icon-192.png" alt="Ingasto" width="64" height="64" style="border-radius:16px;display:block;margin:0 auto;"></div>
 <h1>Ingasto</h1>
 <p class="subtitulo-login" data-i18n="subtitulo">Tus gastos e ingresos, claros y simples.</p>
@@ -66,13 +66,13 @@ try {
 <label><span data-i18n="labelClave">Clave</span>
 <div class="campo-clave">
 <input type="password" id="inputClave" required autocomplete="current-password" data-i18n-placeholder="placeholderClave" placeholder="Mínimo 6 caracteres">
-<button type="button" class="btn-ojito" data-target="inputClave" data-i18n-aria="ariaMostrarClave" aria-label="Mostrar clave">👁️</button>
+<button type="button" class="btn-ojito" data-target="inputClave" data-i18n-aria="ariaMostrarClave" aria-label="Mostrar clave" data-ico="ojo">👁️</button>
 </div>
 </label>
 <label id="labelClaveConfirmar" hidden><span data-i18n="labelRepetirClave">Repetir clave</span>
 <div class="campo-clave">
 <input type="password" id="inputClaveConfirmar" autocomplete="new-password" data-i18n-placeholder="placeholderClave" placeholder="Mínimo 6 caracteres">
-<button type="button" class="btn-ojito" data-target="inputClaveConfirmar" data-i18n-aria="ariaMostrarClave" aria-label="Mostrar clave">👁️</button>
+<button type="button" class="btn-ojito" data-target="inputClaveConfirmar" data-i18n-aria="ariaMostrarClave" aria-label="Mostrar clave" data-ico="ojo">👁️</button>
 </div>
 </label>
 <label class="recordar-sesion"><input type="checkbox" id="chkRecordar" checked><span data-i18n="recordarSesion">Mantener sesión iniciada en este aparato</span></label>
@@ -104,7 +104,7 @@ Al crear una cuenta aceptás nuestros
 <label><span data-i18n="labelNuevaClave">Nueva clave</span>
 <div class="campo-clave">
 <input type="password" id="inputNuevaClave" required minlength="6" autocomplete="new-password" data-i18n-placeholder="placeholderClave" placeholder="Mínimo 6 caracteres">
-<button type="button" class="btn-ojito" data-target="inputNuevaClave" data-i18n-aria="ariaMostrarClave" aria-label="Mostrar clave">👁️</button>
+<button type="button" class="btn-ojito" data-target="inputNuevaClave" data-i18n-aria="ariaMostrarClave" aria-label="Mostrar clave" data-ico="ojo">👁️</button>
 </div>
 </label>
 <button type="submit" class="boton boton-primario boton-ancho" id="btnGuardarNuevaClave" data-i18n="btnGuardarNuevaClave">Guardar nueva clave</button>
@@ -139,12 +139,11 @@ Al crear una cuenta aceptás nuestros
 <option value="en">🇺🇸 EN</option>
 </select>
 <div class="mes-selector">
-<button id="btnMesAnterior" class="icono-btn" data-i18n-aria="ariaMesAnterior" aria-label="Mes anterior">◀</button>
+<button id="btnMesAnterior" class="icono-btn" data-i18n-aria="ariaMesAnterior" aria-label="Mes anterior" data-ico="izq">◀</button>
 <div class="mes-centro"><span id="etiquetaMes">—</span><span id="fechaHoy" class="fecha-hoy">—</span></div>
-<button id="btnMesSiguiente" class="icono-btn" data-i18n-aria="ariaMesSiguiente" aria-label="Mes siguiente">▶</button>
+<button id="btnMesSiguiente" class="icono-btn" data-i18n-aria="ariaMesSiguiente" aria-label="Mes siguiente" data-ico="der">▶</button>
 </div>
-<button id="btnOjo" type="button" class="icono-btn" data-i18n-aria="ariaOjo" aria-label="Ocultar o mostrar los saldos" aria-pressed="false">👁️</button>
-<button id="btnSalir" class="icono-btn" data-i18n-aria="ariaSalir" aria-label="Salir">↪</button>
+<button id="btnOjo" type="button" class="icono-btn" data-i18n-aria="ariaOjo" aria-label="Ocultar o mostrar los saldos" aria-pressed="false" data-ico="ojo">👁️</button>
 </div>
 <div class="topbar-resumen">
 <div class="resumen-tarjetas">
@@ -158,11 +157,11 @@ Al crear una cuenta aceptás nuestros
 </div>
 <div class="resumen-tarjetas-fila">
 <div class="tarjeta-resumen">
-<span class="tarjeta-resumen-label"><span class="flecha-resumen ingreso" aria-hidden="true">▲</span> <span data-i18n="lblIngresos">Ingresos</span></span>
+<span class="tarjeta-resumen-label"><span class="flecha-resumen ingreso" aria-hidden="true" data-ico="ingresoFl">▲</span> <span data-i18n="lblIngresos">Ingresos</span></span>
 <span id="valorIngresos" class="tarjeta-resumen-valor color-ingreso">—</span>
 </div>
 <div class="tarjeta-resumen">
-<span class="tarjeta-resumen-label"><span class="flecha-resumen gasto" aria-hidden="true">▼</span> <span data-i18n="lblGastos">Gastos</span></span>
+<span class="tarjeta-resumen-label"><span class="flecha-resumen gasto" aria-hidden="true" data-ico="gastoFl">▼</span> <span data-i18n="lblGastos">Gastos</span></span>
 <span id="valorGastos" class="tarjeta-resumen-valor color-gasto">—</span>
 </div>
 </div>
@@ -365,8 +364,12 @@ Al crear una cuenta aceptás nuestros
 <span class="config-tarjeta-icono" data-ico="llave">🔒</span>
 <span class="config-tarjeta-titulo" data-i18n="tituloCambiarClave">Cambiar clave</span>
 </button>
-<a class="config-tarjeta" href="solicitud.html?tipo=baja">
+<button type="button" class="config-tarjeta" id="btnSalir">
 <span class="config-tarjeta-icono" data-ico="salir">🚪</span>
+<span class="config-tarjeta-titulo" data-i18n="tarjetaCerrarSesion">Cerrar sesión</span>
+</button>
+<a class="config-tarjeta" href="solicitud.html?tipo=baja">
+<span class="config-tarjeta-icono" data-ico="baja">🚪</span>
 <span class="config-tarjeta-titulo" data-i18n="tarjetaBaja">Baja del servicio</span>
 </a>
 <a class="config-tarjeta" href="solicitud.html?tipo=arrepentimiento">
@@ -585,7 +588,7 @@ Al crear una cuenta aceptás nuestros
 <label><span data-i18n="labelNuevaClave">Nueva clave</span>
 <div class="campo-clave">
 <input type="password" id="inputCambiarClaveNueva" required minlength="6" autocomplete="new-password" data-i18n-placeholder="placeholderClave" placeholder="Mínimo 6 caracteres">
-<button type="button" class="btn-ojito" data-target="inputCambiarClaveNueva" data-i18n-aria="ariaMostrarClave" aria-label="Mostrar clave">👁️</button>
+<button type="button" class="btn-ojito" data-target="inputCambiarClaveNueva" data-i18n-aria="ariaMostrarClave" aria-label="Mostrar clave" data-ico="ojo">👁️</button>
 </div>
 </label>
 </div>
@@ -593,7 +596,7 @@ Al crear una cuenta aceptás nuestros
 <label><span data-i18n="labelRepetirClave">Repetir clave nueva</span>
 <div class="campo-clave">
 <input type="password" id="inputCambiarClaveRepetir" required minlength="6" autocomplete="new-password" data-i18n-placeholder="placeholderClave" placeholder="Mínimo 6 caracteres">
-<button type="button" class="btn-ojito" data-target="inputCambiarClaveRepetir" data-i18n-aria="ariaMostrarClave" aria-label="Mostrar clave">👁️</button>
+<button type="button" class="btn-ojito" data-target="inputCambiarClaveRepetir" data-i18n-aria="ariaMostrarClave" aria-label="Mostrar clave" data-ico="ojo">👁️</button>
 </div>
 </label>
 </div>

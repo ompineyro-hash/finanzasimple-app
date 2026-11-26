@@ -709,3 +709,14 @@ html[data-tema="oscuro"] .mov-icono.gasto,html[data-tema="oscuro"] .mov-icono.in
 .topbar .fecha-hoy{font-size:calc(11px * min(var(--letra,1), 1.12));}
 .topbar #btnOjo{min-width:32px;padding:6px 2px;}
 .topbar .selector-idioma{max-width:74px !important;font-size:calc(12px * min(var(--letra,1), 1.12)) !important;padding:4px 2px !important;}
+
+/* Idioma en la entrada, versión 2: tres botones chicos ES PT EN */
+.login-idioma-mini{position:absolute;top:12px;left:12px;display:flex;gap:4px;}
+.login-idioma-mini button{border:1.5px solid var(--borde);background:var(--papel-alto);color:var(--texto-suave);border-radius:10px;min-width:44px;min-height:36px;padding:4px 8px;font:inherit;font-size:calc(14px * min(var(--letra,1), 1.15));font-weight:800;cursor:pointer;}
+.login-idioma-mini button.activo{border-color:var(--primario);background:var(--ingreso-fondo);color:var(--primario);}
+
+/* Íconos de línea en cabecera, resumen y clave */
+.topbar .icono-btn .ico{width:24px;height:24px;vertical-align:middle;}
+.topbar .mes-selector .icono-btn .ico{width:22px;height:22px;stroke-width:2.6;}
+.flecha-resumen .ico{width:1.2em;height:1.2em;stroke-width:3;vertical-align:-0.2em;}
+.btn-ojito .ico{width:22px;height:22px;vertical-align:middle;}
