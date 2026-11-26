@@ -563,6 +563,11 @@ const TRADUCCIONES = {
     vozFraseEj: "Ejemplo: «Gasté 32 mil en el súper con la Visa, en 3 cuotas». Después revisás y guardás.",
     vozFraseNada: "No entendí el monto. Probá de nuevo o seguí paso a paso.",
     vozFraseListo: "Revisá los datos y completá lo que falta.",
+    monedaIniTitulo: "¡Hola! Te damos la bienvenida a Ingasto",
+    monedaIniPreg: "Para empezar, ¿en qué moneda llevás tus cuentas?",
+    monedaIniOtras: "Ver otras monedas",
+    monedaIniSeguir: "Continuar",
+    monedaIniNota: "Lo podés cambiar después en Ajustes.",
     vozNoTipo: "No entendí si es gasto o ingreso. Decí “gasto” o “ingreso”, o tocá un botón.",
     vozNoEscuche: "No escuché nada. Tocá el micrófono y hablá apenas empiece.",
     vozMicBloq: "El micrófono está bloqueado para esta página. Revisá los permisos del navegador (candado junto a la dirección).",
@@ -1137,6 +1142,11 @@ const TRADUCCIONES = {
     vozFraseEj: "Exemplo: «Gastei 32 mil no mercado com o Visa, em 3 parcelas». Depois você revisa e salva.",
     vozFraseNada: "Não entendi o valor. Tente de novo ou siga passo a passo.",
     vozFraseListo: "Revise os dados e complete o que falta.",
+    monedaIniTitulo: "Olá! Boas-vindas ao Ingasto",
+    monedaIniPreg: "Para começar, em que moeda ficam suas contas?",
+    monedaIniOtras: "Ver outras moedas",
+    monedaIniSeguir: "Continuar",
+    monedaIniNota: "Você pode mudar depois em Ajustes.",
     vozNoTipo: "Não entendi se é despesa ou receita. Diga “gasto” ou “ingreso”, ou toque num botão.",
     vozNoEscuche: "Não ouvi nada. Toque no microfone e fale assim que começar.",
     vozMicBloq: "O microfone está bloqueado para esta página. Verifique as permissões do navegador.",
@@ -1711,6 +1721,11 @@ const TRADUCCIONES = {
     vozFraseEj: "Example: “I spent 32 thousand at the supermarket on my Visa, in 3 installments”. Then you review and save.",
     vozFraseNada: "I didn't catch the amount. Try again or go step by step.",
     vozFraseListo: "Check the details and fill in what is missing.",
+    monedaIniTitulo: "Hi! Welcome to Ingasto",
+    monedaIniPreg: "To get started, what currency do your accounts use?",
+    monedaIniOtras: "See other currencies",
+    monedaIniSeguir: "Continue",
+    monedaIniNota: "You can change it later in Settings.",
     vozNoTipo: "Couldn't tell expense from income. Say “gasto” or “ingreso”, or tap a button.",
     vozNoEscuche: "I heard nothing. Tap the microphone and speak right away.",
     vozMicBloq: "The microphone is blocked for this page. Check your browser permissions.",
@@ -2351,7 +2366,19 @@ async function arrancarApp(usuarioYaObtenido) {
   // pedimos en paralelo en vez de una detrás de la otra: reduce
   // bastante el tiempo de arranque, sobre todo con conexión lenta.
   try {
-    await sembrarDatosInicialesSiHaceFalta(usuario.id, idiomaActual);
+    let monedaIni = null;
+    if (await necesitaDatosIniciales(usuario.id)) {
+      // Primera vez: se elige la moneda y queda como base de sus cuentas
+      monedaIni = await elegirMonedaInicial();
+      const simboloIni = (CATALOGO_MONEDAS.find((m) => m.codigo === monedaIni) || {}).simbolo || monedaIni;
+      try {
+        await actualizarMonedaBase(usuario.id, monedaIni);
+        await actualizarMoneda(usuario.id, simboloIni);
+        if (perfil) { perfil.moneda_base = monedaIni; perfil.moneda = simboloIni; }
+        $("inputMoneda").value = simboloIni;
+      } catch {}
+    }
+    await sembrarDatosInicialesSiHaceFalta(usuario.id, idiomaActual, monedaIni);
   } catch {}
   await Promise.all([cargarCuentasYCategorias(), cargarMesActual()]);
   generarFijosDelMes().catch(() => {});
@@ -3407,6 +3434,43 @@ function aplicarLetra(v) {
 }
 document.querySelectorAll("[data-letra-opcion]").forEach((b) => b.addEventListener("click", () => aplicarLetra(b.dataset.letraOpcion)));
 aplicarLetra(letraGuardada());
+
+// Primera vez: pregunta en qué moneda lleva sus cuentas y devuelve el código (ARS, USD, EUR, BRL...)
+function elegirMonedaInicial() {
+  return new Promise((resolve) => {
+    const pref = { es: "ARS", pt: "BRL", en: "USD" }[idiomaActual] || "ARS";
+    const cat = todasLasMonedas();
+    const nombre = (c) => (cat.find((m) => m.codigo === c) || {}).nombre || c;
+    const simb = (c) => (CATALOGO_MONEDAS.find((m) => m.codigo === c) || {}).simbolo || c;
+    const cods = ["ARS", "USD", "EUR"];
+    if (!cods.includes(pref)) cods.unshift(pref);
+    let elegida = pref;
+    const lista = $("monedaIniLista"), sel = $("monedaIniSelect");
+    const pintar = () => {
+      lista.innerHTML = "";
+      cods.forEach((c) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "moneda-ini-op" + (c === elegida ? " activo" : "");
+        b.setAttribute("aria-pressed", c === elegida ? "true" : "false");
+        b.innerHTML = '<span class="moneda-ini-sim"></span><span class="moneda-ini-txt"><b></b><small></small></span><span class="moneda-ini-radio" aria-hidden="true"></span>';
+        b.querySelector(".moneda-ini-sim").textContent = simb(c);
+        b.querySelector("b").textContent = nombre(c);
+        b.querySelector("small").textContent = c;
+        b.onclick = () => { elegida = c; pintar(); };
+        lista.appendChild(b);
+      });
+    };
+    sel.innerHTML = CATALOGO_MONEDAS.map((m) => `<option value="${m.codigo}">${escapeHTML(nombre(m.codigo))} (${m.codigo})</option>`).join("");
+    sel.hidden = true;
+    $("monedaIniOtras").hidden = false;
+    $("monedaIniOtras").onclick = () => { sel.hidden = false; sel.value = elegida; $("monedaIniOtras").hidden = true; sel.focus(); };
+    sel.onchange = () => { elegida = sel.value; if (!cods.includes(elegida)) cods.push(elegida); pintar(); };
+    $("monedaIniSeguir").onclick = () => { $("pantallaMoneda").hidden = true; document.body.classList.remove("voz-abierta"); resolve(elegida); };
+    pintar();
+    $("pantallaMoneda").hidden = false;
+  });
+}
 
 // Ojito: oculta los saldos (se desenfocan) y recuerda la elección en este aparato
 function ocultarGuardado() { try { return localStorage.getItem("fs_ocultar") === "1"; } catch (e) { return false; } }

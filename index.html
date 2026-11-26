@@ -640,6 +640,21 @@ Al crear una cuenta aceptás nuestros
 </div>
 
 <!-- ===================== PANTALLA: QUÉ SIGUE (guía rápida) ===================== -->
+<!-- Primera vez: elegir la moneda de las cuentas -->
+<div id="pantallaMoneda" class="pantalla-moneda" hidden role="dialog" aria-modal="true">
+<div class="moneda-ini">
+<h2 data-i18n="monedaIniTitulo">¡Hola! Te damos la bienvenida a Ingasto</h2>
+<p class="moneda-ini-preg" data-i18n="monedaIniPreg">Para empezar, ¿en qué moneda llevás tus cuentas?</p>
+<div id="monedaIniLista" class="moneda-ini-lista"></div>
+<button type="button" id="monedaIniOtras" class="boton boton-texto" data-i18n="monedaIniOtras">Ver otras monedas</button>
+<select id="monedaIniSelect" class="moneda-ini-select" hidden></select>
+<div class="moneda-ini-pie">
+<button type="button" id="monedaIniSeguir" class="boton boton-primario boton-ancho" data-i18n="monedaIniSeguir">Continuar</button>
+<p class="texto-ayuda" data-i18n="monedaIniNota">Lo podés cambiar después en Ajustes.</p>
+</div>
+</div>
+</div>
+
 <div id="bienvenidaPantalla" class="guia-pantalla" hidden role="dialog" aria-modal="true">
 <div class="guia-caja bienv-caja">
 <button type="button" id="bienvSaltar" class="boton boton-texto bienv-saltar" data-i18n="bienvYaSe">Ya sé, ir a la app</button>

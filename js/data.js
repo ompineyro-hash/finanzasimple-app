@@ -95,7 +95,13 @@ const DATOS_INICIALES = {
   },
 };
 
-async function sembrarDatosInicialesSiHaceFalta(userId, idioma) {
+// ¿Es alguien que entra por primera vez (sin cuentas ni categorías)?
+async function necesitaDatosIniciales(userId) {
+  const [ctas, cats] = await Promise.all([listarCuentas(userId), listarCategorias(userId)]);
+  return !(ctas.length || cats.length);
+}
+
+async function sembrarDatosInicialesSiHaceFalta(userId, idioma, monedaCuenta) {
   const d = DATOS_INICIALES[idioma] || DATOS_INICIALES.es;
   const [ctas, cats] = await Promise.all([listarCuentas(userId), listarCategorias(userId)]);
   if (ctas.length || cats.length) return false;
@@ -103,7 +109,9 @@ async function sembrarDatosInicialesSiHaceFalta(userId, idioma) {
     ...d.gastos.map((nombre) => ({ user_id: userId, nombre, tipo: "Gasto" })),
     ...d.ingresos.map((nombre) => ({ user_id: userId, nombre, tipo: "Ingreso" })),
   ];
-  const { error: e1 } = await sbClient.from("cuentas").insert({ user_id: userId, nombre: d.cuenta });
+  const filaCuenta = { user_id: userId, nombre: d.cuenta };
+  if (monedaCuenta) filaCuenta.moneda = monedaCuenta;
+  const { error: e1 } = await sbClient.from("cuentas").insert(filaCuenta);
   if (e1) throw e1;
   const { error: e2 } = await sbClient.from("categorias").insert(filasCat);
   if (e2) throw e2;

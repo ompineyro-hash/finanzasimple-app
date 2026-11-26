@@ -672,3 +672,20 @@ a.config-tarjeta{text-decoration:none;}
 .login-idioma{border:1.5px solid var(--borde);background:var(--papel-alto);color:var(--texto);border-radius:14px;padding:6px 4px;min-height:60px;font-size:calc(16px * var(--letra,1));font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;line-height:1.15;}
 .login-idioma span{font-size:calc(22px * var(--letra,1));}
 .login-idioma.activo{border-color:var(--primario);background:var(--ingreso-fondo);color:var(--primario);}
+
+/* Primera vez: elegir moneda */
+.pantalla-moneda{position:fixed;inset:0;z-index:300;background:var(--papel);overflow-y:auto;display:flex;justify-content:center;}
+.moneda-ini{width:100%;max-width:460px;padding:28px 20px 24px;display:flex;flex-direction:column;gap:12px;min-height:100%;}
+.moneda-ini h2{font-size:calc(28px * var(--letra,1));line-height:1.15;color:var(--texto);}
+.moneda-ini-preg{font-size:calc(18px * var(--letra,1));color:var(--texto-suave);margin-bottom:6px;}
+.moneda-ini-lista{display:flex;flex-direction:column;gap:10px;}
+.moneda-ini-op{display:flex;align-items:center;gap:14px;text-align:left;width:100%;min-height:68px;padding:10px 14px;border:2px solid var(--borde);border-radius:16px;background:var(--papel-alto);color:var(--texto);cursor:pointer;font:inherit;}
+.moneda-ini-op.activo{border-color:var(--primario);background:var(--ingreso-fondo);}
+.moneda-ini-sim{min-width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:var(--papel);color:var(--primario);font-weight:800;font-size:calc(18px * var(--letra,1));padding:0 6px;}
+.moneda-ini-txt{display:flex;flex-direction:column;flex:1;}
+.moneda-ini-txt b{font-size:calc(19px * var(--letra,1));}
+.moneda-ini-txt small{color:var(--texto-suave);font-size:calc(15px * var(--letra,1));}
+.moneda-ini-radio{width:26px;height:26px;border-radius:50%;border:2px solid var(--borde);flex:none;}
+.moneda-ini-op.activo .moneda-ini-radio{border-color:var(--primario);background:radial-gradient(circle,var(--primario) 0 45%,transparent 50%);}
+.moneda-ini-select{font-size:calc(18px * var(--letra,1));padding:12px;border-radius:12px;border:2px solid var(--borde);background:var(--papel-alto);color:var(--texto);width:100%;}
+.moneda-ini-pie{margin-top:auto;padding-top:18px;text-align:center;}
