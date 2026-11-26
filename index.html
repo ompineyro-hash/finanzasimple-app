@@ -47,14 +47,15 @@ try {
 <!-- ===================== PANTALLA DE INGRESO ===================== -->
 <div id="pantallaLogin" class="pantalla-login">
 <div class="tarjeta-login">
+<select id="selectIdiomaLogin" class="login-idioma-sel" aria-label="Idioma / Language / Idioma">
+<option value="es">🇦🇷 Español</option>
+<option value="pt">🇧🇷 Português</option>
+<option value="en">🇺🇸 English</option>
+</select>
 <div class="logo-login"><img src="icons/icon-192.png" alt="Ingasto" width="64" height="64" style="border-radius:16px;display:block;margin:0 auto;"></div>
 <h1>Ingasto</h1>
 <p class="subtitulo-login" data-i18n="subtitulo">Tus gastos e ingresos, claros y simples.</p>
-<div class="login-idiomas" role="group" aria-label="Idioma / Language / Idioma">
-<button type="button" class="login-idioma" data-idioma-login="es"><span aria-hidden="true">🇦🇷</span>Español</button>
-<button type="button" class="login-idioma" data-idioma-login="pt"><span aria-hidden="true">🇧🇷</span>Português</button>
-<button type="button" class="login-idioma" data-idioma-login="en"><span aria-hidden="true">🇺🇸</span>English</button>
-</div>
+
 <div id="loginError" class="aviso aviso-error" hidden></div>
 <div id="loginOk" class="aviso aviso-ok" hidden></div>
 <button type="button" class="boton boton-texto boton-ancho" id="btnReenviarConfirmacion" hidden>No me llegó: reenviar el mail</button>

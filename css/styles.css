@@ -697,3 +697,8 @@ a.config-tarjeta{text-decoration:none;}
 html[data-tema="oscuro"] .mov-icono.gasto,html[data-tema="oscuro"] .mov-icono.ingreso{color:hsl(var(--cat-h,150) 60% 78%);}
 .rapido-cat .ico{margin-right:4px;}
 .rapido-cat .ico{width:1.3em;height:1.3em;}
+
+/* Idioma en la entrada: chico, arriba a la izquierda */
+.tarjeta-login{position:relative;}
+.login-idioma-sel{position:absolute;top:12px;left:12px;border:1.5px solid var(--borde);background:var(--papel-alto);color:var(--texto);border-radius:10px;padding:6px 8px;font:inherit;font-size:calc(14px * var(--letra,1));font-weight:700;cursor:pointer;max-width:46%;}
+.tarjeta-login .logo-login{margin-top:30px;}

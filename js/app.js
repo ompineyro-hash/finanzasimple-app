@@ -2052,27 +2052,17 @@ document.querySelectorAll(".btn-ojito").forEach((btn) => {
   });
 });
 
+function marcarIdiomaLogin() {
+  const s = $("selectIdiomaLogin");
+  if (s) s.value = idiomaActual;
+}
 if ($("selectIdiomaLogin")) {
   $("selectIdiomaLogin").addEventListener("change", (e) => {
     aplicarIdioma(e.target.value);
-  });
-}
-
-// Elegir idioma en la pantalla de entrada: se recuerda y, al entrar, se guarda en la cuenta
-function marcarIdiomaLogin() {
-  document.querySelectorAll("[data-idioma-login]").forEach((b) => {
-    const act = b.dataset.idiomaLogin === idiomaActual;
-    b.classList.toggle("activo", act);
-    b.setAttribute("aria-pressed", act ? "true" : "false");
-  });
-}
-document.querySelectorAll("[data-idioma-login]").forEach((b) => {
-  b.addEventListener("click", () => {
-    aplicarIdioma(b.dataset.idiomaLogin);
     try { localStorage.setItem("fs_idioma_eleg", "1"); } catch {}
     marcarIdiomaLogin();
   });
-});
+}
 marcarIdiomaLogin();
 
 $("formLogin").addEventListener("submit", async (e) => {
