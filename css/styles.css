@@ -702,3 +702,10 @@ html[data-tema="oscuro"] .mov-icono.gasto,html[data-tema="oscuro"] .mov-icono.in
 .tarjeta-login{position:relative;}
 .login-idioma-sel{position:absolute;top:12px;left:12px;border:1.5px solid var(--borde);background:var(--papel-alto);color:var(--texto);border-radius:10px;padding:6px 8px;font:inherit;font-size:calc(14px * var(--letra,1));font-weight:700;cursor:pointer;max-width:46%;}
 .tarjeta-login .logo-login{margin-top:30px;}
+
+/* Barra de arriba con letra grande: que no se pisen el mes, las flechas y el ojito */
+.topbar .mes-selector{flex:1 1 auto;justify-content:center;font-size:calc(14px * min(var(--letra,1), 1.12));}
+.topbar .mes-centro{min-width:0;}
+.topbar .fecha-hoy{font-size:calc(11px * min(var(--letra,1), 1.12));}
+.topbar #btnOjo{min-width:32px;padding:6px 2px;}
+.topbar .selector-idioma{max-width:74px !important;font-size:calc(12px * min(var(--letra,1), 1.12)) !important;padding:4px 2px !important;}

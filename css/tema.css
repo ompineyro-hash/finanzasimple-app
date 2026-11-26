@@ -436,9 +436,6 @@ html[data-tema="oscuro"] .rapido-cat.activo{color:#0B1411;}
   /* Buscar y Clasificar varios, uno al lado del otro */
   #vistaMovimientos:not([hidden]){display:flex;flex-wrap:wrap;gap:6px;align-items:stretch;}
   #vistaMovimientos > *{flex:1 1 100%;min-width:0;}
-  #filaAccesosLista{display:contents !important;}
-  #segmentadoTipoLista{flex:1 1 100% !important;}
-  #vistaMovimientos #btnBuscarSimple,#vistaMovimientos #btnClasificar{flex:1 1 calc(50% - 6px) !important;width:auto;}
 }
 
 /* Captcha (Cloudflare Turnstile): solo se ve si hace falta un desafío */
@@ -474,7 +471,7 @@ html[data-tema="oscuro"] .rapido-cat.activo{color:#0B1411;}
 /* Ajustes: las 2 columnas nunca se salen de la pantalla, aunque la letra del celular sea muy grande */
 .config-menu{grid-template-columns:repeat(2,minmax(0,1fr));}
 .config-tarjeta{min-width:0;}
-.config-tarjeta-titulo{overflow-wrap:anywhere;hyphens:auto;}
+.config-tarjeta-titulo{overflow-wrap:break-word;hyphens:manual;font-size:calc(15.5px * min(var(--letra,1), 1.15));}
 
 /* Cartel "Más categorías": va dentro de la tarjeta del teclado (no tapa nada); se toca para bajar */
 .rapido-mas-hint{position:static;align-self:stretch;background:transparent;color:var(--primario);border:none;border-radius:12px;padding:0;min-height:30px;font-size:calc(16.5px * var(--letra,1));font-weight:800;cursor:pointer;text-align:center;}
@@ -516,3 +513,25 @@ html[data-ocultar] .mov-equiv,
 html[data-ocultar] #lineaPrevisto,
 html[data-ocultar] .pend-resumen b{filter:blur(9px);user-select:none;pointer-events:none;}
 #btnOjo{font-size:calc(20px * var(--letra,1));}
+
+.config-tarjeta-icono{color:var(--primario);}
+.config-tarjeta-icono .ico{width:28px;height:28px;vertical-align:middle;}
+.config-tarjeta-peligro .config-tarjeta-icono{color:var(--peligro);}
+
+/* Buscar y Clasificar: botones chicos con ícono y su palabra abajo, en la fila de Todo / Ingresos / Gastos */
+#filaAccesosLista{display:flex !important;flex:1 1 100%;flex-wrap:nowrap !important;gap:6px !important;align-items:stretch;}
+#filaAccesosLista #segmentadoTipoLista{flex:1 1 auto !important;min-width:0;}
+#filaAccesosLista #segmentadoTipoLista .segmentado-item{font-size:14px;padding-left:2px;padding-right:2px;}
+.acceso-btn{flex:0 0 auto !important;width:auto !important;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;min-width:0;padding:5px 7px !important;margin:0 !important;border-width:1.5px;line-height:1.1;}
+.acceso-btn .ico{width:22px;height:22px;vertical-align:baseline;}
+.acceso-btn .acc-txt{font-size:calc(12px * min(var(--letra,1), 1.15));font-weight:700;white-space:nowrap;}
+.acceso-btn.activo{background:var(--primario);color:#fff;border-color:var(--primario);}
+html[data-tema="oscuro"] .acceso-btn.activo{color:#0B1411;}
+/* Con letra grande no entra todo en una fila: Todo/Ingresos/Gastos arriba y los dos botones abajo, cada uno con su palabra */
+html[data-letra] #filaAccesosLista{flex-wrap:wrap !important;}
+html[data-letra] #filaAccesosLista #segmentadoTipoLista{flex:1 1 100% !important;}
+html[data-letra] #filaAccesosLista #segmentadoTipoLista .segmentado-item{font-size:calc(15px * var(--letra,1));}
+html[data-letra] .acceso-btn{flex:1 1 calc(50% - 6px) !important;flex-direction:row;gap:8px;min-height:46px;}
+html[data-letra] .acceso-btn .acc-txt{font-size:calc(15px * var(--letra,1));}
+#filaAccesosLista #segmentadoTipoLista{padding:3px;}
+#filaAccesosLista #segmentadoTipoLista .segmentado-item{flex:1 1 auto;overflow:visible;text-overflow:clip;white-space:nowrap;padding:8px 4px;}

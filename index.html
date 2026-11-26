@@ -190,7 +190,7 @@ Al crear una cuenta aceptás nuestros
 <input type="text" id="textoBusqueda" data-i18n-placeholder="placeholderBuscar" placeholder="Buscar en este mes...">
 <button type="button" id="btnLimpiarBusqueda" class="boton boton-texto" data-i18n="btnLimpiar">Limpiar</button>
 </div>
-<button type="button" id="btnClasificar" class="boton boton-secundario boton-ancho clasif-btn" data-i18n="btnClasificar">✔ Clasificar varios</button>
+<button type="button" id="btnClasificar" class="boton boton-secundario acceso-btn">Clasificar</button>
 <div id="clasifPanel" class="clasif-panel" hidden>
 <p class="texto-ayuda" data-i18n="clasifAyuda">Tildá los movimientos y elegí la categoría que les corresponde.</p>
 <button type="button" id="clasifSinClasif" class="boton boton-secundario" data-i18n="clasifSinClasif">Tildar los que están sin clasificar</button>
@@ -314,67 +314,67 @@ Al crear una cuenta aceptás nuestros
 <!-- ===== NUEVO: menú de tarjetas de Config ===== -->
 <div id="configMenu" class="config-menu">
 <button type="button" class="config-tarjeta" data-config="configPanelIdioma">
-<span class="config-tarjeta-icono">🌐</span>
+<span class="config-tarjeta-icono" data-ico="globe">🌐</span>
 <span class="config-tarjeta-titulo" data-i18n="tituloIdioma">Idioma</span>
 </button>
 <button type="button" class="config-tarjeta" data-config="configPanelCuotas">
-<span class="config-tarjeta-icono">💳</span>
+<span class="config-tarjeta-icono" data-ico="tarjeta">💳</span>
 <span class="config-tarjeta-titulo" data-i18n="tituloCuotas">Compras en cuotas</span>
 </button>
 <button type="button" class="config-tarjeta" data-config="configPanelTema">
-<span class="config-tarjeta-icono">🌙</span>
+<span class="config-tarjeta-icono" data-ico="luna">🌙</span>
 <span class="config-tarjeta-titulo" data-i18n="tituloTema">Modo oscuro</span>
 </button>
 <button type="button" class="config-tarjeta" data-config="configPanelLetra">
-<span class="config-tarjeta-icono">🔠</span>
+<span class="config-tarjeta-icono" data-ico="letra">🔠</span>
 <span class="config-tarjeta-titulo" data-i18n="tituloLetra">Tamaño de letra</span>
 </button>
 <button type="button" class="config-tarjeta" data-config="configPanelSeguridad">
-<span class="config-tarjeta-icono">🔒</span>
+<span class="config-tarjeta-icono" data-ico="candado">🔒</span>
 <span class="config-tarjeta-titulo" data-i18n="tituloSeguridad">Seguridad</span>
 </button>
 <button type="button" class="config-tarjeta" data-config="configPanelMoneda">
-<span class="config-tarjeta-icono">💱</span>
+<span class="config-tarjeta-icono" data-ico="moneda">💱</span>
 <span class="config-tarjeta-titulo" data-i18n="tituloMoneda">Moneda</span>
 </button>
 <button type="button" class="config-tarjeta" data-config="configPanelCuentas">
-<span class="config-tarjeta-icono">🏦</span>
+<span class="config-tarjeta-icono" data-ico="banco">🏦</span>
 <span class="config-tarjeta-titulo" data-i18n="tituloCuentas">Cuentas</span>
 </button>
 <button type="button" class="config-tarjeta" id="tarjetaGuia">
-<span class="config-tarjeta-icono">🧭</span>
+<span class="config-tarjeta-icono" data-ico="brujula">🧭</span>
 <span class="config-tarjeta-titulo" data-i18n="tituloGuia">Guía rápida</span>
 </button>
 <button type="button" class="config-tarjeta" id="tarjetaFijos" data-config="configPanelFijos" hidden>
-<span class="config-tarjeta-icono">📌</span>
+<span class="config-tarjeta-icono" data-ico="repetir">📌</span>
 <span class="config-tarjeta-titulo" data-i18n="tituloFijos">Gastos e ingresos fijos</span>
 </button>
 <button type="button" class="config-tarjeta" data-config="configPanelCategorias">
-<span class="config-tarjeta-icono">🏷️</span>
+<span class="config-tarjeta-icono" data-ico="venta">🏷️</span>
 <span class="config-tarjeta-titulo" data-i18n="tituloCategorias">Categorías</span>
 </button>
 <button type="button" class="config-tarjeta" data-config="configPanelImportar">
-<span class="config-tarjeta-icono">📥</span>
+<span class="config-tarjeta-icono" data-ico="bajar">📥</span>
 <span class="config-tarjeta-titulo" data-i18n="tituloImportar">Importar movimientos</span>
 </button>
 <button type="button" class="config-tarjeta" data-config="configPanelExportar">
-<span class="config-tarjeta-icono">📤</span>
+<span class="config-tarjeta-icono" data-ico="subir">📤</span>
 <span class="config-tarjeta-titulo" data-i18n="tituloExportar">Exportar mis datos</span>
 </button>
 <button type="button" class="config-tarjeta" data-config="configPanelCambiarClave">
-<span class="config-tarjeta-icono">🔒</span>
+<span class="config-tarjeta-icono" data-ico="llave">🔒</span>
 <span class="config-tarjeta-titulo" data-i18n="tituloCambiarClave">Cambiar clave</span>
 </button>
 <a class="config-tarjeta" href="solicitud.html?tipo=baja">
-<span class="config-tarjeta-icono">🚪</span>
+<span class="config-tarjeta-icono" data-ico="salir">🚪</span>
 <span class="config-tarjeta-titulo" data-i18n="tarjetaBaja">Baja del servicio</span>
 </a>
 <a class="config-tarjeta" href="solicitud.html?tipo=arrepentimiento">
-<span class="config-tarjeta-icono">↩️</span>
+<span class="config-tarjeta-icono" data-ico="deshacer">↩️</span>
 <span class="config-tarjeta-titulo" data-i18n="tarjetaArrep">Arrepentimiento</span>
 </a>
 <button type="button" class="config-tarjeta config-tarjeta-peligro" data-config="configPanelZonaRiesgo">
-<span class="config-tarjeta-icono">🧹</span>
+<span class="config-tarjeta-icono" data-ico="riesgo">🧹</span>
 <span class="config-tarjeta-titulo" data-i18n="tituloZonaRiesgo">Zona de riesgo</span>
 </button>
 </div>
