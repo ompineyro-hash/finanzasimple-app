@@ -720,3 +720,8 @@ html[data-tema="oscuro"] .mov-icono.gasto,html[data-tema="oscuro"] .mov-icono.in
 .topbar .mes-selector .icono-btn .ico{width:22px;height:22px;stroke-width:2.6;}
 .flecha-resumen .ico{width:1.2em;height:1.2em;stroke-width:3;vertical-align:-0.2em;}
 .btn-ojito .ico{width:22px;height:22px;vertical-align:middle;}
+
+/* Idioma en la entrada, versión 3: palabra completa, centrado arriba del logo */
+.login-idioma-mini{position:static;justify-content:center;flex-wrap:wrap;gap:6px;margin:0 0 10px;}
+.login-idioma-mini button{min-width:0;padding:4px 10px;}
+.tarjeta-login .logo-login{margin-top:0;}
