@@ -98,3 +98,13 @@ No: conexión con bancos.
 - Paleta de Edu (v110): variables en `css/styles.css` (:root, claro) y `css/tema.css` (oscuro). Acento amarillo `--acento` en botones principales. Violeta solo en préstamos. Contraste medido ≥ 4,6.
 - Exportar datos SÍ existe (Ajustes → Exportar mis datos: Excel y CSV).
 - Backlog de Edu (PDFs 24/11: pantallas, Movimientos animado, página de venta, voz en una frase): ver chat. Pendiente que Edu responda: palabras junto a íconos, "$ 5,03 M", Baja/Arrepentimiento chicos (consultar abogado), Patrimonio neto, frases de la página de venta (no prometer "nadie ve tus datos"; WhatsApp solo con número propio), voz en una frase (costo/Privacidad).
+
+## Novedades 25–26/11/2026 (sw.js v121) — para Edu y su Claude
+- v112–v117 Nuevo movimiento: en celular el modal ocupa toda la pantalla (100dvh); teclado compacto si alto ≤900px; categorías en 2 columnas, pasan a 1 si el nombre no entra (`una-col`, JS en `rapidoHint()`).
+- v114 Ojito 👁 en la barra de arriba (`#btnOjo`): oculta montos con blur (`html[data-ocultar]`, `localStorage fs_ocultar`). Si se agrega un monto nuevo, sumarlo al selector en `css/tema.css`.
+- v115–v116 Voz en es/pt/en (`LOCALES_POR_IDIOMA`; números en palabras, "dólares con 50 centavos", ayer/ontem/yesterday, cuotas). Botón "Decilo todo junto" (`#vozFrase`): una sola frase llena monto, cuenta, categoría, fecha y cuotas (`fsVozFraseInterpretar`). SOLO probado con frases escritas: falta probar con micrófono real y en iPhone (Edu).
+- v118–v119 Login: botones de idioma Español/Português/English. Se guarda en el perfil al entrar (`fs_idioma_eleg`). No se detecta el idioma del navegador a propósito (muchos argentinos tienen el celu en inglés). v121: botones uno debajo del otro (se pisaban con letra grande).
+- v120 Pantalla de moneda la primera vez (`#pantallaMoneda`, `elegirMonedaInicial()`): solo usuarios sin cuentas ni categorías. es→ARS, pt→BRL, en→USD preseleccionado; guarda `moneda_base` y crea la primera cuenta en esa moneda (`sembrarDatosInicialesSiHaceFalta(userId, idioma, monedaCuenta)`). Probado con backend falso; falta probar con una cuenta nueva real.
+- Pendiente de Marcelo: leer y aprobar `venta.html` (borrador fuera del repo, ya se lo pasó a Edu) antes de publicar. No prometer "nadie ve tus datos".
+- Pendiente de Edu: iPhone (voz, pantalla de moneda, idioma); decidir Patrimonio neto (Marcelo duda; en espera), iconos con palabra, Tamaño de letra con vista previa + negrita + más contraste, primeros pasos en 3 pantallas, rediseño de Movimientos/Situación/Análisis/Ajustes.
+- Decisiones de Edu: Baja/Arrepentimiento se dejan como están; números enteros = solo se oculta ",00", se mantienen los centavos reales.
