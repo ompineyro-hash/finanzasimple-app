@@ -63,6 +63,48 @@ function svgIcono(clave) {
   return d ? `<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false">${d}</svg>` : "";
 }
 pintarIconosAjustes();
+// Emojis que se cambian solos por íconos de línea en cualquier texto de la app (también el que se arma después).
+const EMOJI_A_ICONO = { "🎙": "mic", "🎤": "mic", "🏦": "billetera", "📅": "calendario", "📷": "camara", "⏳": "reloj", "✔": "tilde", "▾": "abajo" };
+const RE_EMOJI_ICONO = /(🎙️?|🎤|🏦|📅|📷|⏳|✔️?|▾)/;
+function iconizarNodoTexto(nodo) {
+  const p = nodo.parentNode;
+  if (!p || /^(SCRIPT|STYLE|OPTION|TEXTAREA|TITLE|SELECT)$/.test(p.nodeName)) return;
+  const texto = nodo.nodeValue;
+  if (!texto || !RE_EMOJI_ICONO.test(texto)) return;
+  const partes = texto.split(RE_EMOJI_ICONO);
+  const frag = document.createDocumentFragment();
+  partes.forEach((parte) => {
+    if (!parte) return;
+    const base = parte.replace("\uFE0F", "");
+    if (EMOJI_A_ICONO[base]) {
+      let clave = EMOJI_A_ICONO[base];
+      if (base === "📷" && /QR/i.test(texto)) clave = "qr";
+      const tmp = document.createElement("template");
+      tmp.innerHTML = svgIcono(clave);
+      frag.appendChild(tmp.content);
+    } else {
+      frag.appendChild(document.createTextNode(parte));
+    }
+  });
+  p.replaceChild(frag, nodo);
+}
+function iconizarArbol(raiz) {
+  if (!raiz) return;
+  if (raiz.nodeType === 3) { iconizarNodoTexto(raiz); return; }
+  if (raiz.nodeType !== 1) return;
+  const tw = document.createTreeWalker(raiz, NodeFilter.SHOW_TEXT);
+  const lista = [];
+  while (tw.nextNode()) lista.push(tw.currentNode);
+  lista.forEach(iconizarNodoTexto);
+}
+iconizarArbol(document.body);
+new MutationObserver((muts) => {
+  for (const m of muts) {
+    if (m.type === "characterData") iconizarNodoTexto(m.target);
+    else m.addedNodes.forEach((n) => iconizarArbol(n));
+  }
+}).observe(document.body, { childList: true, subtree: true, characterData: true });
+
 // Botón de acceso: ícono de línea + palabra chica abajo (siempre con palabra).
 function botonAcceso(btn, clave, texto) {
   btn.innerHTML = svgIcono(clave) + `<span class="acc-txt">${String(texto).replace(/[&<>]/g, "")}</span>`;
