@@ -1760,7 +1760,7 @@ function aplicarIdioma(idioma) {
   if (!TRADUCCIONES[idioma]) idioma = "es";
   idiomaActual = idioma;
   document.documentElement.lang = idioma;
-  try { localStorage.setItem("fs_idioma", idioma); } catch {}
+  try { localStorage.setItem("fs_idioma", idioma); } catch {} if (typeof marcarIdiomaLogin === "function") marcarIdiomaLogin();
 
   document.querySelectorAll("[data-i18n]").forEach((el) => {
     el.textContent = t(el.dataset.i18n);
@@ -2043,6 +2043,23 @@ if ($("selectIdiomaLogin")) {
   });
 }
 
+// Elegir idioma en la pantalla de entrada: se recuerda y, al entrar, se guarda en la cuenta
+function marcarIdiomaLogin() {
+  document.querySelectorAll("[data-idioma-login]").forEach((b) => {
+    const act = b.dataset.idiomaLogin === idiomaActual;
+    b.classList.toggle("activo", act);
+    b.setAttribute("aria-pressed", act ? "true" : "false");
+  });
+}
+document.querySelectorAll("[data-idioma-login]").forEach((b) => {
+  b.addEventListener("click", () => {
+    aplicarIdioma(b.dataset.idiomaLogin);
+    try { localStorage.setItem("fs_idioma_eleg", "1"); } catch {}
+    marcarIdiomaLogin();
+  });
+});
+marcarIdiomaLogin();
+
 $("formLogin").addEventListener("submit", async (e) => {
   e.preventDefault();
   ocultarAviso($("loginError"));
@@ -2314,7 +2331,19 @@ async function arrancarApp(usuarioYaObtenido) {
   $("pantallaPruebaVencida").hidden = true;
   $("app").hidden = false;
   $("inputMoneda").value = moneda();
-  aplicarIdioma(perfil?.idioma || localStorage.getItem("fs_idioma") || "es");
+  let idiomaEntrada = perfil?.idioma || localStorage.getItem("fs_idioma") || "es";
+  try {
+    // Si eligió idioma en la pantalla de entrada, esa elección manda y se guarda en la cuenta
+    if (localStorage.getItem("fs_idioma_eleg") === "1") {
+      localStorage.removeItem("fs_idioma_eleg");
+      const elegido = localStorage.getItem("fs_idioma");
+      if (elegido && TRADUCCIONES[elegido] && elegido !== idiomaEntrada) {
+        idiomaEntrada = elegido;
+        try { await actualizarIdioma(usuario.id, elegido); if (perfil) perfil.idioma = elegido; } catch {}
+      }
+    }
+  } catch {}
+  aplicarIdioma(idiomaEntrada);
   if ($("selectIdioma")) $("selectIdioma").value = idiomaActual;
 
   // Estas dos cargas no dependen una de la otra (los movimientos ya
