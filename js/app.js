@@ -2126,19 +2126,16 @@ document.querySelectorAll(".btn-ojito").forEach((btn) => {
 });
 
 function marcarIdiomaLogin() {
-  document.querySelectorAll("[data-idioma-login]").forEach((b) => {
-    const act = b.dataset.idiomaLogin === idiomaActual;
-    b.classList.toggle("activo", act);
-    b.setAttribute("aria-pressed", act ? "true" : "false");
-  });
+  const s = $("selectIdiomaLogin");
+  if (s) s.value = idiomaActual;
 }
-document.querySelectorAll("[data-idioma-login]").forEach((b) => {
-  b.addEventListener("click", () => {
-    aplicarIdioma(b.dataset.idiomaLogin);
+if ($("selectIdiomaLogin")) {
+  $("selectIdiomaLogin").addEventListener("change", (e) => {
+    aplicarIdioma(e.target.value);
     try { localStorage.setItem("fs_idioma_eleg", "1"); } catch {}
     marcarIdiomaLogin();
   });
-});
+}
 marcarIdiomaLogin();
 
 $("formLogin").addEventListener("submit", async (e) => {
