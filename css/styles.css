@@ -668,9 +668,9 @@ a.config-tarjeta{text-decoration:none;}
 @media (prefers-reduced-motion:reduce){.navbar-agregar-signo{animation:none;}}
 
 /* Elegir idioma en la pantalla de entrada */
-.login-idiomas{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:6px 0 14px;}
-.login-idioma{border:1.5px solid var(--borde);background:var(--papel-alto);color:var(--texto);border-radius:14px;padding:6px 4px;min-height:60px;font-size:calc(16px * var(--letra,1));font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;line-height:1.15;}
-.login-idioma span{font-size:calc(22px * var(--letra,1));}
+.login-idiomas{display:flex;flex-direction:column;gap:8px;margin:6px 0 14px;}
+.login-idioma{border:1.5px solid var(--borde);background:var(--papel-alto);color:var(--texto);border-radius:14px;padding:8px 14px;min-height:52px;font-size:calc(18px * var(--letra,1));font-weight:700;cursor:pointer;display:flex;flex-direction:row;align-items:center;justify-content:flex-start;gap:12px;line-height:1.15;text-align:left;}
+.login-idioma span{font-size:calc(24px * var(--letra,1));}
 .login-idioma.activo{border-color:var(--primario);background:var(--ingreso-fondo);color:var(--primario);}
 
 /* Primera vez: elegir moneda */
