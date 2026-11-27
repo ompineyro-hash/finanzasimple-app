@@ -327,13 +327,20 @@ Al crear una cuenta aceptás nuestros
 
 <!-- ===== NUEVO: menú de tarjetas de Config ===== -->
 <div id="configMenu" class="config-menu">
+<div id="configCuenta" class="config-cuenta">
+<div class="config-cuenta-ico" aria-hidden="true"><span data-ico="usuario"></span></div>
+<div class="config-cuenta-textos"><div id="configCuentaMail" class="config-cuenta-mail">—</div><div id="configCuentaPlan" class="config-cuenta-plan">—</div></div>
+</div>
+<div class="config-grupo">
+<h3 class="config-grupo-titulo" data-i18n="ajGrpPrefer">Preferencias</h3>
+<div class="config-lista">
 <button type="button" class="config-tarjeta" data-config="configPanelIdioma">
 <span class="config-tarjeta-icono" data-ico="globe">🌐</span>
 <span class="config-tarjeta-titulo" data-i18n="tituloIdioma">Idioma</span>
 </button>
-<button type="button" class="config-tarjeta" data-config="configPanelCuotas">
-<span class="config-tarjeta-icono" data-ico="tarjeta">💳</span>
-<span class="config-tarjeta-titulo" data-i18n="tituloCuotas">Compras en cuotas</span>
+<button type="button" class="config-tarjeta" data-config="configPanelMoneda">
+<span class="config-tarjeta-icono" data-ico="moneda">💱</span>
+<span class="config-tarjeta-titulo" data-i18n="tituloMoneda">Moneda</span>
 </button>
 <button type="button" class="config-tarjeta" data-config="configPanelTema">
 <span class="config-tarjeta-icono" data-ico="luna">🌙</span>
@@ -343,21 +350,18 @@ Al crear una cuenta aceptás nuestros
 <span class="config-tarjeta-icono" data-ico="letra">🔠</span>
 <span class="config-tarjeta-titulo" data-i18n="tituloLetra">Tamaño de letra</span>
 </button>
-<button type="button" class="config-tarjeta" data-config="configPanelSeguridad">
-<span class="config-tarjeta-icono" data-ico="candado">🔒</span>
-<span class="config-tarjeta-titulo" data-i18n="tituloSeguridad">Seguridad</span>
-</button>
-<button type="button" class="config-tarjeta" data-config="configPanelMoneda">
-<span class="config-tarjeta-icono" data-ico="moneda">💱</span>
-<span class="config-tarjeta-titulo" data-i18n="tituloMoneda">Moneda</span>
-</button>
+</div>
+</div>
+<div class="config-grupo">
+<h3 class="config-grupo-titulo" data-i18n="ajGrpFinanzas">Mis finanzas</h3>
+<div class="config-lista">
 <button type="button" class="config-tarjeta" data-config="configPanelCuentas">
 <span class="config-tarjeta-icono" data-ico="banco">🏦</span>
 <span class="config-tarjeta-titulo" data-i18n="tituloCuentas">Cuentas</span>
 </button>
-<button type="button" class="config-tarjeta" id="tarjetaGuia">
-<span class="config-tarjeta-icono" data-ico="brujula">🧭</span>
-<span class="config-tarjeta-titulo" data-i18n="tituloGuia">Guía rápida</span>
+<button type="button" class="config-tarjeta" data-config="configPanelCuotas">
+<span class="config-tarjeta-icono" data-ico="tarjeta">💳</span>
+<span class="config-tarjeta-titulo" data-i18n="tituloCuotas">Compras en cuotas</span>
 </button>
 <button type="button" class="config-tarjeta" id="tarjetaFijos" data-config="configPanelFijos" hidden>
 <span class="config-tarjeta-icono" data-ico="repetir">📌</span>
@@ -367,6 +371,11 @@ Al crear una cuenta aceptás nuestros
 <span class="config-tarjeta-icono" data-ico="venta">🏷️</span>
 <span class="config-tarjeta-titulo" data-i18n="tituloCategorias">Categorías</span>
 </button>
+</div>
+</div>
+<div class="config-grupo">
+<h3 class="config-grupo-titulo" data-i18n="ajGrpDatos">Datos y seguridad</h3>
+<div class="config-lista">
 <button type="button" class="config-tarjeta" data-config="configPanelImportar">
 <span class="config-tarjeta-icono" data-ico="bajar">📥</span>
 <span class="config-tarjeta-titulo" data-i18n="tituloImportar">Importar movimientos</span>
@@ -375,10 +384,28 @@ Al crear una cuenta aceptás nuestros
 <span class="config-tarjeta-icono" data-ico="subir">📤</span>
 <span class="config-tarjeta-titulo" data-i18n="tituloExportar">Exportar mis datos</span>
 </button>
+<button type="button" class="config-tarjeta" data-config="configPanelSeguridad">
+<span class="config-tarjeta-icono" data-ico="candado">🔒</span>
+<span class="config-tarjeta-titulo" data-i18n="tituloSeguridad">Seguridad</span>
+</button>
 <button type="button" class="config-tarjeta" data-config="configPanelCambiarClave">
 <span class="config-tarjeta-icono" data-ico="llave">🔒</span>
 <span class="config-tarjeta-titulo" data-i18n="tituloCambiarClave">Cambiar clave</span>
 </button>
+</div>
+</div>
+<div class="config-grupo">
+<h3 class="config-grupo-titulo" data-i18n="ajGrpAyuda">Ayuda</h3>
+<div class="config-lista">
+<button type="button" class="config-tarjeta" id="tarjetaGuia">
+<span class="config-tarjeta-icono" data-ico="brujula">🧭</span>
+<span class="config-tarjeta-titulo" data-i18n="tituloGuia">Guía rápida</span>
+</button>
+</div>
+</div>
+<div class="config-grupo">
+<h3 class="config-grupo-titulo" data-i18n="ajGrpCuenta">Mi cuenta</h3>
+<div class="config-lista">
 <a class="config-tarjeta" href="solicitud.html?tipo=baja">
 <span class="config-tarjeta-icono" data-ico="baja">🚪</span>
 <span class="config-tarjeta-titulo" data-i18n="tarjetaBaja">Baja del servicio</span>
@@ -391,6 +418,8 @@ Al crear una cuenta aceptás nuestros
 <span class="config-tarjeta-icono" data-ico="riesgo">🧹</span>
 <span class="config-tarjeta-titulo" data-i18n="tituloZonaRiesgo">Zona de riesgo</span>
 </button>
+</div>
+</div>
 </div>
 <button type="button" id="btnSalir" class="boton boton-secundario boton-ancho btn-cerrar-sesion"><span class="cs-ico" data-ico="salir" aria-hidden="true">🚪</span><span data-i18n="tarjetaCerrarSesion">Cerrar sesión</span></button>
 

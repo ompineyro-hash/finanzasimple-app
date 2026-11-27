@@ -50,6 +50,7 @@ const SVG_ICONOS = {
   flechas: `<path d="M8 3 4 7l4 4" /> <path d="M4 7h16" /> <path d="m16 21 4-4-4-4" /> <path d="M20 17H4" />`,
   lapiz: `<path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z" /> <path d="m15 5 4 4" />`,
   mas: `<path d="M5 12h14" /> <path d="M12 5v14" />`,
+  usuario: `<circle cx="12" cy="8" r="4" /> <path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1" />`,
   fuel: `<path d="M14 13h2a2 2 0 0 1 2 2v2a2 2 0 0 0 4 0v-6.998a2 2 0 0 0-.59-1.42L18 5" /> <path d="M14 21V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v16" /> <path d="M2 21h13" /> <path d="M3 9h11" />`,
   bus: `<path d="M8 6v6" /> <path d="M15 6v6" /> <path d="M2 12h19.6" /> <path d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3" /> <circle cx="7" cy="18" r="2" /> <path d="M9 18h5" /> <circle cx="16" cy="18" r="2" />`,
   luz: `<path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5" /> <path d="M9 18h6" /> <path d="M10 22h4" />`,
@@ -323,6 +324,16 @@ const TRADUCCIONES = {
     sitTengo: "Tengo",
     sitRealmente: "Cuánto tengo realmente",
     sitRealmenteCuenta: "Tengo + Me deben − Debo",
+    ajGrpPrefer: "Preferencias",
+    ajGrpFinanzas: "Mis finanzas",
+    ajGrpDatos: "Datos y seguridad",
+    ajGrpAyuda: "Ayuda",
+    ajGrpCuenta: "Mi cuenta",
+    ajPlanActivo: "Plan activo",
+    ajPlanActivoHasta: "Plan activo hasta el {f}",
+    ajPruebaQuedan: "Prueba gratis: te quedan {n} días",
+    ajPruebaQueda1: "Prueba gratis: te queda 1 día",
+    ajPruebaUltimo: "Prueba gratis: hoy es el último día",
     tengoTotal: "Total en tus cuentas",
     tengoSinCotiz: "No suma al total: falta la cotización de {m} (se guarda al cargar un movimiento en esa moneda).",
     tengoAjustar: "Ajustar",
@@ -1112,6 +1123,16 @@ const TRADUCCIONES = {
     sitVerMeses: "Ver meses ›",
     sitRealmente: "Quanto tenho de verdade",
     sitRealmenteCuenta: "Tenho + Me devem − Devo",
+    ajGrpPrefer: "Preferências",
+    ajGrpFinanzas: "Minhas finanças",
+    ajGrpDatos: "Dados e segurança",
+    ajGrpAyuda: "Ajuda",
+    ajGrpCuenta: "Minha conta",
+    ajPlanActivo: "Plano ativo",
+    ajPlanActivoHasta: "Plano ativo até {f}",
+    ajPruebaQuedan: "Teste grátis: restam {n} dias",
+    ajPruebaQueda1: "Teste grátis: resta 1 dia",
+    ajPruebaUltimo: "Teste grátis: hoje é o último dia",
     sitTotal: "Total",
     sitNetoMes: "Líquido do mês",
     sitNadaGrupo: "Não há nada neste grupo.",
@@ -1703,6 +1724,16 @@ const TRADUCCIONES = {
     sitVerMeses: "See months ›",
     sitRealmente: "How much I really have",
     sitRealmenteCuenta: "I have + I'm owed − I owe",
+    ajGrpPrefer: "Preferences",
+    ajGrpFinanzas: "My finances",
+    ajGrpDatos: "Data and security",
+    ajGrpAyuda: "Help",
+    ajGrpCuenta: "My account",
+    ajPlanActivo: "Active plan",
+    ajPlanActivoHasta: "Active plan until {f}",
+    ajPruebaQuedan: "Free trial: {n} days left",
+    ajPruebaQueda1: "Free trial: 1 day left",
+    ajPruebaUltimo: "Free trial: today is the last day",
     sitTotal: "Total",
     sitNetoMes: "Month net",
     sitNadaGrupo: "Nothing in this group.",
@@ -1954,6 +1985,7 @@ function aplicarIdioma(idioma) {
 // que actualizar a mano cada vez que cambia el idioma.
 function actualizarTextosDinamicosIdioma() {
   mostrarFechaHoy();
+  if (typeof pintarCuentaAjustes === "function") pintarCuentaAjustes();
   // Botones de login, si está en modo registro
   if ($("btnIngresar") && $("btnMostrarRegistro")) {
     $("btnIngresar").textContent = modoRegistro ? t("btnCrearCuentaSubmit") : t("btnEntrar");
@@ -2677,6 +2709,25 @@ function volverUnPaso(nombre) {
   }
 }
 
+
+// Encabezado de Ajustes: el mail de la cuenta y cómo está el plan (prueba o pago).
+function pintarCuentaAjustes() {
+  const m = $("configCuentaMail"), pl = $("configCuentaPlan");
+  if (!m || !pl) return;
+  m.textContent = (usuario && usuario.email) || "—";
+  let txt = "";
+  if (planVigente()) {
+    if (perfil && perfil.plan_vence) {
+      const f = new Date(perfil.plan_vence).toLocaleDateString(LOCALES_POR_IDIOMA[idiomaActual] || "es-AR", { day: "numeric", month: "long", year: "numeric" });
+      txt = t("ajPlanActivoHasta").replace("{f}", f);
+    } else txt = t("ajPlanActivo");
+  } else if (usuario && usuario.created_at) {
+    const creado = Math.max(new Date(usuario.created_at).getTime(), REINICIO_PRUEBA);
+    const quedan = Math.ceil(DIAS_DE_PRUEBA - (Date.now() - creado) / 86400000);
+    txt = quedan <= 0 ? t("ajPruebaUltimo") : quedan === 1 ? t("ajPruebaQueda1") : t("ajPruebaQuedan").replace("{n}", quedan);
+  }
+  pl.textContent = txt;
+}
 function irAVista(id) {
   document.querySelectorAll(".navbar-item").forEach((b) => {
     b.classList.toggle("activo", b.dataset.vista === id);
@@ -2684,6 +2735,7 @@ function irAVista(id) {
   document.querySelectorAll(".vista").forEach((v) => (v.hidden = true));
   vistaActiva = id;
   $(vistaActiva).hidden = false;
+  if (id === "vistaConfig") pintarCuentaAjustes();
   // En "Mi situación" y en Ajustes no corresponde el selector de mes ni el resumen del mes.
   $("app").classList.toggle("modo-situacion", id === "vistaSituacion" || id === "vistaConfig");
 }
