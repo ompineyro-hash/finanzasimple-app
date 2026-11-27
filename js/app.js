@@ -1990,10 +1990,6 @@ function moneda() { return perfil?.moneda || "$"; }
 function decimalesDe(n) {
   return Math.round(Math.abs(Number(n)) * 100) % 100 === 0 ? 0 : 2;
 }
-// Monto sin centavos, con el número completo (para resúmenes en una línea).
-function formatoMontoEntero(n) {
-  return moneda() + " " + Math.round(Number(n)).toLocaleString("es-AR");
-}
 function formatoMonto(n) {
   const d = decimalesDe(n);
   return moneda() + " " + Number(n).toLocaleString("es-AR", { minimumFractionDigits: d, maximumFractionDigits: d });
@@ -2976,8 +2972,8 @@ function renderPendientes() {
   const linea1 = [`<b class="pend-n">${escapeHTML(t("pendResumenN").replace("{n}", pendientes.length))}</b>`];
   if (vencidos) linea1.push(`<span class="pend-alerta">${escapeHTML(vencidos + " " + t(vencidos === 1 ? "pendVencido" : "pendVencidos"))}</span>`);
   const linea2 = [];
-  if (porPagar) linea2.push(`<span class="pend-monto">${escapeHTML(t("pendPorPagar"))} <b>${escapeHTML(formatoMontoEntero(porPagar))}</b></span>`);
-  if (porCobrar) linea2.push(`<span class="pend-monto">${escapeHTML(t("pendPorCobrar"))} <b>${escapeHTML(formatoMontoEntero(porCobrar))}</b></span>`);
+  if (porPagar) linea2.push(`<span class="pend-monto">${escapeHTML(t("pendPorPagar"))} <b>${escapeHTML(formatoMonto(porPagar))}</b></span>`);
+  if (porCobrar) linea2.push(`<span class="pend-monto">${escapeHTML(t("pendPorCobrar"))} <b>${escapeHTML(formatoMonto(porCobrar))}</b></span>`);
 
   const filaHTML = (m) => {
     const esGasto = m.tipo === "Gasto";
