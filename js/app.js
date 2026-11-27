@@ -3673,6 +3673,24 @@ function ajustarMes() {
     n = 0;
     while (sobra() && fs > 10.5 && n++ < 24) { fs -= 0.5; el.style.fontSize = fs + "px"; }
   }
+  if (typeof ajustarFechaHoy === "function") ajustarFechaHoy();
+}
+// La línea "Hoy: vie, 27 nov": se achica y, si aun así no entra, queda solo "vie, 27 nov".
+function ajustarFechaHoy() {
+  const f = $("fechaHoy");
+  const caja = f && f.closest(".mes-centro");
+  if (!caja || !caja.clientWidth) return;
+  mostrarFechaHoy();
+  f.style.fontSize = "";
+  const sobra = () => caja.scrollWidth > caja.clientWidth + 1;
+  let fs = parseFloat(getComputedStyle(f).fontSize) || 11, n = 0;
+  while (sobra() && fs > 10 && n++ < 12) { fs -= 0.5; f.style.fontSize = fs + "px"; }
+  if (sobra()) {
+    f.textContent = f.textContent.replace(/^[^:]*:\s*/, "");
+    f.style.fontSize = "";
+    fs = parseFloat(getComputedStyle(f).fontSize) || 11; n = 0;
+    while (sobra() && fs > 9.5 && n++ < 12) { fs -= 0.5; f.style.fontSize = fs + "px"; }
+  }
 }
 window.addEventListener("resize", () => { if (typeof ajustarMes === "function" && usuario) ajustarMes(); });
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { if (usuario) ajustarMes(); });
