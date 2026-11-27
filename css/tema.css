@@ -732,3 +732,7 @@ html[data-contraste][data-tema="oscuro"]{--texto:#FFFFFF;--texto-suave:#D5E0DB;-
 
 .frase-texto{font-size:calc(18px * var(--letra,1));line-height:1.45;margin:8px 0 12px;}
 #btnEscucharMes{min-height:50px;}
+
+.alc-toggle{background:none;border:0;padding:8px 0 2px;margin:0;font:inherit;font-size:calc(16px * var(--letra,1));font-weight:800;color:var(--primario);cursor:pointer;min-height:40px;}
+.alcanza-card{padding:14px 16px 10px;}
+.alc-grande{margin:4px 0 4px;}

@@ -465,6 +465,8 @@ const TRADUCCIONES = {
     fraEscuchar: "Escuchar mi mes",
     fraDetener: "Detener",
     fraNoVoz: "Tu celular no puede leer en voz alta.",
+    alcVer: "Ver detalle",
+    alcOcultar: "Ocultar detalle",
     letraAyuda: "Elegí cómo querés ver las letras en Ingasto. Se guarda en este celular.",
     letraNormal: "Normal",
     letraNormalDet: "Como se ve siempre",
@@ -1082,6 +1084,8 @@ const TRADUCCIONES = {
     fraEscuchar: "Ouvir meu mês",
     fraDetener: "Parar",
     fraNoVoz: "Seu celular não consegue ler em voz alta.",
+    alcVer: "Ver detalhe",
+    alcOcultar: "Ocultar detalhe",
     letraAyuda: "Escolha como quer ver as letras no Ingasto. Fica guardado neste celular.",
     letraNormal: "Normal",
     letraNormalDet: "Como sempre",
@@ -1712,6 +1716,8 @@ const TRADUCCIONES = {
     fraEscuchar: "Listen to my month",
     fraDetener: "Stop",
     fraNoVoz: "Your phone can't read aloud.",
+    alcVer: "See details",
+    alcOcultar: "Hide details",
     letraAyuda: "Choose how you want to see the text in Ingasto. It is saved on this phone.",
     letraNormal: "Normal",
     letraNormalDet: "As usual",
@@ -4149,6 +4155,19 @@ function renderFrase() {
   card.hidden = false;
 }
 
+// Tarjetas de Análisis compactas: se ve solo la frase principal; el detalle se abre con "Ver detalle".
+function alcDetalleHTML(inner) {
+  return `<div class="alc-mas" hidden>${inner}</div><button type="button" class="alc-toggle" aria-expanded="false">${escapeHTML(t("alcVer"))} ›</button>`;
+}
+document.addEventListener("click", (e) => {
+  const b = e.target.closest(".alc-toggle");
+  if (!b) return;
+  const mas = b.previousElementSibling;
+  mas.hidden = !mas.hidden;
+  b.setAttribute("aria-expanded", mas.hidden ? "false" : "true");
+  b.textContent = (mas.hidden ? t("alcVer") + " ›" : t("alcOcultar") + " ‹");
+});
+
 // ¿Me alcanza hasta fin de mes? (Análisis): lo que hay en las cuentas menos lo que hay que pagar hasta el último día, repartido por día.
 function renderAlcanza() {
   const card = $("alcanzaCard");
@@ -4166,10 +4185,10 @@ function renderAlcanza() {
   const frase = ok ? t("alcPorDia").replace("{x}", formatoMonto(Math.floor(porDia))) : t("alcFalta").replace("{x}", formatoMonto(Math.ceil(-libre)));
   const det = t(dias === 1 ? "alcDetalle1" : "alcDetalle").replace("{t}", formatoMonto(tengoCalculo.total)).replace("{d}", formatoMonto(debo)).replace("{n}", dias);
   card.innerHTML = `<div class="alc-titulo">${escapeHTML(t("alcTitulo"))}</div>
-    <div class="alc-grande ${ok ? "alc-ok" : "alc-mal"}">${escapeHTML(frase)}</div>
-    <div class="alc-det">${escapeHTML(det)}</div>
+    <div class="alc-grande ${ok ? "alc-ok" : "alc-mal"}">${escapeHTML(frase)}</div>` +
+    alcDetalleHTML(`<div class="alc-det">${escapeHTML(det)}</div>
     ${cobrar > 0 ? `<div class="alc-det">${escapeHTML(t("alcCobros").replace("{c}", formatoMonto(cobrar)))}</div>` : ""}
-    <div class="alc-nota">${escapeHTML(t("alcNota"))}</div>`;
+    <div class="alc-nota">${escapeHTML(t("alcNota"))}</div>`);
   card.hidden = false;
 }
 
@@ -4202,9 +4221,9 @@ async function renderCambio() {
     const baja = cats.filter((x) => x.d < 0).sort((x, y) => x.d - y.d)[0];
     if (sube) lineas.push(t("cambSubio").replace("{c}", sube.c).replace("{x}", formatoMonto(sube.d)));
     if (baja) lineas.push(t("cambBajo").replace("{c}", baja.c).replace("{x}", formatoMonto(-baja.d)));
-    card.innerHTML = `<div class="alc-titulo">${escapeHTML(t("cambTitulo"))}</div>` +
-      lineas.map((l, i) => `<div class="${i === 0 ? "alc-grande " + (dif > 0 ? "alc-mal" : "alc-ok") : "alc-det"}">${escapeHTML(l)}</div>`).join("") +
-      `<div class="alc-nota">${escapeHTML(t("cambNota"))}</div>`;
+    card.innerHTML = `<div class="alc-titulo">${escapeHTML(t("cambTitulo"))}</div>
+      <div class="alc-grande ${dif > 0 ? "alc-mal" : "alc-ok"}">${escapeHTML(lineas[0])}</div>` +
+      (lineas.length > 1 ? alcDetalleHTML(lineas.slice(1).map((l) => `<div class="alc-det">${escapeHTML(l)}</div>`).join("") + `<div class="alc-nota">${escapeHTML(t("cambNota"))}</div>`) : "");
     card.hidden = false;
   } catch { card.hidden = true; }
 }
