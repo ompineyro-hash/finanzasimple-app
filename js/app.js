@@ -3138,13 +3138,30 @@ function pasaBusqueda(m) {
   window.ajustarAccesos = function () {
     filaAccesos.classList.remove("acc-wrap");
     const tope = segmentado.getBoundingClientRect().top;
+    if (!filaAccesos.offsetWidth) return; // oculta (antes del login): se vuelve a medir cuando se muestre
     const apretado = segmentado.scrollWidth > segmentado.clientWidth + 1 ||
+      [...segmentado.querySelectorAll(".segmentado-item")].some((i) => i.scrollWidth > i.clientWidth + 1) ||
       [...filaAccesos.querySelectorAll(".acceso-btn")].some((b) => b.getBoundingClientRect().top > tope + 8);
     if (apretado) filaAccesos.classList.add("acc-wrap");
   };
   window.addEventListener("resize", window.ajustarAccesos);
   setTimeout(window.ajustarAccesos, 0);
   setTimeout(window.ajustarAccesos, 800);
+  if (window.ResizeObserver) {
+    let pend = false;
+    const ro = new ResizeObserver(() => {
+      if (pend) return;
+      pend = true;
+      requestAnimationFrame(() => { pend = false; window.ajustarAccesos(); });
+    });
+    ro.observe(filaAccesos);
+    segmentado.querySelectorAll(".segmentado-item").forEach((i) => ro.observe(i));
+    filaAccesos.querySelectorAll(".acceso-btn").forEach((i) => ro.observe(i));
+  }
+  ["load", "focus", "orientationchange", "pageshow"].forEach((ev) => window.addEventListener(ev, () => setTimeout(window.ajustarAccesos, 100)));
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) setTimeout(window.ajustarAccesos, 100); });
+  setTimeout(window.ajustarAccesos, 2500);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => window.ajustarAccesos());
   segmentado.querySelectorAll(".segmentado-item").forEach((btn) => {
     btn.addEventListener("click", () => {
       segmentado.querySelectorAll(".segmentado-item").forEach((b) => b.classList.remove("activo"));
@@ -3648,7 +3665,7 @@ window.addEventListener("resize", () => { if (typeof ajustarMes === "function" &
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { if (usuario) ajustarMes(); });
 
 function renderMovimientos() {
-  ajustarMes();
+  ajustarMes(); if (window.ajustarAccesos) window.ajustarAccesos();
   const cont = $("listaMovimientos");
   const visibles = movimientos.filter(pasaBusqueda);
   const hayBusqueda = !!($("textoBusqueda") && $("textoBusqueda").value.trim());
