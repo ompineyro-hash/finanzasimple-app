@@ -172,7 +172,9 @@ const TRADUCCIONES = {
     labelRepetirClave: "Repetir clave nueva",
     tituloPruebaVencida: "Tu prueba gratuita terminó",
     textoPruebaVencida: "Tus datos siguen guardados y a salvo. Activá tu cuenta para seguir usando Ingasto.",
-    btnPagarPrueba: "Pagar $4.000 y activar",
+    btnPagarPrueba: "Pagar y activar",
+    precioMensual: "$ 4.000 por mes",
+    textoPagoSeguro: "Pago seguro con Mercado Pago. Das de baja cuando quieras.",
     textoAvisoSoporte: "Si después de verificar no se activa, escribinos a ingastosoporte@gmail.com con el mail que usaste para registrarte.",
     btnVerificarPago: "Ya pagué, verificar",
     verificandoPago: "Verificando tu pago…",
@@ -759,7 +761,9 @@ const TRADUCCIONES = {
     labelRepetirClave: "Repetir nova senha",
     tituloPruebaVencida: "Seu período de teste terminou",
     textoPruebaVencida: "Seus dados continuam salvos e seguros. Ative sua conta para continuar usando o Ingasto.",
-    btnPagarPrueba: "Pagar $4.000 e ativar",
+    btnPagarPrueba: "Pagar e ativar",
+    precioMensual: "$ 4.000 por mês",
+    textoPagoSeguro: "Pagamento seguro com o Mercado Pago. Você cancela quando quiser.",
     textoAvisoSoporte: "Se depois de verificar não ativar, escreva para ingastosoporte@gmail.com com o e-mail que você usou para se cadastrar.",
     btnVerificarPago: "Já paguei, verificar",
     verificandoPago: "Verificando seu pagamento…",
@@ -1346,7 +1350,9 @@ const TRADUCCIONES = {
     labelRepetirClave: "Repeat new password",
     tituloPruebaVencida: "Your free trial has ended",
     textoPruebaVencida: "Your data is still saved and safe. Activate your account to keep using Ingasto.",
-    btnPagarPrueba: "Pay $4,000 and activate",
+    btnPagarPrueba: "Pay and activate",
+    precioMensual: "$ 4,000 per month",
+    textoPagoSeguro: "Secure payment with Mercado Pago. Cancel whenever you want.",
     textoAvisoSoporte: "If it doesn't activate after checking, write to ingastosoporte@gmail.com with the email you used to sign up.",
     btnVerificarPago: "I've paid, check now",
     verificandoPago: "Checking your payment…",
@@ -3918,6 +3924,9 @@ async function renderVistaAnalisis() {
     lista = contablesDelMes(movimientos, claveMesVista());
   }
   ultimaListaAnalisis = lista;
+  const sinDatos = !lista.length && !movimientos.length && !transferenciasMes.length;
+  $("vistaAnalisis").classList.toggle("sin-datos", sinDatos);
+  $("analisisVacio").hidden = !sinDatos;
   renderResumenAnalisis(lista);
   renderCategoriasAnalisis(lista, tipoAnalisis);
   await cargarPresupuesto();
@@ -5211,6 +5220,12 @@ $("listaMovimientos").addEventListener("click", (e) => {
   if (!b) return;
   $("btnNuevo").click();
   if (b.dataset.vacio === "voz") setTimeout(() => $("btnCargarVoz").click(), 350);
+});
+$("analisisVacio").addEventListener("click", (e) => {
+  const b = e.target.closest("[data-vacio-an]");
+  if (!b) return;
+  $("btnNuevo").click();
+  if (b.dataset.vacioAn === "voz") setTimeout(() => $("btnCargarVoz").click(), 350);
 });
 $("tarjetaGuia").addEventListener("click", () => abrirBienvenida());
 $("guiaPantalla").addEventListener("click", (e) => {

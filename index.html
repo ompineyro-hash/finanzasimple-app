@@ -121,7 +121,9 @@ Al crear una cuenta aceptás nuestros
 <h1>Ingasto</h1>
 <p class="subtitulo-login" data-i18n="tituloPruebaVencida">Tu prueba gratuita terminó</p>
 <p class="texto-ayuda" data-i18n="textoPruebaVencida">Tus datos siguen guardados y a salvo. Activá tu cuenta para seguir usando Ingasto.</p>
+<p class="precio-mensual" data-i18n="precioMensual">$ 4.000 por mes</p>
 <a href="https://mpago.la/2tbm2G5" target="_blank" rel="noopener" class="boton boton-primario boton-ancho" data-i18n="btnPagarPrueba">Pagar $4.000 y activar</a>
+<p class="texto-ayuda pago-seguro" data-i18n="textoPagoSeguro">Pago seguro con Mercado Pago. Das de baja cuando quieras.</p>
 <button type="button" class="boton boton-secundario boton-ancho" id="btnVerificarPago" style="margin-top:12px" data-i18n="btnVerificarPago">Ya pagué, verificar</button>
 <p class="texto-ayuda" id="msgVerificarPago" role="status" hidden></p>
 <p class="texto-ayuda" data-i18n="textoAvisoSoporte">Si después de verificar no se activa, escribinos con el mail que usaste para registrarte.</p>
@@ -214,6 +216,14 @@ Al crear una cuenta aceptás nuestros
 <button type="button" class="segmentado-item" data-vista-analisis="evolucion" data-i18n="analisisEvolucion">Evolución mensual</button>
 <button type="button" class="segmentado-item" data-vista-analisis="diaadia" data-i18n="analisisDiaADia">Día a día</button>
 <button type="button" class="segmentado-item" id="btnVistaPresupuesto" data-vista-analisis="presupuesto" data-i18n="analisisPresupuesto" hidden>Presupuesto</button>
+</div>
+
+<div id="analisisVacio" class="vacio-lindo analisis-vacio" hidden>
+<div class="vacio-lindo-ic" aria-hidden="true"><svg class="ic-linea" viewBox="0 0 24 24"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg></div>
+<h3 data-i18n="vacioTitulo">Todavía no cargaste movimientos</h3>
+<p data-i18n="vacioTexto">Cargá el primero hablando o a mano y empezá a ver tu mes.</p>
+<button type="button" class="vacio-btn-voz" data-vacio-an="voz"><span data-ico="mic" aria-hidden="true"></span> <span data-i18n="vacioVoz">Cargar con voz</span></button>
+<button type="button" class="vacio-btn-mano" data-vacio-an="mano" data-i18n="vacioMano">Cargar a mano</button>
 </div>
 
 <div id="subVistaCategorias">

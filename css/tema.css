@@ -599,4 +599,9 @@ html[data-tema="oscuro"] .pantalla-login{background:#0E1513 !important;}
 .bloque-nuevo{margin-top:16px;padding-top:16px;border-top:1px solid var(--borde);}
 .bloque-nuevo-titulo{font-weight:800;font-size:calc(16px * var(--letra,1));margin:0 0 10px;color:var(--texto);}
 .bloque-nuevo .boton{margin-bottom:6px;}
-a.boton.boton-texto{display:block;text-align:center;text-decoration:none;}
+a.boton{display:block;box-sizing:border-box;text-align:center;text-decoration:none;}
+
+/* Análisis sin datos: mensaje en lugar de gráficos vacíos y guiones */
+#vistaAnalisis.sin-datos > #segmentadoVistaAnalisis,#vistaAnalisis.sin-datos > div[id^="subVista"]{display:none !important;}
+.precio-mensual{font-size:calc(26px * var(--letra,1));font-weight:800;text-align:center;margin:6px 0 10px;color:var(--texto);}
+.pago-seguro{text-align:center;margin-top:8px;}
