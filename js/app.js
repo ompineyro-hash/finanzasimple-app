@@ -49,6 +49,7 @@ const SVG_ICONOS = {
   imagen: `<rect width="18" height="18" x="3" y="3" rx="2" ry="2" /> <circle cx="9" cy="9" r="2" /> <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />`,
   flechas: `<path d="M8 3 4 7l4 4" /> <path d="M4 7h16" /> <path d="m16 21 4-4-4-4" /> <path d="M20 17H4" />`,
   lapiz: `<path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z" /> <path d="m15 5 4 4" />`,
+  mas: `<path d="M5 12h14" /> <path d="M12 5v14" />`,
   fuel: `<path d="M14 13h2a2 2 0 0 1 2 2v2a2 2 0 0 0 4 0v-6.998a2 2 0 0 0-.59-1.42L18 5" /> <path d="M14 21V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v16" /> <path d="M2 21h13" /> <path d="M3 9h11" />`,
   bus: `<path d="M8 6v6" /> <path d="M15 6v6" /> <path d="M2 12h19.6" /> <path d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3" /> <circle cx="7" cy="18" r="2" /> <path d="M9 18h5" /> <circle cx="16" cy="18" r="2" />`,
   luz: `<path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5" /> <path d="M9 18h6" /> <path d="M10 22h4" />`,
@@ -76,8 +77,8 @@ function svgIcono(clave) {
 }
 pintarIconosAjustes();
 // Emojis que se cambian solos por íconos de línea en cualquier texto de la app (también el que se arma después).
-const EMOJI_A_ICONO = { "🎙": "mic", "🎤": "mic", "🏦": "billetera", "📅": "calendario", "🗓": "calendario", "📷": "camara", "⏳": "reloj", "✔": "tilde", "▾": "abajo", "⬇": "abajo", "✖": "x", "☀": "sol", "🌙": "luna", "🌓": "solluna", "📱": "movil", "♾": "infinito", "📊": "barras", "📄": "archivo", "🗑": "papelera", "🧹": "escoba", "🖼": "imagen", "↔": "flechas", "⇄": "flechas", "↩": "deshacer", "🔍": "buscar", "🎉": "ocio", "🧭": "brujula", "💳": "tarjeta", "✏": "lapiz" };
-const RE_EMOJI_ICONO = /(🎙️?|🎤|🏦|📅|🗓️?|📷|⏳|✔️?|▾|⬇️?|✖️?|☀️?|🌙|🌓|📱|♾️?|📊|📄|🗑️?|🧹|🖼️?|↔️?|⇄|↩️?|🔍|🎉|🧭|💳|✏️?)/;
+const EMOJI_A_ICONO = { "🎙": "mic", "🎤": "mic", "🏦": "billetera", "📅": "calendario", "🗓": "calendario", "📷": "camara", "⏳": "reloj", "✔": "tilde", "▾": "abajo", "⬇": "abajo", "✖": "x", "☀": "sol", "🌙": "luna", "🌓": "solluna", "📱": "movil", "♾": "infinito", "📊": "barras", "📄": "archivo", "🗑": "papelera", "🧹": "escoba", "🖼": "imagen", "↔": "flechas", "⇄": "flechas", "↩": "deshacer", "🔍": "buscar", "🎉": "ocio", "🧭": "brujula", "💳": "tarjeta", "✏": "lapiz", "➕": "mas" };
+const RE_EMOJI_ICONO = /(🎙️?|🎤|🏦|📅|🗓️?|📷|⏳|✔️?|▾|⬇️?|✖️?|☀️?|🌙|🌓|📱|♾️?|📊|📄|🗑️?|🧹|🖼️?|↔️?|⇄|↩️?|🔍|🎉|🧭|💳|✏️?|➕)/;
 function iconizarNodoTexto(nodo) {
   const p = nodo.parentNode;
   if (!p || /^(SCRIPT|STYLE|OPTION|TEXTAREA|TITLE|SELECT)$/.test(p.nodeName)) return;
