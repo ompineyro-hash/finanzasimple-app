@@ -591,3 +591,12 @@ html[data-tema="oscuro"] .banner-pendientes,html[data-tema="oscuro"] .banner-pen
 .banner-pendientes .pend-textos{display:block;}
 .banner-pendientes .pend-l1{font-size:calc(15px * min(var(--letra,1),1.15));}
 .banner-pendientes .pend-l2{font-size:calc(12.5px * min(var(--letra,1),1.1));gap:0 6px;}
+
+/* Login: fondo parejo, logo plano y bloque "¿Sos nuevo?" */
+.pantalla-login{background:var(--papel) !important;}
+html[data-tema="oscuro"] .pantalla-login{background:#0E1513 !important;}
+.logo-login .logo-plano{display:block;margin:0 auto;border-radius:16px;}
+.bloque-nuevo{margin-top:16px;padding-top:16px;border-top:1px solid var(--borde);}
+.bloque-nuevo-titulo{font-weight:800;font-size:calc(16px * var(--letra,1));margin:0 0 10px;color:var(--texto);}
+.bloque-nuevo .boton{margin-bottom:6px;}
+a.boton.boton-texto{display:block;text-align:center;text-decoration:none;}

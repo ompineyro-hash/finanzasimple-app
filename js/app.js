@@ -155,6 +155,7 @@ const TRADUCCIONES = {
     placeholderClave: "Mínimo 6 caracteres",
     btnEntrar: "Entrar",
     separadorO: "o",
+    loginNuevoTitulo: "¿Sos nuevo? Probalo 25 días gratis",
     btnCrearCuenta: "Crear una cuenta nueva",
     linkConocer: "Conocé qué es Ingasto",
     linkBotonBaja: "Botón de Baja",
@@ -741,6 +742,7 @@ const TRADUCCIONES = {
     placeholderClave: "Mínimo 6 caracteres",
     btnEntrar: "Entrar",
     separadorO: "ou",
+    loginNuevoTitulo: "É novo por aqui? Experimente 25 dias grátis",
     btnCrearCuenta: "Criar uma conta nova",
     linkConocer: "Conheça o Ingasto",
     linkBotonBaja: "Botão de Cancelamento",
@@ -1327,6 +1329,7 @@ const TRADUCCIONES = {
     placeholderClave: "Minimum 6 characters",
     btnEntrar: "Log in",
     separadorO: "or",
+    loginNuevoTitulo: "New here? Try it free for 25 days",
     btnCrearCuenta: "Create a new account",
     linkConocer: "What is Ingasto?",
     linkBotonBaja: "Cancel subscription",
@@ -1943,6 +1946,7 @@ function actualizarTextosDinamicosIdioma() {
     $("btnIngresar").textContent = modoRegistro ? t("btnCrearCuentaSubmit") : t("btnEntrar");
     $("btnMostrarRegistro").textContent = modoRegistro ? t("btnYaTengoCuenta") : t("btnCrearCuenta");
   }
+  if ($("bloqueNuevoTitulo")) $("bloqueNuevoTitulo").hidden = !!modoRegistro;
   if ($("labelClaveConfirmar")) {
     $("labelClaveConfirmar").hidden = !modoRegistro;
     $("inputClaveConfirmar").required = modoRegistro;

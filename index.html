@@ -52,7 +52,7 @@ try {
 <option value="pt">🇧🇷 Português</option>
 <option value="en">🇺🇸 English</option>
 </select>
-<div class="logo-login"><img src="icons/icon-192.png" alt="Ingasto" width="64" height="64" style="border-radius:16px;display:block;margin:0 auto;"></div>
+<div class="logo-login"><svg class="logo-plano" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Ingasto"><rect width="64" height="64" rx="16" fill="#24705C"/><path d="M32 10 46 25H37V39H46L32 54 18 39H27V25H18Z" fill="#F4E2CC" stroke="#F4E2CC" stroke-width="2" stroke-linejoin="round"/></svg></div>
 <h1>Ingasto</h1>
 <p class="subtitulo-login" data-i18n="subtitulo">Tus gastos e ingresos, claros y simples.</p>
 
@@ -79,10 +79,12 @@ try {
 <div id="captchaBox" class="captcha-box" hidden></div>
 <button type="submit" class="boton boton-primario boton-ancho" id="btnIngresar" data-i18n="btnEntrar">Entrar</button>
 </form>
-<div class="separador-login"><span data-i18n="separadorO">o</span></div>
-<button class="boton boton-secundario boton-ancho" id="btnMostrarRegistro" data-i18n="btnCrearCuenta">Crear una cuenta nueva</button>
 <button class="boton boton-texto boton-ancho" id="btnOlvideClave" data-i18n="btnOlvideClave">Olvidé mi clave</button>
-<p class="legal-login"><a href="antesala.html" data-i18n="linkConocer">Conocé qué es Ingasto</a></p>
+<div class="bloque-nuevo" id="bloqueNuevo">
+<p class="bloque-nuevo-titulo" id="bloqueNuevoTitulo" data-i18n="loginNuevoTitulo">¿Sos nuevo? Probalo 25 días gratis</p>
+<button class="boton boton-secundario boton-ancho" id="btnMostrarRegistro" data-i18n="btnCrearCuenta">Crear una cuenta nueva</button>
+<a href="antesala.html" class="boton boton-texto boton-ancho" data-i18n="linkConocer">Conocé qué es Ingasto</a>
+</div>
 <p class="legal-login legal-botones"><a href="solicitud.html?tipo=baja" data-i18n="linkBotonBaja">Botón de Baja</a> · <a href="solicitud.html?tipo=arrepentimiento" data-i18n="linkBotonArrep">Botón de Arrepentimiento</a></p>
 <p class="legal-login">
 Al crear una cuenta aceptás nuestros
@@ -95,7 +97,7 @@ Al crear una cuenta aceptás nuestros
 <!-- ===================== PANTALLA NUEVA CLAVE (link del mail) ===================== -->
 <div id="pantallaNuevaClave" class="pantalla-login" hidden>
 <div class="tarjeta-login">
-<div class="logo-login"><img src="icons/icon-192.png" alt="Ingasto" width="64" height="64" style="border-radius:16px;display:block;margin:0 auto;"></div>
+<div class="logo-login"><svg class="logo-plano" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Ingasto"><rect width="64" height="64" rx="16" fill="#24705C"/><path d="M32 10 46 25H37V39H46L32 54 18 39H27V25H18Z" fill="#F4E2CC" stroke="#F4E2CC" stroke-width="2" stroke-linejoin="round"/></svg></div>
 <h1>Ingasto</h1>
 <p class="subtitulo-login" data-i18n="textoElegirNuevaClave">Elegí tu nueva clave</p>
 <div id="nuevaClaveError" class="aviso aviso-error" hidden></div>
@@ -115,7 +117,7 @@ Al crear una cuenta aceptás nuestros
 <!-- ===================== PANTALLA PRUEBA VENCIDA ===================== -->
 <div id="pantallaPruebaVencida" class="pantalla-login" hidden>
 <div class="tarjeta-login">
-<div class="logo-login"><img src="icons/icon-192.png" alt="Ingasto" width="64" height="64" style="border-radius:16px;display:block;margin:0 auto;"></div>
+<div class="logo-login"><svg class="logo-plano" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Ingasto"><rect width="64" height="64" rx="16" fill="#24705C"/><path d="M32 10 46 25H37V39H46L32 54 18 39H27V25H18Z" fill="#F4E2CC" stroke="#F4E2CC" stroke-width="2" stroke-linejoin="round"/></svg></div>
 <h1>Ingasto</h1>
 <p class="subtitulo-login" data-i18n="tituloPruebaVencida">Tu prueba gratuita terminó</p>
 <p class="texto-ayuda" data-i18n="textoPruebaVencida">Tus datos siguen guardados y a salvo. Activá tu cuenta para seguir usando Ingasto.</p>
