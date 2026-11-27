@@ -568,3 +568,13 @@ html[data-letra] .acceso-btn .acc-txt{font-size:calc(15px * var(--letra,1));}
 
 /* "Próximas": cuotas y movimientos con fecha futura, debajo de lo que ya pasó */
 .proximas-titulo{margin:18px 4px 6px;padding-top:10px;border-top:1px solid var(--borde,rgba(128,128,128,.3));font-size:calc(14px * var(--letra,1));font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--texto);}
+
+/* Ingresos y Gastos adentro de la tarjeta verde (celular) */
+.tarjeta-resumen-balance.con-fila .resumen-tarjetas-fila{display:flex !important;gap:8px;margin-top:10px;}
+.tarjeta-resumen-balance.con-fila .resumen-tarjetas-fila .tarjeta-resumen{flex:1 1 0;min-width:0;background:rgba(0,0,0,.24) !important;color:#fff;border-radius:12px;padding:6px 10px;box-shadow:none;}
+.tarjeta-resumen-balance.con-fila .resumen-tarjetas-fila .tarjeta-resumen-label{color:rgba(255,255,255,.88) !important;font-size:calc(13.5px * var(--letra,1));}
+.tarjeta-resumen-balance.con-fila .resumen-tarjetas-fila .tarjeta-resumen-valor{font-size:calc(16px * min(var(--letra,1),1.15));overflow-wrap:anywhere;line-height:1.15;}
+.tarjeta-resumen-balance.con-fila #valorIngresos{color:#B5F5DE !important;}
+.tarjeta-resumen-balance.con-fila #valorGastos{color:#FFC9BF !important;}
+.tarjeta-resumen-balance.con-fila .flecha-resumen.ingreso{color:#B5F5DE !important;}
+.tarjeta-resumen-balance.con-fila .flecha-resumen.gasto{color:#FFC9BF !important;}

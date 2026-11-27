@@ -3702,6 +3702,18 @@ function ajustarFechaHoy() {
     while (sobra() && fs > 9.5 && n++ < 12) { fs -= 0.5; f.style.fontSize = fs + "px"; }
   }
 }
+// Celular (menos de 700 px): Ingresos y Gastos van adentro de la tarjeta verde, como dos recuadros chicos. En pantallas grandes, en su propia fila.
+function ubicarResumen() {
+  const fila = document.querySelector(".resumen-tarjetas-fila");
+  const verde = document.querySelector(".tarjeta-resumen-balance");
+  const cont = document.querySelector(".resumen-tarjetas");
+  if (!fila || !verde || !cont) return;
+  const chico = window.innerWidth < 700;
+  if (chico && fila.parentNode !== verde) { verde.appendChild(fila); verde.classList.add("con-fila"); }
+  else if (!chico && fila.parentNode !== cont) { cont.appendChild(fila); verde.classList.remove("con-fila"); }
+}
+ubicarResumen();
+window.addEventListener("resize", ubicarResumen);
 window.addEventListener("resize", () => { if (typeof ajustarMes === "function" && usuario) ajustarMes(); });
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { if (usuario) ajustarMes(); });
 
