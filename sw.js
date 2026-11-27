@@ -3,7 +3,7 @@
 // nunca ve información vieja. El "esqueleto" visual se guarda en caché
 // solo como respaldo para cuando no hay internet, pero SIEMPRE se intenta
 // primero traer la versión más nueva del servidor.
-const CACHE_NAME = "finanzasimple-v156";
+const CACHE_NAME = "finanzasimple-v157";
 const ARCHIVOS_ESQUELETO = [
   "./index.html",
   "./css/styles.css",
@@ -13,7 +13,12 @@ const ARCHIVOS_ESQUELETO = [
   "./js/data.js",
   "./js/app.js",
   "./js/importar.js",
-  "./manifest.json"
+  "./manifest.json",
+  "./fonts/Inter-Regular.woff",
+  "./fonts/Inter-Medium.woff",
+  "./fonts/Inter-SemiBold.woff",
+  "./fonts/Inter-Bold.woff",
+  "./fonts/Inter-ExtraBold.woff"
 ];
 
 self.addEventListener("install", (event) => {
