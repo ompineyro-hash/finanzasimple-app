@@ -224,8 +224,8 @@ const TRADUCCIONES = {
     analisisSinIngresos: "No hay ingresos cargados en este período.",
     lblTotalGastos: "Total gastos",
     lblTotalIngresos: "Total ingresos",
-    analisisPorCategoria: "Por categoría",
-    analisisEvolucion: "Evolución mensual",
+    analisisPorCategoria: "Categorías",
+    analisisEvolucion: "Evolución",
     analisisDiaADia: "Día a día",
     analisisPresupuesto: "Presupuesto",
     tituloPresupuesto: "Presupuesto del mes",
@@ -815,8 +815,8 @@ const TRADUCCIONES = {
     analisisSinIngresos: "Não há receitas registradas neste período.",
     lblTotalGastos: "Total de despesas",
     lblTotalIngresos: "Total de receitas",
-    analisisPorCategoria: "Por categoria",
-    analisisEvolucion: "Evolução mensal",
+    analisisPorCategoria: "Categorias",
+    analisisEvolucion: "Evolução",
     analisisDiaADia: "Dia a dia",
     analisisPresupuesto: "Orçamento",
     tituloPresupuesto: "Orçamento do mês",
@@ -1406,9 +1406,9 @@ const TRADUCCIONES = {
     analisisSinIngresos: "No income recorded for this period.",
     lblTotalGastos: "Total expenses",
     lblTotalIngresos: "Total income",
-    analisisPorCategoria: "By category",
-    analisisEvolucion: "Monthly trend",
-    analisisDiaADia: "Day by day",
+    analisisPorCategoria: "Categories",
+    analisisEvolucion: "Trend",
+    analisisDiaADia: "Daily",
     analisisPresupuesto: "Budget",
     tituloPresupuesto: "Monthly budget",
     textoPresupuesto: "Split your income into fixed costs, living and fun, and savings. You can change the percentages.",
@@ -3944,6 +3944,7 @@ async function renderVistaAnalisis() {
   $("vistaAnalisis").classList.toggle("sin-datos", sinDatos);
   $("analisisVacio").hidden = !sinDatos;
   renderResumenAnalisis(lista);
+  if ($("tablaAnalisisCat")) $("tablaAnalisisCat").hidden = periodoAnalisis === "mes";
   renderCategoriasAnalisis(lista, tipoAnalisis);
   await cargarPresupuesto();
   if (subVistaAnalisis === "presupuesto") renderPresupuesto();

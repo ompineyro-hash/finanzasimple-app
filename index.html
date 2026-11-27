@@ -227,12 +227,18 @@ Al crear una cuenta aceptás nuestros
 </div>
 
 <div id="subVistaCategorias">
-<div class="segmentado" id="segmentadoAnalisis">
+<div class="analisis-selectores">
+<div class="segmentado segmentado-chico" id="segmentadoAnalisis">
 <button type="button" class="segmentado-item activo" data-periodo="mes" data-i18n="analisisMesActual">Mes actual</button>
 <button type="button" class="segmentado-item" data-periodo="anio" data-i18n="analisisResumenAnual">Resumen anual</button>
 <button type="button" class="segmentado-item" data-periodo="todo" data-i18n="analisisAcumulado">Acumulado</button>
 </div>
-<div class="resumen-tarjetas resumen-tarjetas-analisis">
+<div class="segmentado segmentado-chico" id="segmentadoTipoAnalisis">
+<button type="button" class="segmentado-item activo" data-tipo-analisis="Gasto" data-i18n="analisisGastosTab">Gastos</button>
+<button type="button" class="segmentado-item" data-tipo-analisis="Ingreso" data-i18n="analisisIngresosTab">Ingresos</button>
+</div>
+</div>
+<div class="resumen-tarjetas resumen-tarjetas-analisis" id="tablaAnalisisCat">
 <div class="tarjeta-resumen tarjeta-resumen-clara">
 <span class="tarjeta-resumen-label" data-i18n="lblBalance">Balance</span>
 <span id="analisisBalance" class="tarjeta-resumen-valor">—</span>
@@ -245,10 +251,6 @@ Al crear una cuenta aceptás nuestros
 <span class="tarjeta-resumen-label" data-i18n="lblGastos">Gastos</span>
 <span id="analisisGastos" class="tarjeta-resumen-valor color-gasto">—</span>
 </div>
-</div>
-<div class="segmentado segmentado-chico" id="segmentadoTipoAnalisis">
-<button type="button" class="segmentado-item activo" data-tipo-analisis="Gasto" data-i18n="analisisGastosTab">Gastos</button>
-<button type="button" class="segmentado-item" data-tipo-analisis="Ingreso" data-i18n="analisisIngresosTab">Ingresos</button>
 </div>
 <h2 class="titulo-seccion" id="tituloListaAnalisis" data-i18n="tituloGastosPorCategoria">Gastos por categoría</h2>
 <div id="listaAnalisis" class="lista-analisis"></div>
@@ -277,7 +279,7 @@ Al crear una cuenta aceptás nuestros
 <div id="subVistaDiaADia" hidden>
 <h2 class="titulo-seccion" data-i18n="tituloDiaADia">Ingresos y egresos del mes</h2>
 <p class="texto-ayuda" data-i18n="textoDiaADia">Acumulado de ingresos y egresos, día a día, del mes que estás viendo.</p>
-<div class="resumen-tarjetas resumen-tarjetas-analisis">
+<div class="resumen-tarjetas resumen-tarjetas-analisis" id="tablaDiaADia" hidden>
 <div class="tarjeta-resumen tarjeta-resumen-clara">
 <span class="tarjeta-resumen-label" data-i18n="lblResultadoMes">Resultado del mes</span>
 <span id="diaBalance" class="tarjeta-resumen-valor">—</span>
