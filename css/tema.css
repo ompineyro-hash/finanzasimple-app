@@ -111,7 +111,7 @@ html[data-tema="oscuro"] .linea-previsto{background:#15231E;}
 }
 
 /* ===== PC: barra lateral a la izquierda (como el diseño de Edu) ===== */
-@media (min-width:900px){
+@media (min-width:700px){
   .app{display:grid;grid-template-columns:230px 1fr;grid-template-rows:auto 1fr;}
   .app > *{grid-column:2;}
   .app > .navbar{
