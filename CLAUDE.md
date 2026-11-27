@@ -127,3 +127,14 @@ No: conexión con bancos.
 - Análisis: pestañas en una fila (nombres cortos), selectores chicos (`.analisis-selectores`), tabla Balance/Ingresos/Gastos solo en Resumen anual y Acumulado (`#tablaAnalisisCat`).
 - Ajustes: lista agrupada (`.config-grupo`, `.config-lista`), encabezado con mail y plan (`pintarCuentaAjustes()`); grupo "Mi cuenta" agregado (Baja, Arrepentimiento, Zona de riesgo).
 - Faltan: tarea 10 (letra Inter), 11 (pantallas grandes), 12 (página de venta, primeros pasos, animaciones). Probar con datos reales (cuotas futuras, pendientes, préstamos) lo hace Edu.
+
+## Novedades 27/11/2026 (sw.js v161) — v148 a v161
+- Letra **Inter** guardada en el repo (`fonts/*.woff`, subconjunto latino, licencia OFL en `fonts/LICENSE-Inter.txt`; `@font-face` en `css/styles.css`, `css/fuentes.css` para Términos/Privacidad/Solicitud). Ya no se pide a Google Fonts. Si se agrega un peso, sumarlo también al caché de `sw.js`. Números con `font-variant-numeric: tabular-nums`.
+- Pantallas grandes: menú lateral desde 700 px, búsqueda siempre visible en Movimientos (≥ 700 px, sin botón Buscar), panel de pendientes a la derecha desde 1440 px (CSS puro: el mismo `#bannerPendientes`, siempre abierto).
+- Ajustes: ícono de color por grupo (`--gh`), cartel "Deslizá para ver más" en celular (`#masAbajo`, JS `elScroll()`), botón Salir solo arriba (`#btnSalir` queda oculto en Ajustes porque el de arriba lo usa). ARREGLADO: `.config-menu` tenía `display:block !important` y no se ocultaba al abrir un panel.
+- Tamaño de letra: vista previa, "Letra en negrita" (`data-negrita`, familia `InterNegrita` = pesos corridos) y "Más contraste" (`data-contraste`). Escalas siguen en 1,15 y 1,30 (Marcelo probó 1,25/1,45: en su celu, con la letra del sistema grande, se rompía; se descartó).
+- Movimientos: íconos de la lista 36–40 px fijos; el mes pasa a dos renglones si no entra; Buscar/Clasificar se apilan con letra muy grande. Restaurant usa ícono de cubiertos. Login: selector de idioma ya no se corta.
+- Análisis: tarjeta **"¿Me alcanza hasta fin de mes?"** (`renderAlcanza()`): Tengo (Situación) − pendientes a pagar hasta fin de mes, dividido por los días que quedan (contando hoy). Los cobros se muestran aparte y no se suman. No incluye préstamos ni cuotas de meses próximos. Idea de Marcelo (27/11); falta que Edu la vea.
+- Service worker: ya NO recarga solo en la primera visita (solo al actualizar).
+- Pendiente de Edu: capturas del Paso 2 y 3 de los primeros pasos (¿Dónde tenés tu plata? / Cargá tu primer gasto) para armarlos igual a su diseño; decidir "Próximas", "Previsto del mes", voz (sacar los 5 pasos); probar en iPhone y con datos propios (cuotas, pendientes, préstamos, pago).
+- Marcelo decidió algunas cosas por Edu mientras estaba enfermo (27/11): colores de Ajustes por grupo, "Próximas" al final, "Previsto del mes" donde está. Contarle a Edu.
