@@ -654,3 +654,7 @@ html[data-ocultar] .sit-medio{filter:blur(9px);user-select:none;pointer-events:n
 .config-lista .config-tarjeta::after{content:"";flex:0 0 auto;width:9px;height:9px;border-right:2.5px solid var(--texto-suave);border-top:2.5px solid var(--texto-suave);transform:rotate(45deg);margin-right:4px;opacity:.8;}
 .config-lista .config-tarjeta-peligro{background:var(--gasto-fondo);}
 .config-lista .config-tarjeta-peligro .config-tarjeta-titulo{color:var(--peligro);}
+
+/* Inter es mas ancha: la barra de abajo achica un poco para que entre "Movimientos" */
+@media (max-width:420px){.navbar-item,.navbar-agregar{font-size:11px;letter-spacing:-0.02em;}}
+@media (max-width:380px){.navbar{padding-left:2px;padding-right:2px;}.navbar-item,.navbar-agregar{font-size:10.5px;font-weight:600;letter-spacing:-0.03em;}}

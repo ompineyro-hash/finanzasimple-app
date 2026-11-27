@@ -31,7 +31,8 @@
 html,body{height:100%;}
 body{
   margin:0;
-  font-family:'Figtree', system-ui, sans-serif;
+  font-family:'Inter', system-ui, sans-serif;
+  font-variant-numeric:tabular-nums;
   background:var(--papel);
   color:var(--texto);
   -webkit-font-smoothing:antialiased;
