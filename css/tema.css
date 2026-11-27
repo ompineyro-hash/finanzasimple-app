@@ -531,7 +531,7 @@ html[data-tema="oscuro"] .acceso-btn.activo{color:#0B1411;}
 html[data-letra] #filaAccesosLista{flex-wrap:wrap !important;}
 html[data-letra] #filaAccesosLista #segmentadoTipoLista{flex:1 1 100% !important;}
 html[data-letra] #filaAccesosLista #segmentadoTipoLista .segmentado-item{font-size:calc(15px * var(--letra,1));}
-html[data-letra] .acceso-btn{flex:1 1 calc(50% - 6px) !important;flex-direction:row;gap:8px;min-height:46px;}
+html[data-letra] .acceso-btn{flex:1 1 190px !important;min-width:0;flex-direction:row;gap:8px;min-height:46px;}
 html[data-letra] .acceso-btn .acc-txt{font-size:calc(15px * var(--letra,1));}
 #filaAccesosLista #segmentadoTipoLista{padding:3px;}
 #filaAccesosLista #segmentadoTipoLista .segmentado-item{flex:1 1 auto;overflow:visible;text-overflow:clip;white-space:nowrap;padding:8px 4px;}
@@ -540,7 +540,7 @@ html[data-letra] .acceso-btn .acc-txt{font-size:calc(15px * var(--letra,1));}
 #filaAccesosLista #segmentadoTipoLista{min-width:max-content;}
 #filaAccesosLista.acc-wrap{flex-wrap:wrap !important;}
 #filaAccesosLista.acc-wrap #segmentadoTipoLista{flex:1 1 100% !important;min-width:0;}
-#filaAccesosLista.acc-wrap .acceso-btn{flex:1 1 calc(50% - 6px) !important;flex-direction:row;gap:8px;min-height:46px;}
+#filaAccesosLista.acc-wrap .acceso-btn{flex:1 1 190px !important;min-width:0;flex-direction:row;gap:8px;min-height:46px;}
 #filaAccesosLista.acc-wrap .acceso-btn .acc-txt{font-size:calc(15px * var(--letra,1));}
 /* Cabecera: el mes se achica en vez de pisarse con las flechas */
 .topbar .mes-selector{flex:1 1 0;min-width:0;overflow:hidden;}
@@ -718,3 +718,13 @@ html[data-contraste][data-tema="oscuro"]{--texto:#FFFFFF;--texto-suave:#D5E0DB;-
 .letra-vista-txt{flex:1 1 130px;}
 .letra-vista-txt b{overflow-wrap:normal;}
 .letra-vista-monto{margin-left:auto;}
+
+/* ===== Análisis: "¿Me alcanza hasta fin de mes?" ===== */
+.alcanza-card{background:var(--papel-alto);border:1px solid var(--borde);border-radius:var(--radio);box-shadow:var(--sombra);padding:16px 16px 14px;margin:0 0 14px;}
+.alc-titulo{font-size:calc(14px * var(--letra,1));font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--texto-suave);}
+.alc-grande{font-size:calc(24px * var(--letra,1));font-weight:800;line-height:1.2;margin:6px 0 8px;overflow-wrap:anywhere;}
+.alc-ok{color:var(--ingreso);}
+.alc-mal{color:var(--gasto);}
+.alc-det{font-size:calc(16px * var(--letra,1));line-height:1.4;color:var(--texto);margin-top:4px;}
+.alc-nota{font-size:calc(13.5px * var(--letra,1));color:var(--texto-suave);margin-top:8px;}
+#vistaAnalisis.sin-datos .alcanza-card{display:none;}

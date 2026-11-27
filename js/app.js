@@ -443,6 +443,13 @@ const TRADUCCIONES = {
     letraNegritaDet: "Las letras se ven más gruesas",
     letraContraste: "Más contraste",
     letraContrasteDet: "Textos más oscuros y bordes más marcados",
+    alcTitulo: "¿Me alcanza hasta fin de mes?",
+    alcPorDia: "Podés gastar unos {x} por día",
+    alcFalta: "No te alcanza: te faltan {x}",
+    alcDetalle: "Hoy tenés {t} en tus cuentas y tenés que pagar {d} hasta el fin de mes. Quedan {n} días (contando hoy).",
+    alcDetalle1: "Hoy tenés {t} en tus cuentas y tenés que pagar {d} hasta el fin de mes. Queda 1 día (hoy).",
+    alcCobros: "Además te deben cobrar {c} este mes (no lo sumé a la cuenta).",
+    alcNota: "Los préstamos y las cuotas de meses próximos no están incluidos.",
     letraAyuda: "Elegí cómo querés ver las letras en Ingasto. Se guarda en este celular.",
     letraNormal: "Normal",
     letraNormalDet: "Como se ve siempre",
@@ -1040,6 +1047,13 @@ const TRADUCCIONES = {
     letraNegritaDet: "As letras ficam mais grossas",
     letraContraste: "Mais contraste",
     letraContrasteDet: "Textos mais escuros e bordas mais marcadas",
+    alcTitulo: "Dá para chegar ao fim do mês?",
+    alcPorDia: "Você pode gastar uns {x} por dia",
+    alcFalta: "Não dá: faltam {x}",
+    alcDetalle: "Hoje você tem {t} nas suas contas e precisa pagar {d} até o fim do mês. Faltam {n} dias (contando hoje).",
+    alcDetalle1: "Hoje você tem {t} nas suas contas e precisa pagar {d} até o fim do mês. Falta 1 dia (hoje).",
+    alcCobros: "Além disso, devem lhe pagar {c} este mês (não somei na conta).",
+    alcNota: "Os empréstimos e as parcelas dos próximos meses não estão incluídos.",
     letraAyuda: "Escolha como quer ver as letras no Ingasto. Fica guardado neste celular.",
     letraNormal: "Normal",
     letraNormalDet: "Como sempre",
@@ -1650,6 +1664,13 @@ const TRADUCCIONES = {
     letraNegritaDet: "Letters look thicker",
     letraContraste: "More contrast",
     letraContrasteDet: "Darker text and stronger borders",
+    alcTitulo: "Will I make it to the end of the month?",
+    alcPorDia: "You can spend about {x} per day",
+    alcFalta: "It won't be enough: you're short {x}",
+    alcDetalle: "Today you have {t} in your accounts and need to pay {d} by the end of the month. {n} days left (counting today).",
+    alcDetalle1: "Today you have {t} in your accounts and need to pay {d} by the end of the month. 1 day left (today).",
+    alcCobros: "You are also owed {c} this month (not counted in this calculation).",
+    alcNota: "Loans and installments for later months are not included.",
     letraAyuda: "Choose how you want to see the text in Ingasto. It is saved on this phone.",
     letraNormal: "Normal",
     letraNormalDet: "As usual",
@@ -3820,6 +3841,10 @@ function ajustarMes() {
     n = 0;
     while (sobra() && fs > 10.5 && n++ < 24) { fs -= 0.5; el.style.fontSize = fs + "px"; }
   }
+  // Si aun así no entra (letra del celu muy grande), el mes pasa a dos renglones en vez de cortarse.
+  el.style.whiteSpace = "";
+  if (sobra()) { el.style.whiteSpace = "normal"; el.style.fontSize = ""; el.style.lineHeight = "1.1"; }
+  else el.style.lineHeight = "";
   if (typeof ajustarFechaHoy === "function") ajustarFechaHoy();
 }
 // La línea "Hoy: vie, 27 nov": se achica y, si aun así no entra, queda solo "vie, 27 nov".
@@ -4030,6 +4055,31 @@ function renderCategoriasAnalisis(lista, tipo) {
     ${leyenda}`;
 }
 
+
+// ¿Me alcanza hasta fin de mes? (Análisis): lo que hay en las cuentas menos lo que hay que pagar hasta el último día, repartido por día.
+function renderAlcanza() {
+  const card = $("alcanzaCard");
+  if (!card) return;
+  if (!usuario || !tengoDisponible || !tengoCalculo) { card.hidden = true; return; }
+  const hoy = new Date();
+  const ultimo = new Date(hoy.getFullYear(), hoy.getMonth() + 1, 0);
+  const finISO = ultimo.getFullYear() + "-" + String(ultimo.getMonth() + 1).padStart(2, "0") + "-" + String(ultimo.getDate()).padStart(2, "0");
+  const dias = ultimo.getDate() - hoy.getDate() + 1;
+  const debo = sitSuma(sitDeudas().filter((m) => m.fecha_pago <= finISO));
+  const cobrar = sitSuma(sitCobros().filter((m) => m.fecha_pago <= finISO));
+  const libre = tengoCalculo.total - debo;
+  const porDia = libre / dias;
+  const ok = libre >= 0;
+  const frase = ok ? t("alcPorDia").replace("{x}", formatoMonto(Math.floor(porDia))) : t("alcFalta").replace("{x}", formatoMonto(Math.ceil(-libre)));
+  const det = t(dias === 1 ? "alcDetalle1" : "alcDetalle").replace("{t}", formatoMonto(tengoCalculo.total)).replace("{d}", formatoMonto(debo)).replace("{n}", dias);
+  card.innerHTML = `<div class="alc-titulo">${escapeHTML(t("alcTitulo"))}</div>
+    <div class="alc-grande ${ok ? "alc-ok" : "alc-mal"}">${escapeHTML(frase)}</div>
+    <div class="alc-det">${escapeHTML(det)}</div>
+    ${cobrar > 0 ? `<div class="alc-det">${escapeHTML(t("alcCobros").replace("{c}", formatoMonto(cobrar)))}</div>` : ""}
+    <div class="alc-nota">${escapeHTML(t("alcNota"))}</div>`;
+  card.hidden = false;
+}
+
 async function renderVistaAnalisis() {
   let lista;
   // El Análisis cuenta solo lo que ya se pagó/cobró, en el mes en que se pagó.
@@ -4043,6 +4093,7 @@ async function renderVistaAnalisis() {
     lista = contablesDelMes(movimientos, claveMesVista());
   }
   ultimaListaAnalisis = lista;
+  if (!tengoCalculo && usuario) cargarTengo().then(renderAlcanza); else renderAlcanza();
   const sinDatos = !lista.length && !movimientos.length && !transferenciasMes.length;
   $("vistaAnalisis").classList.toggle("sin-datos", sinDatos);
   $("analisisVacio").hidden = !sinDatos;
