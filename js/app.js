@@ -618,6 +618,8 @@ const TRADUCCIONES = {
     pendPorPagar: "Por pagar",
     pendPorCobrar: "Por cobrar",
     pendVencidos: "vencidos",
+    pendVencido: "vencido",
+    pendResumenN: "{n} pendientes",
     pendVenceHoy: "vence hoy",
     pendVenceEn: "vence en",
     pendVencioHace: "venció hace",
@@ -1201,6 +1203,8 @@ const TRADUCCIONES = {
     pendTitulo: "⏳ Pendentes",
     pendPorPagar: "A pagar",
     pendPorCobrar: "A receber",
+    pendVencido: "vencido",
+    pendResumenN: "{n} pendentes",
     pendVencidos: "vencidos",
     pendVenceHoy: "vence hoje",
     pendVenceEn: "vence em",
@@ -1785,6 +1789,8 @@ const TRADUCCIONES = {
     pendTitulo: "⏳ Pending",
     pendPorPagar: "To pay",
     pendPorCobrar: "To receive",
+    pendVencido: "overdue",
+    pendResumenN: "{n} pending",
     pendVencidos: "overdue",
     pendVenceHoy: "due today",
     pendVenceEn: "due in",
@@ -1978,6 +1984,10 @@ function moneda() { return perfil?.moneda || "$"; }
 // Montos: sin ",00" cuando son redondos; con centavos solo si los tienen.
 function decimalesDe(n) {
   return Math.round(Math.abs(Number(n)) * 100) % 100 === 0 ? 0 : 2;
+}
+// Monto sin centavos, con el número completo (para resúmenes en una línea).
+function formatoMontoEntero(n) {
+  return moneda() + " " + Math.round(Number(n)).toLocaleString("es-AR");
 }
 function formatoMonto(n) {
   const d = decimalesDe(n);
@@ -2958,9 +2968,11 @@ function renderPendientes() {
     else porPagar += montoBase(m);
     if (m.fecha_pago < hoy) vencidos++;
   });
-  const partes = [];
-  if (porPagar) partes.push(`${escapeHTML(t("pendPorPagar"))} <b>${escapeHTML(formatoMonto(porPagar))}</b>`);
-  if (porCobrar) partes.push(`${escapeHTML(t("pendPorCobrar"))} <b>${escapeHTML(formatoMonto(porCobrar))}</b>`);
+  const linea1 = [`<b class="pend-n">${escapeHTML(t("pendResumenN").replace("{n}", pendientes.length))}</b>`];
+  if (vencidos) linea1.push(`<span class="pend-alerta">${escapeHTML(vencidos + " " + t(vencidos === 1 ? "pendVencido" : "pendVencidos"))}</span>`);
+  const linea2 = [];
+  if (porPagar) linea2.push(`<span class="pend-monto">${escapeHTML(t("pendPorPagar"))} <b>${escapeHTML(formatoMontoEntero(porPagar))}</b></span>`);
+  if (porCobrar) linea2.push(`<span class="pend-monto">${escapeHTML(t("pendPorCobrar"))} <b>${escapeHTML(formatoMontoEntero(porCobrar))}</b></span>`);
 
   const filaHTML = (m) => {
     const esGasto = m.tipo === "Gasto";
@@ -2988,8 +3000,7 @@ function renderPendientes() {
   cont.innerHTML = `
     <div class="pend-cabecera">
       <div class="pend-textos">
-        <div class="pend-titulo">${escapeHTML(t("pendTitulo"))} (${pendientes.length})</div>
-        <div class="pend-resumen">${vencidos ? `<span class="pend-alerta">⚠ ${escapeHTML(t("pendVencidos"))}: ${vencidos}</span>` : ""}${partes.join(" · ")}</div>
+        <div class="pend-resumen"><div class="pend-l1">${linea1.join(" · ")}</div><div class="pend-l2">${linea2.join('<span class="pend-sep"> · </span>')}</div></div>
       </div>
       <button type="button" class="boton boton-texto" id="btnTogglePendientes">${escapeHTML(t(pendientesAbierto ? "pendOcultar" : "pendVer"))}</button>
     </div>

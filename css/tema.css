@@ -578,3 +578,16 @@ html[data-letra] .acceso-btn .acc-txt{font-size:calc(15px * var(--letra,1));}
 .tarjeta-resumen-balance.con-fila #valorGastos{color:#FFC9BF !important;}
 .tarjeta-resumen-balance.con-fila .flecha-resumen.ingreso{color:#B5F5DE !important;}
 .tarjeta-resumen-balance.con-fila .flecha-resumen.gasto{color:#FFC9BF !important;}
+
+/* Pendientes: una sola línea compacta, fondo amarillo suave (sin rojo) */
+.banner-pendientes,.banner-pendientes.tiene-vencidos{background:#FFF3C4;border:1.5px solid #E8C766;color:#4A3800;padding:8px 12px;}
+html[data-tema="oscuro"] .banner-pendientes,html[data-tema="oscuro"] .banner-pendientes.tiene-vencidos{background:#231C12;border-color:#6B5316;color:#F2C230;}
+.banner-pendientes .pend-resumen{font-size:calc(15px * var(--letra,1));color:inherit;line-height:1.35;}
+.banner-pendientes .pend-alerta{color:inherit;font-size:inherit;font-weight:800;margin:0;text-decoration:underline;text-underline-offset:3px;}
+.banner-pendientes #btnTogglePendientes{color:inherit;font-weight:800;}
+.banner-pendientes .pend-l2{display:flex;flex-wrap:wrap;gap:0 8px;}
+.banner-pendientes .pend-monto{white-space:nowrap;}
+.banner-pendientes .pend-sep{display:none;}
+.banner-pendientes .pend-textos{display:block;}
+.banner-pendientes .pend-l1{font-size:calc(15px * min(var(--letra,1),1.15));}
+.banner-pendientes .pend-l2{font-size:calc(12.5px * min(var(--letra,1),1.1));gap:0 6px;}
