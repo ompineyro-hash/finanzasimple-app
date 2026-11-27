@@ -117,3 +117,13 @@ No: conexión con bancos.
 - "Cerrar sesión": botón grande al final de Ajustes (`#btnSalir.btn-cerrar-sesion`). Ya no está en la barra de arriba. Falta decidir si va también en Movimientos.
 - Voz: se mantienen las DOS formas ("Decilo todo junto" y los 5 pasos) por ahora, hasta ver si la de una frase anda bien (decisión de Marcelo 26/11; Edu pedía sacar los 5 pasos: confirmar con Edu).
 - Para probar: ver pantallas a 260–412 px de ancho y con Tamaño de letra Normal/Grande/Muy grande; el celu de Marcelo muestra el texto más grande que las pruebas.
+
+## Novedades 27/11/2026 (sw.js v147) — tareas 3 a 9 de la lista de Edu
+- Salir: botón arriba (`#btnSalirTop`, ícono + palabra) junto al ojito; sigue también al final de Ajustes. `ajustarFechaHoy()` achica o acorta la línea "Hoy: …".
+- Movimientos: lo que tiene fecha futura va al final bajo "Próximas" (`.proximas-titulo`) y dice "Se debita el …" (`badgeProg*`). **Dónde va "Próximas" está en discusión (Edu/Marcelo).** Ingresos y Gastos van adentro de la tarjeta verde en < 700 px (`ubicarResumen()`). Pendientes: bloque amarillo compacto, números completos (`formatoMonto`: centavos solo si existen, se oculta ",00": decisión de Marcelo 27/11).
+- Login: bloque "¿Sos nuevo?" (`#bloqueNuevo`), fondo liso, logo plano en SVG (el ícono de la app instalada sigue siendo el PNG).
+- Préstamos en verde (`--prestamo` en `css/pendientes.css`). Pago: "$ 4.000 por mes" + "Pago seguro…" (textos aprobados por Marcelo). Análisis sin datos: `#analisisVacio`. `a.boton` es de ancho completo.
+- Situación: tarjeta única "Cuánto tengo realmente" (Tengo + Me deben − Debo); próximo mes resaltado en las barras (los centavos reales se mantienen).
+- Análisis: pestañas en una fila (nombres cortos), selectores chicos (`.analisis-selectores`), tabla Balance/Ingresos/Gastos solo en Resumen anual y Acumulado (`#tablaAnalisisCat`).
+- Ajustes: lista agrupada (`.config-grupo`, `.config-lista`), encabezado con mail y plan (`pintarCuentaAjustes()`); grupo "Mi cuenta" agregado (Baja, Arrepentimiento, Zona de riesgo).
+- Faltan: tarea 10 (letra Inter), 11 (pantallas grandes), 12 (página de venta, primeros pasos, animaciones). Probar con datos reales (cuotas futuras, pendientes, préstamos) lo hace Edu.
