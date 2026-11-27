@@ -466,6 +466,11 @@ const TRADUCCIONES = {
     fraDetener: "Detener",
     fraNoVoz: "Tu celular no puede leer en voz alta.",
     alcVer: "Ver detalle",
+    anioTitulo: "Tu año {a}",
+    anioDeCada: "De cada 100 que entraron, te quedaron {x}.",
+    anioMas: "Este año gastaste {x} más de lo que entró.",
+    anioNota: "Resultado de cada mes",
+    anioVacio: "Sin movimientos",
     alcOcultar: "Ocultar detalle",
     letraAyuda: "Elegí cómo querés ver las letras en Ingasto. Se guarda en este celular.",
     letraNormal: "Normal",
@@ -1085,6 +1090,11 @@ const TRADUCCIONES = {
     fraDetener: "Parar",
     fraNoVoz: "Seu celular não consegue ler em voz alta.",
     alcVer: "Ver detalhe",
+    anioTitulo: "Seu ano {a}",
+    anioDeCada: "De cada 100 que entraram, sobraram {x}.",
+    anioMas: "Este ano você gastou {x} a mais do que entrou.",
+    anioNota: "Resultado de cada mês",
+    anioVacio: "Sem movimentos",
     alcOcultar: "Ocultar detalhe",
     letraAyuda: "Escolha como quer ver as letras no Ingasto. Fica guardado neste celular.",
     letraNormal: "Normal",
@@ -1717,6 +1727,11 @@ const TRADUCCIONES = {
     fraDetener: "Stop",
     fraNoVoz: "Your phone can't read aloud.",
     alcVer: "See details",
+    anioTitulo: "Your year {a}",
+    anioDeCada: "For every 100 that came in, you kept {x}.",
+    anioMas: "This year you spent {x} more than came in.",
+    anioNota: "Result of each month",
+    anioVacio: "No activity",
     alcOcultar: "Hide details",
     letraAyuda: "Choose how you want to see the text in Ingasto. It is saved on this phone.",
     letraNormal: "Normal",
@@ -4228,6 +4243,37 @@ async function renderCambio() {
   } catch { card.hidden = true; }
 }
 
+function renderAnio(lista) {
+  const card = $("anioCard");
+  if (!card) return;
+  card.hidden = true;
+  if (periodoAnalisis !== "anio" || !lista.length) return;
+  const anio = fechaVista.getFullYear();
+  const porMes = agruparPorMes(lista);
+  const loc = LOCALES_POR_IDIOMA[idiomaActual] || "es-AR";
+  let ing = 0, gas = 0;
+  const filas = [];
+  for (let i = 0; i < 12; i++) {
+    const clave = anio + "-" + String(i + 1).padStart(2, "0");
+    const d = porMes[clave];
+    let nombre = new Date(anio, i, 1).toLocaleDateString(loc, { month: "short" }).replace(".", "");
+    nombre = nombre.charAt(0).toUpperCase() + nombre.slice(1);
+    if (!d) { filas.push(`<div class="anio-fila anio-vacia"><div class="anio-top"><span class="anio-mes">${escapeHTML(nombre)}</span><span class="anio-monto">—</span></div></div>`); continue; }
+    ing += d.ing; gas += d.gas;
+    const res = Math.round((d.ing - d.gas) * 100) / 100;
+    const pct = d.ing > 0 ? Math.min(100, Math.round((d.gas / d.ing) * 100)) : 100;
+    filas.push(`<div class="anio-fila"><div class="anio-top"><span class="anio-mes">${escapeHTML(nombre)}</span><span class="anio-monto ${res < 0 ? "alc-mal" : "alc-ok"}">${res > 0 ? "+" : ""}${escapeHTML(formatoMonto(res))}</span></div><div class="anio-barra"><div class="anio-relleno ${d.gas > d.ing ? "anio-sobra" : ""}" style="width:${pct}%"></div></div></div>`);
+  }
+  const resAnio = Math.round((ing - gas) * 100) / 100;
+  let frase = "";
+  if (ing > 0 && resAnio >= 0) frase = t("anioDeCada").replace("{x}", String(Math.round((resAnio / ing) * 100)));
+  else if (resAnio < 0) frase = t("anioMas").replace("{x}", formatoMonto(Math.abs(resAnio)));
+  card.innerHTML = `<div class="alc-titulo">${escapeHTML(t("anioTitulo").replace("{a}", anio))}</div>` +
+    (frase ? `<div class="alc-grande ${resAnio < 0 ? "alc-mal" : "alc-ok"}">${escapeHTML(frase)}</div>` : "") +
+    `<div class="alc-nota">${escapeHTML(t("anioNota"))}</div>` + filas.join("");
+  card.hidden = false;
+}
+
 async function renderVistaAnalisis() {
   let lista;
   // El Análisis cuenta solo lo que ya se pagó/cobró, en el mes en que se pagó.
@@ -4248,6 +4294,7 @@ async function renderVistaAnalisis() {
   $("vistaAnalisis").classList.toggle("sin-datos", sinDatos);
   $("analisisVacio").hidden = !sinDatos;
   renderResumenAnalisis(lista);
+  renderAnio(lista);
   if ($("tablaAnalisisCat")) $("tablaAnalisisCat").hidden = periodoAnalisis === "mes";
   renderCategoriasAnalisis(lista, tipoAnalisis);
   await cargarPresupuesto();
