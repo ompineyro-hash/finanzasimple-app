@@ -665,3 +665,5 @@ html[data-ocultar] .sit-medio{filter:blur(9px);user-select:none;pointer-events:n
   .searchBox input{flex:1 1 auto;min-width:0;min-height:46px;padding:0 14px;border:1px solid var(--borde);border-radius:12px;background:var(--tarjeta,#fff);color:var(--texto);}
   .searchBox .boton{flex:0 0 auto;width:auto;min-height:46px;}
 }
+/* El selector de idioma no se corta: puede usar el ancho que necesite */
+.login-idioma-sel{max-width:calc(100% - 24px);width:auto;text-overflow:clip;}
