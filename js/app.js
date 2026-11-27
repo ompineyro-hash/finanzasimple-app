@@ -650,6 +650,9 @@ const TRADUCCIONES = {
     badgeOrigenPagadoGasto: "↪ pagado el {f}",
     badgeOrigenPagadoIngreso: "↪ cobrado el {f}",
     badgeCerradoGasto: "✔ pagado",
+    badgeProgGasto: "Se debita el {f}",
+    badgeProgIngreso: "Se acredita el {f}",
+    tituloProximas: "Próximas",
     badgeCerradoIngreso: "✔ cobrado",
     previstoLinea: "⏳ Previsto del mes (con lo pendiente): {b}",
     segGasto: "Gasto",
@@ -1231,6 +1234,9 @@ const TRADUCCIONES = {
     badgeOrigenPagadoGasto: "↪ pago em {f}",
     badgeOrigenPagadoIngreso: "↪ recebido em {f}",
     badgeCerradoGasto: "✔ pago",
+    badgeProgGasto: "Será debitado em {f}",
+    badgeProgIngreso: "Será creditado em {f}",
+    tituloProximas: "Próximas",
     badgeCerradoIngreso: "✔ recebido",
     previstoLinea: "⏳ Previsto do mês (com o pendente): {b}",
     segGasto: "Despesa",
@@ -1812,6 +1818,9 @@ const TRADUCCIONES = {
     badgeOrigenPagadoGasto: "↪ paid on {f}",
     badgeOrigenPagadoIngreso: "↪ received on {f}",
     badgeCerradoGasto: "✔ paid",
+    badgeProgGasto: "Charged on {f}",
+    badgeProgIngreso: "Credited on {f}",
+    tituloProximas: "Upcoming",
     badgeCerradoIngreso: "✔ received",
     previstoLinea: "⏳ Month forecast (with what's pending): {b}",
     segGasto: "Expense",
@@ -2761,6 +2770,7 @@ function badgeMovimiento(m, papel) {
   const g = m.tipo === "Ingreso" ? "Ingreso" : "Gasto";
   const f = formatoFecha(m.fecha_pago);
   if (papel === "pago") {
+    if (!esPendiente(m) && m.fecha_pago > hoyISO()) return { texto: t("badgeProg" + g).replace("{f}", f), clase: "badge-pendiente" };
     if (!esPendiente(m)) return { texto: t("badgeCerrado" + g), clase: "badge-cerrado" };
     const vencido = m.fecha_pago < hoyISO();
     return { texto: t("badgePendiente" + g).replace("{f}", f), clase: vencido ? "badge-vencido" : "badge-pendiente" };
@@ -3737,9 +3747,15 @@ function renderMovimientos() {
     return `<div class="dia-titulo">${escapeHTML(tituloDia(f))}</div>`;
   };
   const conTitulo = (x) => titDia(String(x.fecha)) + filaInterna(x);
-  cont.innerHTML = visibles.map((m) => {
+  // Lo que ya pasó (hoy y antes) va arriba, de lo más nuevo a lo más viejo. Lo que viene (cuotas futuras) va abajo, bajo "Próximas".
+  const hoyS = hoyISO();
+  const pas = visibles.filter((m) => String(m.fecha) <= hoyS);
+  const fut = visibles.filter((m) => String(m.fecha) > hoyS).sort((x, y) => String(x.fecha).localeCompare(String(y.fecha)));
+  const trPas = pendTr.filter((x) => String(x.fecha) <= hoyS);
+  const trFut = pendTr.filter((x) => String(x.fecha) > hoyS).reverse();
+  const armar = (lista, trl, asc) => { diaActual = null; return lista.map((m) => {
     let antes = "";
-    while (pendTr.length && String(pendTr[0].fecha) >= String(m.fecha)) antes += conTitulo(pendTr.shift());
+    while (trl.length && (asc ? String(trl[0].fecha) <= String(m.fecha) : String(trl[0].fecha) >= String(m.fecha))) antes += conTitulo(trl.shift());
     antes += titDia(String(m.fecha));
     const esGasto = m.tipo === "Gasto";
     const papel = papelEnMes(m, clave);
@@ -3765,7 +3781,9 @@ function renderMovimientos() {
           ${botonCerrar}
         </div>
       </div>`;
-  }).join("") + pendTr.map(conTitulo).join("");
+  }).join("") + trl.map(conTitulo).join(""); };
+  cont.innerHTML = armar(pas, trPas, false)
+    + ((fut.length || trFut.length) ? `<div class="proximas-titulo">${escapeHTML(t("tituloProximas"))}</div>` + armar(fut, trFut, true) : "");
 
   ajustarAnchoCategorias();
   cont.querySelectorAll(".mov-item:not(.mov-interno)").forEach((el) => {
