@@ -635,7 +635,7 @@ html[data-ocultar] .sit-medio{filter:blur(9px);user-select:none;pointer-events:n
 .analisis-selectores .segmentado-chico .segmentado-item{padding:7px 9px !important;font-size:calc(clamp(12.5px,3.5vw,14.5px) * min(var(--letra,1),1.1)) !important;}
 
 /* Ajustes: lista agrupada (Preferencias, Mis finanzas, Datos y seguridad, Ayuda, Mi cuenta) */
-.config-menu{display:block !important;}
+.config-menu:not([hidden]){display:block !important;}
 .config-cuenta{display:flex;align-items:center;gap:12px;background:var(--papel-alto);border:1px solid var(--borde);border-radius:var(--radio);padding:14px;margin:6px 0 14px;box-shadow:var(--sombra);}
 .config-cuenta-ico{flex:0 0 auto;width:46px;height:46px;border-radius:50%;background:var(--ingreso-fondo);color:var(--primario);display:flex;align-items:center;justify-content:center;}
 .config-cuenta-ico .ico{width:24px;height:24px;}
@@ -695,3 +695,26 @@ html[data-tema="oscuro"] .config-lista .config-tarjeta-icono{background:hsl(var(
 #masAbajo{position:fixed;left:0;right:0;height:56px;display:none;align-items:flex-end;justify-content:flex-start;padding-left:14px;pointer-events:none;z-index:5;background:linear-gradient(to bottom,transparent,var(--papel) 85%);}
 #masAbajo span{margin-bottom:6px;padding:4px 12px;border-radius:999px;background:var(--papel-alto);border:1px solid var(--borde);box-shadow:var(--sombra);font-size:calc(13px * min(var(--letra,1),1.15));font-weight:700;color:var(--texto-suave);}
 body.mas-abajo-ajustes #masAbajo{display:flex;}
+/* Ajustes con letra muy grande: que no se corten palabras como "Arrepentimiento" */
+.config-lista .config-tarjeta{gap:10px;}
+.config-lista .config-tarjeta-titulo{font-size:calc(17px * min(var(--letra,1), 1.12));letter-spacing:-0.015em;overflow-wrap:normal;word-break:normal;hyphens:manual;}
+
+/* ===== Tamaño de letra: vista previa, negrita y más contraste ===== */
+.letra-sub{font-size:calc(14px * var(--letra,1));font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--texto-suave);margin:20px 4px 8px;}
+.letra-vista{display:flex;align-items:center;gap:12px;background:var(--papel-alto);border:1px solid var(--borde);border-radius:var(--radio);box-shadow:var(--sombra);padding:12px 14px;}
+.letra-vista-ic{flex:0 0 auto;width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:hsl(210 70% 92%);color:hsl(210 55% 26%);}
+html[data-tema="oscuro"] .letra-vista-ic{background:hsl(210 40% 22%);color:hsl(210 60% 78%);}
+.letra-vista-ic .ico{width:22px;height:22px;}
+.letra-vista-txt{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;}
+.letra-vista-txt b{font-size:calc(17px * var(--letra,1));font-weight:800;}
+.letra-vista-txt small{font-size:calc(14px * var(--letra,1));color:var(--texto-suave);}
+.letra-vista-monto{flex:0 0 auto;font-size:calc(17px * var(--letra,1));font-weight:800;color:var(--gasto);}
+#btnNegrita .tema-opcion-ic b{font-size:calc(22px * var(--letra,1));}
+.tema-opcion[role="switch"].activo{background:var(--ingreso-fondo);}
+html[data-negrita] body{font-family:'InterNegrita','Inter',system-ui,sans-serif;}
+html[data-contraste]{--texto:#000000;--texto-suave:#2F3B37;--borde:#8C9B95;--sombra:0 1px 0 rgba(0,0,0,.25);}
+html[data-contraste][data-tema="oscuro"]{--texto:#FFFFFF;--texto-suave:#D5E0DB;--borde:#6C807A;}
+.letra-vista{flex-wrap:wrap;row-gap:4px;}
+.letra-vista-txt{flex:1 1 130px;}
+.letra-vista-txt b{overflow-wrap:normal;}
+.letra-vista-monto{margin-left:auto;}

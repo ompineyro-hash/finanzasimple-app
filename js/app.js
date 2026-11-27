@@ -435,6 +435,14 @@ const TRADUCCIONES = {
     rapGuardarIngreso: "Guardar ingreso",
     rapElegiCategoria: "Tocá una categoría antes de guardar.",
     tituloLetra: "Tamaño de letra",
+    letraVistaTit: "Así se ve",
+    letraExtraTit: "Para leer mejor",
+    letraEjCat: "Supermercado",
+    letraEjCuenta: "Efectivo · hoy",
+    letraNegrita: "Letra en negrita",
+    letraNegritaDet: "Las letras se ven más gruesas",
+    letraContraste: "Más contraste",
+    letraContrasteDet: "Textos más oscuros y bordes más marcados",
     letraAyuda: "Elegí cómo querés ver las letras en Ingasto. Se guarda en este celular.",
     letraNormal: "Normal",
     letraNormalDet: "Como se ve siempre",
@@ -1024,6 +1032,14 @@ const TRADUCCIONES = {
     rapGuardarIngreso: "Salvar receita",
     rapElegiCategoria: "Toque em uma categoria antes de salvar.",
     tituloLetra: "Tamanho da letra",
+    letraVistaTit: "Assim fica",
+    letraExtraTit: "Para ler melhor",
+    letraEjCat: "Supermercado",
+    letraEjCuenta: "Dinheiro · hoje",
+    letraNegrita: "Letra em negrito",
+    letraNegritaDet: "As letras ficam mais grossas",
+    letraContraste: "Mais contraste",
+    letraContrasteDet: "Textos mais escuros e bordas mais marcadas",
     letraAyuda: "Escolha como quer ver as letras no Ingasto. Fica guardado neste celular.",
     letraNormal: "Normal",
     letraNormalDet: "Como sempre",
@@ -1626,6 +1642,14 @@ const TRADUCCIONES = {
     rapGuardarIngreso: "Save income",
     rapElegiCategoria: "Tap a category before saving.",
     tituloLetra: "Text size",
+    letraVistaTit: "How it looks",
+    letraExtraTit: "Easier to read",
+    letraEjCat: "Supermarket",
+    letraEjCuenta: "Cash · today",
+    letraNegrita: "Bold text",
+    letraNegritaDet: "Letters look thicker",
+    letraContraste: "More contrast",
+    letraContrasteDet: "Darker text and stronger borders",
     letraAyuda: "Choose how you want to see the text in Ingasto. It is saved on this phone.",
     letraNormal: "Normal",
     letraNormalDet: "As usual",
@@ -3694,6 +3718,19 @@ function aplicarLetra(v) {
 }
 document.querySelectorAll("[data-letra-opcion]").forEach((b) => b.addEventListener("click", () => aplicarLetra(b.dataset.letraOpcion)));
 aplicarLetra(letraGuardada());
+
+// Letra en negrita y Más contraste (se guardan en este celular)
+function ajusteLeer(clave) { try { return localStorage.getItem("fs_" + clave) === "1"; } catch { return false; } }
+function aplicarAjusteLeer(clave, on, boton) {
+  try { localStorage.setItem("fs_" + clave, on ? "1" : "0"); } catch {}
+  if (on) document.documentElement.setAttribute("data-" + clave, ""); else document.documentElement.removeAttribute("data-" + clave);
+  if (boton) { boton.classList.toggle("activo", on); boton.setAttribute("aria-checked", on ? "true" : "false"); }
+}
+[["negrita", "btnNegrita"], ["contraste", "btnContraste"]].forEach(([clave, id]) => {
+  const b = $(id);
+  aplicarAjusteLeer(clave, ajusteLeer(clave), b);
+  if (b) b.addEventListener("click", () => aplicarAjusteLeer(clave, !ajusteLeer(clave), b));
+});
 
 // Primera vez: pregunta en qué moneda lleva sus cuentas y devuelve el código (ARS, USD, EUR, BRL...)
 function elegirMonedaInicial() {
@@ -6729,18 +6766,30 @@ async function bienvenidaSiCorresponde() {
   aviso.setAttribute("aria-hidden", "true");
   aviso.innerHTML = '<span data-i18n="ajMasAbajo"></span>';
   document.body.appendChild(aviso);
+  // El elemento que realmente hace scroll (puede ser la lista o la página entera)
+  function elScroll() {
+    let el = $("configMenu");
+    while (el && el !== document.body) {
+      const oy = getComputedStyle(el).overflowY;
+      if ((oy === "auto" || oy === "scroll") && el.scrollHeight > el.clientHeight + 1) return el;
+      el = el.parentElement;
+    }
+    return document.scrollingElement || document.documentElement;
+  }
   function actualizar() {
-    const c = document.querySelector(".contenido");
     const v = $("vistaConfig");
     const nav = document.querySelector(".navbar");
-    const hay = !!(c && v && !v.hidden && window.innerWidth < 700 && c.scrollHeight - c.scrollTop - c.clientHeight > 24);
+    let hay = false;
+    if (v && !v.hidden && window.innerWidth < 700) {
+      const c = elScroll();
+      hay = c.scrollHeight - c.scrollTop - c.clientHeight > 40;
+    }
     if (hay && nav) aviso.style.bottom = nav.offsetHeight + "px";
     const sp = aviso.querySelector("span");
     if (sp && !sp.textContent) sp.textContent = t("ajMasAbajo");
     document.body.classList.toggle("mas-abajo-ajustes", hay);
   }
-  const c = document.querySelector(".contenido");
-  if (c) c.addEventListener("scroll", actualizar, { passive: true });
+  window.addEventListener("scroll", actualizar, { passive: true, capture: true });
   window.addEventListener("resize", actualizar);
   document.addEventListener("click", () => setTimeout(actualizar, 80));
   setTimeout(actualizar, 1000);
