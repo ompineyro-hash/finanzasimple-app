@@ -2358,6 +2358,7 @@ if ($("formCambiarClave")) {
   });
 }
 
+if ($("btnSalirTop")) $("btnSalirTop").addEventListener("click", () => $("btnSalir").click());
 $("btnSalir").addEventListener("click", async () => {
   // Pedir confirmacion: evita salir de la app por un toque sin querer.
   if (!window.confirm(t("confirmarSalir"))) return;
