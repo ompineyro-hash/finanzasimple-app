@@ -108,3 +108,12 @@ No: conexión con bancos.
 - Pendiente de Marcelo: leer y aprobar `venta.html` (borrador fuera del repo, ya se lo pasó a Edu) antes de publicar. No prometer "nadie ve tus datos".
 - Pendiente de Edu: iPhone (voz, pantalla de moneda, idioma); decidir Patrimonio neto (Marcelo duda; en espera), iconos con palabra, Tamaño de letra con vista previa + negrita + más contraste, primeros pasos en 3 pantallas, rediseño de Movimientos/Situación/Análisis/Ajustes.
 - Decisiones de Edu: Baja/Arrepentimiento se dejan como están; números enteros = solo se oculta ",00", se mantienen los centavos reales.
+
+## Novedades 26/11/2026 (sw.js v135) — íconos y pantallas angostas
+- Íconos de línea (Lucide, ISC) en vez de emojis: objeto `SVG_ICONOS` al principio de `js/app.js`, `svgIcono(clave)`, `botonAcceso(btn, clave, texto)`, `data-ico="clave"` en el HTML (lo pinta `pintarIconosAjustes()`). Reemplazo automático: `EMOJI_A_ICONO` + `MutationObserver` cambian emojis de cualquier texto (también el que se arma después). Si se agrega un emoji nuevo, sumarlo a `EMOJI_A_ICONO` y a `RE_EMOJI_ICONO`, y el ícono a `SVG_ICONOS`. Solo queda el "+" de Agregar.
+- Categorías: `iconoCategoria`/`ICONOS_CATEGORIA` (combustible = surtidor; "sin clasificar" = pregunta).
+- Login: selector desplegable de idioma arriba a la izquierda (`#selectIdiomaLogin`); guarda `fs_idioma_eleg`.
+- Cabecera: `ajustarMes()` achica el mes si no entra. Buscar/Clasificar junto a Todo/Ingresos/Gastos: `ajustarAccesos()` pasa los botones abajo (`.acc-wrap`) si no entra; se vuelve a medir con `ResizeObserver`, al volver a la app y al cargar fuentes (v134: antes medía una sola vez y las pestañas se pisaban con la letra grande del celu).
+- "Cerrar sesión": botón grande al final de Ajustes (`#btnSalir.btn-cerrar-sesion`). Ya no está en la barra de arriba. Falta decidir si va también en Movimientos.
+- Voz: se mantienen las DOS formas ("Decilo todo junto" y los 5 pasos) por ahora, hasta ver si la de una frase anda bien (decisión de Marcelo 26/11; Edu pedía sacar los 5 pasos: confirmar con Edu).
+- Para probar: ver pantallas a 260–412 px de ancho y con Tamaño de letra Normal/Grande/Muy grande; el celu de Marcelo muestra el texto más grande que las pruebas.
