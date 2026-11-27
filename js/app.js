@@ -6576,7 +6576,11 @@ const esLinkDeRecuperacion = /type=recovery/.test(location.hash);
     // cargando un movimiento (modal abierto), esperamos a que lo
     // cierre para no hacerle perder lo que estaba escribiendo.
     let yaSeRecargoPorActualizacion = false;
+    // Si la página arrancó sin Service Worker (primera visita), el "cambio de control" es la instalación
+    // inicial y no una actualización: ahí NO recargamos (evita el parpadeo en la pantalla de entrada).
+    const teniaControlador = !!navigator.serviceWorker.controller;
     navigator.serviceWorker.addEventListener("controllerchange", () => {
+      if (!teniaControlador) return;
       if (yaSeRecargoPorActualizacion) return;
       yaSeRecargoPorActualizacion = true;
       const haySeguro = () => $("modalFondo") && !$("modalFondo").hidden;
