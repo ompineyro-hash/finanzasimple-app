@@ -321,6 +321,8 @@ const TRADUCCIONES = {
     fijoConfirmarBorrar: "¿Borrar este gasto fijo? Lo que ya está en Pendientes no se borra.",
     fijoBorrar: "Borrar",
     sitTengo: "Tengo",
+    sitRealmente: "Cuánto tengo realmente",
+    sitRealmenteCuenta: "Tengo + Me deben − Debo",
     tengoTotal: "Total en tus cuentas",
     tengoSinCotiz: "No suma al total: falta la cotización de {m} (se guarda al cargar un movimiento en esa moneda).",
     tengoAjustar: "Ajustar",
@@ -1108,6 +1110,8 @@ const TRADUCCIONES = {
     sitVerN: "Ver {n} ›",
     sitVerDetalle: "Ver detalhes ›",
     sitVerMeses: "Ver meses ›",
+    sitRealmente: "Quanto tenho de verdade",
+    sitRealmenteCuenta: "Tenho + Me devem − Devo",
     sitTotal: "Total",
     sitNetoMes: "Líquido do mês",
     sitNadaGrupo: "Não há nada neste grupo.",
@@ -1697,6 +1701,8 @@ const TRADUCCIONES = {
     sitVerN: "See {n} ›",
     sitVerDetalle: "See details ›",
     sitVerMeses: "See months ›",
+    sitRealmente: "How much I really have",
+    sitRealmenteCuenta: "I have + I'm owed − I owe",
     sitTotal: "Total",
     sitNetoMes: "Month net",
     sitNadaGrupo: "Nothing in this group.",
@@ -2874,9 +2880,6 @@ function renderSituacion() {
     h = sitCabecera(t("sitTitulo"), "");
     const avisoM = avisoMonedasHTML();
     if (avisoM) h += `<div class="aviso-monedas">${avisoM}</div>`;
-    if (tengoDisponible) {
-      h += sitTarjeta("tengo", "", t("sitTengo"), t("sitVerDetalle"), tengoCalculo ? formatoMonto(tengoCalculo.total) : "…", "", "sit-bien");
-    }
     {
       const venc = sitSuma(deudas.filter((m) => sitGrupo(m) === "venc"));
       const sem = sitSuma(deudas.filter((m) => sitGrupo(m) === "sem"));
@@ -2885,18 +2888,31 @@ function renderSituacion() {
       const subDebo = [deudas.length
         ? `${venc ? `<span class="sit-mal">${escapeHTML(t("sitVencido"))} ${escapeHTML(formatoMonto(venc))}</span> · ` : ""}${escapeHTML(t("sitProx7"))} ${escapeHTML(formatoMonto(sem))}` : "",
         lineaPr(prD, "debo")].filter(Boolean).join("<br>");
-      h += sitTarjeta("debo", "", t("sitDebo"), t("sitVerDetalle"), formatoMonto(sitSuma(deudas) + prSuma("debo")),
-        subDebo || `<span class="sit-nada">${escapeHTML(t("sitNadaPagar"))}</span>`, "sit-mal");
-      if (prestamosDisponible !== false) h += `<button type="button" class="pr-atajo" data-pr-nuevo="debo">${escapeHTML(t("prAtajoDebo"))}</button>`;
+      const totDebo = sitSuma(deudas) + prSuma("debo");
+      const totCobrar = sitSuma(cobros) + prSuma("me_deben");
       const subCobrar = lineaPr(prC, "me_deben");
-      h += sitTarjeta("cobrar", "", t("sitMeDeben"), t("sitVerDetalle"), formatoMonto(sitSuma(cobros) + prSuma("me_deben")),
-        cobros.length || prC.length ? subCobrar : `<span class="sit-nada">${escapeHTML(t("sitNadaCobrar"))}</span>`, "sit-bien");
+      // Una sola tarjeta: arriba "Cuánto tengo realmente" (Tengo + Me deben − Debo) y debajo las tres filas.
+      const fila = (vista, etq, grande, sub, clase) => `<button type="button" class="sit-fila" data-sit-ir="${vista}">
+        <div class="sit-etq"><span>${escapeHTML(etq)}</span><span class="sit-ver">${escapeHTML(t("sitVerDetalle"))}</span></div>
+        <div class="sit-medio ${clase}">${escapeHTML(grande)}</div>${sub ? `<div class="sit-sub">${sub}</div>` : ""}</button>`;
+      const realmente = tengoDisponible && tengoCalculo ? tengoCalculo.total + totCobrar - totDebo : null;
+      h += `<div class="sit-card sit-unica">`;
+      if (tengoDisponible) {
+        h += `<div class="sit-real"><div class="sit-etq"><span>${escapeHTML(t("sitRealmente"))}</span></div>
+          <div class="sit-grande ${realmente !== null && realmente < 0 ? "sit-mal" : "sit-bien"}">${escapeHTML(realmente !== null ? formatoMonto(realmente) : "…")}</div>
+          <div class="sit-sub">${escapeHTML(t("sitRealmenteCuenta"))}</div></div>`;
+        h += fila("tengo", t("sitTengo"), tengoCalculo ? formatoMonto(tengoCalculo.total) : "…", "", "sit-bien");
+      }
+      h += fila("debo", t("sitDebo"), formatoMonto(totDebo), subDebo || `<span class="sit-nada">${escapeHTML(t("sitNadaPagar"))}</span>`, "sit-mal");
+      if (prestamosDisponible !== false) h += `<button type="button" class="pr-atajo" data-pr-nuevo="debo">${escapeHTML(t("prAtajoDebo"))}</button>`;
+      h += fila("cobrar", t("sitMeDeben"), formatoMonto(totCobrar), cobros.length || prC.length ? subCobrar : `<span class="sit-nada">${escapeHTML(t("sitNadaCobrar"))}</span>`, "sit-bien");
       if (prestamosDisponible !== false) h += `<button type="button" class="pr-atajo" data-pr-nuevo="me_deben">${escapeHTML(t("prAtajoMeDeben"))}</button>`;
+      h += `</div>`;
       const meses = sitMeses();
       if (meses.length) {
         const tot = (k) => sitSuma(sitFuturos().filter((m) => m.tipo === "Gasto" && mesClave(m.fecha_pago) === k));
         const max = Math.max(1, ...meses.map(tot));
-        const barras = meses.map((k) => `<div class="sit-barra"><span>${escapeHTML(sitNombreMes(k).split(" ")[0].slice(0, 3))}</span><span class="sit-riel"><i style="width:${Math.max(4, Math.round(tot(k) / max * 100))}%"></i></span><span>${escapeHTML(formatoMonto(tot(k)))}</span></div>`).join("");
+        const barras = meses.map((k, idx) => `<div class="sit-barra${idx === 0 ? " prox" : ""}"><span>${escapeHTML(sitNombreMes(k).split(" ")[0].slice(0, 3))}</span><span class="sit-riel"><i style="width:${Math.max(4, Math.round(tot(k) / max * 100))}%"></i></span><span>${escapeHTML(formatoMonto(tot(k)))}</span></div>`).join("");
         h += `<button type="button" class="sit-card" data-sit-ir="viene"><div class="sit-etq"><span>${escapeHTML(t("sitSeViene"))}</span><span class="sit-ver">${escapeHTML(t("sitVerMeses"))}</span></div><div class="sit-barras">${barras}</div></button>`;
       }
     }

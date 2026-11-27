@@ -605,3 +605,18 @@ a.boton{display:block;box-sizing:border-box;text-align:center;text-decoration:no
 #vistaAnalisis.sin-datos > #segmentadoVistaAnalisis,#vistaAnalisis.sin-datos > div[id^="subVista"]{display:none !important;}
 .precio-mensual{font-size:calc(26px * var(--letra,1));font-weight:800;text-align:center;margin:6px 0 10px;color:var(--texto);}
 .pago-seguro{text-align:center;margin-top:8px;}
+
+/* Situación: una sola tarjeta con "Cuánto tengo realmente" y las tres filas */
+.sit-card.sit-unica{padding:0;overflow:hidden;}
+.sit-unica .sit-real{padding:16px 16px 14px;background:rgba(111,211,180,.10);border-bottom:1.5px solid var(--borde);}
+.sit-unica .sit-real .sit-grande{font-size:calc(32px * min(var(--letra,1),1.15));}
+.sit-unica .sit-fila{display:block;width:100%;text-align:left;font:inherit;color:inherit;background:none;border:0;border-bottom:1px solid var(--borde);padding:14px 16px;cursor:pointer;}
+.sit-unica .sit-medio{font-size:calc(22px * var(--letra,1));font-weight:800;margin-top:3px;font-variant-numeric:tabular-nums;overflow-wrap:anywhere;}
+.sit-unica .pr-atajo{margin:8px 16px 12px;}
+.sit-unica > :last-child{border-bottom:0;}
+html[data-ocultar] .sit-medio{filter:blur(9px);user-select:none;pointer-events:none;}
+/* Se viene, mes a mes: el próximo mes resaltado */
+.sit-barra .sit-riel i{opacity:.5;}
+.sit-barra.prox .sit-riel i{opacity:1;}
+.sit-barra.prox span:first-child,.sit-barra.prox span:last-child{font-weight:800;}
+.sit-card.sit-unica{padding-bottom:4px;}
