@@ -673,3 +673,12 @@ html[data-ocultar] .sit-medio{filter:blur(9px);user-select:none;pointer-events:n
   .lista-movimientos .mov-icono{width:36px;height:36px;min-width:36px;flex:0 0 36px;font-size:calc(17px * min(var(--letra,1), 1.1));}
   .lista-movimientos .mov-item,.lista-movimientos .mov-item:not(.x){padding-top:8px;padding-bottom:8px;}
 }
+/* ===== Pantalla muy ancha (1440 px o más): panel de pendientes al costado, siempre abierto ===== */
+@media (min-width:1440px){
+  .contenido:has(#vistaMovimientos:not([hidden])){max-width:1480px;}
+  #vistaMovimientos:not([hidden]){display:grid;grid-template-columns:minmax(0,1fr) 390px;column-gap:24px;align-items:start;}
+  #vistaMovimientos > *{grid-column:1;}
+  #vistaMovimientos > #bannerPendientes{grid-column:2;grid-row:1 / span 30;position:sticky;top:8px;max-height:calc(100vh - 150px);overflow-y:auto;margin-top:0;}
+  #bannerPendientes .pend-lista[hidden]{display:flex !important;}
+  #bannerPendientes #btnTogglePendientes{display:none;}
+}
