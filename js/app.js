@@ -3240,6 +3240,16 @@ function pasaBusqueda(m) {
   }
   filaBusqueda.hidden = true;
 
+  // En tablet y compu (>= 700 px) el campo de búsqueda queda siempre visible y no hace falta el botón.
+  const mqBuscar = window.matchMedia("(min-width: 700px)");
+  const buscarSiempre = () => {
+    filaBusqueda.hidden = !mqBuscar.matches;
+    botonAcceso(btnBuscar, "buscar", filaBusqueda.hidden ? t("accBuscar") : t("accCerrar"));
+    if (window.ajustarAccesos) window.ajustarAccesos();
+  };
+  buscarSiempre();
+  if (mqBuscar.addEventListener) mqBuscar.addEventListener("change", buscarSiempre);
+
   btnBuscar.addEventListener("click", () => {
     filaBusqueda.hidden = !filaBusqueda.hidden;
     botonAcceso(btnBuscar, "buscar", filaBusqueda.hidden ? t("accBuscar") : t("accCerrar"));
