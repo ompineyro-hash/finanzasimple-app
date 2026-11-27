@@ -50,6 +50,8 @@ const SVG_ICONOS = {
   flechas: `<path d="M8 3 4 7l4 4" /> <path d="M4 7h16" /> <path d="m16 21 4-4-4-4" /> <path d="M20 17H4" />`,
   lapiz: `<path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z" /> <path d="m15 5 4 4" />`,
   mas: `<path d="M5 12h14" /> <path d="M12 5v14" />`,
+  altavoz: `<path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z" /> <path d="M16 9a5 5 0 0 1 0 6" /> <path d="M19.364 18.364a9 9 0 0 0 0-12.728" />`,
+  detener: `<rect width="18" height="18" x="3" y="3" rx="2" />`,
   usuario: `<circle cx="12" cy="8" r="4" /> <path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1" />`,
   fuel: `<path d="M14 13h2a2 2 0 0 1 2 2v2a2 2 0 0 0 4 0v-6.998a2 2 0 0 0-.59-1.42L18 5" /> <path d="M14 21V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v16" /> <path d="M2 21h13" /> <path d="M3 9h11" />`,
   bus: `<path d="M8 6v6" /> <path d="M15 6v6" /> <path d="M2 12h19.6" /> <path d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3" /> <circle cx="7" cy="18" r="2" /> <path d="M9 18h5" /> <circle cx="16" cy="18" r="2" />`,
@@ -457,6 +459,12 @@ const TRADUCCIONES = {
     cambSubio: "Subió: {c}, {x} más.",
     cambBajo: "Bajó: {c}, {x} menos.",
     cambNota: "Se compara con lo que ya pagaste en cada mes.",
+    fraTitulo: "Tu mes en una frase",
+    fraConIng: "En {mes} ingresaron {i} y gastaste {g}: el {p}% de lo que ingresó. Lo que más pesó fue {c}, con {x}.",
+    fraSinIng: "En {mes} gastaste {g}. Lo que más pesó fue {c}, con {x}.",
+    fraEscuchar: "Escuchar mi mes",
+    fraDetener: "Detener",
+    fraNoVoz: "Tu celular no puede leer en voz alta.",
     letraAyuda: "Elegí cómo querés ver las letras en Ingasto. Se guarda en este celular.",
     letraNormal: "Normal",
     letraNormalDet: "Como se ve siempre",
@@ -1068,6 +1076,12 @@ const TRADUCCIONES = {
     cambSubio: "Subiu: {c}, {x} a mais.",
     cambBajo: "Baixou: {c}, {x} a menos.",
     cambNota: "Compara com o que você já pagou em cada mês.",
+    fraTitulo: "Seu mês em uma frase",
+    fraConIng: "Em {mes} entraram {i} e você gastou {g}: {p}% do que entrou. O que mais pesou foi {c}, com {x}.",
+    fraSinIng: "Em {mes} você gastou {g}. O que mais pesou foi {c}, com {x}.",
+    fraEscuchar: "Ouvir meu mês",
+    fraDetener: "Parar",
+    fraNoVoz: "Seu celular não consegue ler em voz alta.",
     letraAyuda: "Escolha como quer ver as letras no Ingasto. Fica guardado neste celular.",
     letraNormal: "Normal",
     letraNormalDet: "Como sempre",
@@ -1692,6 +1706,12 @@ const TRADUCCIONES = {
     cambSubio: "Went up: {c}, {x} more.",
     cambBajo: "Went down: {c}, {x} less.",
     cambNota: "Compared with what you already paid in each month.",
+    fraTitulo: "Your month in one sentence",
+    fraConIng: "In {mes} you received {i} and spent {g}: {p}% of what came in. The biggest item was {c}, with {x}.",
+    fraSinIng: "In {mes} you spent {g}. The biggest item was {c}, with {x}.",
+    fraEscuchar: "Listen to my month",
+    fraDetener: "Stop",
+    fraNoVoz: "Your phone can't read aloud.",
     letraAyuda: "Choose how you want to see the text in Ingasto. It is saved on this phone.",
     letraNormal: "Normal",
     letraNormalDet: "As usual",
@@ -2799,6 +2819,7 @@ function pintarCuentaAjustes() {
   pl.textContent = txt;
 }
 function irAVista(id) {
+  if (typeof detenerLectura === "function") detenerLectura();
   document.querySelectorAll(".navbar-item").forEach((b) => {
     b.classList.toggle("activo", b.dataset.vista === id);
   });
@@ -4077,6 +4098,57 @@ function renderCategoriasAnalisis(lista, tipo) {
 }
 
 
+
+// "Tu mes en una frase" + botón "Escuchar mi mes" (lee la frase en voz alta con la voz del propio celular).
+let fraseHablada = "";
+function textoParaVoz(txt) {
+  const palabra = { es: { ARS: "pesos", USD: "dólares", BRL: "reales", EUR: "euros" }, pt: { ARS: "pesos", USD: "dólares", BRL: "reais", EUR: "euros" }, en: { ARS: "pesos", USD: "dollars", BRL: "reais", EUR: "euros" } }[idiomaActual] || {};
+  return txt.replace(/\b(ARS|USD|BRL|EUR)\s(-?\d[\d.,]*\d|-?\d)/g, (m, c, n) => n + " " + (palabra[c] || c)).replace(/%/g, idiomaActual === "en" ? " percent" : " por ciento");
+}
+function detenerLectura() { try { window.speechSynthesis && window.speechSynthesis.cancel(); } catch {} const b = $("btnEscucharMes"); if (b) { botonAcceso(b, "altavoz", t("fraEscuchar")); b.dataset.hablando = ""; } }
+function leerFrase() {
+  const b = $("btnEscucharMes");
+  if (!window.speechSynthesis || typeof SpeechSynthesisUtterance === "undefined") { mostrarToast(t("fraNoVoz")); return; }
+  if (b && b.dataset.hablando) { detenerLectura(); return; }
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(textoParaVoz(fraseHablada));
+  const lang = { es: "es-AR", pt: "pt-BR", en: "en-US" }[idiomaActual] || "es-AR";
+  u.lang = lang; u.rate = 0.9;
+  const voces = window.speechSynthesis.getVoices();
+  const v = voces.find((x) => x.lang === lang) || voces.find((x) => x.lang.toLowerCase().startsWith(lang.slice(0, 2)));
+  if (v) u.voice = v;
+  u.onend = u.onerror = detenerLectura;
+  if (b) { botonAcceso(b, "detener", t("fraDetener")); b.dataset.hablando = "1"; }
+  window.speechSynthesis.speak(u);
+}
+function renderFrase() {
+  const card = $("fraseCard");
+  if (!card) return;
+  detenerLectura();
+  card.hidden = true;
+  if (!usuario || periodoAnalisis !== "mes") return;
+  const lista = contablesDelMes(movimientos, claveMesVista());
+  const ing = lista.filter((m) => m.tipo === "Ingreso").reduce((a, m) => a + montoBase(m), 0);
+  const gas = lista.filter((m) => m.tipo === "Gasto");
+  const totG = gas.reduce((a, m) => a + montoBase(m), 0);
+  if (!gas.length || totG <= 0) return;
+  const porCat = {};
+  gas.forEach((m) => { porCat[m.categoria] = (porCat[m.categoria] || 0) + montoBase(m); });
+  const [cat, monto] = Object.entries(porCat).sort((a, b) => b[1] - a[1])[0];
+  const mes = idiomaActual === "en" ? nombreMes(fechaVista) : nombreMes(fechaVista).toLowerCase();
+  const frase = (ing > 0 ? t("fraConIng") : t("fraSinIng"))
+    .replace("{mes}", mes).replace("{i}", formatoMonto(ing)).replace("{g}", formatoMonto(totG))
+    .replace("{p}", Math.round((totG / (ing || 1)) * 100)).replace("{c}", cat).replace("{x}", formatoMonto(monto));
+  fraseHablada = frase;
+  card.innerHTML = `<div class="alc-titulo">${escapeHTML(t("fraTitulo"))}</div>
+    <div class="alc-det frase-texto">${escapeHTML(frase)}</div>
+    <button type="button" id="btnEscucharMes" class="boton boton-secundario boton-ancho"></button>`;
+  const b = $("btnEscucharMes");
+  botonAcceso(b, "altavoz", t("fraEscuchar"));
+  b.addEventListener("click", leerFrase);
+  card.hidden = false;
+}
+
 // ¿Me alcanza hasta fin de mes? (Análisis): lo que hay en las cuentas menos lo que hay que pagar hasta el último día, repartido por día.
 function renderAlcanza() {
   const card = $("alcanzaCard");
@@ -4151,6 +4223,7 @@ async function renderVistaAnalisis() {
   }
   ultimaListaAnalisis = lista;
   if (!tengoCalculo && usuario) cargarTengo().then(renderAlcanza); else renderAlcanza();
+  renderFrase();
   renderCambio();
   const sinDatos = !lista.length && !movimientos.length && !transferenciasMes.length;
   $("vistaAnalisis").classList.toggle("sin-datos", sinDatos);

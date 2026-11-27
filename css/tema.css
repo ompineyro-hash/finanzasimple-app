@@ -729,3 +729,6 @@ html[data-contraste][data-tema="oscuro"]{--texto:#FFFFFF;--texto-suave:#D5E0DB;-
 .alc-nota{font-size:calc(13.5px * var(--letra,1));color:var(--texto-suave);margin-top:8px;}
 #vistaAnalisis.sin-datos .alcanza-card{display:none;}
 #cambioCard .alc-grande{font-size:calc(20px * var(--letra,1));}
+
+.frase-texto{font-size:calc(18px * var(--letra,1));line-height:1.45;margin:8px 0 12px;}
+#btnEscucharMes{min-height:50px;}
