@@ -450,6 +450,13 @@ const TRADUCCIONES = {
     alcDetalle1: "Hoy tenés {t} en tus cuentas y tenés que pagar {d} hasta el fin de mes. Queda 1 día (hoy).",
     alcCobros: "Además te deben cobrar {c} este mes (no lo sumé a la cuenta).",
     alcNota: "Los préstamos y las cuotas de meses próximos no están incluidos.",
+    cambTitulo: "Esto cambió",
+    cambMas: "Gastaste {x} más que en {m}.",
+    cambMenos: "Gastaste {x} menos que en {m}.",
+    cambIgual: "Gastaste lo mismo que en {m}.",
+    cambSubio: "Subió: {c}, {x} más.",
+    cambBajo: "Bajó: {c}, {x} menos.",
+    cambNota: "Se compara con lo que ya pagaste en cada mes.",
     letraAyuda: "Elegí cómo querés ver las letras en Ingasto. Se guarda en este celular.",
     letraNormal: "Normal",
     letraNormalDet: "Como se ve siempre",
@@ -1054,6 +1061,13 @@ const TRADUCCIONES = {
     alcDetalle1: "Hoje você tem {t} nas suas contas e precisa pagar {d} até o fim do mês. Falta 1 dia (hoje).",
     alcCobros: "Além disso, devem lhe pagar {c} este mês (não somei na conta).",
     alcNota: "Os empréstimos e as parcelas dos próximos meses não estão incluídos.",
+    cambTitulo: "O que mudou",
+    cambMas: "Você gastou {x} a mais do que em {m}.",
+    cambMenos: "Você gastou {x} a menos do que em {m}.",
+    cambIgual: "Você gastou o mesmo que em {m}.",
+    cambSubio: "Subiu: {c}, {x} a mais.",
+    cambBajo: "Baixou: {c}, {x} a menos.",
+    cambNota: "Compara com o que você já pagou em cada mês.",
     letraAyuda: "Escolha como quer ver as letras no Ingasto. Fica guardado neste celular.",
     letraNormal: "Normal",
     letraNormalDet: "Como sempre",
@@ -1671,6 +1685,13 @@ const TRADUCCIONES = {
     alcDetalle1: "Today you have {t} in your accounts and need to pay {d} by the end of the month. 1 day left (today).",
     alcCobros: "You are also owed {c} this month (not counted in this calculation).",
     alcNota: "Loans and installments for later months are not included.",
+    cambTitulo: "What changed",
+    cambMas: "You spent {x} more than in {m}.",
+    cambMenos: "You spent {x} less than in {m}.",
+    cambIgual: "You spent the same as in {m}.",
+    cambSubio: "Went up: {c}, {x} more.",
+    cambBajo: "Went down: {c}, {x} less.",
+    cambNota: "Compared with what you already paid in each month.",
     letraAyuda: "Choose how you want to see the text in Ingasto. It is saved on this phone.",
     letraNormal: "Normal",
     letraNormalDet: "As usual",
@@ -4080,6 +4101,42 @@ function renderAlcanza() {
   card.hidden = false;
 }
 
+
+// "Esto cambió" (Análisis, mes actual): gasto del mes contra el mes anterior, en palabras.
+async function renderCambio() {
+  const card = $("cambioCard");
+  if (!card) return;
+  card.hidden = true;
+  if (!usuario || periodoAnalisis !== "mes") return;
+  try {
+    const ahora = fechaVista;
+    const ant = new Date(ahora.getFullYear(), ahora.getMonth() - 1, 1);
+    const claveAnt = ant.getFullYear() + "-" + String(ant.getMonth() + 1).padStart(2, "0");
+    const delAnio = await listarMovimientosDelAnio(usuario.id, ant.getFullYear());
+    if (periodoAnalisis !== "mes" || fechaVista !== ahora) return; // el usuario cambió de pantalla mientras cargaba
+    const gastos = (l) => l.filter((m) => m.tipo === "Gasto");
+    const antes = gastos(contablesDelMes(delAnio, claveAnt));
+    const ahoraL = gastos(contablesDelMes(movimientos, claveMesVista()));
+    if (!antes.length || !ahoraL.length) return;
+    const porCat = (l) => { const o = {}; l.forEach((m) => { o[m.categoria] = (o[m.categoria] || 0) + montoBase(m); }); return o; };
+    const a = porCat(antes), b = porCat(ahoraL);
+    const totA = Object.values(a).reduce((x, y) => x + y, 0), totB = Object.values(b).reduce((x, y) => x + y, 0);
+    const dif = Math.round((totB - totA) * 100) / 100;
+    const mesAnt = idiomaActual === "en" ? nombreMes(ant) : nombreMes(ant).toLowerCase();
+    const frase = dif > 0 ? t("cambMas") : dif < 0 ? t("cambMenos") : t("cambIgual");
+    const lineas = [frase.replace("{x}", formatoMonto(Math.abs(dif))).replace("{m}", mesAnt)];
+    const cats = [...new Set([...Object.keys(a), ...Object.keys(b)])].map((c) => ({ c, d: (b[c] || 0) - (a[c] || 0) }));
+    const sube = cats.filter((x) => x.d > 0).sort((x, y) => y.d - x.d)[0];
+    const baja = cats.filter((x) => x.d < 0).sort((x, y) => x.d - y.d)[0];
+    if (sube) lineas.push(t("cambSubio").replace("{c}", sube.c).replace("{x}", formatoMonto(sube.d)));
+    if (baja) lineas.push(t("cambBajo").replace("{c}", baja.c).replace("{x}", formatoMonto(-baja.d)));
+    card.innerHTML = `<div class="alc-titulo">${escapeHTML(t("cambTitulo"))}</div>` +
+      lineas.map((l, i) => `<div class="${i === 0 ? "alc-grande " + (dif > 0 ? "alc-mal" : "alc-ok") : "alc-det"}">${escapeHTML(l)}</div>`).join("") +
+      `<div class="alc-nota">${escapeHTML(t("cambNota"))}</div>`;
+    card.hidden = false;
+  } catch { card.hidden = true; }
+}
+
 async function renderVistaAnalisis() {
   let lista;
   // El Análisis cuenta solo lo que ya se pagó/cobró, en el mes en que se pagó.
@@ -4094,6 +4151,7 @@ async function renderVistaAnalisis() {
   }
   ultimaListaAnalisis = lista;
   if (!tengoCalculo && usuario) cargarTengo().then(renderAlcanza); else renderAlcanza();
+  renderCambio();
   const sinDatos = !lista.length && !movimientos.length && !transferenciasMes.length;
   $("vistaAnalisis").classList.toggle("sin-datos", sinDatos);
   $("analisisVacio").hidden = !sinDatos;
