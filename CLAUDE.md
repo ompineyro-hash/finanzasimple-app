@@ -139,3 +139,5 @@ No: conexión con bancos.
 - Service worker: ya NO recarga solo en la primera visita (solo al actualizar).
 - Pendiente de Edu: capturas del Paso 2 y 3 de los primeros pasos (¿Dónde tenés tu plata? / Cargá tu primer gasto) para armarlos igual a su diseño; decidir "Próximas", "Previsto del mes", voz (sacar los 5 pasos); probar en iPhone y con datos propios (cuotas, pendientes, préstamos, pago).
 - Marcelo decidió algunas cosas por Edu mientras estaba enfermo (27/11): colores de Ajustes por grupo, "Próximas" al final, "Previsto del mes" donde está. Contarle a Edu.
+- v163: Análisis → tarjeta "Tu mes en una frase" (`renderFrase()`) con botón "Escuchar mi mes" (lee la frase en voz alta con el navegador; `leerFrase`/`detenerLectura`). Falta probar en iPhone.
+- v164: tarjetas "¿Me alcanza?" y "Esto cambió" compactas en celular: solo título + frase principal; el detalle va en `alcDetalleHTML()` (`.alc-mas` + botón `.alc-toggle` "Ver detalle ›"). Idea para después: asistente de Claude dentro de la app (Edge Function + límite diario; revisar costo, Privacidad y Términos y avisar a Marcelo). Sin decidir con Edu.
