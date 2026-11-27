@@ -682,3 +682,16 @@ html[data-ocultar] .sit-medio{filter:blur(9px);user-select:none;pointer-events:n
   #bannerPendientes .pend-lista[hidden]{display:flex !important;}
   #bannerPendientes #btnTogglePendientes{display:none;}
 }
+/* ===== Ajustes: ícono de color distinto en cada grupo + degradé que avisa que hay más abajo ===== */
+.config-grupo{--gh:150;--gs:55%;}
+.config-grupo:nth-of-type(2){--gh:215;}   /* Preferencias: azul */
+.config-grupo:nth-of-type(3){--gh:150;}   /* Mis finanzas: verde */
+.config-grupo:nth-of-type(4){--gh:32;}    /* Datos y seguridad: naranja */
+.config-grupo:nth-of-type(5){--gh:190;}   /* Ayuda: celeste */
+.config-grupo:nth-of-type(6){--gh:220;--gs:10%;} /* Mi cuenta: gris */
+.config-lista .config-tarjeta-icono{border-radius:50%;background:hsl(var(--gh) var(--gs) 91%);color:hsl(var(--gh) calc(var(--gs) + 5%) 27%);}
+html[data-tema="oscuro"] .config-lista .config-tarjeta-icono{background:hsl(var(--gh) calc(var(--gs) - 15%) 24%);color:hsl(var(--gh) calc(var(--gs) + 10%) 80%);}
+.config-lista .config-tarjeta-peligro .config-tarjeta-icono{background:transparent;color:var(--peligro);}
+#masAbajo{position:fixed;left:0;right:0;height:56px;display:none;align-items:flex-end;justify-content:flex-start;padding-left:14px;pointer-events:none;z-index:5;background:linear-gradient(to bottom,transparent,var(--papel) 85%);}
+#masAbajo span{margin-bottom:6px;padding:4px 12px;border-radius:999px;background:var(--papel-alto);border:1px solid var(--borde);box-shadow:var(--sombra);font-size:calc(13px * min(var(--letra,1),1.15));font-weight:700;color:var(--texto-suave);}
+body.mas-abajo-ajustes #masAbajo{display:flex;}

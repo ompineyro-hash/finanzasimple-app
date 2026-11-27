@@ -325,6 +325,7 @@ const TRADUCCIONES = {
     sitTengo: "Tengo",
     sitRealmente: "Cuánto tengo realmente",
     sitRealmenteCuenta: "Tengo + Me deben − Debo",
+    ajMasAbajo: "Deslizá para ver más",
     ajGrpPrefer: "Preferencias",
     ajGrpFinanzas: "Mis finanzas",
     ajGrpDatos: "Datos y seguridad",
@@ -1124,6 +1125,7 @@ const TRADUCCIONES = {
     sitVerMeses: "Ver meses ›",
     sitRealmente: "Quanto tenho de verdade",
     sitRealmenteCuenta: "Tenho + Me devem − Devo",
+    ajMasAbajo: "Deslize para ver mais",
     ajGrpPrefer: "Preferências",
     ajGrpFinanzas: "Minhas finanças",
     ajGrpDatos: "Dados e segurança",
@@ -1725,6 +1727,7 @@ const TRADUCCIONES = {
     sitVerMeses: "See months ›",
     sitRealmente: "How much I really have",
     sitRealmenteCuenta: "I have + I'm owed − I owe",
+    ajMasAbajo: "Scroll for more",
     ajGrpPrefer: "Preferences",
     ajGrpFinanzas: "My finances",
     ajGrpDatos: "Data and security",
@@ -6717,3 +6720,28 @@ async function bienvenidaSiCorresponde() {
     if (todos.length === 0) abrirBienvenida(); else bienvenidaMarcarVista();
   } catch { /* si falla la consulta, no molestamos */ }
 }
+
+
+// Ajustes (celular): aviso "Deslizá para ver más" mientras queda lista por debajo.
+(function () {
+  const aviso = document.createElement("div");
+  aviso.id = "masAbajo";
+  aviso.setAttribute("aria-hidden", "true");
+  aviso.innerHTML = '<span data-i18n="ajMasAbajo"></span>';
+  document.body.appendChild(aviso);
+  function actualizar() {
+    const c = document.querySelector(".contenido");
+    const v = $("vistaConfig");
+    const nav = document.querySelector(".navbar");
+    const hay = !!(c && v && !v.hidden && window.innerWidth < 700 && c.scrollHeight - c.scrollTop - c.clientHeight > 24);
+    if (hay && nav) aviso.style.bottom = nav.offsetHeight + "px";
+    const sp = aviso.querySelector("span");
+    if (sp && !sp.textContent) sp.textContent = t("ajMasAbajo");
+    document.body.classList.toggle("mas-abajo-ajustes", hay);
+  }
+  const c = document.querySelector(".contenido");
+  if (c) c.addEventListener("scroll", actualizar, { passive: true });
+  window.addEventListener("resize", actualizar);
+  document.addEventListener("click", () => setTimeout(actualizar, 80));
+  setTimeout(actualizar, 1000);
+})();
