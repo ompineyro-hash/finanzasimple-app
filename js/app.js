@@ -497,6 +497,9 @@ const TRADUCCIONES = {
     anCuoQ: "Te quedan {n} cuotas por pagar",
     anCuoQ1: "Te queda {n} cuota por pagar",
     anCuoAg: "Ingasto ya las tiene agendadas",
+    anMejTit: "Tu mejor mes",
+    anMejSub: "ahorraste el {n}%",
+    anMejInt: "El más intenso",
     alcOcultar: "Ocultar detalle",
     letraAyuda: "Elegí cómo querés ver las letras en Ingasto. Se guarda en este celular.",
     letraNormal: "Normal",
@@ -1147,6 +1150,9 @@ const TRADUCCIONES = {
     anCuoQ: "Faltam {n} parcelas para pagar",
     anCuoQ1: "Falta {n} parcela para pagar",
     anCuoAg: "O Ingasto já deixou tudo agendado",
+    anMejTit: "Seu melhor mês",
+    anMejSub: "você poupou {n}%",
+    anMejInt: "O mais intenso",
     alcOcultar: "Ocultar detalhe",
     letraAyuda: "Escolha como quer ver as letras no Ingasto. Fica guardado neste celular.",
     letraNormal: "Normal",
@@ -1810,6 +1816,9 @@ const TRADUCCIONES = {
     anCuoQ: "You have {n} installments left to pay",
     anCuoQ1: "You have {n} installment left to pay",
     anCuoAg: "Ingasto already has them scheduled",
+    anMejTit: "Your best month",
+    anMejSub: "you saved {n}%",
+    anMejInt: "The busiest one",
     alcOcultar: "Hide details",
     letraAyuda: "Choose how you want to see the text in Ingasto. It is saved on this phone.",
     letraNormal: "Normal",
@@ -4410,6 +4419,23 @@ function abrirAnuario(lista, anio, todos = []) {
      <div class="an-sub">${escapeHTML(t(cuoPag === 1 ? "anCuoSub1" : "anCuoSub").replace("{a}", anio))}</div>
      <div class="an-cuadros">${cuadros(cuoPag, "an-cp", 24)}${cuadros(cuoPend, "an-cq", 12)}</div>
      ${cuoPend > 0 ? `<div class="an-abajo"><div class="an-dato">${escapeHTML(t(cuoPend === 1 ? "anCuoQ1" : "anCuoQ").replace("{n}", cuoPend.toLocaleString(loc)))}</div><div class="an-sub">${escapeHTML(t("anCuoAg"))}</div></div>` : ""}`);
+  }
+  const pm = agruparPorMes(lista);
+  const nombreMesLargo = (k) => { const n = new Date(anio, k, 1).toLocaleDateString(loc, { month: "long" }); return n.charAt(0).toUpperCase() + n.slice(1); };
+  const datos = Array.from({ length: 12 }, (_, k) => pm[anio + "-" + String(k + 1).padStart(2, "0")] || null);
+  let mejor = -1, mejorP = 0, intenso = -1, intensoG = 0;
+  datos.forEach((d, k) => {
+    if (!d) return;
+    if (d.ing > 0) { const p = (d.ing - d.gas) / d.ing; if (p > mejorP) { mejorP = p; mejor = k; } }
+    if (d.gas > intensoG) { intensoG = d.gas; intenso = k; }
+  });
+  if (mejor >= 0 && datos.filter(Boolean).length >= 2) {
+    const barras = datos.map((d, k) => `<span class="${k === mejor ? "an-bm" : k === intenso ? "an-bi" : ""}" style="height:${d ? Math.max(4, Math.round((d.gas / intensoG) * 100)) : 2}%"></span>`).join("");
+    pantallas.push(`<div class="an-sub">${escapeHTML(t("anMejTit"))}</div>
+     <div class="an-gran an-verde">${escapeHTML(nombreMesLargo(mejor))}</div>
+     <div class="an-sub">${escapeHTML(t("anMejSub").replace("{n}", Math.round(mejorP * 100)))}</div>
+     <div class="an-meses">${barras}</div>
+     ${intenso >= 0 && intenso !== mejor ? `<div class="an-abajo"><div class="an-sub">${escapeHTML(t("anMejInt"))}</div><div class="an-dato an-rojo">${escapeHTML(nombreMesLargo(intenso))}</div></div>` : ""}`);
   }
   let i = 0;
   const pintar = () => {

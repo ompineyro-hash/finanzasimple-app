@@ -785,3 +785,10 @@ html[data-contraste][data-tema="oscuro"]{--texto:#FFFFFF;--texto-suave:#D5E0DB;-
 .an-cp{background:#1fb87e}
 .an-cq{border:2px solid #ffd24a;background:rgba(255,255,255,.08)}
 .an-pantalla:has(.an-cuadros){justify-content:flex-start;padding-top:28px}
+
+/* v170 Anuario pantalla 5 */
+.an-meses{display:flex;align-items:flex-end;gap:5px;height:140px;margin-top:26px}
+.an-meses span{flex:1;background:#34443c;border-radius:4px 4px 0 0}
+.an-meses span.an-bm{background:#7ee0a8}
+.an-meses span.an-bi{background:#f4846f}
+.an-pantalla:has(.an-meses){justify-content:flex-start;padding-top:28px}
