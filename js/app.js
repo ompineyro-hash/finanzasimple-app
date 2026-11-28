@@ -478,6 +478,15 @@ const TRADUCCIONES = {
     anMovs: "{n} movimientos",
     anMeses: "registrados en {k} meses",
     anSeguir: "Tocá para seguir",
+    anNumTit: "Tu año en números",
+    anEntroMas: "Entró más de lo que salió",
+    anSalioMas: "Salió más de lo que entró",
+    anIng: "Ingresos",
+    anGas: "Gastos",
+    anAhorro: "Ahorraste",
+    anDeTodo: "de todo lo que ganaste",
+    anGastaste: "Gastaste",
+    anMasQue: "más de lo que ganaste",
     alcOcultar: "Ocultar detalle",
     letraAyuda: "Elegí cómo querés ver las letras en Ingasto. Se guarda en este celular.",
     letraNormal: "Normal",
@@ -1109,6 +1118,15 @@ const TRADUCCIONES = {
     anMovs: "{n} movimentos",
     anMeses: "registrados em {k} meses",
     anSeguir: "Toque para continuar",
+    anNumTit: "Seu ano em números",
+    anEntroMas: "Entrou mais do que saiu",
+    anSalioMas: "Saiu mais do que entrou",
+    anIng: "Receitas",
+    anGas: "Gastos",
+    anAhorro: "Você poupou",
+    anDeTodo: "de tudo o que ganhou",
+    anGastaste: "Você gastou",
+    anMasQue: "a mais do que ganhou",
     alcOcultar: "Ocultar detalhe",
     letraAyuda: "Escolha como quer ver as letras no Ingasto. Fica guardado neste celular.",
     letraNormal: "Normal",
@@ -1753,6 +1771,15 @@ const TRADUCCIONES = {
     anMovs: "{n} entries",
     anMeses: "recorded over {k} months",
     anSeguir: "Tap to continue",
+    anNumTit: "Your year in numbers",
+    anEntroMas: "More came in than went out",
+    anSalioMas: "More went out than came in",
+    anIng: "Income",
+    anGas: "Spending",
+    anAhorro: "You saved",
+    anDeTodo: "of everything you earned",
+    anGastaste: "You spent",
+    anMasQue: "more than you earned",
     alcOcultar: "Hide details",
     letraAyuda: "Choose how you want to see the text in Ingasto. It is saved on this phone.",
     letraNormal: "Normal",
@@ -4312,6 +4339,23 @@ function abrirAnuario(lista, anio) {
        <div class="an-sub">${escapeHTML(t("anMeses").replace("{k}", meses))}</div>
      </div>`,
   ];
+  let ingT = 0, gasT = 0;
+  lista.forEach((m) => { if (m.tipo === "Ingreso") ingT += montoBase(m); else gasT += montoBase(m); });
+  if (ingT > 0) {
+    const pGas = Math.round((gasT / ingT) * 100);
+    const sobra = gasT > ingT;
+    pantallas.push(`<div class="an-sub">${escapeHTML(t("anNumTit"))}</div>
+     <div class="an-med">${escapeHTML(sobra ? t("anSalioMas") : t("anEntroMas"))}</div>
+     <div class="an-fila"><span>${escapeHTML(t("anIng"))}</span><span class="an-verde">100%</span></div>
+     <div class="an-pista"><div class="an-rell an-rverde" style="width:100%"></div></div>
+     <div class="an-fila"><span>${escapeHTML(t("anGas"))}</span><span class="an-rojo">${pGas}%</span></div>
+     <div class="an-pista"><div class="an-rell an-rrojo" style="width:${Math.min(100, pGas)}%"></div></div>
+     <div class="an-abajo">
+       <div class="an-sub">${escapeHTML(sobra ? t("anGastaste") : t("anAhorro"))}</div>
+       <div class="an-dato an-enorme">${sobra ? pGas - 100 : 100 - pGas}%</div>
+       <div class="an-sub">${escapeHTML(sobra ? t("anMasQue") : t("anDeTodo"))}</div>
+     </div>`);
+  }
   let i = 0;
   const pintar = () => {
     ov.innerHTML = `<div class="an-barras">${pantallas.map((_, k) => `<span class="${k <= i ? "on" : ""}"></span>`).join("")}</div>

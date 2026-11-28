@@ -762,3 +762,14 @@ html[data-contraste][data-tema="oscuro"]{--texto:#FFFFFF;--texto-suave:#D5E0DB;-
 .an-dato{color:#ffd24a;font-weight:700;font-size:calc(26px * var(--letra,1));margin-bottom:4px}
 .an-seguir{text-align:center;color:#dfe7e2;font-size:calc(18px * var(--letra,1));padding-top:12px}
 .an-abrir{display:block;width:100%;margin-top:12px;padding:14px;border-radius:12px;border:0;background:var(--acento,#ffc933);color:#1a1a1a;font-weight:700;font-size:calc(17px * var(--letra,1));cursor:pointer}
+
+/* v167 Anuario pantalla 2 */
+.an-med{font-weight:700;font-size:calc(24px * var(--letra,1));line-height:1.2;margin:6px 0 22px}
+.an-fila{display:flex;justify-content:space-between;font-weight:600;font-size:calc(18px * var(--letra,1));margin-top:14px}
+.an-verde{color:#7ee0a8}.an-rojo{color:#ff9a86}
+.an-pista{height:12px;border-radius:6px;background:rgba(255,255,255,.14);margin-top:6px;overflow:hidden}
+.an-rell{height:100%;border-radius:6px}
+.an-rverde{background:#7ee0a8}.an-rrojo{background:#f4846f}
+.an-abajo{margin-top:auto;padding-top:30px}
+.an-enorme{font-size:calc(52px * var(--letra,1));line-height:1.1;margin:2px 0}
+.an-pantalla:has(.an-abajo){justify-content:flex-start;padding-top:28px}
