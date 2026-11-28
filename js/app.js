@@ -489,6 +489,14 @@ const TRADUCCIONES = {
     anMasQue: "más de lo que ganaste",
     anCatTit: "Tu categoría estrella",
     anCatLlevo: "se llevó {n} de cada 100 que gastaste",
+    anCuoTit: "El año de las cuotas",
+    anCuoN: "{n} cuotas",
+    anCuoN1: "{n} cuota",
+    anCuoSub: "pagadas en {a}",
+    anCuoSub1: "pagada en {a}",
+    anCuoQ: "Te quedan {n} cuotas por pagar",
+    anCuoQ1: "Te queda {n} cuota por pagar",
+    anCuoAg: "Ingasto ya las tiene agendadas",
     alcOcultar: "Ocultar detalle",
     letraAyuda: "Elegí cómo querés ver las letras en Ingasto. Se guarda en este celular.",
     letraNormal: "Normal",
@@ -1131,6 +1139,14 @@ const TRADUCCIONES = {
     anMasQue: "a mais do que ganhou",
     anCatTit: "Sua categoria estrela",
     anCatLlevo: "levou {n} de cada 100 que você gastou",
+    anCuoTit: "O ano das parcelas",
+    anCuoN: "{n} parcelas",
+    anCuoN1: "{n} parcela",
+    anCuoSub: "pagas em {a}",
+    anCuoSub1: "paga em {a}",
+    anCuoQ: "Faltam {n} parcelas para pagar",
+    anCuoQ1: "Falta {n} parcela para pagar",
+    anCuoAg: "O Ingasto já deixou tudo agendado",
     alcOcultar: "Ocultar detalhe",
     letraAyuda: "Escolha como quer ver as letras no Ingasto. Fica guardado neste celular.",
     letraNormal: "Normal",
@@ -1786,6 +1802,14 @@ const TRADUCCIONES = {
     anMasQue: "more than you earned",
     anCatTit: "Your star category",
     anCatLlevo: "took {n} of every 100 you spent",
+    anCuoTit: "The year of installments",
+    anCuoN: "{n} installments",
+    anCuoN1: "{n} installment",
+    anCuoSub: "paid in {a}",
+    anCuoSub1: "paid in {a}",
+    anCuoQ: "You have {n} installments left to pay",
+    anCuoQ1: "You have {n} installment left to pay",
+    anCuoAg: "Ingasto already has them scheduled",
     alcOcultar: "Hide details",
     letraAyuda: "Choose how you want to see the text in Ingasto. It is saved on this phone.",
     letraNormal: "Normal",
@@ -4326,12 +4350,16 @@ function renderAnio(lista) {
     (frase ? `<div class="alc-grande ${resAnio < 0 ? "alc-mal" : "alc-ok"}">${escapeHTML(frase)}</div>` : "") +
     `<div class="alc-nota">${escapeHTML(t("anioNota"))}</div>` + filas.join("") +
     `<button type="button" class="an-abrir">${escapeHTML(t("anVer"))} ›</button>`;
-  card.querySelector(".an-abrir").onclick = () => abrirAnuario(lista, anio);
+  card.querySelector(".an-abrir").onclick = async () => {
+    let todos = [];
+    try { todos = await listarTodosLosMovimientos(usuario.id); } catch { /* sin cuotas pendientes */ }
+    abrirAnuario(lista, anio, todos);
+  };
   card.hidden = false;
 }
 
 // ---- Anuario (pantallas que se pasan con un toque) ----
-function abrirAnuario(lista, anio) {
+function abrirAnuario(lista, anio, todos = []) {
   const ov = $("anuario");
   if (!ov) return;
   const loc = LOCALES_POR_IDIOMA[idiomaActual] || "es-AR";
@@ -4371,6 +4399,17 @@ function abrirAnuario(lista, anio) {
      <div class="an-gran">${escapeHTML(topCat[0][0])}</div>
      <div class="an-sub">${escapeHTML(t("anCatLlevo").replace("{n}", pc(topCat[0][1])))}</div>
      <div class="an-lista">${topCat.map(([c, v], k) => `<div class="an-fila"><span>${escapeHTML(c)}</span><span>${pc(v)}%</span></div><div class="an-pista"><div class="an-rell ${k === 0 ? "an-rrojo" : "an-rapagado"}" style="width:${Math.min(100, pc(v))}%"></div></div>`).join("")}</div>`);
+  }
+  const esCuotaGasto = (m) => m.tipo === "Gasto" && RE_CUOTA.test(String(m.detalle || ""));
+  const cuoPag = lista.filter(esCuotaGasto).length;
+  const cuoPend = todos.filter((m) => esCuotaGasto(m) && esPendiente(m)).length;
+  if (cuoPag > 0) {
+    const cuadros = (n, clase, max) => Array.from({ length: Math.min(n, max) }, () => `<span class="${clase}"></span>`).join("");
+    pantallas.push(`<div class="an-sub">${escapeHTML(t("anCuoTit"))}</div>
+     <div class="an-gran">${escapeHTML(t(cuoPag === 1 ? "anCuoN1" : "anCuoN").replace("{n}", cuoPag.toLocaleString(loc)))}</div>
+     <div class="an-sub">${escapeHTML(t(cuoPag === 1 ? "anCuoSub1" : "anCuoSub").replace("{a}", anio))}</div>
+     <div class="an-cuadros">${cuadros(cuoPag, "an-cp", 24)}${cuadros(cuoPend, "an-cq", 12)}</div>
+     ${cuoPend > 0 ? `<div class="an-abajo"><div class="an-dato">${escapeHTML(t(cuoPend === 1 ? "anCuoQ1" : "anCuoQ").replace("{n}", cuoPend.toLocaleString(loc)))}</div><div class="an-sub">${escapeHTML(t("anCuoAg"))}</div></div>` : ""}`);
   }
   let i = 0;
   const pintar = () => {

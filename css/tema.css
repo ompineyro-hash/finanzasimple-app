@@ -778,3 +778,10 @@ html[data-contraste][data-tema="oscuro"]{--texto:#FFFFFF;--texto-suave:#D5E0DB;-
 .an-lista{margin-top:26px}
 .an-rapagado{background:#b5675a}
 .an-pantalla:has(.an-lista){justify-content:flex-start;padding-top:28px}
+
+/* v169 Anuario pantalla 4 */
+.an-cuadros{display:flex;flex-wrap:wrap;gap:8px;margin-top:26px}
+.an-cuadros span{width:calc((100% - 40px)/6);aspect-ratio:1.4;border-radius:8px}
+.an-cp{background:#1fb87e}
+.an-cq{border:2px solid #ffd24a;background:rgba(255,255,255,.08)}
+.an-pantalla:has(.an-cuadros){justify-content:flex-start;padding-top:28px}
