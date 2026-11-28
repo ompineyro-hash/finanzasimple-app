@@ -773,3 +773,8 @@ html[data-contraste][data-tema="oscuro"]{--texto:#FFFFFF;--texto-suave:#D5E0DB;-
 .an-abajo{margin-top:auto;padding-top:30px}
 .an-enorme{font-size:calc(52px * var(--letra,1));line-height:1.1;margin:2px 0}
 .an-pantalla:has(.an-abajo){justify-content:flex-start;padding-top:28px}
+
+/* v168 Anuario pantalla 3 */
+.an-lista{margin-top:26px}
+.an-rapagado{background:#b5675a}
+.an-pantalla:has(.an-lista){justify-content:flex-start;padding-top:28px}

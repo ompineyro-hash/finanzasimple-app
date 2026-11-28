@@ -487,6 +487,8 @@ const TRADUCCIONES = {
     anDeTodo: "de todo lo que ganaste",
     anGastaste: "Gastaste",
     anMasQue: "más de lo que ganaste",
+    anCatTit: "Tu categoría estrella",
+    anCatLlevo: "se llevó {n} de cada 100 que gastaste",
     alcOcultar: "Ocultar detalle",
     letraAyuda: "Elegí cómo querés ver las letras en Ingasto. Se guarda en este celular.",
     letraNormal: "Normal",
@@ -1127,6 +1129,8 @@ const TRADUCCIONES = {
     anDeTodo: "de tudo o que ganhou",
     anGastaste: "Você gastou",
     anMasQue: "a mais do que ganhou",
+    anCatTit: "Sua categoria estrela",
+    anCatLlevo: "levou {n} de cada 100 que você gastou",
     alcOcultar: "Ocultar detalhe",
     letraAyuda: "Escolha como quer ver as letras no Ingasto. Fica guardado neste celular.",
     letraNormal: "Normal",
@@ -1780,6 +1784,8 @@ const TRADUCCIONES = {
     anDeTodo: "of everything you earned",
     anGastaste: "You spent",
     anMasQue: "more than you earned",
+    anCatTit: "Your star category",
+    anCatLlevo: "took {n} of every 100 you spent",
     alcOcultar: "Hide details",
     letraAyuda: "Choose how you want to see the text in Ingasto. It is saved on this phone.",
     letraNormal: "Normal",
@@ -4355,6 +4361,16 @@ function abrirAnuario(lista, anio) {
        <div class="an-dato an-enorme">${sobra ? pGas - 100 : 100 - pGas}%</div>
        <div class="an-sub">${escapeHTML(sobra ? t("anMasQue") : t("anDeTodo"))}</div>
      </div>`);
+  }
+  const porCat = {};
+  lista.forEach((m) => { if (m.tipo === "Gasto") porCat[m.categoria] = (porCat[m.categoria] || 0) + montoBase(m); });
+  const topCat = Object.entries(porCat).sort((a, b) => b[1] - a[1]).slice(0, 3);
+  if (topCat.length && gasT > 0) {
+    const pc = (v) => Math.round((v / gasT) * 100);
+    pantallas.push(`<div class="an-sub">${escapeHTML(t("anCatTit"))}</div>
+     <div class="an-gran">${escapeHTML(topCat[0][0])}</div>
+     <div class="an-sub">${escapeHTML(t("anCatLlevo").replace("{n}", pc(topCat[0][1])))}</div>
+     <div class="an-lista">${topCat.map(([c, v], k) => `<div class="an-fila"><span>${escapeHTML(c)}</span><span>${pc(v)}%</span></div><div class="an-pista"><div class="an-rell ${k === 0 ? "an-rrojo" : "an-rapagado"}" style="width:${Math.min(100, pc(v))}%"></div></div>`).join("")}</div>`);
   }
   let i = 0;
   const pintar = () => {
