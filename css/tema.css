@@ -747,3 +747,18 @@ html[data-contraste][data-tema="oscuro"]{--texto:#FFFFFF;--texto-suave:#D5E0DB;-
 #anioCard .anio-relleno{height:100%;border-radius:4px;background:#e0a800}
 #anioCard .anio-relleno.anio-sobra{background:#c0392b}
 #anioCard .anio-vacia{opacity:.45}
+
+/* v166 Anuario */
+.anuario[hidden]{display:none !important}
+.anuario{position:fixed;inset:0;z-index:9999;background:#0f1613;color:#fff;display:flex;flex-direction:column;padding:calc(14px + env(safe-area-inset-top)) 20px calc(18px + env(safe-area-inset-bottom));overflow:auto}
+.an-barras{display:flex;gap:6px}
+.an-barras span{flex:1;height:4px;border-radius:2px;background:rgba(255,255,255,.28)}
+.an-barras span.on{background:#fff}
+.an-cerrar{align-self:flex-end;margin-top:12px;background:transparent;border:2px solid rgba(255,255,255,.7);color:#fff;border-radius:999px;padding:8px 16px;font:600 calc(16px * var(--letra,1))/1.2 inherit;cursor:pointer}
+.an-pantalla{flex:1;display:flex;flex-direction:column;justify-content:center;min-height:0}
+.an-marca{color:#7ee0a8;font-weight:700;font-size:calc(18px * var(--letra,1));margin-bottom:8px}
+.an-sub{color:#dfe7e2;font-size:calc(18px * var(--letra,1));line-height:1.35}
+.an-gran{font-weight:800;font-size:calc(40px * var(--letra,1));line-height:1.1;margin:10px 0 14px}
+.an-dato{color:#ffd24a;font-weight:700;font-size:calc(26px * var(--letra,1));margin-bottom:4px}
+.an-seguir{text-align:center;color:#dfe7e2;font-size:calc(18px * var(--letra,1));padding-top:12px}
+.an-abrir{display:block;width:100%;margin-top:12px;padding:14px;border-radius:12px;border:0;background:var(--acento,#ffc933);color:#1a1a1a;font-weight:700;font-size:calc(17px * var(--letra,1));cursor:pointer}

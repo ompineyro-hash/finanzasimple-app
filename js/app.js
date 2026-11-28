@@ -471,6 +471,13 @@ const TRADUCCIONES = {
     anioMas: "Este año gastaste {x} más de lo que entró.",
     anioNota: "Resultado de cada mes",
     anioVacio: "Sin movimientos",
+    anVer: "Ver mi año",
+    anCerrar: "Cerrar",
+    anListo: "Tu año ya está listo",
+    anTitulo: "Tu {a} en Ingasto",
+    anMovs: "{n} movimientos",
+    anMeses: "registrados en {k} meses",
+    anSeguir: "Tocá para seguir",
     alcOcultar: "Ocultar detalle",
     letraAyuda: "Elegí cómo querés ver las letras en Ingasto. Se guarda en este celular.",
     letraNormal: "Normal",
@@ -1095,6 +1102,13 @@ const TRADUCCIONES = {
     anioMas: "Este ano você gastou {x} a mais do que entrou.",
     anioNota: "Resultado de cada mês",
     anioVacio: "Sem movimentos",
+    anVer: "Ver meu ano",
+    anCerrar: "Fechar",
+    anListo: "Seu ano está pronto",
+    anTitulo: "Seu {a} no Ingasto",
+    anMovs: "{n} movimentos",
+    anMeses: "registrados em {k} meses",
+    anSeguir: "Toque para continuar",
     alcOcultar: "Ocultar detalhe",
     letraAyuda: "Escolha como quer ver as letras no Ingasto. Fica guardado neste celular.",
     letraNormal: "Normal",
@@ -1732,6 +1746,13 @@ const TRADUCCIONES = {
     anioMas: "This year you spent {x} more than came in.",
     anioNota: "Result of each month",
     anioVacio: "No activity",
+    anVer: "See my year",
+    anCerrar: "Close",
+    anListo: "Your year is ready",
+    anTitulo: "Your {a} in Ingasto",
+    anMovs: "{n} entries",
+    anMeses: "recorded over {k} months",
+    anSeguir: "Tap to continue",
     alcOcultar: "Hide details",
     letraAyuda: "Choose how you want to see the text in Ingasto. It is saved on this phone.",
     letraNormal: "Normal",
@@ -4270,8 +4291,40 @@ function renderAnio(lista) {
   else if (resAnio < 0) frase = t("anioMas").replace("{x}", formatoMonto(Math.abs(resAnio)));
   card.innerHTML = `<div class="alc-titulo">${escapeHTML(t("anioTitulo").replace("{a}", anio))}</div>` +
     (frase ? `<div class="alc-grande ${resAnio < 0 ? "alc-mal" : "alc-ok"}">${escapeHTML(frase)}</div>` : "") +
-    `<div class="alc-nota">${escapeHTML(t("anioNota"))}</div>` + filas.join("");
+    `<div class="alc-nota">${escapeHTML(t("anioNota"))}</div>` + filas.join("") +
+    `<button type="button" class="an-abrir">${escapeHTML(t("anVer"))} ›</button>`;
+  card.querySelector(".an-abrir").onclick = () => abrirAnuario(lista, anio);
   card.hidden = false;
+}
+
+// ---- Anuario (pantallas que se pasan con un toque) ----
+function abrirAnuario(lista, anio) {
+  const ov = $("anuario");
+  if (!ov) return;
+  const loc = LOCALES_POR_IDIOMA[idiomaActual] || "es-AR";
+  const meses = new Set(lista.map((m) => m.fecha.slice(0, 7))).size;
+  const pantallas = [
+    `<div class="an-marca">ingasto</div>
+     <div class="an-centro">
+       <div class="an-sub">${escapeHTML(t("anListo"))}</div>
+       <div class="an-gran">${escapeHTML(t("anTitulo").replace("{a}", anio))}</div>
+       <div class="an-dato">${escapeHTML(t("anMovs").replace("{n}", lista.length.toLocaleString(loc)))}</div>
+       <div class="an-sub">${escapeHTML(t("anMeses").replace("{k}", meses))}</div>
+     </div>`,
+  ];
+  let i = 0;
+  const pintar = () => {
+    ov.innerHTML = `<div class="an-barras">${pantallas.map((_, k) => `<span class="${k <= i ? "on" : ""}"></span>`).join("")}</div>
+      <button type="button" class="an-cerrar">${escapeHTML(t("anCerrar"))}</button>
+      <div class="an-pantalla">${pantallas[i]}</div>
+      <div class="an-seguir">${escapeHTML(i < pantallas.length - 1 ? t("anSeguir") : t("anCerrar"))}</div>`;
+    ov.querySelector(".an-cerrar").onclick = (e) => { e.stopPropagation(); cerrar(); };
+  };
+  const cerrar = () => { ov.hidden = true; ov.innerHTML = ""; document.documentElement.classList.remove("an-abierto"); };
+  ov.onclick = () => { if (i < pantallas.length - 1) { i++; pintar(); } else cerrar(); };
+  pintar();
+  ov.hidden = false;
+  document.documentElement.classList.add("an-abierto");
 }
 
 async function renderVistaAnalisis() {
